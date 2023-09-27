@@ -1,0 +1,187 @@
+QMainWindow {
+	background-color: #101010;
+	color: #DF0000;
+}
+
+QStatusBar {
+	color: #DF0000;
+	font: bold 14px;
+}
+
+QToolButton {
+	border-radius: 5px;
+	border: 1px solid black;
+	background-color: #200000;
+	color: #DF0000;
+	font: bold 40px;
+	padding: 6px;
+}
+
+QPushButton {
+	border-radius: 5px;
+	border: 1px solid black;
+	background-color: #200000;
+	color: #DF0000;
+	font: bold 14px;
+	padding: 6px;
+}
+
+QPushButton:disabled {
+	border-radius: 5px;
+	border: 1px solid black;
+	background-color: #200000;
+	color: #400000;
+	font: bold 14px;
+	padding: 6px;
+}
+
+QPushButton#taskRecord {
+	padding: 0px;
+	background-color: black;
+	border: 4px solid #800;
+	border-radius: 24px;	/* half width/height below + border px */
+	max-width: 40px;
+	max-height: 40px;
+	min-width: 40px;
+	min-height: 40px;
+	/*
+		background: qradialgradient(
+			cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+			radius: 1.35, stop: 0 #fff, stop: 1 #999
+		);
+	*/
+}
+
+QPushButton#taskRecord:checked {
+	/*background-color: red;*/
+	background: qradialgradient(
+		cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+		radius: 1.35, stop: 0 #f00, stop: 1 #900
+	);
+}
+
+QPushButton#buttonCheckable {
+	background-color: black;
+	color: #DF0000;
+}
+
+QPushButton#buttonCheckable:checked {
+	background-color: #DF0000;
+	color: black;
+}
+
+QFrame#framePanel {
+	border-radius: 10px;
+	background-color: #200000;
+	border: 1px;
+	border-style: solid;
+	border-color: #880000;
+	margin-top: 5px;
+}
+
+QFrame#cameraView {
+	border-radius: 0px;
+	background-color: #200000;
+	border: 1px;
+	border-style: solid;
+	border-color: #880000;
+}
+
+
+QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QComboBox#comboBoxTrackingRate {
+	border-radius: 5px;
+	border: none;
+	background-color: #240000;
+	color: #DF0000;
+	font: bold 14px;
+	padding: 6px;
+
+	/*margin-right: 20px; */
+}
+
+QComboBox#comboBoxTask::drop-down, QComboBox#comboBoxDatabase::drop-down, QComboBox#comboBoxSpeed::drop-down, QComboBox#comboBoxTrackingRate::drop-down {
+}
+
+QComboBox#comboBoxTask QAbstractItemView, QComboBox#comboBoxDatabase QAbstractItemView, QComboBox#comboBoxSpeed QAbstractItemView, QComboBox#comboBoxTrackingRate QAbstractItemView{
+	background-color: #200000;
+	border: 1px solid #200000;	/* Also requires sizeAdjustPolicy: AdjustToContents */
+}
+
+QDialog {
+	color: #00FF00;
+	background-color: #200000;
+	padding: 6px;
+}
+
+QDialog QLabel {
+	color: #DF0000;
+	font: bold 14px;
+}
+
+/* https://doc.qt.io/qt-6/stylesheet-examples.html */
+
+QSlider::handle {
+	background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #240000, stop:1 #240000);
+	border: 1px solid #5c0000;
+	width: 18px;
+	margin: -2px 0;
+	border-radius: 5px;
+}
+
+QSlider::groove {
+	background: black;
+}
+
+QLineEdit {
+	background-color: #5c0000;
+}
+
+QLineEdit[readOnly="true"] {
+	background-color: #300000;
+	color: #DF0000;
+}
+
+QDateTimeEdit {
+	background-color: #5c0000;
+}
+
+QTextEdit {
+	background-color: #5c0000;
+}
+
+QMessageBox {
+}
+
+QLabel {
+	color: #DF0000;
+	font: bold 14px;
+}
+
+QCheckBox {
+	color: #DF0000;
+	background-color: none;
+	font: bold 14px;
+}
+
+QCheckBox::indicator {
+	width: 20px;
+	height: 20px;
+	border-radius: 3px;
+	border: 1px solid #DF0000;
+	background: none;
+}
+
+QCheckBox::indicator::checked {
+	background-color: #DF0000;
+}
+
+UiStatusButton {
+	border-radius: 5px;
+	background-color: #200000;
+	font: bold 14px;
+	padding: 6px;
+}
+
+UiStatusLabel {
+	font: bold 14px;
+}

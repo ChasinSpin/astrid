@@ -1,0 +1,10 @@
+1. Center Marker
+2. Polar Align
+3. See if raw (uncompressed) is causing slow down
+4. Raw to Seq
+5. Timestamping
+6. Frame syncing
+7. Sensor Temperature
+8. AM5 mount communication
+9. Plate Solving and storing settings
+10 Autostretch

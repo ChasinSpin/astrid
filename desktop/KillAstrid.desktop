@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Kill Astrid
+Comment=Kill Astrid
+Path=/home/pi
+Exec=/usr/bin/pkill python3
+Terminal=true
+Type=Application

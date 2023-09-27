@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Wifi Setup
+Comment=Wifi Setup
+Path=/home/pi/Autohotspot/
+Exec=/usr/bin/sudo /home/pi/Autohotspot/autohotspot-setup.sh
+Terminal=true
+Type=Application

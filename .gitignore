@@ -1,0 +1,6 @@
+__pycache__/
+*.o
+*.hex
+OTEStamper/software/build/
+app/build
+astrometry_tmp

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Astrid App
+Comment=Start Astrid App
+Path=/home/pi/astrid/app
+Exec=/home/pi/astrid/app/astrid.py -d /media/pi/ASTRID
+Terminal=true
+Type=Application
+Icon=/home/pi/astrid/desktop/AstridAppIcon.png

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Astrid Upgrade
+Comment=Start Astrid Upgrade
+Path=/home/pi/astrid
+Exec=/home/pi/astrid/upgrade.sh
+Terminal=true
+Type=Application
