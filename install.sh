@@ -8,6 +8,7 @@ echo "Creating desktop icons..."
 /usr/bin/rm -f /home/pi/Desktop/AstridApp.desktop
 /usr/bin/rm -f /home/pi/Desktop/WifiSetup.desktop
 /usr/bin/rm -f /home/pi/Desktop/AstridUpgrade.desktop
+/usr/bin/rm -f /home/pi/Desktop/KillAstrid.desktop
 
 /usr/bin/ln -s /home/pi/astrid/desktop/AstridApp.desktop /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/WifiSetup.desktop /home/pi/Desktop

@@ -28,8 +28,6 @@ fi
 # Do any upgrade specific stuff here
 echo "Upgrading..."
 
-
-
 # Install
 echo "Installing..."
 cd /home/pi
