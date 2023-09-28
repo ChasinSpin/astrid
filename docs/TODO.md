@@ -27,8 +27,6 @@ TypeError: 'NoneType' object is not subscriptable
 * Install PyMovie/PyOTE on the Pi
 * Configure buzzer on with setting
 
-* ravf index frame print removal
-connected
 * 10X duration for moons
 * Complete:
 	* Star Detection
