@@ -123,5 +123,3 @@ Be sure that the camera Flat-Flex is not being clamped between the Hex Standoff 
  	![SD Card Inserted](images/assembly52.jpg)
  	
 * [Build The USB Flash Drive](FlashDriveLayout.md)
- 	
- 

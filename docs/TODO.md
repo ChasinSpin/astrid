@@ -15,10 +15,6 @@ Traceback (most recent call last):
     self.widgetSatellites.setText(str(status['numSatellites']))
 TypeError: 'NoneType' object is not subscriptable
 
-* Pymovie update and pull request
-	* src/pymovie/gui.py
-	* src/pymovie/main.py
-	* src/pymovie/stacker.py
 * Implement Fan off
 * Taken with Astrid splash screen
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"

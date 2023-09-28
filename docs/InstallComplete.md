@@ -368,7 +368,7 @@ Statum 1 Time
 	IP: 10.0.0.5
 		
 	Option 7. Change to:
-		Access Point SSID: Astrid Hotspot
+		Access Point SSID: AstridHotspot
 		Password: iotaiota
 			
 	crontab -e 
@@ -380,16 +380,28 @@ Statum 1 Time
 		# Install the astrid software
 		cd
 		See 1Password for configuring git account
-		git config --global user.name "XXXXXXXXX"
-		git config --global user.email "XXXXX@XXXXXXX"
-		git config --global credential.helper 'cache --timeout=10000000'
-		git clone https://ChasinSpin@github.com/ChasinSpin/astrid.git
+		#git config --global user.name "XXXXXXXXX"
+		#git config --global user.email "XXXXX@XXXXXXX"
+		#git config --global credential.helper 'cache --timeout=10000000'
+		git clone https://github.com/ChasinSpin/astrid.git
 		cd astrid
 		./install.sh
 			
 ## Install Indi 3rd Party Focusers and Mounts
 		cd ~/astrid/scripts
 		./install_indi_3rdparty.sh
+		
+## Run Astrid and download astropy needed downloads for offline
+	* Do a simbad search
+	* Do a prepoint to force AltAz conversion download
+
+## Remove networks and history
+
+		cd
+		rm .bash_history
+		
+		Remove any networks used during this build:
+		sudo vi /etc/wpa_supplicant/wpa_supplicant.conf;sudo reboot
 		
 ## Create Image
 	# Create image on Mac using PiLess https://github.com/ChasinSpin/PiLess 
