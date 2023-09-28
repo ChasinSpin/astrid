@@ -71,6 +71,9 @@ class UiPanelConfig(UiPanel):
 			with open(platesolver_fname, 'w') as fp:
 				fp.write(jstr)
 				fp.write('\n')
+
+		astrometryCfg = os.path.dirname(self.configs_fname) + '/' + config['configFolder'] + '/astrometry.cfg'
+		os.remove(astrometryCfg)
 		
 
 	def buttonOKPressed(self):

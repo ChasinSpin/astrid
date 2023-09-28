@@ -27,11 +27,13 @@ from astsite import AstSite
 from astcoord import AstCoord
 from ravf_encoder import RavfEncoder, RavfImageFormat, RavfColorType
 from UiPanelConnectFailedIndi import UiPanelConnectFailedIndi
+from UiPanelAstrometry import UiPanelAstrometry
 from UiDialogPanel import UiDialogPanel
 from astropy.stats import sigma_clipped_stats
 #from photutils.detection import DAOStarFinder
 from photutils.detection import IRAFStarFinder
 from PyQt5.QtWidgets import QMessageBox
+from AstrometryDownload import AstrometryDownload
 import logging
 #import gc
 
@@ -371,6 +373,14 @@ class CameraModel:
 		#self.picam2.start()
 
 		self.__dumpConfiguration()
+
+		# Check we have the astrometry files we need, and download if we don't
+		frame_width_mm = (self.picam2.camera_properties['UnitCellSize'][0]/1000000.0) * self.full_frame_size[0]
+		astrometryDownload = AstrometryDownload(astrid_drive = Settings.getInstance().astrid_drive, focal_length = Settings.getInstance().platesolver['focal_length'], frame_width_mm = frame_width_mm)
+		if not astrometryDownload.astrometryFilesArePresent():
+			dialog = UiDialogPanel('Astrometry Download', UiPanelAstrometry, args = astrometryDownload)
+		astrometryDownload = None
+
 
 
 	# Display the timestamp on the frame

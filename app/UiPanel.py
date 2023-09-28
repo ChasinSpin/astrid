@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDateTime
-from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout
-from PyQt5.QtGui import QValidator, QDoubleValidator, QIntValidator
+from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar
+from PyQt5.QtGui import QValidator, QDoubleValidator, QIntValidator, QPalette, QColor
 from UiWidgetHMSDMS import UiWidgetHMSDMS
 from UiValidators import DoubleValidator, IntValidator
 from UiStatusButton import UiStatusButton
@@ -261,3 +261,25 @@ class UiPanel(QWidget):
 
 		self.rowIndex += 1
 		return label
+
+
+	def addProgressBar(self, title: str):
+		label = QLabel(title)
+
+		progress = QProgressBar()
+		palette = progress.palette()
+		palette.setColor(QPalette.Highlight, QColor('green'))
+		progress.setPalette(palette)
+		progress.setMaximumSize(250, 20)
+		progress.setVisible(False)
+
+		progress.setRange(0, 100)
+		progress.setValue(0)
+
+		self.layout.addWidget(label, self.rowIndex, 0, 1, 1, alignment=Qt.AlignLeft)
+		self.layout.addWidget(progress, self.rowIndex, 1, 1, 1, alignment=Qt.AlignLeft)
+
+		#lineEdit.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed))
+
+		self.rowIndex += 1
+		return progress
