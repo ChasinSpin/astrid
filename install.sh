@@ -16,7 +16,7 @@ echo "Creating desktop icons..."
 /usr/bin/ln -s /home/pi/astrid/desktop/KillAstrid.desktop /home/pi/Desktop
 
 echo "Installing ravf..."
-pip install --no-deps "git+https://github.com/ChasinSpin/ravf.git"
+pip install --no-deps ravf
 
 echo "Making ospi..."
 cd $APP_FOLDER
