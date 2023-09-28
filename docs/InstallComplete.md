@@ -391,9 +391,12 @@ Statum 1 Time
 		cd ~/astrid/scripts
 		./install_indi_3rdparty.sh
 		
-## Run Astrid and download astropy needed downloads for offline
-	* Do a simbad search
-	* Do a prepoint to force AltAz conversion download
+## Run Astrid and download astropy needed downloads for offline use
+
+With simulator mount:
+
+	* Do a custom search for vega, then a goto (this forces a download)
+	* Do a prepoint to force AltAz conversion (this forces a download)
 
 ## Remove networks and history
 
