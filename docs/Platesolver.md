@@ -46,7 +46,7 @@ Generally, we've found that exposures in the 1-5 second range are best.
 
 ## Correct Astrometry Indexes
 
-##### Note: Downloading index files will eventually be handled from the User Interface.  Currently, these must be downloaded manually.
+##### Note: Astrometry index files are now automatically downloaded if needed, this section is for reference if you wish to use alternative index files.
 
 Astrometry needs star catalogs to solve for patterns of stars in your images.  These catalogs are called Index Files, and they need to be selected based on the focal length of your configuration to achieve a plate solve.
 
@@ -54,7 +54,7 @@ Index files are selected based on the focal length of the configuration.  Smalle
 
 Typically astrometry.net suggest using a field of diameter of 0.3X to 0.5X your actual field of view (width in this case as it's the largest dimension).
 
-This information is summarized in the table below, lookup your Field Of View Width (convert to arc minutes if necessary) on the left, and download the index series suggested on the right.
+This information is summarized in the table below, lookup your Field Of View Width (convert to arc minutes if necessary) on the left.
 
 | Your Field of View Width (arcmin) | Suggested Index Field Of View Diameter (arcmin) | Index Scale | Index Series | 
 | ------------------ | ------------------------------- | ----- | ------ |
@@ -67,7 +67,7 @@ This information is summarized in the table below, lookup your Field Of View Wid
 | 40.0...55.0 | 16...22 | 6 | index\-5206\-\*.fits |
 | 55.0...5000.0| 22...2000 | 7-19 | 4100 series |
 
-The series can be downloaded here:
+Series can be downloaded here:
 	
 * 4100 series: [http://data.astrometry.net/4100/](http://data.astrometry.net/4100/)
 	* Download index\-4107.fits to index\-4119.fits and place them in folder /media/pi/ASTRID/astrometry/4100
@@ -76,6 +76,8 @@ The series can be downloaded here:
 
 
 Other index files if needed can be obtained here: [http://data.astrometry.net](http://data.astrometry.net)
+
+##### Note: Astrometry index files are now automatically downloaded if needed, this section is for reference if you wish to use alternative index files.
 
 [Configuring the indexes in the astrometry.cfg file](Configuration.md)
 

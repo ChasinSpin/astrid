@@ -1,6 +1,6 @@
 # Configuration
 
-##### Note: Configuration will eventually be handled via the User Interface.  For now, these JSON and .cfg files can be carefully edited with a text edit.  Restart Astrid after any changes to these files.
+##### Note: Configuration will eventually be handled via the User Interface.  For now, these JSON files can be carefully edited with a text edit.  Restart Astrid after any changes to these files.
 
 ## Introduction
 
@@ -82,13 +82,7 @@ This config.json file is used to present the selection of configs when Astrid is
 
 The astrometry.cfg file is used primarily to specify the index files to use for platesolving, and is the config file for the astrometry.net platesolver (solve-field).  Index files are stored locally in the astrometry folder on the USB Flash Drive (i.e. the solver is offline and doesn't require the internet).
 
-It's suggested to use one of the existing astrometry.cfg files (for example in the simulator config) as a template.
-
-It's suggested that series of index files shoud be stored in folders in the astrometry folder to make it easier to manage for different scopes and add them for each individual scope as follows:
-
-	# In which directories should we search for indices?
-	add_path /media/pi/ASTRID/astrometry/5204
-	add_path /media/pi/ASTRID/astrometry/tycho2
+astrometry.cfg is created as required based on the focal length and camera chosen in Astrid.  There is no need to create it or edit it.
 
 ## camera
 
