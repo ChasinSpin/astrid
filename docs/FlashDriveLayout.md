@@ -13,7 +13,18 @@ Suggested Flash Drives:
 * [Corsair Flash Voyager GTX 128GB USB 3.1 Flash Drive](https://www.amazon.com/Corsair-Flash-Voyager-128GB-Premium/dp/B079NVJPKV)
 * [Arcanite 256GB USB 3.1 Flash Drive](https://www.amazon.com/dp/B07RT1WMFB)
 
-## Formatting
+
+## Flash Drive Creation
+
+### Assisted Method
+
+This is the easiest way to format the USB Flash Drive and install the required files:
+
+On the Astrid Desktop, double tap(or double click) "Format USB Flash Drive"
+
+### Manual Method
+
+If for some reason you are enable to use the Assisted Method above, the required format and file structure can also be created as follows:
 
 **IMPORTANT:** The USB flash drive must be formatted **ExFAT** and the volume label must be **ASTRID** for the drive to be recognized.
 

@@ -1,6 +1,5 @@
 # TODO
 
-* mkfs.exfat USB drive formatter
 * Fix bug:
 Uncaught exception
 Traceback (most recent call last):
