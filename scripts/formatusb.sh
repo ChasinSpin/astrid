@@ -40,7 +40,8 @@ authorize()
 
 	echo 
 	echo "**** WARNING: FINAL CHANCE ****"
-	echo  "IF YOU WISH TO DELETE ALL FILES ON YOUR USB FLASH DRIVE, TYPE:    ERASE USB DRIVE NOW<Return>"
+	echo  "IF YOU WISH TO DELETE ALL FILES ON YOUR USB FLASH DRIVE, TYPE:"
+	echo  "       ERASE USB DRIVE NOW<Return>"
 
 	read line
 	if [ "$line" != "ERASE USB DRIVE NOW" ];then
@@ -65,19 +66,24 @@ if [ -b "$DEVICE_MAIN" -o -b "$DEVICE_PART" ];then
 	for mntpoint in "$TMP"
 	do
 		if [ ! -z "$mntpoint" ];then
-			echo
-			echo "WARNING: Files have been found on the USB Flash Drive"
-			echo
-			/usr/bin/ls -laR "$TMP"
-			echo
-			echo "WARNING: Files have been found on the USB Flash Drive"
-			echo -n "PERMANENTLY ERASE ALL THESE FILES? (Y/N): "
-			read line
-			if [ "$line" != "Y" -a "$line" != "y" ];then
-				echo "Aborting...."
-				slowExit
-			fi
+			LIST=`/usr/bin/ls -R "$TMP"`
+			LIST_COUNT=`echo "$LIST" | /usr/bin/wc -l`
+			if [ "$LIST_COUNT" -gt 1 ];then
+				echo
+				echo "WARNING: Files have been found on the USB Flash Drive"
+				echo
+
+				echo "$LIST"
 			
+				echo
+				echo "WARNING: Files have been found on the USB Flash Drive"
+				echo -n "PERMANENTLY ERASE ALL THESE FILES? (Y/N): "
+				read line
+				if [ "$line" != "Y" -a "$line" != "y" ];then
+					echo "Aborting...."
+					slowExit
+				fi
+			fi
 		fi
 	done
 	echo "Unmounting USB Drives..."
@@ -89,7 +95,7 @@ echo "Creating partition table..."
 
 echo 'type=7' | sudo /usr/sbin/sfdisk /dev/sda
 if [ $? != 0 ];then
-	echo "ERROR: sfdisk, aborting..."
+	echo "ERROR: sfdisk, try removing and inserting USB Flash Drive, aborting..."
 	slowExit
 fi
 
@@ -101,8 +107,12 @@ if [ $? != 0 ];then
 fi
 
 echo "Format complete"
+sudo /usr/bin/eject "$DEVICE_PART"
+sudo /usr/bin/eject "$DEVICE_MAIN"
 echo
-echo "Remove USB Flash Drive and Insert back into Blue USB Socket"
+echo "**** Remove USB Flash Drive and Insert back into Blue USB Socket"
+echo "    Note 1: Window will popup when inserted, hit Cancel"
+echo "    Note 2: You can safely ignore message about not safely ejecting"
 echo "Press <Return> when ready"
 read line
 
@@ -130,6 +140,8 @@ else
 	slowExit
 fi
 
+echo
+echo "SUCCESS!"
 echo "Astrid USB Flash Drive Successfully Created"
 echo "Press <Return> To Continue"
 read line
