@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Format USB Flash Drive
+Comment=Format USB Flash Drive
+Path=/home/pi/astrid/scripts
+Exec=/home/pi/astrid/scripts/formatusb.sh
+Terminal=true
+Type=Application
