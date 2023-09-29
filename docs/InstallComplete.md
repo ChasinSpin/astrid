@@ -395,7 +395,10 @@ Statum 1 Time
 
 With simulator mount:
 
-	* Do a custom search for vega, then a goto (this forces a download)
+	* Do a custom search for vega, then a goto
+		which downloads:
+			* https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat
+			* https://datacenter.iers.org/data/9/finals2000A.all
 	* Do a prepoint to force AltAz conversion (this forces a download)
 
 ## Remove networks and history
@@ -404,7 +407,7 @@ With simulator mount:
 		rm .bash_history
 		
 		Remove any networks used during this build:
-		sudo vi /etc/wpa_supplicant/wpa_supplicant.conf;sudo reboot
+		sudo vi /etc/wpa_supplicant/wpa_supplicant.conf;sync;sync;sync;sudo poweroff
 		
 ## Create Image
 	# Create image on Mac using PiLess https://github.com/ChasinSpin/PiLess 
