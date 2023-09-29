@@ -10,6 +10,72 @@ from pprint import *
 subsettings = [('camera', True), ('mount', True), ('objects', False), ('platesolver', True), ('occultations', False), ('site', True), ('observer', False)]
 
 
+master_settings = [
+	# configs.json
+	# objects.json
+	# observer.json
+	# occultations.json
+
+	# camera.json
+	# mount.json
+	# platesolver.json
+	# site.json
+
+	# Notes:
+	# hflip/vflip changed from 0/1 to False/True
+	# "dither": {
+	#	"ra": 0.001,
+	#	"dec": 0.01
+	# },
+	# changed to:
+	# dither_ra and dither_decd
+	{'group': 'camera', 'settings': [
+		{'name': 'mode_selected',			'type': 'int',		'range': [1, 1],			'default': 1},
+		{'name': 'hflip',				'type': 'bool',		'range': None,				'default': False},
+		{'name': 'vflip',				'type': 'bool',		'range': None,				'default': False},
+		{'name': 'gain',				'type': 'float',	'range': [1.0, 16.0],			'default': 4.0},
+		{'name': 'accelerted_preview',			'type': 'bool',		'range': None,				'default': False},
+		{'name': 'photo_format',			'type': 'choice',	'range': ['fit'],			'default': 'fit'},
+		{'name': 'radec_format',			'type': 'choice',	'range': ['hmsdms','hour','deg'],	'default': 'hmsdms'},
+		{'name': 'polar_align_test',			'type': 'bool',		'range': None,				'default': False},
+		{'name': 'polar_align_rotation',		'type': 'float',	'range': [60.0,90.0],			'default': 90.0},
+		{'name': 'default_photo_exposure',		'type': 'float',	'range': [0.01,30.0],			'default': 1.0},
+		{'name': 'prompt_dark_after_acquisition',	'type': 'bool',		'range': None,				'default': True},
+		{'name': 'dither_ra',				'type': 'float',	'range': [0.00001,1.0],			'default': 0.001},
+		{'name': 'dither_dec',				'type': 'float',	'range': [0.0001,10.0],			'default': 0.01},
+		{'name': 'photosFolder',			'type': 'str',		'range': None,				'default': '/media/pi/ASTRID/Photo'},
+		{'name': 'videoFolder',				'type': 'str',		'range': None,				'default': '/media/pi/ASTRID/OTEVideo'},
+	]},
+
+	{'group': 'mount', 'settings': [
+		{'name': 'name',				'type': 'str',		'range': None,				'default': 'Simulator'},
+		{'name': 'indi_module',				'type': 'str',		'range': None,				'default': 'indi_simulator_telescope'},
+		{'name': 'indi_telescope_device_id',		'type': 'str',		'range': None,				'default': 'Telescope Simulator'},
+		{'name': 'indi_usb_tty',			'type': 'str',		'range': None,				'default': '/dev/ttyUSB0'},
+		{'name': 'baud',				'type': 'int',		'range': [1200,256000],			'default': 9600},
+		{'name': 'align_axis',				'type': 'choice',	'range': ['eq','altaz'],		'default': 'eq'},
+		{'name': 'goto_capable',			'type': 'bool',		'range': None,				'default': True},
+		{'name': 'tracking_capable',			'type': 'bool',		'range': None,				'default': True},
+		{'name': 'mount_is_j2000',			'type': 'bool',		'range': None,				'default': False},
+		{'name': 'local_offset',			'type': 'float',	'range': [0.0,0.0],			'default': 0.0},
+		{'name': 'parkmethod',				'type': 'choice',	'range': ['park','home'],		'default': 'home'},
+		{'name': 'debug',				'type': 'bool',		'range': None,				'default': False},
+	]},
+
+	{'group': 'platesolver', 'settings': [
+	]},
+	{'group': 'site', 'settings': [
+	]},
+
+	{'group': 'objects', 'settings': [
+	]},
+	{'group': 'observer', 'settings': [
+	]},
+	{'group': 'occultations', 'settings': [
+	]},
+]
+
+
 # Singleton
 
 class Settings:
