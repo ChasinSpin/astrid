@@ -90,40 +90,40 @@ The camera.json file stores configuration related to the camera:
 
 	{
 		"mode_selected": 1,
-		"hflip": 0,
-		"vflip": 0,
+		"hflip": false,
+		"vflip": false,
 		"gain": 4.0,
-		"accelerated_preview": 0,
+		"accelerated_preview": false,
 		"photo_format": "fit",
 		"radec_format": "hmsdms",
 		"polar_align_test": false,
 		"polar_align_rotation": 90.0,
 		"default_photo_exposure": 5.0,
 		"prompt_dark_after_acquisition": true,
-		"dither": {
-			"ra": 0.0010,
-			"dec": 0.0100
-		},
+		"dither_ra": 0.0010,
+		"dither_dec": 0.0100,
 		"photosFolder": "/media/pi/ASTRID/Photo",
-		"videoFolder": "/media/pi/ASTRID/OTEVideo"
+		"videoFolder": "/media/pi/ASTRID/OTEVideo",
+		"buzzer_enable": true
 	}
 	
 | Variable | Description |
 | -------- | ----------- |
 | mode_selected | Cameras have multiple modes with different attributes (size, binning etc.). Suggested modes: IMX296 Mono/Pi GSC: 1, Pi HQ: 3 |
-| hflip | Set to 1 to horizontally flip the image, otherwise 0. |
-| vflip | Set to 1 to vertically flip the image, otherwise 0. |
+| hflip | Set to true to horizontally flip the image, otherwise false. |
+| vflip | Set to true to vertically flip the image, otherwise false. |
 | gain | Gain should be optimized to the sensor for read noise as some cameras have dual gain circuits.  Suggested: IMX296 Mono/Pi GSC: 4.0, Pi HQ: 16.0 |
-| accelerated_preview | Set to 1 to use the graphics chip to accelerate the preview image in Astrid, otherwise 0. It is suggested to set to 0 to avoid issues with VNC viewers. |
+| accelerated_preview | Set to true to use the graphics chip to accelerate the preview image in Astrid, otherwise false. It is suggested to set to false to avoid issues with VNC viewers. |
 | photo_format | Unused, must be set to "fit" |
 | radec_format | This is the format for the way RA/DEC are presented visually to the user. "hmsdms" = Hours Minutes Seconds(RA) and Degrees Minutes Seconds (DEC). "hour" = 24 Hour RA and "deg" = 360 degree RA |
 | polar\_align\_test | If set to "true", test files for the Polar Alignment routine are used from so that it can be tested during daylight hours. Ordinarily set to false unless testing.|
 | polar\_align\_rotation | The number of degrees to rotate the scope during polar alignment.  This should be no more than 90.0 degrees and should not be less than 60.0 degrees. 90.0 degrees is the suggested value for accurate polar alignment. |
 | default\_photo\_exposure | This is the default exposure in seconds provided in the exposure box in Astrid.  It suggested that this should be set to the exposure that is needed to get a consistant plate solve, e.g. 1.0 - 5.0 seconds. |
 | prompt\_dark\_after\_acquisition | If set to true, a message box prompts the use to record 100 frames of dark video after an acquisition |
-| dither (ra, dec) | When the box is checked and "# Subs" is greater than 1, this value is used to randomly dither in RA/DEC to prevent walking noise when stacking.  The values are in degrees and represent the maximum the position can be dithered |
+| dither_ra / dither_dec) | When the box is checked and "# Subs" is greater than 1, this value is used to randomly dither in RA/DEC to prevent walking noise when stacking.  The values are in degrees and represent the maximum the position can be dithered |
 | photosFolder | Location to store fits files taken in Task = Photo Mode, set to "/media/pi/ASTRID/Photo" |
 | videoFolder | Location to store RAVF files (video files) taken in Task = OTE Video "/media/pi/ASTRID/OTEVideo" |
+| buzzer_enable | Buzzer beeps in the prior 6 seconds to auto record if true |
 
 ## mount
 
@@ -259,8 +259,8 @@ The platesolver.json file stores configuration related to platesolving:
 | source\_extractor | If set to true, it uses Source Extractor rather than image2xy to detect stars. Set to false otherwise. Source Extractor is slower, but seems to perform better. See [Extractor](https://manpages.debian.org/testing/astrometry.net/solve-field.1.en.html).  Suggested value is true. |
 | scale\_low\_factor | This value multiplied by the focal length is the lowest focal length to consider when platesolving.  Suggested value is 0.1 |
 | scale\_high\_factor | This value multiplied by the focal length is the highest focal length to consider when platesolving.  Suggested value is 1.25 |
-| direction\_indicator\_polar\_align | During polar alignment, arrows can be displayed to indicate the direction to adjust the mount. 0 = Do Not Display, 1 = 1 Arrow, 2 = 2 Arrows |
-| direction\_indicator\_platesolve | When the "Plate Solve" button is hit, and an Object is selected, arrows can be displayed to indicate the direction to adjust the pointing of the scope to reach the target.  This is particularly useful when using a scope without goto. 0 = Do Not Display, 1 = 1 Arrow, 2 = 2 Arrows |
+| direction\_indicator\_polar\_align | During polar alignment, arrows can be displayed to indicate the direction to adjust the mount. "None", "1 Arrow", "2 Arrows" |
+| direction\_indicator\_platesolve | When the "Plate Solve" button is hit, and an Object is selected, arrows can be displayed to indicate the direction to adjust the pointing of the scope to reach the target.  This is particularly useful when using a scope without goto. "None", "1 Arrow", "2 Arrows" |
 
 ## site
 
