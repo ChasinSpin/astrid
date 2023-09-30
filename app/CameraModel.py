@@ -910,7 +910,7 @@ class CameraModel:
 				self.polarAlignStep += 1
 			if position is not None:
 				self.lastSolvedPosition = position
-				if delta is not None and Settings.getInstance().platesolver['direction_indicator_polar_align'] > 0:
+				if delta is not None and Settings.getInstance().platesolver['direction_indicator_polar_align'] != 'None':
 					self.ui.panelTask.launchPolarAlignDirectionDialog(delta)
 		else:
 			self.polarAlignStep -= 1
@@ -1134,7 +1134,7 @@ class CameraModel:
 
 
 	def dither(self):
-		ditherMax = (self.settings['dither']['ra'], self.settings['dither']['dec'])
+		ditherMax = (self.settings['dither_ra'], self.settings['dither_dec'])
 		ditherAdd = (((random.random() * 2.0) - 1.0) * ditherMax[0], ((random.random() * 2.0) - 1.0) * ditherMax[1])
 
 		(ra, dec) = self.objectCoords.raDec360Deg('icrs')

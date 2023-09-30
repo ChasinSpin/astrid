@@ -49,7 +49,7 @@ class UiWidgetDirection(QWidget):
 		if createWidgets:
 			self.layout = QGridLayout()
 
-		if arrows == 2:
+		if arrows == '2 Arrows':
 			if createWidgets:
 				self.labelVert = QLabel()
 				self.labelHoriz = QLabel()
@@ -79,7 +79,7 @@ class UiWidgetDirection(QWidget):
 				self.layout.addWidget(self.labelHoriz, 0, 1, Qt.AlignCenter)
 				self.layout.addWidget(self.labelVert, 1, 1, Qt.AlignCenter)
 
-		elif arrows == 1:
+		elif arrows == '1 Arrow':
 			if createWidgets:
 				self.label = QLabel()
 

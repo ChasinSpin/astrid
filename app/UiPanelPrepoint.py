@@ -35,7 +35,7 @@ class UiPanelPrepoint(UiPanel):
 		self.calcPrepoint()
 
 		direction_indicator_platesolve = Settings.getInstance().platesolver['direction_indicator_platesolve']
-		if direction_indicator_platesolve > 0:
+		if direction_indicator_platesolve != 'None':
 			self.widgetAltAzDirection = self.addAltAzDirection()
 			self.hideWidget(self.widgetAltAzDirection)
 		else:

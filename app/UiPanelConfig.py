@@ -73,7 +73,10 @@ class UiPanelConfig(UiPanel):
 				fp.write('\n')
 
 		astrometryCfg = os.path.dirname(self.configs_fname) + '/' + config['configFolder'] + '/astrometry.cfg'
-		os.remove(astrometryCfg)
+		try:
+			os.remove(astrometryCfg)
+		except FileNotFoundError:
+			pass
 		
 
 	def buttonOKPressed(self):
