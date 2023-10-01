@@ -3,6 +3,7 @@
 * [Host Not Found](#host-not-found)
 * [GPS Poor Reception](#gps-poor-reception)
 * [Mouse Problems On Tablet](#mouse-problems-on-table)
+* [Simbad Planets Inaccurate](#simbad-planets-inaccurate)
 * [Indi Testing](#indi-testing)
 * [Tuning GPS PPS Offset](#tuning-gps-pps-offset)
 * [GPS Accuracy](#gps-accuracy)
@@ -21,6 +22,10 @@ A good solid GPS signal is required for both timing and positioning.  If the Tim
 ## Mouse Problems On Tablet
 
 If you have to move the mouse on a tablet to be able to select a button, enter text into a field etc., then change "Interactive" to "Touch Panel" in your VNC settings.
+
+## Simbad Planets Inaccurate
+
+Planets looked up on Simbad have incorrect RA/DECs, for now use other software to determine RA/DEC and input manually.
 
 ## Some spots on VNC are blurred
 

@@ -1,5 +1,9 @@
 # TODO
 
+* astropy download
+* Steve Calcs
+* Different color schemes
+* Add more clearance for flat flex (Joan)
 * Fix bug:
 Uncaught exception
 Traceback (most recent call last):
@@ -15,14 +19,18 @@ Traceback (most recent call last):
     self.widgetSatellites.setText(str(status['numSatellites']))
 TypeError: 'NoneType' object is not subscriptable
 
+* Whilst adding occultation with meaningless information for occelmnt:
+ File "/home/pi/astrid/app/UiPanelObjectAdd.py", line 114, in buttonAddPressed
+    occelmnt_dict = pOccelmnt['occelmnt_dict']
+TypeError: 'NoneType' object is not subscriptable
+
+
 * Implement Fan off
 * Bombs if Multiple Subs with dither are taken without an object selected
 * Taken with Astrid splash screen
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"
-* Different color schemes
 * Contrast of buttons don't show well for Plate Solve/Record basically all buttons: Bill
 * Install PyMovie/PyOTE on the Pi
-* Configure buzzer on with setting
 
 * 10X duration for moons
 * Complete:
