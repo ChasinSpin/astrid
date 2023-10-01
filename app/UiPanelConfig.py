@@ -2,6 +2,9 @@ import os
 import json
 from UiPanel import UiPanel
 from PyQt5.QtCore import Qt
+from UiDialogPanel import UiDialogPanel
+from UiPanelConfigSettings import UiPanelConfigSettings
+from settings import Settings
 
 
 
@@ -14,6 +17,7 @@ class UiPanelConfig(UiPanel):
 		super().__init__(title)
 
 		self.configs_fname = args['configs_fname']
+		self.astrid_drive = args['astrid_drive']
 		self.settingsCallback = args['settings_callback']
 
 		with open(self.configs_fname, 'r') as fp:
@@ -26,25 +30,27 @@ class UiPanelConfig(UiPanel):
 
 		self.panel			= panel
 		self.widgetConfig		= self.addComboBox('Config', self.configSummaries)
+		self.widgetConfig.setObjectName('comboBoxConfigSummary')
 		self.widgetConfig.setCurrentIndex(self.configs['selectedIndex'])
 
 		self.widgetTelescope		= self.addLineEdit('Telescope', editable=False)
 		self.widgetMount		= self.addLineEdit('Mount', editable=False)
 		self.widgetFocalReducers	= self.addLineEdit('Focal Reducers', editable=False)
-		self.widgetFocalLength		= self.addLineEditInt('Focal Length (mm)', 1, 10000)
+		#self.widgetFocalLength		= self.addLineEditInt('Focal Length (mm)', 1, 10000)
 
 		self.updateDisplayForConfigSelection(self.configs['selectedIndex'])
 
-		self.widgetOK		= self.addButton('Start Astrid')
-		self.widgetCancel	= self.addButton('Cancel')
+		self.widgetOK			= self.addButton('Start Astrid')
+		self.widgetSettings		= self.addButton('Settings')
+		self.widgetCancel		= self.addButton('Cancel')
 
 		self.setColumnWidth(1, UiPanelConfig.FIXED_WIDTH)
 
 
 	def registerCallbacks(self):
 		self.widgetConfig.currentTextChanged.connect(self.comboBoxConfigChanged)
+		self.widgetSettings.clicked.connect(self.buttonSettingsPressed)
 		self.widgetOK.clicked.connect(self.buttonOKPressed)
-		self.widgetFocalLength.editingFinished.connect(self.focalLengthChanged)
 		self.widgetCancel.clicked.connect(self.buttonCancelPressed)
 
 
@@ -55,29 +61,9 @@ class UiPanelConfig(UiPanel):
 		self.updateDisplayForConfigSelection(selectedIndex)
 
 
-	def focalLengthChanged(self):
-		txt = self.widgetFocalLength.text()
-		selectedIndex = self.widgetConfig.currentIndex()
-		config = self.configs['configs'][selectedIndex]
-		platesolver_fname = os.path.dirname(self.configs_fname) + '/' + config['configFolder'] + '/platesolver.json'
-		with open(platesolver_fname, 'r') as fp:
-			platesolver = json.load(fp)
-		settings_focal_length = int(platesolver['focal_length'])
-		entered_focal_length = int(txt)
-		if entered_focal_length != settings_focal_length:
-			platesolver['focal_length'] = float(entered_focal_length)
-			jstr = json.dumps(platesolver, indent=4)
-	
-			with open(platesolver_fname, 'w') as fp:
-				fp.write(jstr)
-				fp.write('\n')
+	def buttonSettingsPressed(self):
+		self.settingsDialog = UiDialogPanel('Config Settings', UiPanelConfigSettings, args = {'configs_fname': self.configs_fname, 'config_changed_callback': self.configChanged, 'selectedIndex': self.widgetConfig.currentIndex()})
 
-		astrometryCfg = os.path.dirname(self.configs_fname) + '/' + config['configFolder'] + '/astrometry.cfg'
-		try:
-			os.remove(astrometryCfg)
-		except FileNotFoundError:
-			pass
-		
 
 	def buttonOKPressed(self):
 		selectedIndex = self.widgetConfig.currentIndex()
@@ -85,7 +71,6 @@ class UiPanelConfig(UiPanel):
 		# Tell main app that we're using the selected settings
 		configBase = os.path.dirname(self.configs_fname)
 		settings_folder = configBase + '/' + self.configs['configs'][selectedIndex]['configFolder']
-		self.settingsCallback(settings_folder, self.configs['configs'][selectedIndex]['summary'])
 
 		# Write the settings if selectedIndex has changed
 		if selectedIndex != self.configs['selectedIndex']:
@@ -94,6 +79,8 @@ class UiPanelConfig(UiPanel):
 
 			with open(self.configs_fname, 'w') as fp:
 				fp.write(jstr)
+
+		self.settingsCallback(settings_folder, self.configs['configs'][selectedIndex]['summary'])
 
 		self.panel.acceptDialog()
 
@@ -110,7 +97,12 @@ class UiPanelConfig(UiPanel):
 		self.widgetMount.setText(config['mount'])
 		self.widgetFocalReducers.setText(config['focalreducers'])
 
-		platesolver_fname = os.path.dirname(self.configs_fname) + '/' + config['configFolder'] + '/platesolver.json'
-		with open(platesolver_fname, 'r') as fp:
-			platesolver = json.load(fp)
-		self.widgetFocalLength.setText(str(int(platesolver['focal_length'])))
+		# Read the settings
+		selectedIndex = self.widgetConfig.currentIndex()
+		configBase = os.path.dirname(self.configs_fname)
+		settings_folder = configBase + '/' + self.configs['configs'][selectedIndex]['configFolder']
+		Settings(settings_folder, self.astrid_drive, self.astrid_drive + '/configs')
+
+
+	def configChanged(self):
+		self.settingsCallback(None, None)

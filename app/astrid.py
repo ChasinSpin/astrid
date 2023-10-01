@@ -73,12 +73,19 @@ if __name__ == '__main__':
 
 	def settingsCallback(folder, summary):
 		global settings_folder, settings_summary
-		settings_folder = folder
-		settings_summary = summary
+
+		if folder is None or summary is None:
+			splash_screen.close()
+			logger.warning('user changed config, aborting so that the user can relaunch with the new config...')
+			shutdown_subprocesses()
+			sys.exit(0)
+		else:
+			settings_folder = folder
+			settings_summary = summary
 
 
 	def getConfig(configs_fname):
-		dialog = UiDialogPanel('Choose Config', UiPanelConfig, args = {'configs_fname': configs_fname, 'settings_callback': settingsCallback})
+		dialog = UiDialogPanel('Choose Config', UiPanelConfig, args = {'configs_fname': configs_fname, 'astrid_drive': astrid_drive, 'settings_callback': settingsCallback})
 
 
 	def checkAstridDrivePresent() -> bool:
@@ -148,7 +155,6 @@ if __name__ == '__main__':
 		logger.warning('user cancelled config, aborting...')
 		shutdown_subprocesses()
 		sys.exit(0)
-	Settings(settings_folder, astrid_drive, astrid_drive + '/configs')
 
 	# Load the camera
 	try:

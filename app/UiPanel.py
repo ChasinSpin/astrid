@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDateTime
-from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar
+from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar, QTabWidget
 from PyQt5.QtGui import QValidator, QDoubleValidator, QIntValidator, QPalette, QColor
 from UiWidgetHMSDMS import UiWidgetHMSDMS
 from UiValidators import DoubleValidator, IntValidator
@@ -283,3 +283,15 @@ class UiPanel(QWidget):
 
 		self.rowIndex += 1
 		return progress
+
+
+	def addTabs(self, titles: [str], widgets: [QWidget]):
+		tabs = QTabWidget()
+
+		for i in range(len(widgets)):
+			tabs.addTab(widgets[i], titles[i])
+
+		self.layout.addWidget(tabs, self.rowIndex, 0, 1, 2, alignment=Qt.AlignLeft)
+		
+		self.rowIndex += 1
+		return tabs

@@ -88,7 +88,7 @@ QFrame#cameraView {
 }
 
 
-QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QComboBox#comboBoxTrackingRate {
+QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QComboBox#comboBoxTrackingRate, QComboBox#comboBoxConfigSummary, QComboBox#comboBoxConfigSetting {
 	border-radius: 5px;
 	border: none;
 	background-color: #240000;
@@ -99,10 +99,10 @@ QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QCo
 	/*margin-right: 20px; */
 }
 
-QComboBox#comboBoxTask::drop-down, QComboBox#comboBoxDatabase::drop-down, QComboBox#comboBoxSpeed::drop-down, QComboBox#comboBoxTrackingRate::drop-down {
+QComboBox#comboBoxTask::drop-down, QComboBox#comboBoxDatabase::drop-down, QComboBox#comboBoxSpeed::drop-down, QComboBox#comboBoxTrackingRate::drop-down, QComboBox#comboBoxConfigSummary::drop-down, QComboBox#comboBoxConfigSetting::drop-down {
 }
 
-QComboBox#comboBoxTask QAbstractItemView, QComboBox#comboBoxDatabase QAbstractItemView, QComboBox#comboBoxSpeed QAbstractItemView, QComboBox#comboBoxTrackingRate QAbstractItemView{
+QComboBox#comboBoxTask QAbstractItemView, QComboBox#comboBoxDatabase QAbstractItemView, QComboBox#comboBoxSpeed QAbstractItemView, QComboBox#comboBoxTrackingRate QAbstractItemView, QComboBox#comboBoxConfigSummary QAbstractItemView, QComboBox#comboBoxConfigSetting QAbstractItemView {
 	background-color: #200000;
 	border: 1px solid #200000;	/* Also requires sizeAdjustPolicy: AdjustToContents */
 }
@@ -184,4 +184,24 @@ UiStatusButton {
 
 UiStatusLabel {
 	font: bold 14px;
+}
+
+QTabWidget {
+	background-color: #200000;
+	padding: 6px;
+}
+
+QTabWidget::pane {
+	padding: 10px;
+}
+
+QTabBar::tab {
+	border: 1px solid #5c0000;
+	color: #DF0000;
+	padding: 6px;
+	font: bold 14px;
+}
+
+QTabBar::tab:selected {
+	border: 1px solid #DF0000;
 }
