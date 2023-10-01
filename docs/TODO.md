@@ -39,7 +39,6 @@ TypeError: 'NoneType' object is not subscriptable
 * Update image in response to check boxes without requiring image to be retaken
 * Peak Focus
 * Refactor "evolved" CameraModel.py into a command based system and decouple everything so everything runs as a command, updating the UI as appropriate.  This will also get ready for command based operation/scripting. (similar approach to Siril)
-* UI configuration of settings
 * Change to Indi Neurtral https://www.indilib.org/api/classINDI_1_1Telescope.html
 * Put target on screen to show the star.
 * Star Catalogues HIP, TYC (Tycho 2), UCAC4, G-RADEC, (XZ, ZC - Use RADEC instead).  Dave Herald has a catalogue for occultations.  See also catalogues in Siril: https://siril.readthedocs.io/en/latest/astrometry/annotations.html

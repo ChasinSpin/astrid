@@ -189,3 +189,12 @@ FOV Size = Size of the Field of View
 Drift Time 75% FOV: This is the number of minutes it takes to drift across 75% of the FOV Height.  The occultation event should fit within this time.
 
 When prepointing is adjusted, then the Auto Record button can be pushed to auto record when the event begins.
+
+## Light Curve Analysis
+
+The recommended tool for analyzing light curves from Astrid is Bob Andersons awesome [PyMovie](https://pypi.org/project/pymovie/) and [PyOTE](https://pypi.org/project/pyote/)
+
+Starting from version 3.9.4 of PyMovie, the RAVF Video format used by Astrid is natively supported.
+
+Other light curve analyzers currently do not support the RAVF video format. A conversion utility to fits is on the todo list.
+

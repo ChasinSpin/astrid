@@ -1,6 +1,6 @@
 # Configuration
 
-##### Note: Configuration will eventually be handled via the User Interface.  For now, these JSON files can be carefully edited with a text edit.  Restart Astrid after any changes to these files.
+##### Note: It's strongly recommended to use the "Settings" button when Astrid is launched to change settings.  This remains for reference and documentation for the effect of each setting.
 
 ## Introduction
 
