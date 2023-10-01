@@ -2,6 +2,7 @@
 
 import os
 import sys
+import json
 import atexit
 import argparse
 import logging
@@ -95,6 +96,22 @@ if __name__ == '__main__':
 		return True
 
 
+	def getStylesheet(stylesheet_fname, colorscheme_fname):
+		""" Reads a stylesheet and using colorscheme_fname, replaces the color macros """	
+		ss = AstUtils.read_file_as_string(stylesheet_fname)
+
+		with open(colorscheme_fname) as f:
+			colorscheme_data = f.read()
+		cs = json.loads(colorscheme_data)
+		print(cs)
+
+		# Do Macro search and replace
+		for key in cs.keys():
+			ss = ss.replace(key, cs[key])
+
+		return ss
+
+
 	#
 	# MAIN
 	#
@@ -130,7 +147,7 @@ if __name__ == '__main__':
 
 	# Read Stylesheet
 	splash_screen.setMessage('Loading: Reading stylesheet...')
-	app.setStyleSheet(AstUtils.read_file_as_string(stylesheet))	# Read/set the stylesheet
+	app.setStyleSheet(getStylesheet(stylesheet, 'stylesheets/astro.colorscheme'))	# Set the stylesheet
 
 	# Check the ASTRID drive is present
 	if not checkAstridDrivePresent():
