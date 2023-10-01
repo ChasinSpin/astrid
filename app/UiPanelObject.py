@@ -5,7 +5,8 @@ from astropy.coordinates import SkyCoord
 from settings import Settings
 from astcoord import AstCoord
 from astropy.coordinates.name_resolve import NameResolveError
-from UiPanelObjectAdd import UiPanelObjectAdd
+from UiPanelObjectAddEdit import UiPanelObjectAddEdit
+from UiPanelObjectList import UiPanelObjectList
 from UiPanelPrepoint import UiPanelPrepoint
 from UiPanelAutoRecord import UiPanelAutoRecord
 from PyQt5.QtCore import Qt
@@ -37,7 +38,9 @@ class UiPanelObject(UiPanel):
 		self.widgetAutoRecord	= self.addButton('Auto Record', True)
 		self.hideWidget(self.widgetPrepoint)
 		self.widgetAdd		= self.addButton('Add', True)
+		self.widgetList		= self.addButton('List', True)
 		self.hideWidget(self.widgetAdd)
+		self.hideWidget(self.widgetList)
 		
 		self.setColumnWidth(0, 75)
 		self.setColumnWidth(1, 170)
@@ -49,6 +52,7 @@ class UiPanelObject(UiPanel):
 		self.widgetPrepoint.clicked.connect(self.buttonPrepointPressed)
 		self.widgetAutoRecord.clicked.connect(self.buttonAutoRecordPressed)
 		self.widgetAdd.clicked.connect(self.buttonAddPressed)
+		self.widgetList.clicked.connect(self.buttonListPressed)
 
 	
 	# CALLBACKS
@@ -60,16 +64,19 @@ class UiPanelObject(UiPanel):
 			self.hideWidget(self.widgetPrepoint)
 			self.hideWidget(self.widgetAutoRecord)
 			self.hideWidget(self.widgetAdd)
+			self.hideWidget(self.widgetList)
 		elif text == UiPanelObject.SEARCH_CUSTOM:
 			self.hideWidget(self.widgetEventTime)
 			self.hideWidget(self.widgetPrepoint)
 			self.hideWidget(self.widgetAutoRecord)
 			self.showWidget(self.widgetAdd)
+			self.showWidget(self.widgetList)
 		elif text == UiPanelObject.SEARCH_OCCULTATIONS:
 			self.showWidget(self.widgetEventTime)
 			self.hideWidget(self.widgetPrepoint)
 			self.hideWidget(self.widgetAutoRecord)
 			self.showWidget(self.widgetAdd)
+			self.showWidget(self.widgetList)
 		else:
 			raise ValueError('Database not valid')
 
@@ -78,13 +85,15 @@ class UiPanelObject(UiPanel):
 		# When a message box is launch during a line edit handler, the line edit loses focus,
 		# casuing 2 editingFinished messages to be sent, using isModified to prevent double launching
 		if self.widgetSearch.isModified():
-			self.widgetSearch.setModified(False)
-			txt = self.widgetSearch.text()
-			self.camera.searchObject(txt)
+			self.launchSearch()
 
 
 	def buttonAddPressed(self):
-		self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAdd, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera}, parent = self.camera.ui)
+		self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
+
+
+	def buttonListPressed(self):
+		self.dialog = UiDialogPanel('List Objects - ' + self.widgetDatabase.currentText(), UiPanelObjectList, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'selectListCallback': self.listSelect, 'editListCallback': self.editSelect}, parent = self.camera.ui)
 
 
 	def buttonPrepointPressed(self):
@@ -271,3 +280,32 @@ class UiPanelObject(UiPanel):
 		self.widgetRA.setEnabled(enable)
 		self.widgetDEC.setEnabled(enable)
 		self.widgetAdd.setEnabled(enable)
+
+
+	def launchSearch(self):
+		self.widgetSearch.setModified(False)
+		txt = self.widgetSearch.text()
+		self.camera.searchObject(txt)
+
+
+	def listSelect(self, item):
+		self.widgetSearch.setText(item)
+		self.launchSearch()
+
+
+	def editSelect(self, item):
+		editValues = None
+
+		text = self.widgetDatabase.currentText()
+
+		if text == UiPanelObject.SEARCH_CUSTOM:
+			objects = Settings.getInstance().objects['custom_objects']
+		elif text == UiPanelObject.SEARCH_OCCULTATIONS:
+			objects = Settings.getInstance().occultations['occultations']
+
+		for object in objects:
+			if object['name'] == item:
+				editValues = object
+				break
+		
+		self.dialog = UiDialogPanel('Edit Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': editValues}, parent = self.camera.ui)

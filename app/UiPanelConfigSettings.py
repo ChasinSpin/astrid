@@ -1,3 +1,4 @@
+from processlogger import ProcessLogger
 import os
 import re
 import copy
@@ -7,7 +8,6 @@ from UiPanel import UiPanel
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox
 from settings import Settings
-from processlogger import ProcessLogger
 
 
 

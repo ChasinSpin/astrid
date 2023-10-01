@@ -4,11 +4,11 @@ from PyQt5.QtWidgets import QMessageBox
 from settings import Settings
 from astcoord import AstCoord
 import xmltodict
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 
-class UiPanelObjectAdd(UiPanel):
+class UiPanelObjectAddEdit(UiPanel):
 	# Initializes and displays a Panel
 
 	def __init__(self, title, panel, args):
@@ -18,11 +18,15 @@ class UiPanelObjectAdd(UiPanel):
 
 		self.database		= args['database']
 		self.camera		= args['camera']
+		self.editValues		= args['editValues']
 		self.panel		= panel
+
 		self.widgetName		= self.addLineEdit('Object Name')
 
-		if self.database == 'Occultations':
+		if self.database == 'Occultations' and self.editValues is None:
 			self.widgetOccelmnt		= self.addTextEdit('Occelmnt', 'Copy and paste occelmnt data for the event here')
+		else:
+			self.widgetOccelmnt		= None
 
 		if self.radec_format == 'hour':
 			self.widgetRA		= self.addLineEditDouble('RA', 0.0, 23.9999999999, 10, editable=True)
@@ -40,17 +44,30 @@ class UiPanelObjectAdd(UiPanel):
 			self.widgetEventTime		= self.addDateTimeEdit('Event Center Time(UTC)')
 			self.widgetEventDuration	= self.addLineEditDouble('Max Duration(s)', 0.001, 86400.0, 3, editable=True)
 			self.widgetEventUncertainty	= self.addLineEditDouble('Error in time(s)', 0.001, 86400.0, 3, editable=True)
-			self.widgetExtraStart		= self.addLineEditInt('Add Secs@Start', 1, 86400, editable=True)
-			self.widgetExtraEnd		= self.addLineEditInt('Add Secs@End', 1, 86400, editable=True)
-			self.widgetSpacer		= self.addSpacer()
-			self.widgetStartTime		= self.addDateTimeEdit('Calculated Start Time(UTC)', editable=False)
-			self.widgetEndTime		= self.addDateTimeEdit('Calculated End Time(UTC)', editable=False)
-			self.widgetRecDuration		= self.addLineEdit('Recording Duration(s)', editable=False)
+
+			if self.editValues is None:
+				self.widgetExtraStart		= self.addLineEditInt('Add Secs@Start', 1, 86400, editable=True)
+				self.widgetExtraEnd		= self.addLineEditInt('Add Secs@End', 1, 86400, editable=True)
+				self.widgetSpacer		= self.addSpacer()
+			else:
+				self.widgetExtraStart		= None
+				self.widgetExtraEnd		= None
+				self.widgetSpacer		= None
+
+			self.widgetStartTime		= self.addDateTimeEdit('Calculated Start Time(UTC)', editable=False if self.editValues is None else True)
+			self.widgetEndTime		= self.addDateTimeEdit('Calculated End Time(UTC)', editable=False if self.editValues is None else True)
+
+			if self.editValues is None:
+				self.widgetRecDuration		= self.addLineEdit('Recording Duration(s)', editable=False)
+			else:
+				self.widgetRecDuration		= None
 			
 			self.widgetEventDuration.setText('0.0')
 			self.widgetEventUncertainty.setText('0.0')
-			self.widgetExtraStart.setText('30')
-			self.widgetExtraEnd.setText('30')
+
+			if self.editValues is None:
+				self.widgetExtraStart.setText('30')
+				self.widgetExtraEnd.setText('30')
 		else:
 			self.widgetEventTime		= None
 			self.widgetEventDuration	= None
@@ -62,7 +79,32 @@ class UiPanelObjectAdd(UiPanel):
 			self.widgetEndTime		= None
 			self.widgetRecDurationx		= None
 
-		self.widgetAdd		= self.addButton('Add', True)
+		if self.editValues is not None:
+			self.widgetName.setText(self.editValues['name'])
+			
+			if self.radec_format == 'hour':
+				coord = AstCoord.from360Deg(self.editValues['ra'], self.editValues['dec'], 'icrs')
+				radec = coord.raDec24Deg('icrs')
+				self.widgetRA.setText('%0.10f' % radec[0])
+				self.widgetDEC.setText('%0.10f' % radec[1])
+			elif self.radec_format == 'hmsdms':
+				coord = AstCoord.from360Deg(self.editValues['ra'], self.editValues['dec'], 'icrs')
+				radec = coord.raDecHMS('icrs')
+				self.widgetRA.setValue(radec[0][0], radec[0][1], radec[0][2])
+				self.widgetDEC.setValue(radec[1][0], radec[1][1], radec[1][2])
+			elif self.radec_format == 'deg':
+				self.widgetRA.setText('%0.10f' % self.editValues['ra'])
+				self.widgetDEC.setText('%0.10f' % self.editValues['dec'])
+
+			if self.database == 'Occultations':
+				self.widgetEventTime.setDateTime(datetime.strptime(self.editValues['event_time'], '%Y-%m-%dT%H:%M:%S'))
+				self.widgetEventDuration.setText('%0.1f' % self.editValues['event_duration'])
+				self.widgetEventUncertainty.setText('%0.1f' % self.editValues['event_uncertainty'])
+				self.widgetStartTime.setDateTime(datetime.strptime(self.editValues['start_time'], '%Y-%m-%dT%H:%M:%S'))
+				self.widgetEndTime.setDateTime(datetime.strptime(self.editValues['end_time'], '%Y-%m-%dT%H:%M:%S'))
+
+		self.widgetAdd		= self.addButton('Add' if self.editValues is None else 'Update', True)
+
 		self.widgetCancel	= self.addButton('Cancel', True)
 
 		self.setColumnWidth(1, 170)
@@ -106,20 +148,24 @@ class UiPanelObjectAdd(UiPanel):
 			start_time = self.widgetStartTime.dateTime().toString('yyyy-MM-ddThh:mm:ss')
 		if self.widgetEndTime is not None:
 			end_time = self.widgetEndTime.dateTime().toString('yyyy-MM-ddThh:mm:ss')
-		if self.widgetOccelmnt is not None:
-			occelmnt = self.widgetOccelmnt.toPlainText()
-			if not occelmnt == '':
-				pOccelmnt = self.processOccelmnt(occelmnt)
-				print(pOccelmnt)
-				occelmnt_dict = pOccelmnt['occelmnt_dict']
-			else:
-				occelmnt_dict = {}
 
-			if not self.addOccultationToOccultationDatabase(name, coord, event_time, start_time, end_time, event_duration, event_uncertainty, occelmnt_dict):
+		if self.database == 'Occultations':
+			if self.widgetOccelmnt is not None:
+				occelmnt = self.widgetOccelmnt.toPlainText()
+				if not occelmnt == '':
+					pOccelmnt = self.processOccelmnt(occelmnt)
+					print(pOccelmnt)
+					occelmnt_dict = pOccelmnt['occelmnt_dict']
+				else:
+					occelmnt_dict = {}
+			else:
+				occelmnt_dict = self.editValues['occelmnt']
+
+			if not self.addUpdateOccultationToOccultationDatabase(name, coord, event_time, start_time, end_time, event_duration, event_uncertainty, occelmnt_dict,  originalName = self.editValues['name'] if self.editValues is not None else None):
 				return	
 		else:
 			occelmnt = None
-			if not self.addObjectToCustomDatabase(name, coord):
+			if not self.addUpdateObjectToCustomDatabase(name, coord, originalName = self.editValues['name'] if self.editValues is not None else None):
 				return
 
 		self.panel.acceptDialog()
@@ -213,7 +259,7 @@ class UiPanelObjectAdd(UiPanel):
 		if ret == QMessageBox.Yes:
 			return True
 		elif ret == QMessageBox.Save:
-			self.addObjectToCustomDatabase(name, coord)
+			self.addUpdateObjectToCustomDatabase(name, coord)
 			return False
 		else:
 			return False
@@ -227,15 +273,26 @@ class UiPanelObjectAdd(UiPanel):
 			return False
 
 
-	def addObjectToCustomDatabase(self, name, coord):
+	def addUpdateObjectToCustomDatabase(self, name, coord, originalName = None):
 		customObjects = Settings.getInstance().objects['custom_objects']
-		for object in customObjects:
-			if object['name'] == name:
-				self.messageBoxWriteExistsInDatabase()
-				return False
+		if self.editValues is None:
+			for object in customObjects:
+				if object['name'] == name:
+					self.messageBoxWriteExistsInDatabase()
+					return False
 
 		(ra, dec) = coord.raDec360Deg('icrs')
+		
+		# If we're updating, delete the old one
+		if originalName is not None:
+			for i in range(len(customObjects)):
+				if customObjects[i]['name'] == originalName:
+					customObjects.pop(i)
+					break
+
+		# Add the new one
 		customObjects.append({"name": name, "ra": ra, "dec": dec})
+
 		Settings.getInstance().writeSubsetting('objects')
 		return True
 
@@ -333,18 +390,29 @@ class UiPanelObjectAdd(UiPanel):
 		return ret
 
 
-	def addOccultationToOccultationDatabase(self, name, coord, event_time, start_time, end_time, event_duration, event_uncertainty, occelmnt) -> bool:
+	def addUpdateOccultationToOccultationDatabase(self, name, coord, event_time, start_time, end_time, event_duration, event_uncertainty, occelmnt, originalName = None) -> bool:
 		occultations = Settings.getInstance().occultations['occultations']
-		for object in occultations:
-			if object['name'] == name:
-				self.messageBoxWriteExistsInDatabase()
-				return False
+		if self.editValues is None:
+			for object in occultations:
+				if object['name'] == name:
+					self.messageBoxWriteExistsInDatabase()
+					return False
 
 		if not self.messageBoxConfirmEventTime():
 			return False
 
 		(ra, dec) = coord.raDec360Deg('icrs')
+
+		# If we're updating, delete the old one
+		if originalName is not None:
+			for i in range(len(occultations)):
+				if occultations[i]['name'] == originalName:
+					occultations.pop(i)
+					break
+
+		# Add the new one
 		occultations.append({"name": name, "ra": ra, "dec": dec, "event_time": event_time, "start_time": start_time, "end_time": end_time, "event_duration": event_duration, "event_uncertainty": event_uncertainty,  "occelmnt": occelmnt})
+
 		Settings.getInstance().writeSubsetting('occultations')
 		
 		return True

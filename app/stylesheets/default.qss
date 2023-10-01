@@ -205,3 +205,31 @@ QTabBar::tab {
 QTabBar::tab:selected {
 	border: 1px solid #DF0000;
 }
+
+QListWidget {
+	background-color: #200000;
+}
+
+QListWidget::item {
+	color: #DF0000;
+}
+
+QListWidget::item:selected {
+	background-color: #5c0000;
+}
+
+QListWidget QScrollBar
+{
+	background-color: #5c0000;
+	border: 1px solid #300000;
+}
+
+QListWidget QScrollBar::handle
+{
+	border: 1px solid #DF0000;
+}
+
+QListWidget QScrollBar::add-line, QListWidget QScrollBar::sub-line
+{
+	border: 1px solid #DF0000;
+}
