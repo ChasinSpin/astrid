@@ -1,3 +1,4 @@
+from astutils import AstUtils
 from UiPanel import UiPanel
 from settings import Settings
 from PyQt5.QtCore import Qt, QTimer
@@ -54,6 +55,10 @@ class UiPanelMount(UiPanel):
 		self.meridianFlipTimerDivider = 0
 		self.meridianMins = 0
 
+		self.meridianFlipTimerStylesheetNormal		= AstUtils.stylesheetStrToColorScheme('border: 2px solid @colorBorderMuted;')
+		self.meridianFlipTimerStylesheetUpcoming	= 'border: 2px solid #FFCC00;'
+		self.meridianFlipTimerStylesheetPassed		= 'border: 2px solid #FF3333;'
+
 		self.setColumnWidth(1, 140)
 
 
@@ -104,6 +109,7 @@ class UiPanelMount(UiPanel):
 			self.meridianFlipTimer.setInterval(1000)
 			self.meridianFlipTimer.start()
 
+
 	def __meridianFlipTimerEvent(self):
 		self.meridianFlipTimerDivider += 1
 		if (self.meridianFlipTimerDivider % 10) == 0:
@@ -111,12 +117,12 @@ class UiPanelMount(UiPanel):
 
 		if self.upcomingMeridianFlashing:
 			if (self.meridianFlipTimerDivider % 2) == 0:
-				self.widgetMeridian.setStyleSheet("background-color: #300000; color: #300000;")
+				self.widgetMeridian.setStyleSheet(self.meridianFlipTimerStylesheetNormal)
 			else:
 				if self.meridianMins < 0:
-					self.widgetMeridian.setStyleSheet("background-color: #DF0000; color: #300000;")
+					self.widgetMeridian.setStyleSheet(self.meridianFlipTimerStylesheetPassed)
 				else:
-					self.widgetMeridian.setStyleSheet("color: #FFCC00;")
+					self.widgetMeridian.setStyleSheet(self.meridianFlipTimerStylesheetUpcoming)
 
 	def setMeridian(self, mins):
 		if self.widgetMeridian is not None:
@@ -128,7 +134,7 @@ class UiPanelMount(UiPanel):
 	def resetUpcomingMeridianFlasher(self):
 		if self.widgetMeridian is not None:
 			self.upcomingMeridianFlashing = False
-			self.widgetMeridian.setStyleSheet("background-color: #300000; color: #DF0000;")
+			self.widgetMeridian.setStyleSheet(self.meridianFlipTimerStylesheetNormal)
 
 	def messageBoxNoPlateSolve(self):
 		QMessageBox.warning(self, ' ', 'Plate solve last photo before syncing.', QMessageBox.Ok)

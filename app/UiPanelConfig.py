@@ -19,6 +19,7 @@ class UiPanelConfig(UiPanel):
 		self.configs_fname = args['configs_fname']
 		self.astrid_drive = args['astrid_drive']
 		self.settingsCallback = args['settings_callback']
+		self.stylesheetCallback = args['stylesheet_callback']
 
 		with open(self.configs_fname, 'r') as fp:
 			self.configs = json.load(fp)
@@ -36,9 +37,18 @@ class UiPanelConfig(UiPanel):
 		self.widgetTelescope		= self.addLineEdit('Telescope', editable=False)
 		self.widgetMount		= self.addLineEdit('Mount', editable=False)
 		self.widgetFocalReducers	= self.addLineEdit('Focal Reducers', editable=False)
-		#self.widgetFocalLength		= self.addLineEditInt('Focal Length (mm)', 1, 10000)
 
 		self.updateDisplayForConfigSelection(self.configs['selectedIndex'])
+
+		tmp = os.listdir('stylesheets')
+		self.colorSchemes = []
+		for t in tmp:
+			if t.endswith('.colorscheme'):
+				self.colorSchemes.append(t.replace('.colorscheme', ''))
+
+		self.widgetColorScheme		= self.addComboBox('Color Scheme', self.colorSchemes)
+		self.widgetColorScheme.setObjectName('comboBoxConfigColorScheme')
+		self.widgetColorScheme.setCurrentIndex(self.colorSchemes.index(self.configs['selectedColorScheme']))
 
 		self.widgetOK			= self.addButton('Start Astrid')
 		self.widgetSettings		= self.addButton('Settings')
@@ -50,6 +60,7 @@ class UiPanelConfig(UiPanel):
 	def registerCallbacks(self):
 		self.widgetConfig.currentTextChanged.connect(self.comboBoxConfigChanged)
 		self.widgetSettings.clicked.connect(self.buttonSettingsPressed)
+		self.widgetColorScheme.currentTextChanged.connect(self.comboBoxColorSchemeChanged)
 		self.widgetOK.clicked.connect(self.buttonOKPressed)
 		self.widgetCancel.clicked.connect(self.buttonCancelPressed)
 
@@ -59,6 +70,12 @@ class UiPanelConfig(UiPanel):
 	def comboBoxConfigChanged(self, text):
 		selectedIndex = self.configSummaries.index(text)
 		self.updateDisplayForConfigSelection(selectedIndex)
+
+
+	def comboBoxColorSchemeChanged(self, text):
+		self.configs['selectedColorScheme'] = text
+		self.__writeConfigs()
+		self.stylesheetCallback()
 
 
 	def buttonSettingsPressed(self):
@@ -75,10 +92,7 @@ class UiPanelConfig(UiPanel):
 		# Write the settings if selectedIndex has changed
 		if selectedIndex != self.configs['selectedIndex']:
 			self.configs['selectedIndex'] = selectedIndex
-			jstr = json.dumps(self.configs, indent=4)
-
-			with open(self.configs_fname, 'w') as fp:
-				fp.write(jstr)
+			self.__writeConfigs()
 
 		self.settingsCallback(settings_folder, self.configs['configs'][selectedIndex]['summary'])
 
@@ -106,3 +120,10 @@ class UiPanelConfig(UiPanel):
 
 	def configChanged(self):
 		self.settingsCallback(None, None)
+
+	
+	def __writeConfigs(self):
+		jstr = json.dumps(self.configs, indent=4)
+
+		with open(self.configs_fname, 'w') as fp:
+			fp.write(jstr)

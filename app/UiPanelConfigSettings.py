@@ -302,7 +302,7 @@ class UiPanelConfigSettings(UiPanel):
 			widget.setFixedWidth(UiPanelConfigSettings.FIELD_VALUE_FIXED_WIDTH)
 			panel.widgetSettings.append(widget)
 
-		widget = panel.addTextBox('See: github.com/ChasinSpin/astrid/blob/main/docs/Configuration.md', height = 40)
+		widget = panel.addTextBox('See: github.com/ChasinSpin/astrid/blob/main/docs/Configuration.md', height = 32)
 		widget.setFixedWidth(UiPanelConfigSettings.FIXED_WIDTH_TEXT_INFO)
 
 

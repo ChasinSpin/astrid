@@ -1,0 +1,12 @@
+{
+	"@colorBg":			 "#99DA4E",
+	"@colorReadOnlyField":		 "#CCB4FF",
+	"@colorFieldBg":		 "#11DAFD",
+	"@colorBorderFrame":		 "#FC24D4",
+	"@colorFg":			 "#FFFFFF",
+	"@colorMuted":                   "#CCCCCC",
+	"@colorBorderMuted":		 "#000000",
+	"@colorWindowBg":		 "#101010",
+	"@colorRecordButtonGradient1":	 "#FF0000",
+	"@colorRecordButtonGradient2":	 "#990000"
+}

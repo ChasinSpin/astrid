@@ -1,4 +1,6 @@
 import math
+import json
+from settings import Settings
 
 
 
@@ -32,3 +34,21 @@ class AstUtils:
 		f.close()
 
 		return data
+
+
+	@classmethod
+	def stylesheetStrToColorScheme(cls, stylesheetStr):
+		configs_fname = Settings.getInstance().configs_folder + '/configs.json'
+		with open(configs_fname, 'r') as fp:
+			configs = json.load(fp)
+
+		colorSchemeName = configs['selectedColorScheme']
+
+		with open('stylesheets/%s.colorscheme' % colorSchemeName) as f:
+			cs = json.loads(f.read())
+
+		# Do Macro search and replace
+		for key in cs.keys():
+			stylesheetStr = stylesheetStr.replace(key, cs[key])
+
+		return stylesheetStr

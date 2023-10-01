@@ -81,7 +81,7 @@ QFrame#cameraView {
 }
 
 
-QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QComboBox#comboBoxTrackingRate, QComboBox#comboBoxConfigSummary, QComboBox#comboBoxConfigSetting {
+QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QComboBox#comboBoxTrackingRate, QComboBox#comboBoxConfigSummary, QComboBox#comboBoxConfigSetting, QComboBox#comboBoxConfigColorScheme {
 	border-radius: 5px;
 	border: none;
 	background-color: @colorFieldBg;
@@ -92,10 +92,10 @@ QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QCo
 	/*margin-right: 20px; */
 }
 
-QComboBox#comboBoxTask::drop-down, QComboBox#comboBoxDatabase::drop-down, QComboBox#comboBoxSpeed::drop-down, QComboBox#comboBoxTrackingRate::drop-down, QComboBox#comboBoxConfigSummary::drop-down, QComboBox#comboBoxConfigSetting::drop-down {
+QComboBox#comboBoxTask::drop-down, QComboBox#comboBoxDatabase::drop-down, QComboBox#comboBoxSpeed::drop-down, QComboBox#comboBoxTrackingRate::drop-down, QComboBox#comboBoxConfigSummary::drop-down, QComboBox#comboBoxConfigSetting::drop-down, QComboBox#comboBoxConfigColorScheme::drop-down {
 }
 
-QComboBox#comboBoxTask QAbstractItemView, QComboBox#comboBoxDatabase QAbstractItemView, QComboBox#comboBoxSpeed QAbstractItemView, QComboBox#comboBoxTrackingRate QAbstractItemView, QComboBox#comboBoxConfigSummary QAbstractItemView, QComboBox#comboBoxConfigSetting QAbstractItemView {
+QComboBox#comboBoxTask QAbstractItemView, QComboBox#comboBoxDatabase QAbstractItemView, QComboBox#comboBoxSpeed QAbstractItemView, QComboBox#comboBoxTrackingRate QAbstractItemView, QComboBox#comboBoxConfigSummary QAbstractItemView, QComboBox#comboBoxConfigSetting QAbstractItemView, QComboBox#comboBoxConfigColorScheme QAbstractItemView {
 	background-color: @colorBg;
 	border: 1px solid @colorBg;	/* Also requires sizeAdjustPolicy: AdjustToContents */
 }
@@ -113,19 +113,33 @@ QDialog QLabel {
 
 QLineEdit {
 	background-color: @colorFieldBg;
+	color: @colorFg;
+}
+
+QLineEdit:disabled {
+	background-color: @colorReadOnlyField;
+	color: @colorMutedFg;
 }
 
 QLineEdit[readOnly="true"] {
 	background-color: @colorReadOnlyField;
-	color: @colorFg;
+	color: @colorMutedFg;
 }
+
 
 QDateTimeEdit {
 	background-color: @colorFieldBg;
+	color: @colorFg;
 }
 
-QTextEdit {
-	background-color: @colorFieldBg;
+QDateTimeEdit[readOnly="true"] {
+	background-color: @colorReadOnlyField;
+	color: @colorMutedFg;
+}
+
+QDateTimeEdit:disabled {
+	background-color: @colorReadOnlyField;
+	color: @colorMutedFg;
 }
 
 QMessageBox {
@@ -197,18 +211,25 @@ QListWidget::item:selected {
 	background-color: @colorFieldBg;
 }
 
-QListWidget QScrollBar
-{
+QListWidget QScrollBar {
 	background-color: @colorFieldBg;
 	border: 1px solid @colorReadOnlyField;
 }
 
-QListWidget QScrollBar::handle
-{
+QListWidget QScrollBar::handle {
 	border: 1px solid @colorFg;
 }
 
-QListWidget QScrollBar::add-line, QListWidget QScrollBar::sub-line
-{
+QListWidget QScrollBar::add-line, QListWidget QScrollBar::sub-line {
 	border: 1px solid @colorFg;
+}
+
+QTextEdit {
+	background-color: @colorFieldBg;
+	color: @colorFg;
+}
+
+QTextEdit[readOnly="true"] {
+	background-color: @colorReadOnlyField;
+	color: @colorMutedFg;
 }

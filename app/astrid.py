@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
 
 	def getConfig(configs_fname):
-		dialog = UiDialogPanel('Choose Config', UiPanelConfig, args = {'configs_fname': configs_fname, 'astrid_drive': astrid_drive, 'settings_callback': settingsCallback})
+		dialog = UiDialogPanel('Choose Config', UiPanelConfig, args = {'configs_fname': configs_fname, 'astrid_drive': astrid_drive, 'settings_callback': settingsCallback, 'stylesheet_callback': setStylesheet})
 
 
 	def checkAstridDrivePresent() -> bool:
@@ -96,20 +96,33 @@ if __name__ == '__main__':
 		return True
 
 
-	def getStylesheet(stylesheet_fname, colorscheme_fname):
-		""" Reads a stylesheet and using colorscheme_fname, replaces the color macros """	
-		ss = AstUtils.read_file_as_string(stylesheet_fname)
+	def setStylesheet():
+		""" Reads a stylesheet and using colorscheme, replaces the color macros """	
+		ss = AstUtils.read_file_as_string(stylesheet)
 
-		with open(colorscheme_fname) as f:
-			colorscheme_data = f.read()
-		cs = json.loads(colorscheme_data)
-		print(cs)
+		with open(configs_fname, 'r') as fp:
+			configs = json.load(fp)
+
+		if 'selectedColorScheme' not in configs.keys():
+			configs['selectedColorScheme'] = 'Astro'
+
+			jstr = json.dumps(configs, indent=4)
+
+			with open(configs_fname, 'w') as fp:
+				fp.write(jstr)
+
+			colorSchemeName = configs['selectedColorScheme']
+		else:
+			colorSchemeName = configs['selectedColorScheme']
+
+		with open('stylesheets/%s.colorscheme' % colorSchemeName) as f:
+			cs = json.loads(f.read())
 
 		# Do Macro search and replace
 		for key in cs.keys():
 			ss = ss.replace(key, cs[key])
 
-		return ss
+		app.setStyleSheet(ss)	# Set the stylesheet
 
 
 	#
@@ -123,6 +136,7 @@ if __name__ == '__main__':
 	parser.add_argument('-d', '--astrid_drive', help ='path to astrid drive', required=True)
 	args = parser.parse_args()
 	astrid_drive = args.astrid_drive
+	configs_fname = astrid_drive + '/configs/configs.json'
 	log_filename = astrid_drive + '/astrid.log'
 
 	# Setup logger
@@ -147,7 +161,7 @@ if __name__ == '__main__':
 
 	# Read Stylesheet
 	splash_screen.setMessage('Loading: Reading stylesheet...')
-	app.setStyleSheet(getStylesheet(stylesheet, 'stylesheets/astro.colorscheme'))	# Set the stylesheet
+	setStylesheet()
 
 	# Check the ASTRID drive is present
 	if not checkAstridDrivePresent():
@@ -165,7 +179,6 @@ if __name__ == '__main__':
 
 	# Read settings
 	splash_screen.setMessage('Loading: Reading settings...')
-	configs_fname = astrid_drive + '/configs/configs.json'
 	getConfig(configs_fname)
 	if settings_folder is None:
 		splash_screen.close()
