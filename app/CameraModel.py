@@ -458,8 +458,14 @@ class CameraModel:
 				#print('Min:', np.min(m.array[:, :, 0]))
 				#print('Max:', np.max(m.array[:, :, 0]))
 
-				# Just use one channel (as it's mono), convert to float, scale and conver back
-				if self.operatingMode == OperatingMode.OTE_VIDEO:
+				# Just use one channel (as it's mono), convert to float, scale and convert back
+
+				# If we have frames rates faster than 10fps, then we have to reduce the window to 100 pixels
+				reducedStretchWindow = False
+				if self.operatingMode == OperatingMode.OTE_VIDEO and self.videoFrameDuration < int((1.0/10.0) * 1000000.0):
+					reducedStretchWindow = True
+		
+				if reducedStretchWindow:
 					(height, width, _)  = m.array.shape
 					centerHeight = int(height/2)
 					centerWidth = int(width/2)
@@ -468,6 +474,7 @@ class CameraModel:
 					mono = m.array[:, :, 0][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]].astype(np.float32)
 				else:
 					mono = m.array[:, :, 0].astype(np.float32)
+
 				mono -= self.autoStretchLower
 				scaling = 255.0 / (self.autoStretchUpper - self.autoStretchLower)
 				mono *= scaling
@@ -476,7 +483,7 @@ class CameraModel:
 				mono = np.clip(mono, 0, 255)
 				mono.astype(np.uint8)
 
-				if self.operatingMode == OperatingMode.OTE_VIDEO:
+				if reducedStretchWindow:
 					m.array[:, :, 0][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]] = mono
 					m.array[:, :, 1][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]] = mono
 					m.array[:, :, 2][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]] = mono
