@@ -7,12 +7,13 @@ class UiPanelDisplay(UiPanel):
 	def __init__(self, camera):
 		super().__init__('Display')
 		self.camera = camera
-		self.widgetAutoStretch		= self.addCheckBox('Auto Stretch')
-		self.widgetAutoStretchLower	= self.addLineEditDouble('AutoStretch Lower', 0.0, 255.0, 1, editable=True)
-		self.widgetAutoStretchUpper	= self.addLineEditDouble('AutoStretch Upper', 0.0, 255.0, 1, editable=True)
+		self.widgetAutoStretch		= self.addCheckBox('Stretch')
+		self.widgetAutoStretchLower	= self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
+		self.widgetAutoStretchUpper	= self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
 		self.widgetZebras		= self.addCheckBox('Zebras')
 		self.widgetCrosshairs		= self.addCheckBox('Crosshairs')
-		self.widgetStarDetection	= self.addCheckBox('Star Detection')
+		self.widgetStarDetection	= self.addCheckBox('Star Detection (unavailable)')
+		self.widgetStarDetection.setEnabled(False)
 
 		self.widgetAutoStretchLower.setText('%0.1f' % self.camera.autoStretchLower)
 		self.widgetAutoStretchUpper.setText('%0.1f' % self.camera.autoStretchUpper)
