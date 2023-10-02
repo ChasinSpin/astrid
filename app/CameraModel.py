@@ -535,8 +535,7 @@ class CameraModel:
 				else:
 					cv2.putText(m.array, 'No stars detected', (20, height - 40), self.font, self.scale, (0, 255, 0), self.thickness)
 
-			cv2.putText(m.array, timestamp, self.origin, self.font, self.scale, self.color, self.thickness)
-
+			self.ui.panelDisplay.widgetFrameTime.setText(timestamp)
 
 		sensor_timestamp_delta = (metadata['SensorTimestamp'] - self.last_sensor_timestamp) / 1000
 		self.last_sensor_timestamp = metadata['SensorTimestamp']

@@ -4,6 +4,8 @@ from UiPanel import UiPanel
 class UiPanelDisplay(UiPanel):
 	# Initializes and displays a Panel
 
+	FIXED_WIDTH_TEXT_FRAMETIME = 230
+
 	def __init__(self, camera):
 		super().__init__('Display')
 		self.camera = camera
@@ -14,6 +16,8 @@ class UiPanelDisplay(UiPanel):
 		self.widgetCrosshairs		= self.addCheckBox('Crosshairs')
 		self.widgetStarDetection	= self.addCheckBox('Star Detection (unavailable)')
 		self.widgetStarDetection.setEnabled(False)
+		self.widgetFrameTime		= self.addLineEdit('Frame Acquisition Time (UTC)', editable = False)
+		self.widgetFrameTime.setFixedWidth(UiPanelDisplay.FIXED_WIDTH_TEXT_FRAMETIME)
 
 		self.widgetAutoStretchLower.setText('%0.1f' % self.camera.autoStretchLower)
 		self.widgetAutoStretchUpper.setText('%0.1f' % self.camera.autoStretchUpper)
