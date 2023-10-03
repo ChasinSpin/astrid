@@ -29,11 +29,9 @@ from ravf_encoder import RavfEncoder, RavfImageFormat, RavfColorType
 from UiPanelConnectFailedIndi import UiPanelConnectFailedIndi
 from UiPanelAstrometry import UiPanelAstrometry
 from UiDialogPanel import UiDialogPanel
-from astropy.stats import sigma_clipped_stats
-#from photutils.detection import DAOStarFinder
-from photutils.detection import IRAFStarFinder
 from PyQt5.QtWidgets import QMessageBox
 from AstrometryDownload import AstrometryDownload
+from DisplayOps import DisplayOps
 import logging
 #import gc
 
@@ -314,6 +312,7 @@ class CameraModel:
 		self.platesolveCallback	= None
 		self.videoBufferCount	= VIDEO_BUFFER_COUNT
 		self.plannedAutoShutdown= False
+		self.displayOps		= DisplayOps()
 
 		#Picamera2.set_logging(Picamera2.DEBUG)
 
@@ -411,131 +410,18 @@ class CameraModel:
 		
 		# Display with opencv directly writing display memory
 		with MappedArray(request, "main") as m:
-			if self.stardetection:
-				#full_image = fits.getdata(Settings.getInstance().astrid_drive + '/Photo/Light/None_0209.fit', ext = 0)
-				full_image = m.array[:, :, 0]
-				
-				bkg_mean, bkg_median, bkg_std = sigma_clipped_stats(full_image, sigma=3.0)
-				print((bkg_mean, bkg_median, bkg_std))
-				#daofind = DAOStarFinder(fwhm=8.0, threshold=bkg_std * 15.0)
-				#sources = daofind(full_image - bkg_median)
-				iraffind = IRAFStarFinder(threshold=bkg_std * 5.0, fwhm=5.0, exclude_border=True, brightest=40)
-				sources = iraffind.find_stars(full_image - bkg_median)
-				if sources is not None and sources.colnames is not None:
-					for col in sources.colnames:
-						if col not in ('id', 'npix'):
-							sources[col].info.format = '%0.2f'	# For consistent table output
-					sources.pprint(max_width=75)
-				
-				# Scale to 255	
-				display_image = full_image.astype(np.float32)
-				display_image *= 255.0/1023.0
-				display_image = display_image.astype(np.uint8)
+			# Implement on any display options on the image_buffer
+			video_frame_rate = None
+			if self.operatingMode == OperatingMode.OTE_VIDEO:
+				video_frame_rate = 1.0/(self.videoFrameDuration / 1000000.0)
 
-				# Resize to watch screen display size
-				src_height = full_image.shape[0]
-				src_width = full_image.shape[1]
-				dst_height = m.array[:, :, 0].shape[0]
-				dst_width = m.array[:, :, 0].shape[1]
-				#display_image = cv2.resize(display_image, dsize=(dst_width, dst_height), interpolation=cv2.INTER_CUBIC)
+			stretch = None
+			if self.autostretch:
+				stretch = (self.autoStretchLower, self.autoStretchUpper)
 
-				m.array[:, :, 0] = m.array[:, :, 1] = m.array[:, :, 2] = display_image
+			self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection)
 
-				full_image = None
-				display_image = None
-
-			if self.zebras:
-				zebra_b = cv2.compare(m.array[:, :, 0], 254, cv2.CMP_GE)
-				zebra_g = cv2.compare(m.array[:, :, 1], 254, cv2.CMP_GE)
-				zebra_r = cv2.compare(m.array[:, :, 2], 254, cv2.CMP_GE)
-				zebra_all = cv2.bitwise_or(zebra_b, zebra_g)
-				zebra_all = cv2.bitwise_or(zebra_all, zebra_r)
-
-			# Takes about 0.39s, so only auto stretch when taking photos
-			if (self.operatingMode == OperatingMode.PHOTO or self.operatingMode == OperatingMode.POLAR_ALIGN or self.operatingMode == OperatingMode.OTE_VIDEO) and self.autostretch: 
-				#start = time.time()
-
-				#print('Min:', np.min(m.array[:, :, 0]))
-				#print('Max:', np.max(m.array[:, :, 0]))
-
-				# Just use one channel (as it's mono), convert to float, scale and convert back
-
-				# If we have frames rates faster than 10fps, then we have to reduce the window to 100 pixels
-				reducedStretchWindow = False
-				if self.operatingMode == OperatingMode.OTE_VIDEO and self.videoFrameDuration < int((1.0/10.0) * 1000000.0):
-					reducedStretchWindow = True
-		
-				if reducedStretchWindow:
-					(height, width, _)  = m.array.shape
-					centerHeight = int(height/2)
-					centerWidth = int(width/2)
-					pixelWidth = 100
-					regionDimensions = (centerHeight - pixelWidth, centerHeight + pixelWidth, centerWidth - pixelWidth, centerWidth + pixelWidth)	# Y1, Y2, X1, X2
-					mono = m.array[:, :, 0][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]].astype(np.float32)
-				else:
-					mono = m.array[:, :, 0].astype(np.float32)
-
-				mono -= self.autoStretchLower
-				scaling = 255.0 / (self.autoStretchUpper - self.autoStretchLower)
-				mono *= scaling
-
-				# Clamp 0-255
-				mono = np.clip(mono, 0, 255)
-				mono.astype(np.uint8)
-
-				if reducedStretchWindow:
-					m.array[:, :, 0][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]] = mono
-					m.array[:, :, 1][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]] = mono
-					m.array[:, :, 2][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]] = mono
-				else:
-					m.array[:, :, 0] = mono
-					m.array[:, :, 1] = mono
-					m.array[:, :, 2] = mono
-
-				#print('Min:', np.min(m.array[:, :, 0]))
-				#print('Max:', np.max(m.array[:, :, 0]))
-
-				#elapsed = time.time() - start
-				#print('Auto-Stretch Took: %f seconds' % elapsed)
-
-			if self.zebras:
-				m.array[:, :, 1] = cv2.bitwise_or(zebra_all, m.array[:, :, 1])
-				zebra_not_all	 = cv2.bitwise_not(zebra_all)
-				m.array[:, :, 0] = cv2.bitwise_and(zebra_not_all, m.array[:, :, 0])
-				m.array[:, :, 2] = cv2.bitwise_and(zebra_not_all, m.array[:, :, 2])
-				zebra_not_all	 = None
-				zebra_all	 = None
-
-			if self.crosshairs:
-				(height, width, _)  = m.array.shape
-				w2 = int(width/2)
-				h2 = int(height/2)
-				cv2.line(m.array, (w2, 0), (w2, height-1), (0, 255, 0), 2)
-				cv2.line(m.array, (0, h2), (width-1, h2), (0, 255, 0), 2)
-
-			if self.stardetection:
-				fwhmAvg = 0.0
-				sharpnessAvg = 0.0
-				(height, width, _)  = m.array.shape
-				if sources is not None:
-					for source in sources:
-						print(source.keys())
-						x = int(float(source['xcentroid']) * float(dst_width) / float(src_width))
-						y = int(float(source['ycentroid']) * float(dst_height) / float(src_height))
-						fwhmAvg += source['fwhm']
-						sharpnessAvg += source['sharpness']
-
-						cv2.circle(m.array, (x, y), 10, (0, 255, 0), 1)
-						cv2.putText(m.array, '%0.2f' % source['fwhm'], (x+12, y), self.font, self.scale, (0,255,0),  self.thickness)
-
-					fwhmAvg /= float(len(sources))				
-					sharpnessAvg /= float(len(sources))				
-
-					cv2.putText(m.array, 'Avg FWHM: %0.2f, Avg Sharpness: %0.2f' % (fwhmAvg, sharpnessAvg), (20, height - 40), self.font, self.scale, (0, 255, 0), self.thickness)
-				else:
-					cv2.putText(m.array, 'No stars detected', (20, height - 40), self.font, self.scale, (0, 255, 0), self.thickness)
-
-			self.ui.panelDisplay.widgetFrameTime.setText(timestamp)
+			self.ui.panelDisplay.widgetFrameTime.setText(timestamp)		# Display the frame time
 
 		sensor_timestamp_delta = (metadata['SensorTimestamp'] - self.last_sensor_timestamp) / 1000
 		self.last_sensor_timestamp = metadata['SensorTimestamp']
