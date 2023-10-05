@@ -2,8 +2,16 @@
 
 * astropy download
 * Steve Calcs
-* Different color schemes
+* Countdown to record (Ted)
 * Add more clearance for flat flex (Joan)
+* Add more clearance for 0.1" header cable (Joan)
+* Add frame round camera to hold it in place whilst working on it (Joan)
+* Something to hold the 0.1" header in place in the groove (Joan)
+* Experiment with AELocked (looks like a converence thing)
+* Check into FITs, is it really storing 0-255 or 0-1023?
+Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 'DigitalGain': 1.0002992153167725, 'SensorBlackLevels': (3840, 3840, 3840, 3840), 'AeLocked': False, 'Lux': 400.0, 'FrameDuration': 200014, 'AnalogueGain': 1.0, 'ExposureTime': 199940}
+* Disable notification about automatic updates from the OS:
+https://forums.raspberrypi.com/viewtopic.php?t=331808
 * Fix bug:
 Uncaught exception
 Traceback (most recent call last):
@@ -26,10 +34,10 @@ TypeError: 'NoneType' object is not subscriptable
 
 
 * Implement Fan off
+* Frame rates: At speeds above 25fps, one of the python processes pegs out at close to 95-100% cpu on "top".  Figure out cause to increase frame rate.  Also, look at modding picamera to be able to skip frames that are more than 10fps for display.  Accelerated Rendering is likely faster and won't drop frames?
 * Bombs if Multiple Subs with dither are taken without an object selected
 * Taken with Astrid splash screen
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"
-* Contrast of buttons don't show well for Plate Solve/Record basically all buttons: Bill
 * Install PyMovie/PyOTE on the Pi
 
 * 10X duration for moons
@@ -41,8 +49,6 @@ TypeError: 'NoneType' object is not subscriptable
 	* Histogram 
 * Bug: Test this again: If framewriter process raises an exception, it isn't logged, force the raising of exceptions on framewriter, processotestamper and processlogger both during recording video and in regular operation
 * Manual reset of OTEStamper
-* List / Delete Custom Objects/Occultations
-* Make the Dialog Boxes contrast against the rest of the background more
 * Make mount panel user configurable for J2000 or JNOW (Steve)
 * Update image in response to check boxes without requiring image to be retaken
 * Peak Focus
