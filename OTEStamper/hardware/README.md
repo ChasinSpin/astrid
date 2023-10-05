@@ -1,22 +1,30 @@
-Version 0.9b: Initial
+## Version 0.9b
+	
+* Initial
 
-Version 0.9c: No electrical changes No electrical changes. Moved label for D1 below diode and clarified
-orientation for the Buck Regulator to make it less like to assemble wrong way round.
+## Version 0.9c
 
-TODO:
+* No electrical changes.
+* Moved label for D1 below diode and clarified orientation for the Buck Regulator to make it less likely to assemble wrong way round.
 
-1. Increase buck regulator output by 0.05V as output range is 5.08 to 5.15 due to tolerances.
+## Version 1.0.0
+	
+* Added HOT label around buck convertor and back protection FET
+* Removed 4 pin flat flex to camera board
+* Moved JP2 right to allow clearance of U2
+* Moved buzzer to bottom of the board and rotated 45 to make room for 150uF capacitor
+* Added 150uF capacitor to limit surge current to regulator
+* Moved Fan header so header pins easily clear GPS
+* Added JST 2 Pin Connector For Different 12V Source
+* Changed Q1/Q2 to MMBT2222A-TP for increased fan current upto 500mA
 
-2. Maybe look at switching out back protection FET to one with lower RDS as drop across is large at high currents (buck can keep up fine)
 
-3. Put HOT labels around buck converter and back protection FET
+## Future Ideas
 
-4. Change 5V fan to 12V fan/fet (maybe), possible overvoltage, and can you get a 12V small fan?
-
-5. Add 100uF capacitor after reverse polarity fet to prevent surge damaging buck regulator
+1. Maybe look at switching out back protection FET to one with lower RDS as the voltage drop across is large at high currents (buck can keep up fine).
 
 
-PSU CHARACTERISATION:
+## PSU Characterisation
 
 1. Voltage range is 7.5 - 18V, specified range to the user is 12V-15V @ 4A
 
@@ -26,10 +34,9 @@ PSU CHARACTERISATION:
 
 4. Max temperature ofr the bucks convert (4A @ 18V) is 130C
 
-5. Damage to the buck convert will occur at 20V
+5. Damage to the buck convertor will occur at 20V
 
-6. Fuse never gets triggered during normal use.  Would only get trigger if there
-was failure on the board itself.
+6. Fuse never gets triggered during normal use.  Would only get trigger if there was failure on the board itself.
 
 
 | PSU Output | Supply Input | Temperature |
@@ -38,4 +45,4 @@ was failure on the board itself.
 | 1A @ 5.02V | 0.304A @ 18V | 42C |
 | 2A @ 4.97V | 0.604A @ 18V | 57C |
 | 3A @ 4.89V | 0.920A @ 18V | 85C |
-| 4A @ 4.79V | 1.243A @ 18V | 125V |
+| 4A @ 4.79V | 1.243A @ 18V | 125C |
