@@ -407,6 +407,8 @@ class CameraModel:
 		request.timestamps['frame_start_nanoseconds_since_2010'] = nanoseconds_since_epoch # Note this is not when the frame capture ended, it's after it's read out
   
 		timestamp = now.strftime('%Y-%m-%d %H:%M:%S.%f')
+
+		self.qt_picamera.set_overlay(None)
 		
 		# Display with opencv directly writing display memory
 		with MappedArray(request, "main") as m:
@@ -1059,6 +1061,7 @@ class CameraModel:
 
 	def setAutoStretch(self, enable):
 		self.autostretch = enable
+		self.updateDisplayOptions()
 
 
 	def meridianFlipUpdate(self):
@@ -1069,6 +1072,7 @@ class CameraModel:
 
 	def setZebras(self, enable):
 		self.zebras = enable
+		self.updateDisplayOptions()
 
 	def shutdown(self):
 		self.indi.disconnect()
@@ -1095,14 +1099,17 @@ class CameraModel:
 	def setAutoStretchLimits(self, lower: float, upper: float):
 		self.autoStretchLower = lower
 		self.autoStretchUpper = upper
+		self.updateDisplayOptions()
 
 
 	def setCrossHairs(self, enable):
 		self.crosshairs = enable
+		self.updateDisplayOptions()
 
 
 	def setStarDetection(self, enable):
 		self.stardetection = enable
+		self.updateDisplayOptions()
 
 
 	def simulateMount(self):
@@ -1191,3 +1198,17 @@ class CameraModel:
 	
 	def isVideoRecording(self):
 		return True if self.operatingSubMode == OperatingVideoMode.RECORDING else False
+
+
+	def updateDisplayOptions(self):
+		if self.operatingMode != OperatingMode.OTE_VIDEO:
+			if self.lastFitFile != "dummy.fit":
+				stretch = None
+				if self.autostretch:
+					stretch = (self.autoStretchLower, self.autoStretchUpper)
+	
+				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection)
+	
+				self.qt_picamera.set_overlay(overlay.array)
+				overlay.array = None
+				overlay = None

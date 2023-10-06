@@ -1,8 +1,17 @@
 import cv2
 import numpy as np
+from astropy.io import fits
 from astropy.stats import sigma_clipped_stats
 #from photutils.detection import DAOStarFinder
 from photutils.detection import IRAFStarFinder
+
+
+
+class ProxyImageBuffer():
+
+	def __init__(self, image_array):
+		self.array = image_array
+
 
 
 class DisplayOps():
@@ -140,22 +149,7 @@ class DisplayOps():
 			cv2.putText(image_buffer.array, 'Avg FWHM: %0.2f, Avg Sharpness: %0.2f' % (fwhmAvg, sharpnessAvg), (20, height - 40), self.font, self.scale, (0, 255, 0), self.thickness)
 
 
-	def overlayDisplayOnImageBuffer(self, image_buffer, video_recording, video_frame_rate, stretch, zebras, crosshairs, stardetection):
-		"""
-		Overlay Display On The image_buffer (it alters the image_buffer)
-	
-		image_buffer		= Picam2 Mapped Buffer	
-		video_frame_rate	= the frame rate, or None if it's not video
-		stretch			= (stretch_lower, stretch_upper) or None if there's no stretch required
-		zebras			= True or False
-		crosshairs		= True or False
-		stardetection		= True or False
-		"""
-
-		if video_frame_rate is not None and video_recording:	# Some operations are too slow for video, disable them
-			stardetection	= False
-			zebras		= False		
-		
+	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection):
 		# First run the operations that need the original data in the image_buffer before it's changed
 		if stardetection:
 			self.__analyze_stardetection(image_buffer)
@@ -171,3 +165,64 @@ class DisplayOps():
 			self.__display_crosshairs(image_buffer)
 		if stardetection:
 			self.__display_stardetection(image_buffer)
+
+
+	def overlayDisplayOnImageBuffer(self, image_buffer, video_recording, video_frame_rate, stretch, zebras, crosshairs, stardetection):
+		"""
+		Overlay Display On The image_buffer (it alters the image_buffer)
+	
+		image_buffer		= Picam2 Mapped Buffer	
+		video_frame_rate	= the frame rate, or None if it's not video
+		stretch			= (stretch_lower, stretch_upper) or None if there's no stretch required
+		zebras			= True or False
+		crosshairs		= True or False
+		stardetection		= True or False
+		"""
+
+		if video_frame_rate is not None and video_recording:	# Some operations are too slow for video, disable them
+			stardetection	= False
+			zebras		= False		
+
+		#print('Min:', np.min(image_buffer.array))
+		#print('Max:', np.max(image_buffer.array))
+
+		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection)
+		
+
+
+	def loadFitsPhotoWithOverlay(self, fits_filename, width, height, stretch, zebras, crosshairs, stardetection):
+		"""
+		Load fits, adds the overlays and returns the new buffer suitable for use as an overlay
+	
+		image_buffer		= Picam2 Mapped Buffer	
+		video_frame_rate	= the frame rate, or None if it's not video
+		stretch			= (stretch_lower, stretch_upper) or None if there's no stretch required
+		zebras			= True or False
+		crosshairs		= True or False
+		stardetection		= True or False
+		"""
+
+		fits_data = fits.getdata(fits_filename, ext = 0)
+		fits_data = fits_data.astype(np.float32)
+		fits_data /= 4.0
+		fits_data = fits_data.astype(np.uint8)
+
+		fits_data = cv2.resize(fits_data, (width, height))
+
+		image_buffer = ProxyImageBuffer(np.zeros((height, width, 3), dtype=np.uint8))
+		image_buffer.array[:, :, 0]	= fits_data
+		image_buffer.array[:, :, 1]	= fits_data
+		image_buffer.array[:, :, 2]	= fits_data
+
+		self.__analyze_display_image_buffer(image_buffer, None, stretch, zebras, crosshairs, stardetection)
+
+		image_buffer2 = ProxyImageBuffer(np.zeros((height, width, 4), dtype=np.uint8))
+		image_buffer2.array[:, :, 0]	= image_buffer.array[:, :, 0]
+		image_buffer2.array[:, :, 1]	= image_buffer.array[:, :, 1]
+		image_buffer2.array[:, :, 2]	= image_buffer.array[:, :, 2]
+		image_buffer2.array[:, :, 3]	= 255
+
+		image_buffer.array = None
+		image_buffer = None
+
+		return image_buffer2
