@@ -33,6 +33,7 @@ TypeError: 'NoneType' object is not subscriptable
  File "/home/pi/astrid/app/UiPanelObjectAdd.py", line 114, in buttonAddPressed
     occelmnt_dict = pOccelmnt['occelmnt_dict']
 TypeError: 'NoneType' object is not subscriptable
+* See /usr/lib/python3/dist-packages/picamera2/previews/q_picamera2.py for display rendering
 
 
 * Implement Fan off
@@ -53,7 +54,6 @@ TypeError: 'NoneType' object is not subscriptable
 * Manual reset of OTEStamper
 * Make mount panel user configurable for J2000 or JNOW (Steve)
 * Update image in response to check boxes without requiring image to be retaken
-* Peak Focus
 * Refactor "evolved" CameraModel.py into a command based system and decouple everything so everything runs as a command, updating the UI as appropriate.  This will also get ready for command based operation/scripting. (similar approach to Siril)
 * Change to Indi Neurtral https://www.indilib.org/api/classINDI_1_1Telescope.html
 * Put target on screen to show the star.

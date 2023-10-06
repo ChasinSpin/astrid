@@ -30,6 +30,10 @@ Planets looked up on Simbad have incorrect RA/DECs, for now use other software t
 ## Some spots on VNC are blurred
 
 This is due to the compression be used when automatic compression is set for the connection in VNC. You can choose to use less compression at the expense of a slower connection / responsiveness.
+
+## Brightness Of Image Changes when Selecting "Display" Options
+
+This is a limitation of the display pipeline and GPU.  This does not affect saved data in an yway.
 	
 ## Indi Testing
 		#indiserver -v -m 100 indi_lx200am5     # All drivers are in /usr/bin
