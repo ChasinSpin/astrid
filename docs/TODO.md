@@ -5,9 +5,11 @@
 * Countdown to record (Ted)
 * Add more clearance for flat flex (Joan)
 * Add more clearance for 0.1" header cable (Joan)
+* Battery Monitor and auto shutdown
 * Add frame round camera to hold it in place whilst working on it (Joan)
 * Something to hold the 0.1" header in place in the groove (Joan)
 * Experiment with AELocked (looks like a converence thing)
+* New Boards, check buzzer working with new transistor and fan transistor is fully open, max current.
 * Check into FITs, is it really storing 0-255 or 0-1023?
 Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 'DigitalGain': 1.0002992153167725, 'SensorBlackLevels': (3840, 3840, 3840, 3840), 'AeLocked': False, 'Lux': 400.0, 'FrameDuration': 200014, 'AnalogueGain': 1.0, 'ExposureTime': 199940}
 * Disable notification about automatic updates from the OS:

@@ -30,38 +30,54 @@ To view debugging serial print's from the firmware, uncomment DEBUG in config.h 
 
 [Eagle files](hardware)
 
-## BOM (Bill Of Materials) - NEEDS UPDATING - USE Numbers BOM instead
+## BOM (Bill Of Materials)
 
 | Quantity | Part | Value | Tolerance | Package | Description | Manufacturer | Supplier | Supplier Part # |
 | -------- | ---- | ----- | --------- | ------- | ----------- | ------------ | -------- | --------------- |
-|1|R11|68|5%|0603|Resistor|-|Digi-Key|-|
-|13|R1,R2,R3,R4,R5,R6, R7,R8,R9,R10,R12, R13,R15|1K|5%|0603|Resistor|-|Digi-Key|-|
-|1|R14|10K|5%|0603|Resistor|-|Digi-Key|-|
-|2|C1,C2|12pF|20% C0G Min 10V|0603|Capacitor|-|Digi-Key|-|
-|1|C5|1nF|20% X5R/7 Min 10V|0603|Capacitor|-|Digi-Key|-|
-|3|C3,C4,C6|0.1uF Min 10V|20% X5R/7|0603|Capacitor|-|Digi-Key|-|
-|1|Q1|MMBT3904LT1G|-|SOT23-BEC|General Purpose NPN Transistor|Onsemi|Digi-Key|MMBT3904LT1GOSCT-ND|
-|1|U1|SN74AUP1T57DBV|-|SOT23-6|Single Supply Level Translator|Texas Instrument|Digi-Key|296-17524-1-ND|
-|1|U2|ATMEGA328PB-AN|-|32-TQFP|ATmega328pb Microcontroller|Microchip Technology|Digi-Key|ATMEGA328PB-AN-ND|
-|1|U3|SN74LVC1G123DCT|-|SSOP-8|Monostable|Texas Instruments|Digi-Key|296-18758-1-ND‎|
-|1|XC1|RH100-8.000-10-1010-EXT-TR|-|4-SMD 3.2 x 2.5 x 0.8mm 4 pin|8 Mhz Crystal 10ppm 10pF Load|Raltron Electronics|Digi-Key|2151-RH100-8.000-10-1010-EXT-TRCT-ND|
-|1|MODULE1|GT-U7|-|Module|NEO-6M Based GPS Module with PPS|Goouuu Tech|Amazon|[GT-U7 GPS board](https://www.amazon.com/Navigation-Satellite-Compatible-Microcontroller-Geekstory/dp/B07PRGBLX7/ref=sr_1_2?crid=ZLVK5XJ3YEOT&keywords=GT-U7&qid=1680044165&sprefix=gt-u7%2Caps%2C120&sr=8-2)||
-|1|JP3|PRPC001SBAN-M71RC|-|0.1" Header|0.1" Right Angled Male Header 1x1|Sullins Connector Solutions|Digi-Key|S1111EC-01-ND|
-|2|JP5,JP6|PRPC002SBAN-M71RC|-|0.1" Header|0.1" Right Angled Male Header 1x2|Sullins Connector Solutions|Digi-Key|S1111EC-02-ND‎|
-|DNP|JP2|PRPC001SBAN-M71RC|-|0.1" Header|0.1" Right Angled Male Header 1x1|Sullins Connector Solutions|Digi-Key|S1111EC-01-ND|
-|DNP|JP9,JP10|PRPC001SFAN-RC|-|0.1" Header|0.1" Male Header 1x1|Sullins Connector Solutions|Digi-Key|S1211EC-01-ND‎|
-|1|X1|Adafruit 2222|-|0.1" Header|0.1" Female Header 2x20|[Adafruit](http://adafru.it/2222)|Digi-Key|1528-1785-ND|
+|4|R10,R11,R14,R15|200|5%|0603|Resistor|DigiKey|-|
+|1|R21|430|5%|0603|Resistor|DigiKey|-|
+|11|R1,R2,R3,R4,R7,R9,R12,R13,R17,R18,R20|1K|5%|0603|Resistor|DigiKey|-|
+|2|R8,R19|10K|1%|0603|Resistor|DigiKey|-|
+|1|R6|33K|1%|0402|Resistor|DigiKey|-|
+|1|R16|47K|1%|0603|Resistor|DigiKey|-|
+|1|R23|100K|1%|0603|Resistor|DigiKey|-|
+|1|R5|249K|1%|0402|Resistor|DigiKey|-|
+|1|R22|470K|1%|0603|Resistor|DigiKey|-|
+|2|C2,C5|12pF C0G/NP0|20%|0603|Capacitor|DigiKey|-|
+|1|C12|1nF X5R/X7R|20%|0603|Capacitor|DigiKey|-|
+|4|C10,C11,C13,C14|0.1uF X5R/X7R|20%|0603|Capacitor|DigiKey|-|
+|1|C3|0.1uF X5R/X7R|20%|0402|Capacitor|DigiKey|-|
+|1|C4|1uF X5R/X7R|20%|0402|Capacitor|DigiKey|-|
+|3|C6,C7,C8|22 uF 10V X5R/X7R|20%|0603|Capacitor|DigiKey|-|
+|1|C1|22uF 25V X5R Low ESR|20%|0805|Capacitor|DigiKey|-|
+|1|C15|150uF 25V Top Tier|20%|6.3x7.7x8mm|Capacitor|DigiKey|-|
+|1|C9|DNP|DNP|DNP|Capacitor|DigiKey|-|
+|1|L1|2.2uH - EXL1V0605-2R2-R|Eaton Electronics|7.2x6.9mm|Inductor|DigiKey|-|
+|1|F1|0ZCG0200AF2B|Bel Fuse Inc.|1812|Fuse|DigiKey|-|
+|1|D1|1N4148WX|-|SOD-323|Diode|DigiKey|-|
+|2|Q1,Q2|MMBT2222A-TP|-|SOT23-BEC|General Purpose NPN Transistor 600mA|-|Digi-Key|-|
+|1|Q3|Si4825DDY|-|SOIC-8|P-Channel Mosfet 30V(D-S) 14.9A|DigiKey|-|
+|1|Q4|DMG2305UX|-|SOT23|P-Channel 20V 4.2A 1.4W Mosfet|DigiKey|-|
+|1|Q5|DMMT5401|-|SOT26/SC74R|Dual PNP Small Signal Transistors(matched)|DigiKey|-|
+|1|XT1|RH100-8.000-10-1010-EXT-TR|-|4-SMD 3.2 x 2.5 x 0.8mm 4 pin|8 Mhz Crystal 10ppm 10pF Load|Raltron Electronics|Digi-Key|2151-RH100-8.000-10-1010-EXT-TRCT-ND|
 |1|SP1|PS1240P02BT|-|PS12 12.2mm Dia|3V Piezo Buzzer Transducer (no internal oscillator)|TDK|Digi-Key|445-2525-1-ND|
-|0.1|-|Adafruit 1950 or 1 x SparkFun PRT-10367|-|0.1" Header|Female/Female Jumper Leads 6", to hookup LED|Adafruit|Digi-Key|1528-1961-ND‎|
-|1|-|HLMP-Y502-F0000|-|3mm T1 |Clear Green LED 40mcd, 2.0 Forward Voltage, 573nm, 55deg|Broadcom|Digi-Key|516-3248-ND|
-|4|-|24332|-|-|24332 Hex Standoff M2.5 x 0.45 Alumnimum 12mm|Keystone Electronics|Digi-Key|36-24332-ND|
-|12|****||-|-|Countersunk M2.5 x 0.45 x 14mm||||
-|12|-|4707|-|-|Hex Nut 0.197" Steel M2.5 x 0.45|Keystone Electronics|Digi-Key|36-4707-ND|
-|1|*** PCB||-||PCB|OSHPark|OSHPark|[OSHPark](http://www.oshpark.com/)|
+|1|U1|AP62500SJ-7|-|QFN|Buck Regulator Adjustable|DigiKey|-|
+|1|U2|SN74AUP1T57DBV|-|SOT23-6|Single Supply Level Translator|Texas Instrument|Digi-Key|296-17524-1-ND|
+|1|U3|ATMEGA328PB-AN|-|32-TQFP|ATmega328pb Microcontroller|Microchip Technology|Digi-Key|ATMEGA328PB-AN-ND|
+|1|U4|SN74LVC1G123DCT|-|SSOP-8|Monostable|Texas Instruments|Digi-Key|296-18758-1-ND‎|
+|1|X1|PJ-063AH|-|PJ-063AH|2.1x5.5mm 8A DC Power Jack PJ-063AH|DigiKey|-|
+|1|X3|S2B-PH-SM4-TB|-|S2B-PH-SM4-TB|Connector Header Surface Mount, Right Angle 2 position 0.079" (2.00mm)|DigiKey|455-S2B-PH-SM4-TBCT-ND|
+|1|X2|Adafruit 2222|-|0.1" Header|0.1" Female Header 2x20|[Adafruit](http://adafru.it/2222)|Digi-Key|1528-1785-ND|
+|2|JP2,JP3|PRPC002SBBN-M71RC|-|0.1" Header|0.1" Right Angled Male Header 1x2|Sullins Connector Solutions|Digi-Key|S1121EC-02-ND|
+|1|-|920-0096-50|-|920-0096-5|0.1" Jumper Wire Female to Female 8.00" (203.20mm) 28 AWG, only need 1 wire here, maybe more cost effective option|SchmartBoard Inc|Digi-Key|1988-1038-ND|
 |1|Fan|3368|-|30x30x8mm|5VDC 30x30x7.7mm Fan for Cooling|Adafruit or CanaKit Raspberry Pi Fan|Digi-Key|1528-1904-ND|
+|4|-|24332|-|-|24332 Hex Standoff M2.5 x 0.45 Alumnimum 12mm|Keystone Electronics|Digi-Key|36-24332-ND|
+|4|-|4707|-|-|Hex Nut 0.197" Steel M2.5 x 0.45 (to go with standoffs)|Keystone Electronics|Digi-Key|36-4707-ND|
+|1|MODULE1|GT-U7|-|Module|NEO-6M Based GPS Module with PPS|Goouuu Tech|Amazon|[GT-U7 GPS board](https://www.amazon.com/Navigation-Satellite-Compatible-Microcontroller-Geekstory/dp/B07PRGBLX7/ref=sr_1_2?crid=ZLVK5XJ3YEOT&keywords=GT-U7&qid=1680044165&sprefix=gt-u7%2Caps%2C120&sr=8-2)||
+|2|-|Zip Tie|-|Zip-Tie|Zip-Tie (max width 3mm)|DigiKey|-|
+|1|*** PCB||-||PCB|OSHPark|OSHPark|[OSHPark](http://www.oshpark.com/)|
 |1|*** Stencil|-|-|-|(Optional) |OSHStencil|OSHStencil|[OSHStencil](http://www.oshstencil.com/)| 
 |1|*** Enclosure|-|-|-|3D Printed Enclosure|3D Printer|3D Printer||
-|1|-||-|-|FFC 20cm 15 Pin Flexible Flat Cable for Raspberry Pi Module Camera||||
 
 Notes: DNP = Do Not Populate, SMD sizes are imperial
 
