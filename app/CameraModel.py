@@ -900,6 +900,7 @@ class CameraModel:
 		elif self.polarAlignStep == 1:
 			if testMode:
 				self.lastFitFile = pa_test_images_folder + 'PA_0001.fit'
+				self.updateDisplayOptions()
 			self.ui.indeterminateProgressBar(True)
 			self.paSolver = self.pa.step1(self.lastFitFile, self.search_full_sky, self.polarAlignCallback)
 		elif self.polarAlignStep == 2:
@@ -922,6 +923,7 @@ class CameraModel:
 		elif self.polarAlignStep == 4:
 			if testMode:
 				self.lastFitFile = pa_test_images_folder + 'PA_0002.fit'
+				self.updateDisplayOptions()
 			self.ui.indeterminateProgressBar(True)
 			self.paSolver = self.pa.step3(self.lastFitFile, self.search_full_sky, self.polarAlignCallback)
 		elif self.polarAlignStep == 5:
@@ -931,6 +933,7 @@ class CameraModel:
 		elif self.polarAlignStep == 6:
 			if testMode:
 				self.lastFitFile = pa_test_images_folder + 'PA_00%02d.fit' % self.polarAlignTestIndex
+				self.updateDisplayOptions()
 				if self.polarAlignTestIndex < 7:
 					self.polarAlignTestIndex += 1
 
@@ -1160,6 +1163,7 @@ class CameraModel:
 		if self.settings['polar_align_test']:
 			self.ui.messageBoxPrepointTestModeWarning()
 			fname = '/media/pi/ASTRID/TestPlateSolveImages/midi80-qhy5Lii-FR.fit'
+			self.updateDisplayOptions()
 		else:
 			fname = self.lastFitFile
 

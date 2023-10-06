@@ -186,6 +186,7 @@ class UiPanelTask(UiPanel):
 				if len(fname) != 0:
 					print('Filename:', fname)
 					self.camera.lastFitFile = fname
+					self.camera.updateDisplayOptions()
 				else:
 					return
 
