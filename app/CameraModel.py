@@ -312,7 +312,7 @@ class CameraModel:
 		self.platesolveCallback	= None
 		self.videoBufferCount	= VIDEO_BUFFER_COUNT
 		self.plannedAutoShutdown= False
-		self.displayOps		= DisplayOps()
+		self.displayOps		= DisplayOps(self)
 
 		#Picamera2.set_logging(Picamera2.DEBUG)
 
