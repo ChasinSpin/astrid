@@ -118,12 +118,12 @@ QLineEdit {
 
 QLineEdit:disabled {
 	background-color: @colorReadOnlyField;
-	color: @colorMutedFg;
+	color: @colorMuted;
 }
 
 QLineEdit[readOnly="true"] {
 	background-color: @colorReadOnlyField;
-	color: @colorMutedFg;
+	color: @colorMuted;
 }
 
 
@@ -134,12 +134,12 @@ QDateTimeEdit {
 
 QDateTimeEdit[readOnly="true"] {
 	background-color: @colorReadOnlyField;
-	color: @colorMutedFg;
+	color: @colorMuted;
 }
 
 QDateTimeEdit:disabled {
 	background-color: @colorReadOnlyField;
-	color: @colorMutedFg;
+	color: @colorMuted;
 }
 
 QMessageBox {
@@ -231,5 +231,5 @@ QTextEdit {
 
 QTextEdit[readOnly="true"] {
 	background-color: @colorReadOnlyField;
-	color: @colorMutedFg;
+	color: @colorMuted;
 }
