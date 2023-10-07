@@ -100,24 +100,27 @@ if __name__ == '__main__':
 		""" Reads a stylesheet and using colorscheme, replaces the color macros """	
 		ss = AstUtils.read_file_as_string(stylesheet)
 
-		with open(configs_fname, 'r') as fp:
-			configs = json.load(fp)
+		if os.path.exists(configs_fname):
+			with open(configs_fname, 'r') as fp:
+				configs = json.load(fp)
 
-		if 'selectedColorScheme' not in configs.keys():
-			configs['selectedColorScheme'] = 'Astro'
-
-			jstr = json.dumps(configs, indent=4)
-
-			with open(configs_fname, 'w') as fp:
-				fp.write(jstr)
-
-			colorSchemeName = configs['selectedColorScheme']
+			if 'selectedColorScheme' not in configs.keys():
+				configs['selectedColorScheme'] = 'Astro'
+	
+				jstr = json.dumps(configs, indent=4)
+	
+				with open(configs_fname, 'w') as fp:
+					fp.write(jstr)
+	
+				colorSchemeName = configs['selectedColorScheme']
+			else:
+				colorSchemeName = configs['selectedColorScheme']
 		else:
-			colorSchemeName = configs['selectedColorScheme']
-
+			colorSchemeName = 'Astro'
+	
 		with open('stylesheets/%s.colorscheme' % colorSchemeName) as f:
 			cs = json.loads(f.read())
-
+	
 		# Do Macro search and replace
 		for key in cs.keys():
 			ss = ss.replace(key, cs[key])
