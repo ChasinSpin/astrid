@@ -14,7 +14,7 @@ class UiPanelDisplay(UiPanel):
 		self.widgetAutoStretchUpper	= self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
 		self.widgetZebras		= self.addCheckBox('Zebras')
 		self.widgetCrosshairs		= self.addCheckBox('Crosshairs')
-		self.widgetStarDetection	= self.addCheckBox('Star Detection < 0.5fps')
+		self.widgetStarDetection	= self.addCheckBox('Star Detection <= 0.5fps')
 		self.widgetFrameTime		= self.addLineEdit('Frame Acquisition Time (UTC)', editable = False)
 		self.widgetFrameTime.setFixedWidth(UiPanelDisplay.FIXED_WIDTH_TEXT_FRAMETIME)
 

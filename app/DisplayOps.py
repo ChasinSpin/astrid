@@ -21,9 +21,9 @@ class DisplayOps():
 
 	def __init__(self, camera):
 		self.camera	= camera
-		self.font	= cv2.FONT_HERSHEY_SIMPLEX
+		self.font	= cv2.FONT_HERSHEY_PLAIN
 		self.scale	= 1.0
-		self.thickness	= 2
+		self.thickness	= 1
 
 
 	def __insideCircle(self, x, y, centerX, centerY, radius):
@@ -198,9 +198,8 @@ class DisplayOps():
 				fwhmAvg += self.source['fwhm']
 				sharpnessAvg += self.source['sharpness']
 
-				cv2.circle(image_buffer.array, (x, y), 10, (0, 255, 0), 1)
-				cv2.putText(image_buffer.array, '%0.2f' % hfd, (x+12, y), self.font, self.scale, (0,255,0),  self.thickness)
-				#cv2.putText(image_buffer.array, '%0.2f' % self.source['fwhm'], (x+12, y), self.font, self.scale, (0,255,0),  self.thickness)
+				cv2.circle(image_buffer.array, (x, y), 10, (0, 255, 0), 1, cv2.LINE_AA)
+				cv2.putText(image_buffer.array, '%0.2f' % hfd, (x+12, y+6), self.font, self.scale, (0,255,0),  self.thickness)
 
 			fwhmAvg /= float(len(self.sources))				
 			hfdAvg /= float(len(self.sources))				
