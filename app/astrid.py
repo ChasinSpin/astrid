@@ -25,13 +25,13 @@ import multiprocessing
 
 if __name__ == '__main__':
 
-	stylesheet	= 'stylesheets/default.qss'
-	settings_folder	= None
-	settings_summar	= None
-	cam		= None
-	otestamper	= None
-	framewriter	= None
-	processes	= []
+	stylesheet		= 'stylesheets/default.qss'
+	settings_folder		= None
+	settings_summary	= None
+	cam			= None
+	otestamper		= None
+	framewriter		= None
+	processes		= []
 
 
 
