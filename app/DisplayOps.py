@@ -136,8 +136,16 @@ class DisplayOps():
 		else:
 			mono = image_buffer.array[:, :, 0].astype(np.float32)
 
-		mono -= stretch[0]
-		scaling = 255.0 / (stretch[1] - stretch[0])
+		if stretch[0] < stretch[1]:
+			mono -= stretch[0]
+		else:
+			mono -= stretch[1]
+		stretchDelta = stretch[1] - stretch[0]
+		if stretchDelta < 0:
+			stretchDelta = -stretchDelta
+		elif stretchDelta == 0:
+			stretchDelta = 1
+		scaling = 255.0 / stretchDelta
 		mono *= scaling
 
 		# Clamp 0-255
