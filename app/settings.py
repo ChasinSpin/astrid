@@ -83,6 +83,8 @@ class Settings:
 		{'group': 'observer', 'settings': [
 			{'name': 'observer_name',			'type': 'str',		'range': None,					'default': 'John Doe',			'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Name',				'description': ''},
 			{'name': 'observer_id',				'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Indentifier',			'description': ''},
+			{'name': 'owcloud_login',			'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Login',			'description': ''},
+			{'name': 'owcloud_password',			'type': 'str',		'range': None,					'default': 'password',			'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Password',			'description': ''},
 		]},
 	]
 

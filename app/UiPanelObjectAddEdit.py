@@ -6,6 +6,7 @@ from astcoord import AstCoord
 import math
 import xmltodict
 from datetime import datetime, timedelta
+from owcloud import OWCloud
 
 
 
@@ -111,7 +112,9 @@ class UiPanelObjectAddEdit(UiPanel):
 		self.widgetCancel	= self.addButton('Cancel', True)
 
 		self.setColumnWidth(1, 170)
-		
+
+		#owcloud = OWCloud()
+
 
 	def registerCallbacks(self):
 		if self.widgetOccelmnt is not None:
