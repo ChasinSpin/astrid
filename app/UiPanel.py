@@ -1,13 +1,15 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDateTime
 from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar, QTabWidget, QListWidget
-from PyQt5.QtGui import QValidator, QDoubleValidator, QIntValidator, QPalette, QColor
+from PyQt5.QtGui import QValidator, QDoubleValidator, QIntValidator, QPalette, QColor, QPixmap
 from UiWidgetHMSDMS import UiWidgetHMSDMS
 from UiValidators import DoubleValidator, IntValidator
 from UiStatusButton import UiStatusButton
 from UiStatusLabel import UiStatusLabel
 from UiWidgetJoystick import UiWidgetJoystick
 from UiWidgetDirection import UiWidgetDirection
+from UiWidgetOpencv import UiWidgetOpencv
+from UiWidgetPlayerControls import UiWidgetPlayerControls
 
 
 
@@ -306,3 +308,36 @@ class UiPanel(QWidget):
 
 		self.rowIndex += 1
 		return wlist
+
+
+	def addTextBox(self, text: str, height = None) -> QTextEdit:
+		textEdit = QTextEdit()
+		textEdit.setText(text)
+		textEdit.setReadOnly(True)
+
+		self.layout.addWidget(textEdit, self.rowIndex, 0, 1, 2, alignment=Qt.AlignCenter)
+
+		#textEdit.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed))
+		if height is not None:
+			textEdit.setFixedHeight(height)
+
+		self.rowIndex += 1
+		return textEdit
+
+
+	def addOpencv(self, width, height) -> UiWidgetOpencv:
+		opencv = UiWidgetOpencv(width, height)
+
+		self.layout.addWidget(opencv, self.rowIndex, 0, 1, 2, alignment=Qt.AlignCenter)
+
+		self.rowIndex += 1
+		return opencv
+
+
+	def addPlayerControls(self, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame) -> UiWidgetPlayerControls:
+		controls = UiWidgetPlayerControls(callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame)
+
+		self.layout.addWidget(controls, self.rowIndex, 0, 1, 2, alignment=Qt.AlignCenter)
+
+		self.rowIndex += 1
+		return controls
