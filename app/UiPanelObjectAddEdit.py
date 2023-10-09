@@ -3,6 +3,7 @@ from PyQt5.QtCore import QDateTime
 from PyQt5.QtWidgets import QMessageBox
 from settings import Settings
 from astcoord import AstCoord
+import math
 import xmltodict
 from datetime import datetime, timedelta
 
@@ -10,6 +11,8 @@ from datetime import datetime, timedelta
 
 class UiPanelObjectAddEdit(UiPanel):
 	# Initializes and displays a Panel
+
+	MOON_MULTIPLIER = 10.0	# Multiplier for detecting moons, this gets multiplied by the event duration
 
 	def __init__(self, title, panel, args):
 		super().__init__(title)
@@ -205,6 +208,11 @@ class UiPanelObjectAddEdit(UiPanel):
 
 			self.widgetRA.setEnabled(False)
 			self.widgetDEC.setEnabled(False)
+
+			# Account for moons
+			extraSecs = int(math.ceil(float(pOccelmnt['eventDuration']) * UiPanelObjectAddEdit.MOON_MULTIPLIER))
+			self.widgetExtraStart.setText('%d' % extraSecs)
+			self.widgetExtraEnd.setText('%d' % extraSecs)
 		
 			self.calcStartEndRecordingTimes()
 
@@ -214,6 +222,14 @@ class UiPanelObjectAddEdit(UiPanel):
 
 
 	def textEditEventDurationChanged(self, text):
+		eventDuration = self.widgetEventDuration.text()
+		if eventDuration == '':
+			eventDuration = 0.0
+		else:
+			eventDuration = float(eventDuration) 
+		extraSecs = int(math.ceil(eventDuration * UiPanelObjectAddEdit.MOON_MULTIPLIER))
+		self.widgetExtraStart.setText('%d' % extraSecs)
+		self.widgetExtraEnd.setText('%d' % extraSecs)
 		self.calcStartEndRecordingTimes()
 
 
@@ -320,12 +336,9 @@ class UiPanelObjectAddEdit(UiPanel):
 		except ValueError:
 			extraEndSecs = 0
 
-		recordingSyncTime	= max( (self.camera.videoFrameDuration / 1000000.0) * self.camera.videoBufferCount, 12.0)
-			
 		startTime = eventCenterTime
 		startTime -= timedelta(seconds = eventDuration / 2.0)
 		startTime -= timedelta(seconds = eventUncertainty)
-		startTime -= timedelta(seconds = recordingSyncTime)
 		startTime -= timedelta(seconds = extraStartSecs)
 
 		endTime	= eventCenterTime

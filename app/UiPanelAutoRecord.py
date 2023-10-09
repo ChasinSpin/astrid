@@ -39,6 +39,9 @@ class UiPanelAutoRecord(UiPanel):
 		self.trackingCapable	= Settings.getInstance().mount['tracking_capable']
 
 		self.widgetStartTime	= self.addDateTimeEdit('Calculated Start Time(UTC)', editable=False)
+
+		recordingSyncTime       = max( (self.camera.videoFrameDuration / 1000000.0) * self.camera.videoBufferCount, 12.0)
+		start_time -= timedelta(seconds = recordingSyncTime)
 		self.widgetStartTime.setDateTime(start_time)
 
 		self.widgetEndTime	= self.addDateTimeEdit('Calculated End Time(UTC)', editable=False)
