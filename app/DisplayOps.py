@@ -2,6 +2,7 @@ import cv2
 import math
 import numpy as np
 from astropy.io import fits
+from settings import Settings
 from astropy.stats import sigma_clipped_stats
 #from photutils.detection import DAOStarFinder
 from photutils.detection import IRAFStarFinder
@@ -177,11 +178,31 @@ class DisplayOps():
 
 
 	def __display_crosshairs(self, image_buffer):
-		(height, width, _)  = image_buffer.array.shape
-		w2 = int(width/2)
-		h2 = int(height/2)
-		cv2.line(image_buffer.array, (w2, 0), (w2, height-1), (0, 255, 0), 2)
-		cv2.line(image_buffer.array, (0, h2), (width-1, h2), (0, 255, 0), 2)
+		general = Settings.getInstance().general
+		if general['center_marker'] == 'crosshairs':
+			(height, width, _)  = image_buffer.array.shape
+			w2 = int(width/2)
+			h2 = int(height/2)
+			cv2.line(image_buffer.array, (w2, 0), (w2, height-1), (0, 255, 0), 1)
+			cv2.line(image_buffer.array, (0, h2), (width-1, h2), (0, 255, 0), 1)
+		elif general['center_marker'] == 'rectangle':
+			boxSize = 15
+			(height, width, _)  = image_buffer.array.shape
+			w2 = int(width/2)
+			h2 = int(height/2)
+			fromPoint = (w2-boxSize, h2-boxSize)
+			toPoint = (w2+boxSize, h2+boxSize)
+			cv2.rectangle(image_buffer.array, fromPoint, toPoint, (0, 255, 0), 1)
+		elif general['center_marker'] == 'small cross':
+			lineGap = 10
+			lineLength = 30
+			(height, width, _)  = image_buffer.array.shape
+			w2 = int(width/2)
+			h2 = int(height/2)
+			cv2.line(image_buffer.array, (w2, h2-lineGap), (w2, h2-lineLength), (0, 255, 0), 1)
+			cv2.line(image_buffer.array, (w2, h2+lineGap), (w2, h2+lineLength), (0, 255, 0), 1)
+			cv2.line(image_buffer.array, (w2-lineGap, h2), (w2-lineLength, h2), (0, 255, 0), 1)
+			cv2.line(image_buffer.array, (w2+lineGap, h2), (w2+lineLength, h2), (0, 255, 0), 1)
 
 
 	def __display_stardetection(self, image_buffer):

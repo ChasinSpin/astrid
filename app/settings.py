@@ -26,7 +26,8 @@ class Settings:
 		{'name': 'platesolver',		'global': True,		'editable': True,	'displayName': 'Plate Solver'},
 		{'name': 'occultations',	'global': False,	'editable': False,	'displayName': 'Occultations'},
 		{'name': 'site',		'global': True,		'editable': False,	'displayName': 'Site'},
-		{'name': 'observer',		'global': False,	'editable': True,	'displayName': 'Observer'}
+		{'name': 'observer',		'global': False,	'editable': True,	'displayName': 'Observer'},
+		{'name': 'general',		'global': False,	'editable': True,	'displayName': 'General'},
 	]
 
 
@@ -85,6 +86,10 @@ class Settings:
 			{'name': 'observer_id',				'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Indentifier',			'description': ''},
 			{'name': 'owcloud_login',			'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Login',			'description': ''},
 			{'name': 'owcloud_password',			'type': 'str',		'range': None,					'default': 'password',			'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Password',			'description': ''},
+		]},
+
+		{'group': 'general', 'settings': [
+			{'name': 'center_marker',			'type': 'choice',	'range': ['crosshairs', 'rectangle', 'small cross'],	'default': 2,			'decimalPlaces': None,	'editable': True,	'displayName': 'Center Marker Type',			'description': ''},
 		]},
 	]
 
