@@ -36,7 +36,7 @@ def getRavfFrame(index):
 	if err:
 		raise ValueError('error reading frame: %d', index)
 
-	print(image.shape)
+	#print(image.shape)
 	image = cv2.resize(image, (width, height), interpolation = cv2.INTER_AREA)
 	window.panelFrame.widgetLastFrame.updateWithCVImage(image)
 	window.panelFrame.widgetControls.lastFrameLineEdit.setText('%d' % (ravf.frame_count()-1))
@@ -102,7 +102,7 @@ def togglePlay():
 	if playing:
 		playTimer = QTimer()
 		playTimer.timeout.connect(playTimerCallback)
-		playTimer.setInterval(100)
+		playTimer.setInterval(50)
 		playTimer.start()
 	else:
 		playTimer.stop()
