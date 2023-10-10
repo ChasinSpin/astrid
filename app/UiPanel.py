@@ -334,8 +334,8 @@ class UiPanel(QWidget):
 		return opencv
 
 
-	def addPlayerControls(self, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame) -> UiWidgetPlayerControls:
-		controls = UiWidgetPlayerControls(callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame)
+	def addPlayerControls(self, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame, callback_togglePlay, callback_setFrameNum) -> UiWidgetPlayerControls:
+		controls = UiWidgetPlayerControls(callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame, callback_togglePlay, callback_setFrameNum)
 
 		self.layout.addWidget(controls, self.rowIndex, 0, 1, 2, alignment=Qt.AlignCenter)
 

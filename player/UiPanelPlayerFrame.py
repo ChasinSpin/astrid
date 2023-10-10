@@ -11,7 +11,7 @@ class UiPanelPlayerFrame(UiPanel):
 		super().__init__('Video Frame')
 		
 		self.widgetLastFrame		= self.addOpencv(args['width'], args['height'])
-		self.widgetControls		= self.addPlayerControls(args['callback_firstFrame'], args['callback_lastFrame'], args['callback_prevFrame'], args['callback_nextFrame'])
+		self.widgetControls		= self.addPlayerControls(args['callback_firstFrame'], args['callback_lastFrame'], args['callback_prevFrame'], args['callback_nextFrame'], args['callback_togglePlay'], args['callback_setFrameNum'])
 
 		#self.setColumnWidth(1, 140)
 
@@ -29,19 +29,6 @@ class UiPanelPlayerFrame(UiPanel):
 	#		self.camera.indi.telescope.goHome()
 	#	else:
 	#		self.camera.togglePark()
-
-
-	#def buttonTrackingPressed(self):
-	#	self.camera.indi.telescope.lockTrackingOff = False
-	#	self.camera.toggleTracking()
-
-
-	#def buttonAbortMotionPressed(self):
-	#	self.camera.indi.telescope.abortMotion()
-
-
-	#def comboBoxTrackingRateChanged(self, text):
-	#	self.camera.indi.telescope.setTrackMode(text)
 
 
 	# OPERATIONS

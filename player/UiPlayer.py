@@ -16,11 +16,11 @@ windowGeometry=(10, 100, 1200, 745)
 class UiPlayer(QtWidgets.QMainWindow):
 	# Initializes and displays the UI
 
-	def __init__(self, windowTitle, astrid_drive, loadRavf_callback, width, height, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame):
+	def __init__(self, windowTitle, astrid_drive, loadRavf_callback, width, height, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame, callback_togglePlay, callback_setFrameNum):
 		super(UiPlayer, self).__init__()
 
 		# Create the panels
-		self.panelFrame		= UiPanelPlayerFrame(args = {'width': width, 'height': height, 'callback_firstFrame': callback_firstFrame, 'callback_lastFrame': callback_lastFrame, 'callback_prevFrame': callback_prevFrame, 'callback_nextFrame': callback_nextFrame})
+		self.panelFrame		= UiPanelPlayerFrame(args = {'width': width, 'height': height, 'callback_firstFrame': callback_firstFrame, 'callback_lastFrame': callback_lastFrame, 'callback_prevFrame': callback_prevFrame, 'callback_nextFrame': callback_nextFrame, 'callback_togglePlay': callback_togglePlay, 'callback_setFrameNum': callback_setFrameNum})
 		self.panelOperations	= UiPanelPlayerOperations(args = {'astrid_drive': astrid_drive, 'loadRavf_callback': loadRavf_callback} )
 
 		# Create the left Pane

@@ -13,6 +13,7 @@ from astutils import AstUtils
 from UiDialogPanel import UiDialogPanel
 from UiPanelMessage import UiPanelMessage
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import Qt, QTimer
 from ravf import RavfReader, RavfMetadataType, RavfFrameType, RavfColorType, RavfImageEndianess, RavfImageFormat, RavfEquinox, RavfImageUtils
 
 
@@ -38,6 +39,14 @@ def getRavfFrame(index):
 	print(image.shape)
 	image = cv2.resize(image, (width, height), interpolation = cv2.INTER_AREA)
 	window.panelFrame.widgetLastFrame.updateWithCVImage(image)
+	window.panelFrame.widgetControls.lastFrameLineEdit.setText('%d' % (ravf.frame_count()-1))
+	updateCurrentFrame()
+
+
+def updateCurrentFrame():
+	global window, current_frame
+
+	window.panelFrame.widgetControls.currentFrameLineEdit.setText('%d' % current_frame)
 
 
 def frameFirst():
@@ -72,6 +81,45 @@ def frameNext():
 	getRavfFrame(current_frame)
 
 
+def playTimerCallback():
+	if current_frame == (ravf.frame_count() - 1):
+		togglePlay()
+		return
+	
+	frameNext()
+
+
+def togglePlay():
+	global playing, window, playTimer
+
+	if playing:
+		playing = False
+	else:
+		playing = True
+
+	window.panelFrame.widgetControls.buttonPlayPause.setText('Pause' if playing else 'Play')
+
+	if playing:
+		playTimer = QTimer()
+		playTimer.timeout.connect(playTimerCallback)
+		playTimer.setInterval(100)
+		playTimer.start()
+	else:
+		playTimer.stop()
+
+
+
+def setFrameNum(index):
+	global ravf_fp, ravf, current_frame
+
+	current_frame = index
+	if current_frame < 0:
+		current_frame = 0
+	if current_frame >= ravf.frame_count():
+		current_frame = ravf.frame_count() - 1
+	getRavfFrame(current_frame)
+
+
 def loadRavf(fname):
 	global ravf_fp, ravf, current_frame
 	closeRavf()
@@ -98,13 +146,15 @@ if __name__ == '__main__':
 	stylesheets_folder	= '../app/stylesheets'
 	stylesheet		= '%s/default.qss' % stylesheets_folder
 
-	ravf_fp	= None
-	ravf	= None
+	ravf_fp		= None
+	ravf		= None
+	playing		= False
+	playTimer	 = None
 
-	width	= int(1456/2)
-	height	= int(1088/2)
+	width		= int(1456/2)
+	height		= int(1088/2)
 
-	current_frame = 0
+	current_frame	= 0
 
 
 	def checkAstridDrivePresent() -> bool:
@@ -172,7 +222,7 @@ if __name__ == '__main__':
 		sys.exit(0)
 
 	# Start the main window
-	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext)
+	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext, togglePlay, setFrameNum)
 
 	exit_code = app.exec()
 	closeRavf()

@@ -1,18 +1,22 @@
 from PyQt5.QtCore import Qt, QSize
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QWidget, QGridLayout, QToolButton, QComboBox, QMessageBox
+from PyQt5.QtWidgets import QWidget, QGridLayout, QToolButton, QComboBox, QMessageBox, QLineEdit, QLabel, QPushButton
 
 
 
 class UiWidgetPlayerControls(QWidget):
 
-	def __init__(self, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame):
+	FRAME_NUM_WIDTH = 70
+
+	def __init__(self, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame, callback_togglePlay, callback_setFrameNum):
 		super().__init__()
 
-		self.callback_firstFrame = callback_firstFrame
-		self.callback_lastFrame = callback_lastFrame
-		self.callback_prevFrame = callback_prevFrame
-		self.callback_nextFrame = callback_nextFrame
+		self.callback_firstFrame	= callback_firstFrame
+		self.callback_lastFrame		= callback_lastFrame
+		self.callback_prevFrame		= callback_prevFrame
+		self.callback_nextFrame		= callback_nextFrame
+		self.callback_togglePlay	= callback_togglePlay
+		self.callback_setFrameNum	= callback_setFrameNum
 
 		self.buttonFirstFrame	= QToolButton()
 		self.buttonLastFrame	= QToolButton()
@@ -34,12 +38,26 @@ class UiWidgetPlayerControls(QWidget):
 		self.buttonPrevFrame.setIconSize(QSize(40,40))
 		self.buttonNextFrame.setIconSize(QSize(40,40))
 
+		self.currentFrameLineEdit = QLineEdit()
+		self.currentFrameLineEdit.setFixedWidth(UiWidgetPlayerControls.FRAME_NUM_WIDTH)
+		self.labelOf = QLabel()
+		self.labelOf.setText('of')
+		self.lastFrameLineEdit = QLineEdit()
+		self.lastFrameLineEdit.setReadOnly(True)
+		self.lastFrameLineEdit.setFixedWidth(UiWidgetPlayerControls.FRAME_NUM_WIDTH)
+
+		self.buttonPlayPause = QPushButton('Play')
+	
 		self.layout = QGridLayout()
 
 		self.layout.addWidget(self.buttonFirstFrame, 0, 0, Qt.AlignCenter)
 		self.layout.addWidget(self.buttonPrevFrame, 0, 1, Qt.AlignCenter)
-		self.layout.addWidget(self.buttonNextFrame, 0, 2, Qt.AlignRight)
-		self.layout.addWidget(self.buttonLastFrame, 0, 3, Qt.AlignLeft)
+		self.layout.addWidget(self.buttonPlayPause, 0, 2, Qt.AlignRight)
+		self.layout.addWidget(self.buttonNextFrame, 0, 3, Qt.AlignRight)
+		self.layout.addWidget(self.buttonLastFrame, 0, 4, Qt.AlignLeft)
+		self.layout.addWidget(self.currentFrameLineEdit, 0, 5, Qt.AlignLeft)
+		self.layout.addWidget(self.labelOf, 0, 6, Qt.AlignLeft)
+		self.layout.addWidget(self.lastFrameLineEdit, 0, 7, Qt.AlignLeft)
 
 		self.setLayout(self.layout)
 		
@@ -51,6 +69,8 @@ class UiWidgetPlayerControls(QWidget):
 		self.buttonLastFrame.pressed.connect(self.buttonLastFramePressed)
 		self.buttonPrevFrame.pressed.connect(self.buttonPrevFramePressed)
 		self.buttonNextFrame.pressed.connect(self.buttonNextFramePressed)
+		self.buttonPlayPause.pressed.connect(self.buttonPlayPausePressed)
+		self.currentFrameLineEdit.editingFinished.connect(self.currentFrameLineEditChanged)
 
 		#self.buttonUp.released.connect(self.buttonUpReleased)
 		
@@ -68,3 +88,9 @@ class UiWidgetPlayerControls(QWidget):
 
 	def buttonNextFramePressed(self):
 		self.callback_nextFrame()
+
+	def buttonPlayPausePressed(self):
+		self.callback_togglePlay()
+
+	def currentFrameLineEditChanged(self):
+		self.callback_setFrameNum(int(self.currentFrameLineEdit.text()))
