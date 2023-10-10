@@ -2,6 +2,6 @@
 Name=Player
 Comment=Start Player
 Path=/home/pi/astrid/player
-Exec=/home/pi/astrid/player/astrid.py -d /media/pi/ASTRID
+Exec=/home/pi/astrid/player/player.py -d /media/pi/ASTRID
 Terminal=true
 Type=Application
