@@ -57,17 +57,18 @@ class UiPanelSite(UiPanel):
 		settings = Settings.getInstance()
 		site = settings.site
 
-		if not 'name' in site:
-			site['name']	= 'Local'
-		site['latitude']	= status['latitude']
-		site['longitude']	= status['longitude']
-		site['altitude']	= status['altitude']
+		if site is not None and status is not None:
+			if not 'name' in site:
+				site['name']	= 'Local'
+			site['latitude']	= status['latitude']
+			site['longitude']	= status['longitude']
+			site['altitude']	= status['altitude']
 
-		settings.writeSubsetting('site')
+			settings.writeSubsetting('site')
 
-		AstSite.set(site['name'], site['latitude'], site['longitude'], site['altitude'])
-		self.camera.indi.telescope.setSite(AstSite.lat, AstSite.lon, AstSite.alt)
-		self.camera.indi.telescope.setTime(datetime.utcnow(), Settings.getInstance().mount['local_offset'])
+			AstSite.set(site['name'], site['latitude'], site['longitude'], site['altitude'])
+			self.camera.indi.telescope.setSite(AstSite.lat, AstSite.lon, AstSite.alt)
+			self.camera.indi.telescope.setTime(datetime.utcnow(), Settings.getInstance().mount['local_offset'])
 		
 		self.panel.acceptDialog()
 

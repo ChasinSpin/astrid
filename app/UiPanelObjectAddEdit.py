@@ -160,6 +160,8 @@ class UiPanelObjectAddEdit(UiPanel):
 				occelmnt = self.widgetOccelmnt.toPlainText()
 				if not occelmnt == '':
 					pOccelmnt = self.processOccelmnt(occelmnt)
+					if pOccelmnt is None:
+						return
 					print(pOccelmnt)
 					occelmnt_dict = pOccelmnt['occelmnt_dict']
 				else:
