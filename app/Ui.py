@@ -184,6 +184,10 @@ class Ui(QtWidgets.QMainWindow):
 		QMessageBox.warning(self, ' ', 'Reminder: Record 100 frames of video with the lens cap on at the same fps/gain for dark noise reduction.', QMessageBox.Ok)
 
 
+	def messageBoxDitherNoObject(self):
+		QMessageBox.warning(self, ' ', 'An object has to be selected to dither. Switching dithering off.', QMessageBox.Ok)
+
+
 	def indeterminateProgressBar(self, enable):
 		if enable:
 			self.progressBar.setRange(0, 0)

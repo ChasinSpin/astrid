@@ -1031,6 +1031,12 @@ class CameraModel:
 
 
 	def dither(self):
+		if self.objectCoords is None:
+			self.ui.messageBoxDitherNoObject()
+			self.ui.panelTask.widgetDither.setChecked(False)
+			self.dithering = False
+			return
+
 		ditherMax = (self.settings['dither_ra'], self.settings['dither_dec'])
 		ditherAdd = (((random.random() * 2.0) - 1.0) * ditherMax[0], ((random.random() * 2.0) - 1.0) * ditherMax[1])
 
