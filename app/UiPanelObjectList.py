@@ -49,6 +49,11 @@ class UiPanelObjectList(UiPanel):
 
 		self.widgetCancel	= self.addButton('Cancel', True)
 
+		# If we have a least one item, select that one by default (this gets rid of the grayed out marker)
+		if len(self.items) > 0:
+			self.widgetList.setCurrentRow(0)
+			self.listItemChanged()
+
 		self.setColumnWidth(1, 170)
 		
 
