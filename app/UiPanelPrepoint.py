@@ -78,6 +78,8 @@ class UiPanelPrepoint(UiPanel):
 	def buttonPhotoProcPressed(self):
 		self.calcPrepoint()
 		self.widgetPhotoProc.setEnabled(False)
+		if self.widgetAltAzDirection is not None:
+			self.widgetAltAzDirection.setEnabled(False)
 		self.camera.takePhotoSolveSync(self)
 
 
@@ -131,6 +133,7 @@ class UiPanelPrepoint(UiPanel):
 			altAzDelta = self.calculateAltAzDelta(altAzPlateSolve, self.prepoint)
 			self.widgetAltAzDirection.update(altAzDelta[0], altAzDelta[1], direction_indicator_platesolve)
 			self.showWidget(self.widgetAltAzDirection)
+			self.widgetAltAzDirection.setEnabled(True)
 
 			maxAltAzDelta = max(abs(altAzDelta[0]), abs(altAzDelta[1]))
 
