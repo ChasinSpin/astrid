@@ -1,5 +1,6 @@
 # TODO
 
+* New Boards, check buzzer working with new transistor and fan transistor is fully open, max current.
 * astropy download
 * Steve Calcs
 * Countdown to record (Ted)
@@ -9,41 +10,12 @@
 * Add frame round camera to hold it in place whilst working on it (Joan)
 * Something to hold the 0.1" header in place in the groove (Joan)
 * Experiment with AELocked (looks like a converence thing)
-* New Boards, check buzzer working with new transistor and fan transistor is fully open, max current.
 * Check into FITs, is it really storing 0-255 or 0-1023?
 Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 'DigitalGain': 1.0002992153167725, 'SensorBlackLevels': (3840, 3840, 3840, 3840), 'AeLocked': False, 'Lux': 400.0, 'FrameDuration': 200014, 'AnalogueGain': 1.0, 'ExposureTime': 199940}
 * Disable notification about automatic updates from the OS:
 https://forums.raspberrypi.com/viewtopic.php?t=331808
-* Fix bug:
-Uncaught exception
-Traceback (most recent call last):
-  File "/home/pi/astrid/app/UiPanelSite.py", line 88, in __updateTimer
-    self.widgetGpsLatitude.setText('%0.6f°' % status['latitude'])
-TypeError: 'NoneType' object is not subscriptable
-Happens whe Site is clicked and GPS has never had any data.
-Also happens when GPS is pressed
-On first startup, Site/GPS will be purple and Timing Red or Yellow, wait until GPS is green and Timing is Green before doing anything
-2023-09-26 20:17:29 main        CRITICAL uncaught exception
-Traceback (most recent call last):
-  File "/home/pi/astrid/app/UiPanelGps.py", line 42, in __updateTimer
-    self.widgetSatellites.setText(str(status['numSatellites']))
-TypeError: 'NoneType' object is not subscriptable
-2023-10-06 03:38:01 main        CRITICAL uncaught exception
-Traceback (most recent call last):
-  File "/home/pi/astrid/app/UiPanelGps.py", line 42, in __updateTimer
-    self.widgetSatellites.setText(str(status['numSatellites']))
-TypeError: 'NoneType' object is not subscriptable
-
-* Whilst adding occultation with meaningless information for occelmnt:
- File "/home/pi/astrid/app/UiPanelObjectAdd.py", line 114, in buttonAddPressed
-    occelmnt_dict = pOccelmnt['occelmnt_dict']
-TypeError: 'NoneType' object is not subscriptable
-* See /usr/lib/python3/dist-packages/picamera2/previews/q_picamera2.py for display rendering
-
-
 * Implement Fan off
-* Frame rates: At speeds above 25fps, one of the python processes pegs out at close to 95-100% cpu on "top".  Figure out cause to increase frame rate.  Also, look at modding picamera to be able to skip frames that are more than 10fps for display.  Accelerated Rendering is likely faster and won't drop frames?
-* Bombs if Multiple Subs with dither are taken without an object selected
+* Frame rates: At speeds above 25fps, one of the python processes pegs out at close to 95-100% cpu on "top".  Figure out cause to increase frame rate.  Also, look at modding picamera to be able to skip frames that are more than 10fps for display.  Accelerated Rendering is likely faster and won't drop frames?   * See /usr/lib/python3/dist-packages/picamera2/previews/q_picamera2.py for display rendering
 * Taken with Astrid splash screen
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"
 * Install PyMovie/PyOTE on the Pi
