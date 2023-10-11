@@ -1,3 +1,4 @@
+import logging
 from processlogger import ProcessLogger
 import os
 import json
@@ -97,7 +98,10 @@ class Settings:
 
 	def __init__(self, settings_folder, astrid_drive, configs_folder):
 		self.processLogger = ProcessLogger.getInstance()
-		self.logger = self.processLogger.getLogger()
+		if self.processLogger is None:
+			self.logger = logging.getLogger()
+		else:
+			self.logger = self.processLogger.getLogger()
 
 		Settings.settings_folder = settings_folder
 		Settings.configs_folder = configs_folder

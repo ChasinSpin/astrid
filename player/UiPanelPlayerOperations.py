@@ -1,3 +1,4 @@
+from PlateSolver import *
 from astutils import AstUtils
 from UiPanel import UiPanel
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
@@ -15,14 +16,24 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetFileOpen	= self.addButton('Load Video')
 		self.widgetPlateSolve	= self.addButton('Plate Solve')
 		self.widgetSaveFrame	= self.addButton('Save Frame')
-		self.widgetExportFits	= self.addButton('Export Fits')
+		#self.widgetExportFits	= self.addButton('Export Fits')
+
+		self.widgetAutoStretch          = self.addCheckBox('Stretch')
+		self.widgetAutoStretchLower     = self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
+		self.widgetAutoStretchUpper     = self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
+		self.widgetAutoStretchLower.setText('5')
+		self.widgetAutoStretchUpper.setText('30')
 
 		self.setFixedWidth(150)
 
 
 	def registerCallbacks(self):
 		self.widgetFileOpen.clicked.connect(self.buttonFileOpenPressed)
-
+		self.widgetPlateSolve.clicked.connect(self.buttonPlateSolvePressed)
+		self.widgetSaveFrame.clicked.connect(self.buttonSaveFramePressed)
+		self.widgetAutoStretch.stateChanged.connect(self.checkBoxAutoStretchChanged)
+		self.widgetAutoStretchLower.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
+		self.widgetAutoStretchUpper.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
 
 	# CALLBACKS
 
@@ -33,20 +44,44 @@ class UiPanelPlayerOperations(UiPanel):
 			self.loadRavf_callback(fname)
 
 
-	#def buttonTrackingPressed(self):
-	#	self.camera.indi.telescope.lockTrackingOff = False
-	#	self.camera.toggleTracking()
+	def buttonPlateSolvePressed(self):
+		if self.widgetPlateSolve.text() == 'Plate Solve':
+			self.plateSolveCallback()
+			self.widgetPlateSolve.setText('Cancel')
+		else:
+			self.plateSolveCancelCallback()
 
 
-	#def buttonAbortMotionPressed(self):
-	#	self.camera.indi.telescope.abortMotion()
+	def buttonSaveFramePressed(self):
+		self.saveFrameCallback()
 
 
-	#def comboBoxTrackingRateChanged(self, text):
-	#	self.camera.indi.telescope.setTrackMode(text)
+	def checkBoxAutoStretchChanged(self):
+		state = self.widgetAutoStretch.checkState()
+		aState = False
+		if state == 2:
+			aState = True
+		self.autoStretchCallback(aState)
+
+
+	def lineEditAutoStretchLimitsChanged(self):
+		lower = float(self.widgetAutoStretchLower.text())
+		upper = float(self.widgetAutoStretchUpper.text())
+		self.autoStretchLimitsCallback
+		self.autoStretchLimitsCallback(lower, upper)
 
 
 	# OPERATIONS
 
-	#def messageBoxNoPlateSolve(self):
-	#	QMessageBox.warning(self, ' ', 'Plate solve last photo before syncing.', QMessageBox.Ok)
+	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, saveFrameCallback):
+		self.autoStretchCallback = autoStretchCallback
+		self.autoStretchLimitsCallback = autoStretchLimitsCallback
+		self.lineEditAutoStretchLimitsChanged()
+
+		self.plateSolveCallback = plateSolveCallback
+		self.saveFrameCallback = saveFrameCallback
+		self.plateSolveCancelCallback = plateSolveCancelCallback
+
+
+	def plateSolveFinished(self):
+		self.widgetPlateSolve.setText('Plate Solve')

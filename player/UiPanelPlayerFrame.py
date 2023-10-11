@@ -18,20 +18,8 @@ class UiPanelPlayerFrame(UiPanel):
 
 	def registerCallbacks(self):
 		pass
-		#self.widgetHome.clicked.connect(self.buttonHomePressed)
-		#self.widgetTrackingRate.currentTextChanged.connect(self.comboBoxTrackingRateChanged)
 
 
 	# CALLBACKS
 
-	#def buttonHomePressed(self):
-	#	if self.settings['parkmethod'] == 'home':
-	#		self.camera.indi.telescope.goHome()
-	#	else:
-	#		self.camera.togglePark()
-
-
 	# OPERATIONS
-
-	#def messageBoxNoPlateSolve(self):
-	#	QMessageBox.warning(self, ' ', 'Plate solve last photo before syncing.', QMessageBox.Ok)

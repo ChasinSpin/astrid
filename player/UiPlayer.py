@@ -74,17 +74,10 @@ class UiPlayer(QtWidgets.QMainWindow):
 		event.accept()
 
 
-	# Updates the UI, hiding / showing buttons to match the current Camera Mode
-
-	#def update_ui_for_mode(self):
-	#	opMode = self.camera.operatingMode
-	#	self.panelTask.update_ui_for_mode(opMode)
-
-
 	# Shows msg in the status bar
 
-	#def showStatusMessage(self, msg):
-	#	self.statusBar().showMessage(msg)
+	def showStatusMessage(self, msg):
+		self.statusBar().showMessage(msg)
 
 
 	# Connects up all the callbacks for the UI
@@ -92,40 +85,3 @@ class UiPlayer(QtWidgets.QMainWindow):
 	def registerCallbacks(self):
 		self.panelFrame.registerCallbacks()
 		self.panelOperations.registerCallbacks()
-
-
-	def messageBoxPolarAlignTestModeWarning(self):
-		QMessageBox.warning(self, ' ', 'Polar Alignment is in test mode and using previously recorded images. Disable polar_align_test in settings to use camera.', QMessageBox.Ok)
-
-
-	def messageBoxPrepointTestModeWarning(self):
-		QMessageBox.warning(self, ' ', 'Prepoint is in test mode and using previously recorded images. Disable polar_align_test in settings to use camera.', QMessageBox.Ok)
-
-
-	def messageBoxVideoFileOverwriteQuestion(self, filename):
-		QMessageBox.warning(self, ' ', 'File %s already exists, choose a different filename' % filename, QMessageBox.Ok)
-
-
-	def messageBoxGotoNoObject(self):
-		QMessageBox.warning(self, ' ', 'Unable to Goto Object as no object has been selected.', QMessageBox.Ok)
-
-
-	def messageBoxTakeDark(self):
-		QMessageBox.warning(self, ' ', 'Reminder: Record 100 frames of video with the lens cap on at the same fps/gain for dark noise reduction.', QMessageBox.Ok)
-
-
-	def indeterminateProgressBar(self, enable):
-		if enable:
-			self.progressBar.setRange(0, 0)
-			self.progressBar.setValue(0)
-		self.progressBar.setVisible(enable)
-
-
-	def videoFrameRateWarning(self):
-		# Returns True if the frame rate is too high to continue, otherwise False
-		if self.camera.videoFrameDuration < int((1.0/60.0) * 1000000.0):
-			QMessageBox.warning(self, ' ', 'Recording at frame rates above 60fps is not allowed!', QMessageBox.Ok)
-			return True
-		elif self.camera.videoFrameDuration < int((1.0/30.0) * 1000000.0):
-			QMessageBox.warning(self, ' ', 'Recording at frame rates above 30fps is not recommended!', QMessageBox.Ok)
-		return False

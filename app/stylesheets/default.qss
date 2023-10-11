@@ -233,3 +233,13 @@ QTextEdit[readOnly="true"] {
 	background-color: @colorReadOnlyField;
 	color: @colorMuted;
 }
+
+QToolButton#playerControls {
+	color: @colorMuted;
+	font: bold 14px;
+}
+
+QPushButton#playerControls {
+	color: @colorMuted;
+	font: bold 14px;
+}

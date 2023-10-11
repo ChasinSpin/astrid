@@ -14,7 +14,7 @@ class UiWidgetOpencv(QWidget):
 		self.imageWidget	= QLabel()
 
 		gray			= QPixmap(self.width, self.height)
-		gray.fill(QColor('darkGray'))
+		gray.fill(QColor(50,50,50))
 	
 		self.imageWidget.setPixmap(gray)
 

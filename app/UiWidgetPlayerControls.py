@@ -28,6 +28,11 @@ class UiWidgetPlayerControls(QWidget):
 		self.buttonPrevFrame.setText('<')
 		self.buttonNextFrame.setText('>')
 
+		self.buttonFirstFrame.setObjectName('playerControls')
+		self.buttonLastFrame.setObjectName('playerControls')
+		self.buttonPrevFrame.setObjectName('playerControls')
+		self.buttonNextFrame.setObjectName('playerControls')
+
 		self.buttonFirstFrame.setFixedSize(40,40)
 		self.buttonLastFrame.setFixedSize(40,40)
 		self.buttonPrevFrame.setFixedSize(40,40)
@@ -47,6 +52,7 @@ class UiWidgetPlayerControls(QWidget):
 		self.lastFrameLineEdit.setFixedWidth(UiWidgetPlayerControls.FRAME_NUM_WIDTH)
 
 		self.buttonPlayPause = QPushButton('Play')
+		self.buttonPlayPause.setObjectName('playerControls')
 	
 		self.layout = QGridLayout()
 
