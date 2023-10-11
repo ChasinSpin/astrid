@@ -190,13 +190,17 @@ The observer.json file stores information about the observer, this information i
 
 	{
 		"observer_name": "John Doe",
-		"observer_id": "johndoe@example.com"
+		"observer_id": "johndoe@example.com",
+		"owcloud_login": "johndoe@example.com",
+		"owcloud_password": "password"
 	}
 	
 | Variable | Description |
 | -------- | ----------- |
 | observer\_name | Set to the name of the observer (generally you). |
 | observer\_id | Set to the observer id. This could be email address, a number etc. |
+| owcloud\_login | Set to the owcloud login, usually email address |
+| owcloud\_password | Set to the owcloud password |
 
 ## occultations
 

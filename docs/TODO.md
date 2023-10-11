@@ -28,6 +28,11 @@ Traceback (most recent call last):
   File "/home/pi/astrid/app/UiPanelGps.py", line 42, in __updateTimer
     self.widgetSatellites.setText(str(status['numSatellites']))
 TypeError: 'NoneType' object is not subscriptable
+2023-10-06 03:38:01 main        CRITICAL uncaught exception
+Traceback (most recent call last):
+  File "/home/pi/astrid/app/UiPanelGps.py", line 42, in __updateTimer
+    self.widgetSatellites.setText(str(status['numSatellites']))
+TypeError: 'NoneType' object is not subscriptable
 
 * Whilst adding occultation with meaningless information for occelmnt:
  File "/home/pi/astrid/app/UiPanelObjectAdd.py", line 114, in buttonAddPressed
@@ -43,9 +48,7 @@ TypeError: 'NoneType' object is not subscriptable
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"
 * Install PyMovie/PyOTE on the Pi
 
-* 10X duration for moons
 * Complete:
-	* Star Detection
 	* Focus Support
 	* Path computation, event time, duration
 	* Auto-Stretch lower/upper bound setting
