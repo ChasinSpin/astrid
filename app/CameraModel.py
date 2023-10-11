@@ -1010,9 +1010,10 @@ class CameraModel:
 			self.ui.panelObject.messageBoxSearchObjectFailed()
 
 	def clearObject(self):
-		self.ui.panelObject.setRaDec(None)
-		self.objectCoords = None
-		self.ui.panelObject.widgetSearch.setText('')
+		if self.ui is not None and self.ui.panelObject is not None:
+			self.ui.panelObject.setRaDec(None)
+			self.objectCoords = None
+			self.ui.panelObject.widgetSearch.setText('')
 
 
 	def setObjectCoords(self, coords):

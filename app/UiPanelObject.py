@@ -41,6 +41,10 @@ class UiPanelObject(UiPanel):
 		self.widgetList		= self.addButton('List', True)
 		self.hideWidget(self.widgetAdd)
 		self.hideWidget(self.widgetList)
+
+		# Set to Occultations by default
+		self.widgetDatabase.setCurrentText(UiPanelObject.SEARCH_OCCULTATIONS)
+		self.comboBoxDatabaseChanged(self.widgetDatabase.currentText())
 		
 		self.setColumnWidth(0, 75)
 		self.setColumnWidth(1, 170)
