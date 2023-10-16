@@ -68,8 +68,8 @@ To view debugging serial print's from the firmware, uncomment DEBUG in config.h 
 |1|X1|PJ-063AH|-|PJ-063AH|2.1x5.5mm 8A DC Power Jack PJ-063AH|DigiKey|-|
 |1|X3|S2B-PH-SM4-TB|-|S2B-PH-SM4-TB|Connector Header Surface Mount, Right Angle 2 position 0.079" (2.00mm)|DigiKey|455-S2B-PH-SM4-TBCT-ND|
 |1|X2|Adafruit 2222|-|0.1" Header|0.1" Female Header 2x20|[Adafruit](http://adafru.it/2222)|Digi-Key|1528-1785-ND|
-|2|JP2,JP3|PRPC002SBBN-M71RC|-|0.1" Header|0.1" Right Angled Male Header 1x2|Sullins Connector Solutions|Digi-Key|S1121EC-02-ND|
-|1|-|920-0096-50|-|920-0096-5|0.1" Jumper Wire Female to Female 8.00" (203.20mm) 28 AWG, only need 1 wire here, maybe more cost effective option|SchmartBoard Inc|Digi-Key|1988-1038-ND|
+|2|JP2,JP3|PRPC002SBAN-M71RC|-|0.1" Header|0.1" Right Angled Male Header 1x2|Sullins Connector Solutions|Digi-Key|S1111EC-02-ND|
+|1|-|920-0096-50|-|920-0096-5|0.1" Jumper Wire Female to Female 8.00" (203.20mm) 28 AWG, only need 1 wire here, maybe more cost effective option. These are daisy chained and need to be clipped.|SchmartBoard Inc|Digi-Key|1988-1038-ND|
 |1|Fan|3368|-|30x30x8mm|5VDC 30x30x7.7mm Fan for Cooling|Adafruit or CanaKit Raspberry Pi Fan|Digi-Key|1528-1904-ND|
 |4|-|24332|-|-|24332 Hex Standoff M2.5 x 0.45 Alumnimum 12mm|Keystone Electronics|Digi-Key|36-24332-ND|
 |4|-|4707|-|-|Hex Nut 0.197" Steel M2.5 x 0.45 (to go with standoffs)|Keystone Electronics|Digi-Key|36-4707-ND|
