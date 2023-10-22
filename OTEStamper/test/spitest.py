@@ -29,12 +29,23 @@ def bytesToHexStr(b):
 ospi.open(0, 0, 2000000, 15)
 first = True
 
+print('Switching Buzzer on/off')
+
 (success, data, retries, execution_time_us, fail_hardware_tx, fail_crc) = ospi.cmd(CMD_BUZZER_ON, 0x00, 4)
 print('success: %d, data: %s, retries: %d, execution_time_us: %d fail_tx:%d fail_crc:%d' % (success, bytesToHexStr(data), retries, execution_time_us, fail_hardware_tx, fail_crc))
 
 time.sleep(0.1)
 
 (success, data, retries, execution_time_us, fail_hardware_tx, fail_crc) = ospi.cmd(CMD_BUZZER_OFF, 0x00, 4)
+print('success: %d, data: %s, retries: %d, execution_time_us: %d fail_tx:%d fail_crc:%d' % (success, bytesToHexStr(data), retries, execution_time_us, fail_hardware_tx, fail_crc))
+
+print('Switching Fan off for 5 seconds')
+(success, data, retries, execution_time_us, fail_hardware_tx, fail_crc) = ospi.cmd(CMD_FAN_OFF, 0x00, 4)
+print('success: %d, data: %s, retries: %d, execution_time_us: %d fail_tx:%d fail_crc:%d' % (success, bytesToHexStr(data), retries, execution_time_us, fail_hardware_tx, fail_crc))
+
+time.sleep(5)
+
+(success, data, retries, execution_time_us, fail_hardware_tx, fail_crc) = ospi.cmd(CMD_FAN_ON, 0x00, 4)
 print('success: %d, data: %s, retries: %d, execution_time_us: %d fail_tx:%d fail_crc:%d' % (success, bytesToHexStr(data), retries, execution_time_us, fail_hardware_tx, fail_crc))
 
 ospi.close()
