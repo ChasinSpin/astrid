@@ -46,3 +46,18 @@
 | 2A @ 4.97V | 0.604A @ 18V | 57C |
 | 3A @ 4.89V | 0.920A @ 18V | 85C |
 | 4A @ 4.79V | 1.243A @ 18V | 125C |
+
+## Testing
+
+1. Power at 12V at current limit 40mA, power usage should be approx 25-30mA, GPS LED should be on
+2. Test voltage TP1 = Just above 5V
+3. Test voltage TP2 = 5V
+4. Test in Software with Raspberry Pi and Camera Connected:
+	a) Install firmware
+	b) GPS
+	c) PPS
+	d) Test Buzzer and Fan:
+		cd ~/astrid/OTEStamper/test
+		./spitest.py
+	e) Record video and check all status buttons are green and video is recorded
+	
