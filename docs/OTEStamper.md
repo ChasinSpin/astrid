@@ -36,16 +36,15 @@ To view debugging serial print's from the firmware, uncomment DEBUG in config.h 
 | -------- | ---- | ----- | --------- | ------- | ----------- | ------------ | -------- | --------------- |
 |4|R10,R11,R14,R15|200|5%|0603|Resistor|DigiKey|-|
 |1|R21|430|5%|0603|Resistor|DigiKey|-|
-|11|R1,R2,R3,R4,R7,R9,R12,R13,R17,R18,R20|1K|5%|0603|Resistor|DigiKey|-|
-|2|R8,R19|10K|1%|0603|Resistor|DigiKey|-|
+|10|R1,R2,R3,R4,R7,R9,R12,R13,R17,R20|1K|5%|0603|Resistor|DigiKey|-|
+|3|R8,R18,R19|10K|1%|0603|Resistor|DigiKey|-|
 |1|R6|33K|1%|0402|Resistor|DigiKey|-|
 |1|R16|47K|1%|0603|Resistor|DigiKey|-|
 |1|R23|100K|1%|0603|Resistor|DigiKey|-|
 |1|R5|249K|1%|0402|Resistor|DigiKey|-|
 |1|R22|470K|1%|0603|Resistor|DigiKey|-|
 |2|C2,C5|12pF C0G/NP0|20%|0603|Capacitor|DigiKey|-|
-|1|C12|1nF X5R/X7R|20%|0603|Capacitor|DigiKey|-|
-|4|C10,C11,C13,C14|0.1uF X5R/X7R|20%|0603|Capacitor|DigiKey|-|
+|5|C10,C11,C12,C13,C14|0.1uF X5R/X7R|20%|0603|Capacitor|DigiKey|-|
 |1|C3|0.1uF X5R/X7R|20%|0402|Capacitor|DigiKey|-|
 |1|C4|1uF X5R/X7R|20%|0402|Capacitor|DigiKey|-|
 |3|C6,C7,C8|22 uF 10V X5R/X7R|20%|0603|Capacitor|DigiKey|-|

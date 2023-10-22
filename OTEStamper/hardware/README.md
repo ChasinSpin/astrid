@@ -18,6 +18,15 @@
 * Added JST 2 Pin Connector For Different 12V Source
 * Changed Q1/Q2 to MMBT2222A-TP for increased fan current upto 500mA
 
+## Version 1.0.0 (no board revision)
+
+Extended monostable duration from 1.2us to 1ms to account for
+different versions of the camera module with varying XVS pulse lengths, which
+can cause multiple pulses for each XVS signal:
+
+ * Changed R18 from 1K to 10K
+ * Changes C12 from 1nF to 0.1uF
+
 
 ## Future Ideas
 

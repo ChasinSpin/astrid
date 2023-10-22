@@ -12696,8 +12696,8 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <part name="R17" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="R-US" device="" package3d_urn="urn:adsk.eagle:package:6297178/3" value="1K"/>
 <part name="GND16" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="0V" device=""/>
 <part name="+3V12" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="+3V3" device=""/>
-<part name="C12" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="C-EU" device="" package3d_urn="urn:adsk.eagle:package:23680/2" value="1nF"/>
-<part name="R18" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="R-US" device="" package3d_urn="urn:adsk.eagle:package:6297178/3" value="1K"/>
+<part name="C12" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="C-EU" device="" package3d_urn="urn:adsk.eagle:package:23680/2" value="0.1uF"/>
+<part name="R18" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="R-US" device="" package3d_urn="urn:adsk.eagle:package:6297178/3" value="10K"/>
 <part name="+3V13" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="+3V3" device=""/>
 <part name="U3" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="ATMEGA328PB_TQFP" device="" package3d_urn="urn:adsk.eagle:package:40732480/2" value="ATMEGA328PB_AU(32TQFP)"/>
 <part name="R7" library="SkyFall" library_urn="urn:adsk.eagle:library:9574203" deviceset="R-US" device="" package3d_urn="urn:adsk.eagle:package:6297178/3" value="1K"/>
