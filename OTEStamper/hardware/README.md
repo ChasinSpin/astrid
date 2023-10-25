@@ -62,11 +62,21 @@ can cause multiple pulses for each XVS signal:
 2. Test voltage TP1 = Just above 5V
 3. Test voltage TP2 = 5V
 4. Test in Software with Raspberry Pi and Camera Connected:
+
 	a) Install firmware
+	
+		make reset
+		make writefuses
+		make install
+
 	b) GPS
+	
 	c) PPS
+	
 	d) Test Buzzer and Fan:
+	
 		cd ~/astrid/OTEStamper/test
 		./spitest.py
+	
 	e) Record video and check all status buttons are green and video is recorded
 	
