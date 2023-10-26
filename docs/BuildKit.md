@@ -14,6 +14,7 @@ If you are not using the Partial Kit and you are building entirely from scratch,
 * Hot-Glue
 * Super-Glue
 * Electrical Tape
+* Loctite 242
 
 ## Parts Required
 
@@ -31,7 +32,7 @@ If you are not using the Partial Kit and you are building entirely from scratch,
 * 4 x 2.5mm Nuts (Black)
 * 4 x 2.5mm x 10mm Bolts
 * 8 x 2.5mm x 14mm Bolts
-* 4 x Aluminum or Brass Hex Standoffs Posts (2.5mm x 0.45 x 12mm)
+* 4 x Aluminum or Brass Hex Standoffs Posts (2.5mm x 0.45 x 11mm)
 * Small Zip-Tie
 * Astrid 3D-Printed:
 	* Case Bottom
@@ -71,7 +72,7 @@ If you are not using the Partial Kit and you are building entirely from scratch,
 * Connect 0.1\" header wire and use hot glue too prevent becoming loose.	
 	![Connect Header](images/assembly5.jpg)
 
-* Unscrew the 2 screws on the back of the camera, and screw on the supplied CS Lens Seat.  Cap the CS Lens Seat to protect the sensor.
+* Unscrew the 2 screws on the back of the camera, and screw on the supplied CS Lens Seat, put some Loctite on the screws (not excessive) and do not overtighten.  Cap the CS Lens Seat to protect the sensor.
 
 	![CS Lens Seat Installed](images/assembly8.jpg)
 	

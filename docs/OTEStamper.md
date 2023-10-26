@@ -70,7 +70,7 @@ To view debugging serial print's from the firmware, uncomment DEBUG in config.h 
 |2|JP2,JP3|PRPC002SBAN-M71RC|-|0.1" Header|0.1" Right Angled Male Header 1x2|Sullins Connector Solutions|Digi-Key|S1111EC-02-ND|
 |1|-|920-0096-50|-|920-0096-5|0.1" Jumper Wire Female to Female 8.00" (203.20mm) 28 AWG, only need 1 wire here, maybe more cost effective option. These are daisy chained and need to be clipped.|SchmartBoard Inc|Digi-Key|1988-1038-ND|
 |1|Fan|3368|-|30x30x8mm|5VDC 30x30x7.7mm Fan for Cooling|Adafruit or CanaKit Raspberry Pi Fan|Digi-Key|1528-1904-ND|
-|4|-|24332|-|-|24332 Hex Standoff M2.5 x 0.45 Alumnimum 12mm|Keystone Electronics|Digi-Key|36-24332-ND|
+|4|-|24332|-|-|24332 Hex Standoff M2.5 x 0.45 Alumnimum 12mm or 11mm|Keystone Electronics|Digi-Key|36-24332-ND|
 |4|-|4707|-|-|Hex Nut 0.197" Steel M2.5 x 0.45 (to go with standoffs)|Keystone Electronics|Digi-Key|36-4707-ND|
 |1|MODULE1|GT-U7|-|Module|NEO-6M Based GPS Module with PPS|Goouuu Tech|Amazon|[GT-U7 GPS board](https://www.amazon.com/Navigation-Satellite-Compatible-Microcontroller-Geekstory/dp/B07PRGBLX7/ref=sr_1_2?crid=ZLVK5XJ3YEOT&keywords=GT-U7&qid=1680044165&sprefix=gt-u7%2Caps%2C120&sr=8-2)||
 |2|-|Zip Tie|-|Zip-Tie|Zip-Tie (max width 3mm)|DigiKey|-|

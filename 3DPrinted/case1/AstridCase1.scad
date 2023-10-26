@@ -46,7 +46,7 @@
 // Camera deformation
 
 // THESE MAY NEED CHANGING, IF THERE ARE CLEARANCE ISSUES, OR HADRDWARE DIFFERENCES
-partNum                     = 6;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers, 8 = Power Hole Block, GPS Pigtail
+partNum                     = 6;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers
 logoNum                     = 3;            // 1 = Eclipse (short text), 2 = Eclipse (full text), 3 = Asteroid Occultation
 externalGps                 = true;         // Make a whole for an external GPS if true
 nutDiameter                 = 5.8 + 0.2;    // This is point to point
@@ -54,9 +54,10 @@ nutThickness                = 2.0;
 boltHeadDiameter            = 4.5;
 boltHeadHeight              = 1.6;
 boltHoleDiameter            = 2.6;
-clearancePiXY               = 0.5;          // Clearance around the raspberry Pi in the X/Y axis for 3D printing fit
+clearancePiX                = 0.5;          // Clearance around the raspberry Pi in the X axis
+clearancePiY                = 3.5;          // Clearance around the raspberry Pi in the Y axis
 caseSideThickness           = 2.0;
-caseBoltLength              = 13;
+caseBoltLength              = 13 + 7.68;
 caseBoltHoleInset           = 17.0;         // Inset from the corner of caseOuterBorder below
 casePCBToTopHatHeight       = 35;           // This distance from the the bottom of the Pi PCB to the top of the electronics(hats) + fan thickness plus any clearance for flow
 
@@ -65,20 +66,25 @@ caseBottomTopThickness      = 3.0;          // Thickness of the bottom and top o
 piBoardDimensions           = [85, 56, 1.5, 3.5];
 caseBottomPiHoleOuterDia    = 6.0;          // Outside of the boltHoleDiameter
 caseOuterBorder             = [piBoardDimensions[0] + 40, piBoardDimensions[1] + 40, 1];
-caseOuterInset              = [85 + (clearancePiXY + caseSideThickness) * 2, 56 + (clearancePiXY + caseSideThickness) * 2, 1];
+caseOuterInset              = [85 + (clearancePiX + caseSideThickness) * 2, 56 + (clearancePiY + caseSideThickness) * 2, 1];
 caseOuterBorderRadius       = 5.0;
 caseOuterInsetRadius        = 20.0;
 caseOuterInsetInset         = 10;
-fanCenterPosition           = [-piBoardDimensions[0]/2 + 21, 0];
+fanCenterPosition           = [-piBoardDimensions[0]/2 + 21, 10];
 fanDimensions               = [30.4, 30.4, 8.1];
+fanCoverDimensions          = [30, 30, 2.0];
+fanCoverRecessDiameter      = 29.0;
 fanHolePositionXY           = 12;
 fanPostDiameter             = 2.6;
-fanPostHeight               = 6;
+fanCoverPostHoleDiameter    = fanPostDiameter + 0.2;
+fanCoverThickness           = 2.0;
+fanPostHeight               = 8.1 + fanCoverDimensions[2];
 fanVentDiameter             = 28.5;
 fanClipThickness            = 1;
 fanClipWidth                = 10;
 fanClipRoundThickness       = 0.7;
-fanClipHeight               = fanDimensions[2] + fanClipRoundThickness * 2;
+
+fanClipHeight               = fanDimensions[2] + fanCoverDimensions[2] + fanClipRoundThickness * 2;
 sideVentDiamondSize         = 1.0;
 sideVentDiamondSpacing      = 2.0;
 sideVentHeight              = 25;
@@ -118,32 +124,23 @@ mountExtensionOuter         = [28, 8, cameraMountDepth];
 sideVent1                   = [[0, caseOuterInset[1]/2 - caseSideThickness/2, sideVentHeight], 55, 10];     // [[CenterPosition], length, height]
 sideVent2                   = [[0, -(caseOuterInset[1]/2 - caseSideThickness/2), sideVentHeight], 55, 10];
 sideVent3                   = [[0, caseOuterInset[0]/2 - caseSideThickness/2, sideVentHeight], 30, 10];
-punchOutCase                = 2;
+punchOutCase                = 5.5;
 portRecessDepth             = 1.0;
-portRecess1Pos              = [-10, -(caseOuterInset[1]/2 - portRecessDepth),10];
-portRecess1Dimensions       = [60, 13, 40];
 portRecess2Dimensions       = [16+4, 10, 15+6];
 portRecess2Pos              = [-27.7, -caseOuterInset[0]/2 - portRecess2Dimensions[1],5.2];
 portRecess3Dimensions       = [16+4, 10, 15+3.5];
 portRecess3Pos              = [7.5, -caseOuterInset[0]/2 - portRecess3Dimensions[1],5.2];
 portRecess4Dimensions       = [12, 10, 2.25 + 4];
 portRecess4Pos              = [-portRecess4Dimensions[0]/2, -caseOuterInset[0]/2 - portRecess4Dimensions[1] + caseSideThickness/2, -portRecess4Dimensions[2] / 2 + caseBottomPiClearance + caseBottomTopThickness - (0.32 + 2.25/4)];
-caseSplitHeight             = caseBottomTopThickness + caseBottomPiClearance + 4.75;
+caseSplitHeight             = caseBottomTopThickness + caseBottomPiClearance + 4.75 + 7.68;
 piBoardHoleLocation         = [ [3.5, 3,5], [3.5, 3.5+49], [3.5+58, 3.5], [3.5+58, 3.5+49] ];
 piBoardSDCardSlotDimensions = [2.5 + punchOutCase, 12, 2.25];
 piBoardSDCardSlotPosZ       = 0.32;
 piBoardSDCardSupportDiameter= 0.8;
 piBoardSDCardSupportLocs    = [-3, 0, 3];
-sdCardSupportPos            = [-(piBoardDimensions[0]/2 + clearancePiXY) - 0.5, 0, 0];
+sdCardSupportPos            = [-(piBoardDimensions[0]/2 + clearancePiX) - 0.5, 0, 0];
 piBoardHeaderDimensions     = [51.15, 4.9, 12.0];
 piBoardHeaderPos            = [3.5+29-piBoardHeaderDimensions[0]/2, piBoardDimensions[1]-(3.5 + piBoardHeaderDimensions[1]/2), 0];
-piBoardUSBCDimensions       = [9, 1.25 + punchOutCase, 3.5];
-piBoardUSBCDPosition        = 3.5+7.7;
-piBoardHDMIDimensions       = [7.11, 1.5 + punchOutCase, 3.6];
-piBoardHDMI1Position        = piBoardUSBCDPosition + 14.8;
-piBoardHDMI2Position        = piBoardHDMI1Position + 13.5;
-piBoardAudioDimensions      = [6.0, 2.3 + punchOutCase];
-piBoardAudioPosition        = piBoardHDMI2Position + 7 + 7.5;
 piBoardUSB1Dimensions       = [14.8, 3.18 + punchOutCase, 16.5];
 piBoardUSB1Position         = 9;
 piBoardUSB2Dimensions       = [14.5, 3.18 + punchOutCase, 16.5];
@@ -154,10 +151,11 @@ piBoardLED1Dimensions       = [1.2, 3 + punchOutCase, 1.3];
 piBoardLED2Dimensions       = [1.2, 3 + punchOutCase, 1.3];
 piBoardLED1Position         = [8.0, -0.4];
 piBoardLED2Position         = [11.65, -0.4];
-timingBoardJackDimensions   = [11.25, 1.25 + punchOutCase, 10 + 13.17];
-timingBoardJackPos          = 3.5+10.47;
+timingBoardReinforcementThickness = 3;
+timingBoardJackDimensions   = [11.25, 1.25 + punchOutCase, 13.5];
+timingBoardJackPos          = [3.5+10.47, 0, 10 + 1.17];
 xvsLeadChannelDimensions    = [2, 2, 20];
-xvsLeadChannelPos           = [-38, +(piBoardDimensions[1] + clearancePiXY * 2)/2 - manifoldCorrection, caseBottomTopThickness];
+xvsLeadChannelPos           = [-38, +(piBoardDimensions[1] + clearancePiY * 2)/2 - manifoldCorrection, caseBottomTopThickness];
 
 
 caseNutDepth                = caseSplitHeight - 2;
@@ -170,15 +168,6 @@ logo1Pos                    = [15, 0];
 logo2Pos                    = [25, 0];
 logo3Pos                    = [19, 0];
 
-gpsDimensions               = [15.4, 15.4, 5.2];
-gpsFrameBorder              = 2;
-gpsFrameHeight              = 1.5;
-gpsClipThickness            = 1;
-gpsClipWidth                = 10;
-gpsClipRoundThickness       = 0.7;
-gpsClipHeight               = gpsDimensions[2] + gpsClipRoundThickness * 2;
-gpsClampPos                 = [piBoardDimensions[0]/2 + clearancePiXY - gpsDimensions[0]/2 - gpsFrameBorder, -17];
-
 gpsExternalCableHoleDiameter= 6.5;
 gpsExternalCableZPosZ       = caseBottomTopThickness + 4.55;    // This is the distance from the top of the case
 
@@ -186,14 +175,6 @@ cameraWasherDimensions      = [5.0, 2.6, 1.0];
 gpsWasherDimensions         = [6.0, 3.0, 2.4];
 gpsWasherLozengeDimensions  = [21.0, 4.0, gpsWasherDimensions[2]];
 gpsWasherLozengeRetainerDimensions = [15.0, 1.56, 1.5];
-
-powerHoleBlockDimensions    = [10.25, 9.66, 8.3];
-powerHoleLipDimensions      = [powerHoleBlockDimensions[0], 1.2, 1.4];
-powerHoleBlockPinsDimensions = [powerHoleBlockDimensions[0], 7.8-3.16, 1.5];
-powerHoleBlockPinsOffset     = [0, 3.16, powerHoleBlockDimensions[2] - powerHoleBlockPinsDimensions[2]];
-
-gpsPigtailCoverInnerDiameter = gpsExternalCableHoleDiameter - 0.4;
-gpsPigtailCoverOuterDiameter = gpsPigtailCoverInnerDiameter + 2;
 
 $fn                         = 80;
 
@@ -226,64 +207,54 @@ if ( partNum == 6 )
     translate( [0, 0, 0] )
         piCaseBottom();
     
-    translate( [0, 38, 0] )
+    translate( [0, 40.5, 0] )
         rotate( [0, 180, 0] )
             cameraPostsLine();
     
-    translate( [-15, -38, 0] )
+    translate( [-15, -43, 0] )
         cameraGpsWashers();
     
-    translate( [15, -45, 0] )
-        powerHoleBlock();
-
-    translate( [28, -38, 0] )
-        gpsPigtail();
-    
-    translate( [0, caseOuterBorder[1] - 20, caseHeight - caseSplitHeight] ) 
+    translate( [0, caseOuterBorder[1] - 15, caseHeight - caseSplitHeight] ) 
         rotate( [180, 0, 0] )
             translate( [0, 0, -caseSplitHeight] ) 
                 piCaseTop();
+    
+    translate( [20, -51, 0] )
+        fanCover();
 }
 
 if ( partNum == 7 ) cameraGpsWashers();
+    
+if ( partNum == 8 )   fanCover();
 
-if ( partNum == 8 )
-{
-    powerHoleBlock();
-    translate( [15, 0, 0] )
-        gpsPigtail();
-}
 
 //translate( [-piBoardDimensions[0]/2, -piBoardDimensions[1]/2, caseBottomTopThickness + caseBottomPiClearance] )
 //    raspberryPi4BModel();
 
 
-
-module gpsPigtail()
+module fanCover()
 {
-    cylinder(d = gpsPigtailCoverOuterDiameter, h = caseSideThickness);
-    translate( [0, 0, caseSideThickness] )
-        cylinder(d = gpsPigtailCoverInnerDiameter, h = caseSideThickness);
-}
-
-
-
-module powerHoleBlock()
-{
-    translate( [-powerHoleBlockDimensions[0]/2, 0, 0] )
+    difference()
     {
-        difference()
+        roundedRect(fanCoverDimensions[0], fanCoverDimensions[1], fanCoverThickness, 3);
+        translate( [0, 0, fanCoverThickness/2 + manifoldCorrection] )
+            cylinder( d = fanCoverRecessDiameter, h = fanCoverThickness/2 );
+        
+            // Fan Posts
+        for ( pos = [
+            [fanHolePositionXY,   fanHolePositionXY],
+            [-fanHolePositionXY,  fanHolePositionXY],
+            [fanHolePositionXY,  -fanHolePositionXY],
+            [-fanHolePositionXY, -fanHolePositionXY],
+            ] )
         {
-            union()
+            translate( [pos[0], pos[1], -manifoldCorrection] )
             {
-                cube(powerHoleBlockDimensions);
-                translate( [0, 0, powerHoleBlockDimensions[2]] )
-                    cube(powerHoleLipDimensions);
+                cylinder(d=fanCoverPostHoleDiameter, h=fanCoverThickness + manifoldCorrection * 2);
             }
-            
-            translate( [powerHoleBlockPinsOffset[0] - manifoldCorrection, powerHoleBlockPinsOffset[1], powerHoleBlockPinsOffset[2]] )
-                cube( [powerHoleBlockPinsDimensions[0] + manifoldCorrection * 2, powerHoleBlockPinsDimensions[1], powerHoleBlockPinsDimensions[2] + manifoldCorrection] );
         }
+        
+        fanVent();
     }
 }
 
@@ -304,32 +275,12 @@ module cameraGpsWashers()
     translate( [-20, 0, 0] )
         donut(gpsWasherDimensions[0], gpsWasherDimensions[1], gpsWasherDimensions[2]);
     
-    translate( [10, 0, 0] )
+    translate( [0, -10, 0] )
     {
         lozenge(gpsWasherLozengeDimensions[0], gpsWasherLozengeDimensions[1], gpsWasherLozengeDimensions[2]);
         translate( [0, 0, gpsWasherLozengeDimensions[2]] )
             lozenge(gpsWasherLozengeRetainerDimensions[0], gpsWasherLozengeRetainerDimensions[1], gpsWasherLozengeRetainerDimensions[2]);
     }
-}
-
-
-
-module gpsClamp()
-{
-    // Frame
-    difference()
-    {
-        translate( [0, 0, gpsFrameHeight / 2] )
-            cube( [gpsDimensions[0] + gpsFrameBorder * 2, gpsDimensions[1] + gpsFrameBorder * 2, gpsFrameHeight], center = true ); 
-        translate( [0, 0, gpsDimensions[2] / 2 - manifoldCorrection] )
-            cube( gpsDimensions, center = true );
-    }
-    
-    translate( [0, -gpsDimensions[1]/2 - gpsClipThickness/2, 0] )
-        clip(gpsClipWidth, gpsClipThickness, gpsClipHeight, gpsClipRoundThickness);
-    translate( [0, gpsDimensions[1]/2 + gpsClipThickness/2, 0] )
-        rotate( [0, 0, 180] )
-            clip(gpsClipWidth, gpsClipThickness, gpsClipHeight, gpsClipRoundThickness);
 }
 
 
@@ -495,7 +446,7 @@ module cameraHolder()
                 
                 // Internal Void
                 translate( [0, 0, -cameraVoidDimensions[2] / 2] )
-                    cube( [cameraVoidDimensions[0], cameraVoidDimensions[1], cameraVoidDimensions[2] + manifoldCorrection], center = true);
+                    cube( [cameraVoidDimensions[0], cameraVoidDimensions[1] + clearancePiY * 2, cameraVoidDimensions[2] + manifoldCorrection], center = true);
             }
             
 
@@ -613,7 +564,7 @@ module suctionReleaseVent()
     
 
 
-module piCaseTop(height)
+module piCaseTop()
 {
     difference()
     {
@@ -630,7 +581,7 @@ module piCaseTop(height)
 
 
 
-module piCaseBottom(height)
+module piCaseBottom()
 {
     difference()
     {
@@ -661,7 +612,7 @@ module piCase(height, expandedBoltHole)
         // Rounded case outer shape
         piCaseFilled(height);
         // Variables we need for the next calculation
-        caseBoltHoleTemplate     = [caseOuterBorder[0] - caseBoltHoleInset * 2, caseOuterBorder[1] - caseBoltHoleInset * 2];
+        caseBoltHoleTemplate     = [caseOuterBorder[0] - caseBoltHoleInset * 2, caseOuterBorder[1] - caseBoltHoleInset * 2 + clearancePiY];
         caseBoltHoleTemplateHalf = caseBoltHoleTemplate / 2;
 
         // Holes to bolt case together
@@ -683,7 +634,7 @@ module piCase(height, expandedBoltHole)
         // Void for the Pi and hats inside the case
         difference()
         {
-            void = [piBoardDimensions[0] + clearancePiXY * 2, piBoardDimensions[1] + clearancePiXY * 2, caseBottomPiClearance + casePCBToTopHatHeight];
+            void = [piBoardDimensions[0] + clearancePiX * 2, piBoardDimensions[1] + clearancePiY * 2, caseBottomPiClearance + casePCBToTopHatHeight];
             translate( [0, 0, void[2]/2 + caseBottomTopThickness] )
                 cube( void, center = true);
             
@@ -720,9 +671,6 @@ module piCase(height, expandedBoltHole)
             sideVentStrip(sideVent3[0], sideVent3[1], sideVent3[2], sideVentDiamondSpacing, caseSideThickness + manifoldCorrection * 2, sideVentDiamondSize);
         
         // Port Recesses
-        translate( portRecess1Pos )
-            rotate( [90, 0, 0] )
-                lozenge(portRecess1Dimensions[0], portRecess1Dimensions[1], portRecess1Dimensions[2]);
         rotate( [0, 0, 90] )
             translate( portRecess2Pos )
                 cube(portRecess2Dimensions);
@@ -772,7 +720,7 @@ module piCase(height, expandedBoltHole)
         // Hole for the external GPS Cable
         if ( externalGps )
         {
-            translate( [(piBoardDimensions[0] + clearancePiXY * 2)/2 + caseSideThickness/2, 0, height-gpsExternalCableZPosZ] )
+            translate( [(piBoardDimensions[0] + clearancePiX * 2)/2 + caseSideThickness/2, 0, height-gpsExternalCableZPosZ] )
                 rotate( [0, 90, 0] )
                     cylinder(d=gpsExternalCableHoleDiameter, h=caseSideThickness + manifoldCorrection * 2, center = true);
         }
@@ -782,17 +730,26 @@ module piCase(height, expandedBoltHole)
             cube( xvsLeadChannelDimensions );
     }
     
-    // GPS Clamp
-    translate( [gpsClampPos[0], gpsClampPos[1], height - caseBottomTopThickness] )
-        rotate( [0, 180, 0] )
-            gpsClamp();
-    
     // Fan Posts and Clamps
     translate( [fanCenterPosition[0], fanCenterPosition[1], height - caseBottomTopThickness] )
     {
         rotate( [0, 180, 0] )
             fanPostsAndClamp();
     }
+    
+    
+    // DC Jack Reinforcement
+    translate( [-piBoardDimensions[0]/2, -piBoardDimensions[1]/2 - clearancePiY + timingBoardReinforcementThickness, caseBottomTopThickness] )
+        translate( [timingBoardJackPos[0], timingBoardJackPos[1], 0] )
+        {
+            difference()
+            {
+                raspberryPiCubePort([timingBoardJackDimensions[0] + 5, timingBoardReinforcementThickness, caseBottomPiClearance + casePCBToTopHatHeight], 0);
+
+                translate( [0, -timingBoardReinforcementThickness/2 + manifoldCorrection, 0] )
+                    cube( [timingBoardJackDimensions[0] + 5 + manifoldCorrection * 2, timingBoardReinforcementThickness + manifoldCorrection, 30.9], center = true );
+            }
+        }
 }
 
 
@@ -945,32 +902,12 @@ module raspberryPi4BModel()
         color( [0, 0, 0] )
             translate( piBoardHeaderPos )
                 cube( piBoardHeaderDimensions );
-        
-        // USB-C
-        color( [0.9, 0.9, 0.9] )
-            translate( [piBoardUSBCDPosition, 0, 0] )
-                raspberryPiCubePort(piBoardUSBCDimensions, raspberryPiPortClearance);
-        
+                
         // Timing Board 12V DC Jack
         color( [0.9, 0.9, 0.9] )
-            translate( [timingBoardJackPos, 0, 0] )
+            translate( [timingBoardJackPos[0], timingBoardJackPos[1], timingBoardJackPos[2]] )
                 raspberryPiCubePort(timingBoardJackDimensions, raspberryPiPortClearance);
-        
-        // HDMI1
-        color( [0.9, 0.9, 0.9] )
-            translate( [piBoardHDMI1Position, 0, 0] )
-                raspberryPiCubePort(piBoardHDMIDimensions, raspberryPiPortClearance);
-
-        // HDMI2
-        color( [0.9, 0.9, 0.9] )
-            translate( [piBoardHDMI2Position, 0, 0] )
-                raspberryPiCubePort(piBoardHDMIDimensions, raspberryPiPortClearance);
-        
-        // Audio Port
-        color( [0.9, 0.9, 0.9] )
-            translate( [piBoardAudioPosition, 0, 0] )
-                raspberryPiCylinderPort(piBoardAudioDimensions, raspberryPiPortClearance);
-                
+                        
         // USB1        
         color( [0.9, 0.9, 0.9] )
             translate( [piBoardDimensions[0], piBoardUSB1Position, 0] )
