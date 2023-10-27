@@ -1,6 +1,5 @@
 # TODO
 
-* New Boards, check buzzer working with new transistor and fan transistor is fully open, max current.
 * astropy download
 * Steve Calcs
 * Countdown to record (Ted)
