@@ -13,7 +13,7 @@ from UiDialogPanel import UiDialogPanel
 from UiPanelConfig import UiPanelConfig
 from UiPanelMessage import UiPanelMessage
 from UiSplashScreen import UiSplashScreen
-from PyQt5.QtWidgets import QApplication, QSplashScreen
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QPixmap
 from CameraModel import CameraModel, OperatingMode
@@ -76,6 +76,7 @@ if __name__ == '__main__':
 		global settings_folder, settings_summary
 
 		if folder is None or summary is None:
+			QMessageBox.warning(None, ' ', 'Configuration changed. Relaunch Astrid to use new configuration.', QMessageBox.Ok)
 			splash_screen.close()
 			logger.warning('user changed config, aborting so that the user can relaunch with the new config...')
 			shutdown_subprocesses()
