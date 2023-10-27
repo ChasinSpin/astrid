@@ -74,7 +74,7 @@ can cause multiple pulses for each XVS signal:
 	c) PPS
 	
 	d) Test Buzzer and Fan:
-	
+* 	
 		cd ~/astrid/OTEStamper/test
 		./spitest.py
 	
