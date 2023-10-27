@@ -9,7 +9,7 @@ class UiSplashScreen():
 	def __init__(self):
 		super().__init__()
 
-		pixmap = QPixmap('splash.png')
+		pixmap = QPixmap('splash_images/1.png')
 		self.splash = QSplashScreen(pixmap)
 
 		self.splash.setFixedSize(600, 327)
