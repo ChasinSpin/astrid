@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QSplashScreen, QDesktopWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
+import random
 
 
 
@@ -9,7 +10,10 @@ class UiSplashScreen():
 	def __init__(self):
 		super().__init__()
 
-		pixmap = QPixmap('splash_images/1.png')
+		fileNo = random.choices( [1,2,3,4] )[0]
+		filename = 'splash_images/' + str(fileNo) + '.png'
+
+		pixmap = QPixmap(filename)
 		self.splash = QSplashScreen(pixmap)
 
 		self.splash.setFixedSize(600, 327)
