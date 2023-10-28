@@ -7,7 +7,7 @@ CFLAGS=-g -Os -Wall -mcall-prologues -mmcu=$(MCU)
 OBJ2HEX=/usr/bin/avr-objcopy
 AVRDUDE=/usr/local/bin/avrdude
 TARGET=otestamper
-OBJS=otestamper.o circbuf.o spi.o usart.o buzzer.o debug.o led.o fan.o captureclock.o gps.o eeprom.o frameinterrupt.o
+OBJS=otestamper.o circbuf.o spi.o usart.o buzzer.o debug.o led.o fan.o captureclock.o gps.o eeprom.o frameinterrupt.o voltage.o
 
 
 
@@ -16,7 +16,7 @@ all:	$(OBJS)
 	$(OBJ2HEX) -R .eeprom -O ihex $(TARGET) $(TARGET).hex
 	rm -f $(TARGET)
 
-otestamper.o: otestamper.c config.h debug.h spi.h usart.h buzzer.h led.h fan.h captureclock.h gps.h eeprom.h frameinterrupt.h
+otestamper.o: otestamper.c config.h debug.h spi.h usart.h buzzer.h led.h fan.h captureclock.h gps.h eeprom.h frameinterrupt.h voltage.h
 	$(CC) $(CFLAGS) -c otestamper.c
 
 circbuf.o: circbuf.c circbuf.h
@@ -52,6 +52,9 @@ eeprom.o: eeprom.c eeprom.h debug.h config.h
 frameinterrupt.o: frameinterrupt.c frameinterrupt.h config.h
 	$(CC) $(CFLAGS) -c frameinterrupt.c
 
+voltage.o: voltage.c voltage.h config.h
+	$(CC) $(CFLAGS) -c voltage.c
+
 debug.h:
 
 circbuf.h:
@@ -73,6 +76,8 @@ gps.h:
 eeprom.h:
 
 frameinterrupt.h:
+
+voltage.h:
 
 install: all
 	raspi-gpio set 22 op

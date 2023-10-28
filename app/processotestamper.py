@@ -29,7 +29,7 @@ CMD_FRAME_TIMING_INFO_INTERRUPT_ON      = (0x79, 0x00)
 CMD_FRAME_TIMING_INFO_INTERRUPT_OFF     = (0x7A, 0x00)
 CMD_BUZZER_ON                           = (0x7B, 0x00)
 CMD_BUZZER_OFF                          = (0x7C, 0x00)
-CMD_GPS_INFO                            = (0x90, 0x1A)
+CMD_GPS_INFO                            = (0x90, 0x1C)
 CMD_FRAME_TIMING_INFO                   = (0x91, 0x10)
 CMD_CONFIRM_FRAME_RECEIVED              = (0x92, 0x00)
 CMD_TEST_FRAME_FOR_VALIDATION           = (0x93, 0x10)
@@ -199,14 +199,15 @@ class ProcessOteStamper:
 
 		(success, data) = self.__sendCmd(CMD_GPS_INFO, log = False)
 		if success:
-			(latitude, longitude, altitude, numSatellites, fix, pdop, hdop, vdop, unixEpoch, leapSeconds, clockStatus)  = struct.unpack('=iiiBBHHHIbB', data)
+			(latitude, longitude, altitude, numSatellites, fix, pdop, hdop, vdop, unixEpoch, leapSeconds, clockStatus, voltage)  = struct.unpack('=iiiBBHHHIbBH', data)
 
-			latitude /= 10000000.0
-			longitude /= 10000000.0
-			altitude /= 10.0
-			pdop /= 100.0
-			hdop /= 100.0
-			vdop /= 100.0
+			latitude	/= 10000000.0
+			longitude	/= 10000000.0
+			altitude	/= 10.0
+			pdop		/= 100.0
+			hdop		/= 100.0
+			vdop		/= 100.0
+			voltage		= (voltage * 3.3) / (1023.0 * 0.1754385)
 
 			status = {	'latitude': latitude,
 					'longitude': longitude,
@@ -218,7 +219,8 @@ class ProcessOteStamper:
 					'vdop': vdop,
 					'leapSeconds': leapSeconds,
 					'clockStatus': clockStatus,
-					'unixEpoch': unixEpoch }
+					'unixEpoch': unixEpoch,
+					'voltage': voltage }
 
 			self.__queue_clear(self.queue_gpsInfo)
 			self.queue_gpsInfo.put(status)

@@ -14,6 +14,7 @@
 #include "frameinterrupt.h"
 #include "gps.h"
 #include "eeprom.h"
+#include "voltage.h"
 
 
 
@@ -51,7 +52,7 @@ int  main (void)
 	buzzerInit();
 	gpsInit();
 	captureclockInit();
-
+	voltageInit();
 
 	sei();				// Global interrupts enabled
 
@@ -72,12 +73,17 @@ int  main (void)
 	{
 		gpsProcess();
 
+		if (( count % 40000 ) == 0)
+		{
+			voltageStartRead();
+		}
+
 		/*
 		if (( count % 10000 ) == 0)
 		{
-                	DEBUG_STR("Status: ");
-                	DEBUG_HEX(captureclockStatus());
-                	DEBUG_CHAR('\n');
+			DEBUG_STR("Status: ");
+			DEBUG_HEX(captureclockStatus());
+			DEBUG_CHAR('\n');
 		}
 		*/
 

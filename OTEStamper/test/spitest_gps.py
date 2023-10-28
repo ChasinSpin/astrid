@@ -31,7 +31,7 @@ ospi.open(0, 0, 2000000, 15)
 first = True
 
 while True:
-	(success, data, retries, execution_time_us, fail_hardware_tx, fail_crc) = ospi.cmd(CMD_GPS_INFO, 0x1A, 4)
+	(success, data, retries, execution_time_us, fail_hardware_tx, fail_crc) = ospi.cmd(CMD_GPS_INFO, 0x1C, 4)
 	
 	if success == 0:
 		print('failed: %d, data: %s, retries: %d, execution_time_us: %d fail_tx:%d fail_crc:%d' % (success, bytesToHexStr(data), retries, execution_time_us, fail_hardware_tx, fail_crc))
@@ -39,7 +39,7 @@ while True:
 		print('retried: %d, data: %s, retries: %d, execution_time_us: %d fail_tx:%d fail_crc:%d' % (success, bytesToHexStr(data), retries, execution_time_us, fail_hardware_tx, fail_crc))
 	else:
 		#print('success: %d, data: %s, retries: %d, execution_time_us: %d fail_tx:%d fail_crc:%d' % (success, bytesToHexStr(data), retries, execution_time_us, fail_hardware_tx, fail_crc))
-		(latitude, longitude, altitude, numSatellites, fix, pdop, hdop, vdop, unixEpoch, leapSeconds, clockStatus)  = struct.unpack('=iiiBBHHHIbB', data)
+		(latitude, longitude, altitude, numSatellites, fix, pdop, hdop, vdop, unixEpoch, leapSeconds, clockStatus, voltage)  = struct.unpack('=iiiBBHHHIbBH', data)
 
 		latitude	/= 10000000.0
 		longitude	/= 10000000.0
@@ -47,6 +47,7 @@ while True:
 		pdop		/= 100.0
 		hdop		/= 100.0
 		vdop		/= 100.0
+		voltage		=  (voltage * 3.3) / (1023.0 * 0.1754385)
 
 		gps = {	'latitude': latitude,
 			'longitude': longitude,
@@ -58,7 +59,8 @@ while True:
 			'vdop': vdop,
 			'leapSeconds': leapSeconds,
 			'clockStatus': clockStatus,
-			'unixEpoch': unixEpoch }
+			'unixEpoch': unixEpoch,
+			'voltage': voltage }
 
 		print(gps)
 

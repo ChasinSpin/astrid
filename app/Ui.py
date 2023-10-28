@@ -2,6 +2,7 @@ import os
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QMessageBox, QProgressBar
 from CameraModel import OperatingMode
 from UiPanel import UiPanel
@@ -11,6 +12,7 @@ from UiPanelObject import UiPanelObject
 from UiPanelDisplay import UiPanelDisplay
 from UiPanelStatus import UiPanelStatus
 from settings import Settings
+from otestamper import OteStamper
 
 
 
@@ -25,6 +27,7 @@ class Ui(QtWidgets.QMainWindow):
 		super(Ui, self).__init__()
 
 		self.camera = camera
+		self.windowTitle = windowTitle
 
 		# Create the panels
 		self.panelTask		= UiPanelTask(self.camera)
@@ -76,7 +79,7 @@ class Ui(QtWidgets.QMainWindow):
 		self.setCentralWidget(self.mainLayoutWidget)
 
 		# Set the size and title of the window
-		self.setWindowTitle(windowTitle)
+		self.updateWindowTitle()
 		self.setGeometry(windowGeometry[0], windowGeometry[1], windowGeometry[2], windowGeometry[3])
 
 		# Add a progress bar to the status bar
@@ -108,6 +111,12 @@ class Ui(QtWidgets.QMainWindow):
 
 		# Display the UI
 		self.show()
+
+		# Start the updateWindowTitleTimer (for voltage updates)
+		self.updateWindowTitleTimer = QTimer()
+		self.updateWindowTitleTimer.timeout.connect(self.updateWindowTitle)
+		self.updateWindowTitleTimer.setInterval(5000)
+		self.updateWindowTitleTimer.start()
 
 
 	# Called when the window is closed
@@ -203,3 +212,15 @@ class Ui(QtWidgets.QMainWindow):
 		elif self.camera.videoFrameDuration < int((1.0/30.0) * 1000000.0):
 			QMessageBox.warning(self, ' ', 'Recording at frame rates above 30fps is not recommended!', QMessageBox.Ok)
 		return False
+
+
+	def updateWindowTitle(self):
+		otestamper	= OteStamper.getInstance()
+	
+		if otestamper.status is None:
+			windowTitle = self.windowTitle
+		else:
+			voltage = otestamper.status['voltage']
+			windowTitle = self.windowTitle + ' (%0.2f Volts)' % voltage 
+
+		self.setWindowTitle(windowTitle)

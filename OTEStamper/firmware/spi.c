@@ -12,6 +12,7 @@
 #include "buzzer.h"
 #include "gps.h"
 #include "spi.h"
+#include "voltage.h"
 
 
 
@@ -129,7 +130,8 @@ static inline void handle_transaction(void)
 				if ( read_index == 0x14 )	ptr = (uint8_t *)&systemtime_secs;
 				if ( read_index == 0x18 )	ptr = (uint8_t *)&leapSeconds;
 				if ( read_index == 0x19 )	ptr = (uint8_t *)&capture_clock_status;
-				if ( read_index == 0x1A )	{ tx  = crc; cmd = 0x00; }
+				if ( read_index == 0x1A )	ptr = (uint8_t *)&voltage;
+				if ( read_index == 0x1C )	{ tx  = crc; cmd = 0x00; }
 				else				tx  = *(ptr++);
 				break;
 
