@@ -32,6 +32,7 @@ from UiDialogPanel import UiDialogPanel
 from PyQt5.QtWidgets import QMessageBox
 from AstrometryDownload import AstrometryDownload
 from DisplayOps import DisplayOps
+from otestamper import OteStamper
 import logging
 #import gc
 
@@ -380,6 +381,9 @@ class CameraModel:
 			dialog = UiDialogPanel('Astrometry Download', UiPanelAstrometry, args = astrometryDownload)
 		astrometryDownload = None
 
+		self.fan_mode = None
+		self.updateFan()
+
 
 
 	# Display the timestamp on the frame
@@ -556,6 +560,8 @@ class CameraModel:
 		self.ui.panelTask.setEnabledUi(True)
 		self.ui.indeterminateProgressBar(False)
 
+		self.updateFan()
+
 		if self.settings['prompt_dark_after_acquisition'] and not self.plannedAutoShutdown:
 			self.ui.messageBoxTakeDark()
 		
@@ -640,6 +646,8 @@ class CameraModel:
 		if self.photoCallback is not None:
 			self.photoCallback()
 
+		self.updateFan()
+
 
 	def __photoFinishedMetadata(self, metadata):
 		print("Metadata:", metadata)
@@ -661,7 +669,7 @@ class CameraModel:
 			file_output = 'test_full'
 
 		self.lastSolvedPosition = None
-		
+
 		self.ui.panelTask.setEnabledUi(False)
 		self.picam2.start()
 		job = self.__take_photo(self.picam2_still_config, file_output, name="raw", wait=False, signal_function=self.__photoFinishedUi)
@@ -681,7 +689,6 @@ class CameraModel:
 		self.photoCountTotal = 1
 		self.photoCountCurrent = 1
 		self.ui.panelTask.widgetNumSubs.setText("1")
-
 		self.operatingSubMode = OperatingPhotoMode.IDLE
 		self.ui.panelTask.setEnabledUi(True)
 		self.ui.panelTask.widgetRecord.setChecked(False)
@@ -695,6 +702,7 @@ class CameraModel:
 			self.__startPhoto()
 			print("Setting photoCountCurrent to:", self.photoCountCurrent)
 			self.photoCountCurrent = self.photoCountTotal
+		self.updateFan()
 
 
 	# Stops recording
@@ -704,6 +712,7 @@ class CameraModel:
 			self.picam2.start()	
 		elif self.operatingMode == OperatingMode.PHOTO or self.operatingMode == OperatingMode.POLAR_ALIGN:
 			self.__cancelPhoto()
+		self.updateFan()
 
 
 	def switchMode(self, mode):
@@ -1225,3 +1234,24 @@ class CameraModel:
 				self.qt_picamera.set_overlay(overlay.array)
 				overlay.array = None
 				overlay = None
+
+
+	def updateFan(self):
+		if self.fan_mode is None:
+			self.fan_mode = Settings.getInstance().general['fan_mode']
+			if self.fan_mode == 'on':
+				OteStamper.getInstance().fanEnabled(True)
+				return
+			elif self.fan_mode == 'off':
+				OteStamper.getInstance().fanEnabled(False)
+				return
+		elif self.fan_mode == 'on' or self.fan_mode == 'off':
+			# No point in constantly switching the fan on/off
+			return
+
+		# This is executed only when fan_mode = idle
+		if (self.operatingMode == OperatingMode.PHOTO and self.operatingSubMode == OperatingPhotoMode.IDLE) or (self.operatingMode == OperatingMode.OTE_VIDEO and self.operatingSubMode == OperatingVideoMode.PREVIEW) or (self.operatingMode == OperatingMode.POLAR_ALIGN and self.operatingSubMode == OperatingPhotoMode.IDLE):
+			# If we're idling, fan should be on
+			OteStamper.getInstance().fanEnabled(True)
+		else:
+			OteStamper.getInstance().fanEnabled(False)

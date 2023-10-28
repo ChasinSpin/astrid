@@ -90,6 +90,7 @@ class Settings:
 		]},
 
 		{'group': 'general', 'settings': [
+			{'name': 'fan_mode',				'type': 'choice',	'range': ['on', 'idle', 'off'],			'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Fan Mode',				'description': ''},
 			{'name': 'center_marker',			'type': 'choice',	'range': ['crosshairs', 'rectangle', 'small cross'],	'default': 2,			'decimalPlaces': None,	'editable': True,	'displayName': 'Center Marker Type',			'description': ''},
 		]},
 	]

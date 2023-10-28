@@ -213,5 +213,10 @@ class OteStamper:
 		self.queue_cmd.put('buzzer %s' % ('on' if enable else 'off'))
 
 
+	def fanEnabled(self, enable):
+		self.checkMainThreadProcess()
+		self.queue_cmd.put('fan %s' % ('on' if enable else 'off'))
+
+
 	def setGpsTimeCallback(self, callback):
 		self.callback = callback
