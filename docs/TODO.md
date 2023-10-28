@@ -1,7 +1,6 @@
 # TODO
 
 * astropy download
-* Steve Calcs
 * Countdown to record (Ted)
 * Battery Monitor and auto shutdown
 * Experiment with AELocked (looks like a converence thing)
@@ -11,7 +10,6 @@ Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 
 https://forums.raspberrypi.com/viewtopic.php?t=331808
 * Implement Fan off
 * Frame rates: At speeds above 25fps, one of the python processes pegs out at close to 95-100% cpu on "top".  Figure out cause to increase frame rate.  Also, look at modding picamera to be able to skip frames that are more than 10fps for display.  Accelerated Rendering is likely faster and won't drop frames?   * See /usr/lib/python3/dist-packages/picamera2/previews/q_picamera2.py for display rendering
-* Taken with Astrid splash screen
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"
 * Install PyMovie/PyOTE on the Pi
 
