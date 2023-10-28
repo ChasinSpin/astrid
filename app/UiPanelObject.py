@@ -1,3 +1,4 @@
+from processlogger import ProcessLogger
 from UiPanel import UiPanel
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QApplication
 from astropy import units as u
@@ -12,7 +13,9 @@ from UiPanelAutoRecord import UiPanelAutoRecord
 from PyQt5.QtCore import Qt
 from UiDialogPanel import UiDialogPanel
 from UiPanelAutoRecording import UiPanelAutoRecording
-from datetime import datetime
+from datetime import datetime, timedelta
+from astsite import AstSite
+from pathcomputation import PathComputation
 
 
 
@@ -25,6 +28,8 @@ class UiPanelObject(UiPanel):
 
 	def __init__(self, camera):
 		super().__init__('Object (ICRS)')
+		self.processLogger = ProcessLogger.getInstance()
+		self.logger = self.processLogger.getLogger()
 		self.camera		= camera
 		self.occultationObject	= None
 		self.widgetDatabase	= self.addComboBox('Database', [UiPanelObject.SEARCH_SIMBAD, UiPanelObject.SEARCH_CUSTOM, UiPanelObject.SEARCH_OCCULTATIONS])
@@ -33,7 +38,9 @@ class UiPanelObject(UiPanel):
 		self.widgetRA		= self.addLineEditDouble('RA', 0.0, 24.0, 10, editable=False)
 		self.widgetDEC		= self.addLineEditDouble('DEC', -90.0, 90.0, 10, editable=False)
 		self.widgetEventTime    = self.addLineEdit('Event Time', editable=False)
+		self.widgetChord    	= self.addLineEdit('Chord Dist', editable=False)
 		self.hideWidget(self.widgetEventTime)
+		self.hideWidget(self.widgetChord)
 		self.widgetPrepoint	= self.addButton('Prepoint', True)
 		self.widgetAutoRecord	= self.addButton('Auto Record', True)
 		self.hideWidget(self.widgetPrepoint)
@@ -65,18 +72,21 @@ class UiPanelObject(UiPanel):
 		self.camera.clearObject()
 		if   text == UiPanelObject.SEARCH_SIMBAD:
 			self.hideWidget(self.widgetEventTime)
+			self.hideWidget(self.widgetChord)
 			self.hideWidget(self.widgetPrepoint)
 			self.hideWidget(self.widgetAutoRecord)
 			self.hideWidget(self.widgetAdd)
 			self.hideWidget(self.widgetList)
 		elif text == UiPanelObject.SEARCH_CUSTOM:
 			self.hideWidget(self.widgetEventTime)
+			self.hideWidget(self.widgetChord)
 			self.hideWidget(self.widgetPrepoint)
 			self.hideWidget(self.widgetAutoRecord)
 			self.showWidget(self.widgetAdd)
 			self.showWidget(self.widgetList)
 		elif text == UiPanelObject.SEARCH_OCCULTATIONS:
 			self.showWidget(self.widgetEventTime)
+			self.showWidget(self.widgetChord)
 			self.hideWidget(self.widgetPrepoint)
 			self.hideWidget(self.widgetAutoRecord)
 			self.showWidget(self.widgetAdd)
@@ -267,7 +277,14 @@ class UiPanelObject(UiPanel):
 		for object in customObjects:
 			if object['name'].lower() == search.lower():
 				obj = AstCoord.from360Deg(object['ra'], object['dec'], 'icrs')
+				chordDist = self.verifyEventTime(object)
 				self.widgetEventTime.setText(object['event_time'])
+
+				if chordDist is None:
+					self.widgetChord.setText('Not Found')
+				else:
+					self.widgetChord.setText('%0.3f km' % (chordDist/1000.0))
+
 				self.occultationObject = object
 				break
 
@@ -313,3 +330,53 @@ class UiPanelObject(UiPanel):
 				break
 		
 		self.dialog = UiDialogPanel('Edit Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': editValues}, parent = self.camera.ui)
+
+	
+	def __convertStrTimeToDateTime(self, sTime):
+		return datetime.strptime(sTime, '%Y-%m-%dT%H:%M:%S')
+
+	def __convertDateTimeToStrTime(self, dt):
+		return dt.strftime("%Y-%m-%dT%H:%M:%S")
+
+	def verifyEventTime(self, object):
+		if not ('occelmnt' in object) or len(object['occelmnt'].keys()) == 0:
+			self.logger.info('No occelmnt data recorded in the occulation, unable to verify event time or chord')
+			return None
+
+		pathComp		= PathComputation(object['occelmnt'])
+		timeAndChordForLoc	= pathComp.getTimeAndChordDistanceForLocation(AstSite.lat, AstSite.lon, AstSite.alt)
+
+		if timeAndChordForLoc is None:
+			self.logger.info('No Chord because star is not visible')
+			return None
+		else:
+			database_eventTime = self.__convertStrTimeToDateTime(object['event_time'])
+			database_startTime = self.__convertStrTimeToDateTime(object['start_time'])
+			database_endTime   = self.__convertStrTimeToDateTime(object['end_time'])
+
+			deltaTimeSeconds = (timeAndChordForLoc[0] - database_eventTime).total_seconds()
+			self.logger.info('Time: %s Distance: %0.4f km' % (str(timeAndChordForLoc[0]), timeAndChordForLoc[1] / 1000.0) )
+
+			if abs(deltaTimeSeconds) >= 1:
+				ret = QMessageBox.question(self, ' ', 'Event Center Time for this location differs from the one stored by %d seconds, do you wish to update start/center/end times to match?' % deltaTimeSeconds, QMessageBox.Yes | QMessageBox.No)
+				if ret == QMessageBox.Yes:
+					database_eventTime += timedelta(seconds=deltaTimeSeconds)
+					database_startTime += timedelta(seconds=deltaTimeSeconds)
+					database_endTime   += timedelta(seconds=deltaTimeSeconds)
+
+					object['event_time'] = self.__convertDateTimeToStrTime(database_eventTime)
+					object['start_time'] = self.__convertDateTimeToStrTime(database_startTime)
+					object['end_time']   = self.__convertDateTimeToStrTime(database_endTime)
+
+					db = 'occultations'
+					all_occultations = Settings.getInstance().occultations['occultations']
+					for o in all_occultations:
+						if o['name'] == object['name']:
+							o['event_time'] = object['event_time']
+							o['start_time'] = object['start_time']
+							o['end_time']   = object['end_time']
+							Settings.getInstance().writeSubsetting(db)
+							self.logger.info('updated %s' % (o['name']))
+							break
+
+		return timeAndChordForLoc[1]

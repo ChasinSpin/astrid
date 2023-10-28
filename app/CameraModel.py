@@ -1014,6 +1014,8 @@ class CameraModel:
 			self.ui.panelObject.setRaDec(None)
 			self.objectCoords = None
 			self.ui.panelObject.widgetSearch.setText('')
+			self.ui.panelObject.widgetEventTime.setText('')
+			self.ui.panelObject.widgetChord.setText('')
 
 
 	def setObjectCoords(self, coords):

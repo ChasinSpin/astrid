@@ -601,6 +601,6 @@ class PathComputation:
 #pc = PathComputation(occelmnt_test)
 #timeAndChordForLoc = pc.getTimeAndChordDistanceForLocation(51.0000, -110.000000, 1000.0)
 #if timeAndChordForLoc is None:
-#	print('Error: Star not vidible from this location.')
+#	print('Error: Star not visible from this location.')
 #else:
 #	print('Time: %s Distance: %0.4f km' % (str(timeAndChordForLoc[0]), timeAndChordForLoc[1] / 1000.0) )
