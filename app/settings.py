@@ -28,7 +28,7 @@ class Settings:
 		{'name': 'occultations',	'global': False,	'editable': False,	'displayName': 'Occultations'},
 		{'name': 'site',		'global': True,		'editable': False,	'displayName': 'Site'},
 		{'name': 'observer',		'global': False,	'editable': True,	'displayName': 'Observer'},
-		{'name': 'general',		'global': False,	'editable': True,	'displayName': 'General'},
+		{'name': 'general',		'global': True,		'editable': True,	'displayName': 'General'},
 	]
 
 
