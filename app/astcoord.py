@@ -4,7 +4,7 @@ from datetime import datetime
 from astropy.time import Time
 from settings import Settings
 from astropy.utils.iers.iers import conf
-from astropy.coordinates import ICRS, FK4, FK5, AltAz, SkyCoord
+from astropy.coordinates import ICRS, FK4, FK5, TETE, AltAz, SkyCoord
 
 
 """
@@ -225,6 +225,15 @@ class AstCoord:
 	def angular_separation(self, to_coord):
 		# Returns angular separation from this coordinate to to_coord in degrees
 		return self.skyCoord.separation(to_coord.skyCoord).deg
+
+
+	def raDec360DegTete(self, obsdatetime):
+		"""
+			Returns the RA/DEC in 360deg for the TETE frame (apparent RA/DEC) given the observation date.
+			This is used primarily for asteroid path calculation
+		"""
+		coord = self.skyCoord.transform_to(TETE(obstime = obsdatetime))
+		return (coord.ra.value, coord.dec.value)
 
 
 """

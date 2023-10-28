@@ -1,16 +1,14 @@
-#!/usr/bin/env python3
-
-# Credit: Thanks to Steve Preston for these Occultation Path Calculations
-
-# Running unit tests:
-#	python3 -m pytest pathcomputation.py -v
-
-
 import sys
 import math
 from datetime import datetime, timedelta
 from astcoord import AstCoord
 from astutils import AstUtils
+
+
+
+# Credit: Thanks to Steve Preston for these Occultation Path Calculations
+
+
 
 """
 Definitions:
@@ -28,21 +26,21 @@ class PathComputation:
 
 	C_BESS_A = 6378.14	# earth equatorial radius (km)
 	C_BESS_B = 6356.755	# earth polar radius (km)
+	C_Mu = 0.2625161	# earth's rotation radians/hr
 
-
-	def __init__(self, occelmnt: dict, calcApparentStar = True):
+	def __init__(self, occelmnt: dict, useOccelmntApparentStarPosition = True):
 		"""
 		Given an occelmnt dictionary, it creates an object to calculate path information for the occultation
 	
-		calcApparentStar:
-			True = Apparent (JNOW) RA/DEC for the star is calculated via AstCoord (Astropy)
-			False = Apparent (JNOW) RA/DEC for the star is taken from the occelmnt
+		useOccelmntApparentStarPosition:
+			True  = use the apparent position for the star from the occelmnt
+			False = calculate the apparent star position from the ICRS position in the occelmnt
 		"""
 	
-		elements	= occelmnt['Occultations']['Event']['Elements'].split(',')
-		star		= occelmnt['Occultations']['Event']['Star'].split(',')
+		elements		= occelmnt['Occultations']['Event']['Elements'].split(',')
+		star			= occelmnt['Occultations']['Event']['Star'].split(',')
+		astobject		= occelmnt['Occultations']['Event']['Object'].split(',')
 
-		self.calcApparentStar	= calcApparentStar
 		self.XatClosest		= float(elements[6])
 		self.YatClosest		= float(elements[7])
 		self.dX			= float(elements[8])
@@ -51,13 +49,8 @@ class PathComputation:
 		self.d2Y		= float(elements[11])
 		self.d3X		= float(elements[12])
 		self.d3Y		= float(elements[13])
-		self.starCoord		= AstCoord.from24Deg(float(star[1]), float(star[2]), 'icrs')
+		self.astDiamKM      	= float(astobject[3])
 	
-		print('Star J2000:', self.starCoord.raDecHMSStr('icrs'))
-		if not self.calcApparentStar:
-			self.apparentStarCoord	= AstCoord.from24Deg(float(star[9]), float(star[10]), 'icrs')
-			print('Star Apperent:', self.apparentStarCoord.raDecHMSStr('icrs'))
-
 		# Calculate Fractional hour of closest approach
 		utcTime = elements[5]
 		utcHour = int(utcTime.split('.')[0])
@@ -65,14 +58,29 @@ class PathComputation:
 		utcHourSecs = utcFractionalHour * 3600
 		utcMins = int(utcHourSecs / 60)
 		utcSecs = int(utcHourSecs - (utcMins * 60))
+		utcMicrosecs = int((utcHourSecs * 1000000.0) - (utcMins * 60 + utcSecs) * 1000000)
 
-		self.dateTimeAtClosest = datetime(int(elements[2]), int(elements[3]), int(elements[4]), utcHour, utcMins, utcSecs, 0)
+		self.dateTimeAtClosest = datetime(int(elements[2]), int(elements[3]), int(elements[4]), utcHour, utcMins, utcSecs, utcMicrosecs)
+		print("dateTimeAtClosest = ",self.dateTimeAtClosest)
+
+		# calculate GAST at time of closest geocentric approach
+		self.gstMid = self.dateToGAST(self.dateTimeAtClosest)
+
+		# determine apparent position of star, note the result is a tuple (ra,dec) in 360deg
+		if useOccelmntApparentStarPosition:
+			self.apparentStarCoord	= ((float(star[9]) / 24.0) * 360.0, float(star[10]))
+		else:
+			self.apparentStarCoord = AstCoord.from24Deg(float(star[1]), float(star[2]),'icrs')
+			self.apparentStarCoord = self.apparentStarCoord.raDec360DegTete(obsdatetime=self.dateTimeAtClosest)
+
+		print("ApparentStarCoord:", self.apparentStarCoord)
+
 		#print("Closest Time:", self.dateTimeAtClosest)
 		#print("Closest X:", self.XatClosest)
 		#print("Closest Y:", self.YatClosest)
 
-		self.centerPath = self.__calcCenterPath(1.0)
-		print('Center path: start:%s end:%s # points:%d' % (str(self.centerPath['startDateTime']), str(self.centerPath['endDateTime']), len(self.centerPath['points'])))
+		#self.centerPath = self.__calcCenterPath(1.0)
+		#print('Center path: start:%s end:%s # points:%d' % (str(self.centerPath['startDateTime']), str(self.centerPath['endDateTime']), len(self.centerPath['points'])))
 
 
 	def centerOfAsteroidShadow(self, dteDate: datetime) -> (float, float):
@@ -98,13 +106,8 @@ class PathComputation:
 		#print("centerX:", centerX)
 		#print("centerY:", centerY)
 
-		if self.calcApparentStar:
-			(starRA, starDEC) = self.starCoord.raDec360Deg('icrs', jnow = True, obsdatetime=dteDate)
-		else:
-			(starRA, starDEC) = self.apparentStarCoord.raDec360Deg('icrs')
-
-		starRA = math.radians(starRA)
-		starDEC = math.radians(starDEC)
+		starRA = math.radians(self.apparentStarCoord[0])
+		starDEC = math.radians(self.apparentStarCoord[1])
 
 		latlon = self.bess_FtoGeodetic(centerX, centerY, starRA, starDEC, self.dateToGAST(dteDate))
 
@@ -126,6 +129,7 @@ class PathComputation:
 			startTime	= Starting datetime of the shadow hiting earth
 			endTime		= Ending datetime of the shadow hitting earth
 			points		= list of (datetime, lat, lon)
+			
 		"""
 
 		points = []
@@ -160,23 +164,172 @@ class PathComputation:
 		return {'startDateTime': points[0][0], 'endDateTime': points[-1][0], 'points': points}
 
 
-	def timeAndChordDistanceForLocation(self, lat: float, lon: float) ->float:
+	def timeAndChordDistanceForLocationFP(self, lat: float, long: float, elev: float, toleranceKM = 0.1, maxRange = 2.0) -> (float, float):
 		"""
+		Inputs:
+			lat,long,height = observer's lat, E long and elevation above ellipsoid (meters)
+			toleranceKM = search tolerance in km
+			maxRange = max geocentric range for search (earth equatorial radii units)
+
+		Returns: tuple (minH, minDistanceKM)
+			minH = time of closest approach to observer ( in hours from geocentric mid-time )
+			minDistanceKM = chord distance in fundamental plane at time of closest approach (km)
+
+			OR returns None if no minimum found => star not visible from observer's location
 		"""
-		# Find the index in points of the minimum distance from lat/lon to the canter path
-		closestIndex = 0
-		closestDistance = sys.float_info.max
 
-		for epochIndex in range(0, len(self.centerPath['points'])):
-			epoch = self.centerPath['points'][epochIndex]
-			distance = AstUtils.haversineDistance(epoch[1], epoch[2], lat, lon)
-			if distance < closestDistance:
-				closestIndex = epochIndex
-				closestDistance = distance
+		elev /= 1000.0	# Convert to KM
 
-		print(epochIndex)
-		print(self.centerPath['points'][closestIndex][0])
-	
+		# get apparent star coordinates
+		starRA = math.radians(self.apparentStarCoord[0])
+		starDEC = math.radians(self.apparentStarCoord[1])
+
+		# lat,long in radians
+		radLat = math.radians(lat)
+		radLong = math.radians(long)
+
+		# search tolerances
+		#  
+		toleranceER = toleranceKM / self.C_BESS_A
+		speedKPH = math.sqrt( self.dX * self.dX + self.dY * self.dY) * self.C_BESS_A		# shadow speed in KM/Hour
+		toleranceHR = toleranceKM / speedKPH												# time required for shadow traveling tolerance distance
+
+		# initial search interval = time required for shadow traveling one asteroid diameter (hours)
+		dHours = self.astDiamKM / speedKPH
+		if (dHours < toleranceHR):
+			dHours = toleranceHR		# search interval is minimum of tolerance and asteroid diameter
+
+		# search forward in time from mid-time (time of closest geocentric approach)
+		#  timeH = time offset (hrs) from the time of geocentric closest approach
+		#  At each time step, compute the Fundamental Plane (FP) position of the projected location of the observer and the asteroid's shadow
+		#    compute the distance between the FP position of the observer and shadow center, watch for the minimum distance
+		#    exit this loop when the geocentric distance of the observer projected along the asteroid's motion is greater than maxRadius
+		minDistance = None		# min distance from observer to asteroid shadow center
+		minH = None				# time of min distance
+
+		timeH = 0.0
+		while True:
+			theta = self.gstMid + timeH * self.C_Mu			# GAST at current time
+
+			# compute FP position of observer at timeH
+			(oX,oY,oZ) = self.bess_GeodeticToF(radLat,radLong,elev,starRA,starDEC,theta)
+
+			# compute position of asteroid shadow center
+			centerX = self.XatClosest + self.dX * timeH + self.d2X * timeH * timeH + self.d3X * timeH * timeH * timeH
+			centerY = self.YatClosest + self.dY * timeH + self.d2Y * timeH * timeH + self.d3Y * timeH * timeH * timeH
+			# compute asteroid motion vector
+			motionX = self.dX + 2.0 * self.d2X * timeH + 3.0 * self.d3X * timeH * timeH
+			motionY = self.dY + 2.0 * self.d2Y * timeH + 3.0 * self.d3Y * timeH * timeH
+			# unit vector of motion
+			motionTotal = math.sqrt( motionX * motionX + motionY * motionY)
+			motionX = motionX / motionTotal
+			motionY = motionY / motionTotal
+
+			# check for end of search
+			# dot product of Motion unit vector and Center position => offset of center position in direction of asteroid motion
+			projectedCenter = motionX * centerX + motionY * centerY
+			if (abs(projectedCenter) > maxRange):
+				# projection of asteroid center is beyond the search distance from the geocenter => search is done
+				break
+
+
+			# search not finished, check the distance between the observer's FP position and the shadow center FP position
+			# iff star is visible from observer's position, check distance to shadow in FP
+			if oZ >= 0.0 :
+				diffX = centerX - oX
+				diffY = centerY - oY
+				diffTotal = math.sqrt( diffX * diffX + diffY * diffY)
+				if minDistance is None:
+					minDistance = diffTotal
+					minH = timeH
+				elif (diffTotal < minDistance):
+					minDistance = diffTotal
+					minH = timeH
+
+			# step forward in time
+			timeH = timeH + dHours
+
+		# search backward in time from mid-time
+		# 
+		timeH = -dHours
+		while True:
+			theta = self.gstMid + timeH * self.C_Mu			# GAST at current time
+
+			# compute FP position of observer at timeH
+			(oX,oY,oZ) = self.bess_GeodeticToF(radLat,radLong,elev,starRA,starDEC,theta)
+
+			# compute position of asteroid shadow center
+			centerX = self.XatClosest + self.dX * timeH + self.d2X * timeH * timeH + self.d3X * timeH * timeH * timeH
+			centerY = self.YatClosest + self.dY * timeH + self.d2Y * timeH * timeH + self.d3Y * timeH * timeH * timeH
+			# compute asteroid motion vector
+			motionX = self.dX + 2.0 * self.d2X * timeH + 3.0 * self.d3X * timeH * timeH
+			motionY = self.dY + 2.0 * self.d2Y * timeH + 3.0 * self.d3Y * timeH * timeH
+			# unit vector of motion
+			motionTotal = math.sqrt( motionX * motionX + motionY * motionY)
+			motionX = motionX / motionTotal
+			motionY = motionY / motionTotal
+
+			# check for end of search
+			# dot product of Motion unit vector and Center position => offset of center position in direction of asteroid motion
+			projectedCenter = motionX * centerX + motionY * centerY
+			if (abs(projectedCenter) > maxRange):
+				# projection of asteroid center is beyond the search distance from the geocenter => search is done
+				break
+
+			# search not finished, check the distance between the observer's FP position and the shadow center FP position
+			# if star is visible from observer's position, check distance to shadow in FP
+			if oZ >= 0.0 :
+				diffX = centerX - oX
+				diffY = centerY - oY
+				diffTotal = math.sqrt( diffX * diffX + diffY * diffY)
+				if minDistance is None:
+					minDistance = diffTotal
+					minH = timeH
+				elif (diffTotal < minDistance):
+					minDistance = diffTotal
+					minH = timeH
+
+			# step backward in time
+			timeH = timeH - dHours
+
+		# check for no minimum => star not visible from observer's location
+		#  return None
+		if (minDistance is None):
+			return None
+		
+		# final search to ensure that we meet the desired tolerance
+		#
+		if (toleranceHR < dHours):
+			startH = minH - dHours
+			endH = minH + dHours
+			dHours = toleranceHR		# tolerance in hours is now our step size
+
+			timeH = startH
+			while (timeH <= endH):
+				theta = self.gstMid + timeH * self.C_Mu			# GAST at current time
+
+				# compute FP position of observer at timeH
+				(oX,oY,oZ) = self.bess_GeodeticToF(radLat,radLong,elev,starRA,starDEC,theta)
+
+				# if star is visible from observer's position, check distance to shadow in FP
+				if oZ >= 0.0 :
+					# compute position of asteroid shadow center
+					centerX = self.XatClosest + self.dX * timeH + self.d2X * timeH * timeH + self.d3X * timeH * timeH * timeH
+					centerY = self.YatClosest + self.dY * timeH + self.d2Y * timeH * timeH + self.d3Y * timeH * timeH * timeH
+
+					# check the distance between the observer's FP position and the shadow center FP position
+					diffX = centerX - oX
+					diffY = centerY - oY
+					diffTotal = math.sqrt( diffX * diffX + diffY * diffY)
+					if (diffTotal < minDistance):
+						minDistance = diffTotal
+						minH = timeH
+
+				# step forward in time
+				timeH = timeH + dHours
+
+		# return time and distance of closest approach
+		return ( minH, minDistance * self.C_BESS_A )
 
 
 	def dateToGAST(self, dteDate: datetime) -> float:
@@ -186,6 +339,7 @@ class PathComputation:
 			Returns: GAST in radians
 		"""
 		GMST = self.dateToGMST(dteDate)
+		self.midGMST = GMST
 
 		# Calculate the equation of the equinoxes
 		(meanObq, nuObq, nuLon) = self.dateToEcliptic(dteDate)
@@ -349,7 +503,7 @@ class PathComputation:
 		return (lat, lon)
 
 
-	def bess_GeodeticToF(lat: float, lon: float, height: float, RA: float, DE: float, GST: float) -> (float, float, float):
+	def bess_GeodeticToF(self, lat: float, lon: float, height: float, RA: float, DE: float, GST: float) -> (float, float, float):
 		"""
 		Determines geodetic coordinate for the shadow intercept of a point in the fundamental plane
 			lon, lat	= geodetic Lat, Long for point on Earth (radians, E Long)
@@ -421,59 +575,32 @@ class PathComputation:
 		return ret
 
 
-occelmnt_test = { "Occultations": {
-			"Event": {
-				"Elements": "JPL#81:2023-07-30@2023-08-16[OWC],3.90,2023,8,16,8.706836,-0.330947,0.439776,-5.300154,-3.988511,-0.000865,-0.001414,0.000001,0.000000",
-				"Earth": "-120.4068,0.7422,50.50,13.77,False",
-				"Star": "TYC 559-01642-1,22.29196592,0.6233059,11.73,11.47,11.05,0.0,0,,22.31233020,0.7421805,1.82,1.80,0,0,0",
-				"Object": "482,Petrina,13.07,45.8,1.8647,0,0,-1.667,-18.81,,2.4,0",
-				"Orbit": "0,53.9673,2023,8,16,87.9178,179.3705,14.4736,0.09643,2.99829,2.70917,8.97,5.0,0.15",
-				"Errors": "1.152,0.0107,0.0003,82,0.0052,Known errors,0.85,0,-1,-1",
-				"ID": "20230816_1642-1,60157.39"
-			}
-		}
-	}
+	def getTimeAndChordDistanceForLocation(self, lat: float, lon: float, alt: float):
+		"""
+			Given a latitude, longitude and altitude, calculates the chord distance and the center time of the event at that location
 
-def test_dateToGMST():
-	pc =PathComputation(occelmnt_test)
-	assert(pc.dateToGMST(datetime(2000,1,3,0,0,0,0)) == 1.7791727468540683)
+			Parameters:
+				lat:	latitude
+				lon: 	longitude
+				alt:	altitude (meters)
 
-def test_dateToGAST():
-	pc =PathComputation(occelmnt_test)
-	gast = pc.dateToGAST(datetime(2023,8,10,22,19,20,0))
-	gast = math.degrees(gast) / 360.0 * 24.0
-	assert(gast == 19.597849197665283)
+			Returns:
+				Tuple (datetime, chord_distance(meters))
+				or None if the star is not visible from the location
+		"""
+		minApproach = self.timeAndChordDistanceForLocationFP(lat, lon, alt)
+		if minApproach is None:
+			return None
+	
+		minHrs		= minApproach[0]
+		minChord	= minApproach[1]
+		dteMin		= self.dateTimeAtClosest + timedelta(hours=minHrs)
+		return (dteMin, minChord * 1000.0)
 
 
-def test_dateToEcliptic():
-	pc =PathComputation(occelmnt_test)
-	dToE = pc.dateToEcliptic(datetime(2023,8,10,3,35,11,00))
-	assert(dToE == (0.4090392294437636, 3.903520318516651e-05, -3.3528985071917816e-05))
-
-def test_dateToJD():
-	pc = PathComputation(occelmnt_test)
-	jd = pc.dateToJD(datetime(2023,8,10,22,19,20,0))
-	assert( jd == 2460167.4300925927)
-
-def test_centerOfAsteroidShadow1():
-	pc = PathComputation(occelmnt_test, calcApparentStar=True)
-	assert(pc.centerOfAsteroidShadow(datetime(2023, 8, 16, 8, 42, 24, 00)) == (26.953380941927033, -142.18636163089715))	#Center
-
-def test_centerOfAsteroidShadow2():
-	pc = PathComputation(occelmnt_test, calcApparentStar=True)
-	assert(pc.centerOfAsteroidShadow(datetime(2023, 8, 16, 8, 25, 24, 00)) is None)
-
-def test_centerOfAsteroidShadow3():
-	pc = PathComputation(occelmnt_test, calcApparentStar=True)
-	assert(pc.centerOfAsteroidShadow(datetime(2023, 8, 16, 8, 37, 46, 00)) == (49.44930320502795, -112.33891004640155))
-
-def test_centerOfAsteroidShadow4():
-	pc = PathComputation(occelmnt_test, calcApparentStar=False)
-	assert(pc.centerOfAsteroidShadow(datetime(2023, 8, 16, 8, 37, 46, 00)) == (49.449455922244525, -112.33540415759194))
-
-pc = PathComputation(occelmnt_test)
-pc.timeAndChordDistanceForLocation(49.9925, -111.751944)
-kmlStr = pc.pathToKml()
-fp = open('test.kml', 'w')
-fp.write(kmlStr)
-fp.close()
+#pc = PathComputation(occelmnt_test)
+#timeAndChordForLoc = pc.getTimeAndChordDistanceForLocation(51.0000, -110.000000, 1000.0)
+#if timeAndChordForLoc is None:
+#	print('Error: Star not vidible from this location.')
+#else:
+#	print('Time: %s Distance: %0.4f km' % (str(timeAndChordForLoc[0]), timeAndChordForLoc[1] / 1000.0) )
