@@ -2,6 +2,8 @@
 
 Astrid can be purchased with some parts pre-assembled, this is known as the "Partial Kit". The kit also requires some additional parts that you will need to purchase separately. These instructions detail how to assemble the partial kit and the parts you need to purchase to build a working Astrid.
 
+[Assembly Video](https://www.youtube.com/watch?v=mhg2wGE4-7w) also demonstrates the assembly process and should be used in combination with the information here.
+
 If you do not wish to purchase the Partial Kit, then you will need to [Make Your Own Kit](BuildKit.md) first prior to following these instructions.
 
 Assembly time is approximately 15mins for the hardware, maybe a little longer if it's your first time.

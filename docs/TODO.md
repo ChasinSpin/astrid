@@ -2,20 +2,21 @@
 
 * astropy download
 * Countdown to record (Ted)
+* Planets for Simbad
 * Battery Monitor and auto shutdown
+* Any value to updating duration of event via path computation?
+* Look into frame rates 30-60fps on old Astrid (without the resistor/capacitor change) and see if it's double framing
 * Experiment with AELocked (looks like a converence thing)
 * Check into FITs, is it really storing 0-255 or 0-1023?
 Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 'DigitalGain': 1.0002992153167725, 'SensorBlackLevels': (3840, 3840, 3840, 3840), 'AeLocked': False, 'Lux': 400.0, 'FrameDuration': 200014, 'AnalogueGain': 1.0, 'ExposureTime': 199940}
 * Disable notification about automatic updates from the OS:
 https://forums.raspberrypi.com/viewtopic.php?t=331808
-* Implement Fan off
 * Frame rates: At speeds above 25fps, one of the python processes pegs out at close to 95-100% cpu on "top".  Figure out cause to increase frame rate.  Also, look at modding picamera to be able to skip frames that are more than 10fps for display.  Accelerated Rendering is likely faster and won't drop frames?   * See /usr/lib/python3/dist-packages/picamera2/previews/q_picamera2.py for display rendering
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"
 * Install PyMovie/PyOTE on the Pi
 
 * Complete:
 	* Focus Support
-	* Path computation, event time, duration
 	* Auto-Stretch lower/upper bound setting
 	* Histogram 
 * Bug: Test this again: If framewriter process raises an exception, it isn't logged, force the raising of exceptions on framewriter, processotestamper and processlogger both during recording video and in regular operation

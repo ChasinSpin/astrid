@@ -28,6 +28,7 @@ File formats:
 * [configs.json](#configs)
 * [astrometry.cfg](#astrometry)
 * [camera.json](#camera)
+* [general.json](#general)
 * [mount.json](#mount)
 * [objects.json](#objects)
 * [observer.json](#observer)
@@ -124,6 +125,20 @@ The camera.json file stores configuration related to the camera:
 | photosFolder | Location to store fits files taken in Task = Photo Mode, set to "/media/pi/ASTRID/Photo" |
 | videoFolder | Location to store RAVF files (video files) taken in Task = OTE Video "/media/pi/ASTRID/OTEVideo" |
 | buzzer_enable | Buzzer beeps in the prior 6 seconds to auto record if true |
+
+## general
+
+The general.json file stores configuration related general settings:
+
+	{
+		"fan_mode": "on",
+		"center_marker": "small cross"
+	}
+	
+| Variable | Description |
+| -------- | ----------- |
+| fan_mode | on = fan always on; idle = fan on when not recording; off = fan off. If you're experiencing vibration effects with long focal lengths, or you are imaging in extreme cold and want to retain heat, this setting can be used.  Note: Although the Raspberry Pi should reduce speed if it gets too hot, there's a slim possibility of damage.  If you live in a hot climate, or it's inside, you probably want the fan on all the time. It is suggested that if considering switching the fan off, then the Raspberry Pi should have the heat sinks installed. |
+| center_marker | When "Center Marker" is checked the displayed marked can be one of: crosshairs; rectangle or "small cross" |
 
 ## mount
 
