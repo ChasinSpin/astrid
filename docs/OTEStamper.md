@@ -205,7 +205,7 @@ Because the CRC also includes the Cmd sent by the Master at the start, it serves
 | 0x7A | Set | Frame Timing Info Interrupt Off | 0x00 | - | 
 | 0x7B | Set | Buzzer On | 0x00 | - | 
 | 0x7C | Set | Buzzer Off | 0x00 | - | 
-| 0x90 | Get | GPS Info | 0x1A | See "GPS Info" below |
+| 0x90 | Get | GPS Info | 0x1C | See "GPS Info" below |
 | 0x91 | Get | Frame Timing Info | 0x10 | See "Frame Timing Info" below |
 | 0x92 | Set | Confirmed Frame Received | 0x00 | See "Frame Timing Info" below |
 | 0x93 | Get | Test Frame For Validation | 0x10 | 16 values sequentially starting 0x55, 0x56 etc. |
@@ -258,6 +258,7 @@ are no longer generated.
 | 0x14 | 4      | Unix Epoch | Unsigned Int 32bit |
 | 0x18 | 1      | Leap Seconds | Int 8bit |
 | 0x19 | 1      | Clock Status | See below |
+| 0x1A | 2      | Power Supply Voltage | Unsigned 16bit. V = (reading * 3.3) / (1023.0 * 0.1754385) |
 
 
 #### Frame Timing Info

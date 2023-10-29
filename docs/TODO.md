@@ -3,7 +3,6 @@
 * astropy download
 * Countdown to record (Ted)
 * Planets for Simbad
-* Battery Monitor and auto shutdown
 * Any value to updating duration of event via path computation?
 * Look into frame rates 30-60fps on old Astrid (without the resistor/capacitor change) and see if it's double framing
 * Experiment with AELocked (looks like a converence thing)

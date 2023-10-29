@@ -69,14 +69,14 @@ can cause multiple pulses for each XVS signal:
 		make writefuses
 		make install
 
-	b) GPS
-	
-	c) PPS
-	
-	d) Test Buzzer and Fan:
-* 	
+	b) Test Buzzer and Fan:
+ 	
 		cd ~/astrid/OTEStamper/test
 		./spitest.py
+		
+	c) Test GPS (and check voltage monitoring)
 	
-	e) Record video and check all status buttons are green and video is recorded
+		./spitest_gps.py
+	
+	d) Record video and check all status buttons are green and video is recorded
 	
