@@ -35,6 +35,7 @@ class Ui(QtWidgets.QMainWindow):
 		self.windowTitle		= windowTitle
 		self.disabledVoltageWarning	= False
 		self.disabledVoltageShutdown	= False
+		self.waitingToSync		= None
 
 		# Create the panels
 		self.panelTask		= UiPanelTask(self.camera)
@@ -261,3 +262,26 @@ class Ui(QtWidgets.QMainWindow):
 			QMessageBox.warning(self, ' ', msg, QMessageBox.Ok)
 			self.logger.critical(msg)
 			self.disabledVoltageWarning = True
+
+
+	def waitingToSyncMessageBoxStart(self):
+		if self.waitingToSync is not None:
+			self.waitingToSyncMessageBoxDone()	
+
+		self.waitingToSync = QMessageBox()
+		self.waitingToSync.setIcon(QMessageBox.Information)
+		self.waitingToSync.setStandardButtons(QMessageBox.Ok)
+		self.waitingToSyncMessageBoxUpdateCount(12)
+		self.waitingToSync.show()
+
+
+	def waitingToSyncMessageBoxUpdateCount(self, count):
+		msg = 'Waiting for Video Frame Sync To OTEStamper: %d' % count
+		self.camera.statusMsg(msg)
+		if self.waitingToSync is not None:
+			self.waitingToSync.setText(msg)
+
+
+	def waitingToSyncMessageBoxDone(self):
+		self.waitingToSync.done(0)
+		self.waitingToSync = None

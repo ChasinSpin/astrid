@@ -56,6 +56,7 @@ class RavfEncoder(Encoder):
 		self.otestamper.stopUpdateStatusTimer()
 		self.otestamper.startRecordingVideo()
 		self.syncState = 0
+		self.waiting_frame_count = 14
 		super().start()
 
 		# Calculate nanoseconds since 2010 from the system for recording start time
@@ -180,12 +181,15 @@ class RavfEncoder(Encoder):
 
 		self.logger.debug('exposure_duration_ns: %d' % exposure_duration_ns)
 
+		if self.syncState > 1:
+			self.waiting_frame_count -= 1
+
 		# We need to sync the otestamper frames to the video frames we receive here
 		# To do that, we half the frame rate of the camera and look for that change from OTEStamper
 		# This finite state machine handles that
 		self.logger.debug('syncState: %d' % self.syncState)
 		if self.syncState == 0:
-			self.camera.statusMsg('Starting recording  *** WAITING TO SYNC VIDEO FRAME TO OTEStamper ***')
+			self.camera.ui.waitingToSyncMessageBoxStart()
 			# Initial state, we tell the camera to half the frame rate
 			self.camera.configureVideoFrameDuration(self.frameHalfDurationMicros)
 			self.syncState = 1
@@ -200,15 +204,18 @@ class RavfEncoder(Encoder):
 			return
 		elif self.syncState == 2:
 			# We wait for the half rate to appear in the video stream
+			self.camera.ui.waitingToSyncMessageBoxUpdateCount(self.waiting_frame_count)
 			if self.exposureNsMatchesFrameDuration(exposure_duration_ns, self.frameHalfDurationMicros):
 				self.syncState = 3
 			return
 		elif self.syncState == 3:
 			# We now wait for the original rate to appear in the video stream
+			self.camera.ui.waitingToSyncMessageBoxUpdateCount(self.waiting_frame_count)
 			if self.exposureNsMatchesFrameDuration(exposure_duration_ns, self.frameDurationMicros):
 				self.syncState = 4
 				self.eatFrameInfosTillStart()
 				self.camera.statusMsg('Frame Sync Achieved, Recording started')
+				self.camera.ui.waitingToSyncMessageBoxDone()
 			else:
 				return
 		else:
