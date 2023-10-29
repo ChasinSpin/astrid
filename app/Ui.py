@@ -1,3 +1,4 @@
+from processlogger import ProcessLogger
 import os
 import sys
 from PyQt5 import QtWidgets
@@ -13,6 +14,7 @@ from UiPanelDisplay import UiPanelDisplay
 from UiPanelStatus import UiPanelStatus
 from settings import Settings
 from otestamper import OteStamper
+from UiAutoCloseMessageBox import UiAutoCloseMessageBox
 
 
 
@@ -26,8 +28,13 @@ class Ui(QtWidgets.QMainWindow):
 	def __init__(self, camera, windowTitle):
 		super(Ui, self).__init__()
 
-		self.camera = camera
-		self.windowTitle = windowTitle
+		self.processLogger = ProcessLogger.getInstance()
+		self.logger = self.processLogger.getLogger()
+
+		self.camera			= camera
+		self.windowTitle		= windowTitle
+		self.disabledVoltageWarning	= False
+		self.disabledVoltageShutdown	= False
 
 		# Create the panels
 		self.panelTask		= UiPanelTask(self.camera)
@@ -119,6 +126,11 @@ class Ui(QtWidgets.QMainWindow):
 		self.updateWindowTitleTimer.start()
 
 
+	def shutdown_now(self):
+		self.camera.shutdown()
+		os.system('sudo sh -c "/usr/bin/sync;/usr/bin/sync;/usr/bin/sync;/usr/bin/sleep 1;/usr/sbin/poweroff"')
+
+
 	# Called when the window is closed
 
 	def closeEvent(self, event):
@@ -142,9 +154,7 @@ class Ui(QtWidgets.QMainWindow):
 			event.accept()
 		elif ret == 0:
 			print('User exited the program and shutdown!')
-			self.camera.shutdown()
-			
-			os.system('sudo sh -c "/usr/bin/sync;/usr/bin/sync;/usr/bin/sync;/usr/bin/sleep 1;/usr/sbin/poweroff"')
+			self.shutdown_now()
 			event.accept()
 		else:
 			event.ignore()
@@ -224,3 +234,30 @@ class Ui(QtWidgets.QMainWindow):
 			windowTitle = self.windowTitle + ' (%0.2f Volts)' % voltage 
 
 		self.setWindowTitle(windowTitle)
+
+		settings_general = Settings.getInstance().general
+
+		if not self.disabledVoltageShutdown and settings_general['voltage_shutdown'] != 0 and voltage <= settings_general['voltage_shutdown']:
+			msgBox = UiAutoCloseMessageBox()
+			msgBox.setIcon(QMessageBox.Critical)
+			shutdown_time = 20	# Seconds
+			msg = 'Auto Shutdown in %ds due to Low Voltage: %0.2f V' % (shutdown_time, voltage)
+			msgBox.setText(msg)
+			msgBox.autoClose = shutdown_time * 1000
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			self.logger.critical(msg)
+
+			ret = msgBox.exec()
+			if   ret == 0 or ret == QMessageBox.Ok:
+				self.shutdown_now()
+			elif ret == QMessageBox.Cancel:
+				self.logger.critical('Shutdown due to low voltage cancelled')
+
+			self.disabledVoltageShutdown = True
+
+		if not self.disabledVoltageWarning and settings_general['voltage_warning'] != 0 and voltage <= settings_general['voltage_warning']:
+			msg = 'Low Voltage: %0.2f V' % voltage
+			QMessageBox.warning(self, ' ', msg, QMessageBox.Ok)
+			self.logger.critical(msg)
+			self.disabledVoltageWarning = True
