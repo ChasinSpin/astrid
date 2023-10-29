@@ -384,6 +384,11 @@ class CameraModel:
 		self.fan_mode = None
 		self.updateFan()
 
+		if Settings.getInstance().general['fuzz_gps']:
+			AstSite.set('Fuzzed', 0.00001, 0.00001, 0.0)
+			OteStamper.getInstance().fuzzGps()
+			ret = QMessageBox.warning(self.ui, ' ', 'GPS Fuzzing is enabled to cloak location, GPS Positioning is incorrect.  Disable General/Fuzz GPS in settings for real position.', QMessageBox.Ok)
+
 
 
 	# Display the timestamp on the frame

@@ -9,6 +9,7 @@ import queue    # imported for using queue.Empty exception
 import time
 from processotestamper import ProcessOteStamper
 import threading
+from settings import Settings
 
 
 
@@ -220,3 +221,8 @@ class OteStamper:
 
 	def setGpsTimeCallback(self, callback):
 		self.callback = callback
+
+
+	def fuzzGps(self):
+		self.checkMainThreadProcess()
+		self.queue_cmd.put('fuzz gps')

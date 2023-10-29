@@ -1,4 +1,5 @@
 from processlogger import ProcessLogger
+import random
 import ospi
 import sys
 import struct
@@ -209,6 +210,9 @@ class ProcessOteStamper:
 			vdop		/= 100.0
 			voltage		= (voltage * 3.3) / (1023.0 * 0.1754385)
 
+			if self.fuzz_gps:
+				(latitude, longitude, altitude) = self.fuzzGps(latitude, longitude, altitude)
+
 			status = {	'latitude': latitude,
 					'longitude': longitude,
 					'altitude': altitude,
@@ -256,6 +260,8 @@ class ProcessOteStamper:
 		self.queue_frameInfo	= queue_frameInfo
 		self.queue_gpsInfo	= queue_gpsInfo
 		self.queue_cmd		= queue_cmd
+
+		self.fuzz_gps = False
 
 		# Open up the SPI connection to OTEStamper
 		ospi.open(0, 0, OSPI_SPEED_HZ, OSPI_START_DELAY)
@@ -337,6 +343,9 @@ class ProcessOteStamper:
 			elif cmd == 'timingtest off':
 				self.__sendCmd(CMD_TIMING_TEST_OFF)
 
+			elif cmd == 'fuzz gps':
+				self.fuzzGpsSetup()
+
 			elif cmd == 'terminate':
 				self.logger.info('command Received: %s' % cmd)
 				self.logger.info('terminating ProcessOTEStamper')
@@ -348,3 +357,33 @@ class ProcessOteStamper:
 
 		# Exit and cleanup
 		self.__cleanup_handler(None, None)
+
+
+	def fuzzGpsSetup(self):
+		# If fuzzing is enabled, setup the amount we're fuzzing by
+		self.fuzz_gps = True
+		self.fuzz_lat = ((random.random() * 2) - 1.0) * 5.0
+		self.fuzz_lon = ((random.random() * 2) - 1.0) * 5.0
+		self.fuzz_alt = ((random.random() * 2) - 1.0) * 500.0
+
+
+	def fuzzGps(self, lat, lon, alt):
+		# Fuzz the gps if enabled
+		lat		= lat + self.fuzz_lat 
+		lon		= lon + self.fuzz_lon
+		alt		= alt + self.fuzz_alt 
+
+		if lat <= -90:
+			lat += 5.0
+		if lat >= 90:
+			lat -= 5.0
+
+		if lon <= -180:
+			lon += 5.0
+		if lon >= 180:
+			lon -= 5.0
+
+		if alt < 0:
+			alt += 500.0
+
+		return (lat, lon, alt)
