@@ -185,21 +185,24 @@ class UiPanelObject(UiPanel):
 
 
 	def buttonAddPressed(self):
-		msgBox = QMessageBox()
-		msgBox.setIcon(QMessageBox.Question)
-		msgBox.setText('How would you like to Add an occultation?')
-		msgBox.addButton('Manual Entry or Occelmnt', QMessageBox.AcceptRole)
-		msgBox.addButton('Import From OWCloud', QMessageBox.AcceptRole)
-		msgBox.setStandardButtons(QMessageBox.Cancel)
+		if self.widgetDatabase.currentText() == UiPanelObject.SEARCH_OCCULTATIONS:
+			msgBox = QMessageBox()
+			msgBox.setIcon(QMessageBox.Question)
+			msgBox.setText('How would you like to Add an occultation?')
+			msgBox.addButton('Manual Entry or Occelmnt', QMessageBox.AcceptRole)
+			msgBox.addButton('Import From OWCloud', QMessageBox.AcceptRole)
+			msgBox.setStandardButtons(QMessageBox.Cancel)
 		
-		ret = msgBox.exec()
+			ret = msgBox.exec()
 
-		if   ret == 0:
+			if   ret == 0:
+				self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
+			elif ret == 1:
+				ret2 = QMessageBox.information(self, ' ', 'To import from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: Currently there is no Occelmnt information available via the OWCloud API, so Chord Distance and Event Time are not automatically updated according to the site location in Astrid. If you require this feature, please add the event manually and copy and paste the occelmnt.\n\nNote 2: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION', QMessageBox.Ok | QMessageBox.Cancel)
+				if ret2 == QMessageBox.Ok:
+					self.importFromOWCloud()
+		else:
 			self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
-		elif ret == 1:
-			ret2 = QMessageBox.information(self, ' ', 'To import from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: Currently there is no Occelmnt information available via the OWCloud API, so Chord Distance and Event Time are not automatically updated according to the site location in Astrid. If you require this feature, please add the event manually and copy and paste the occelmnt.\n\nNote 2: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION', QMessageBox.Ok | QMessageBox.Cancel)
-			if ret2 == QMessageBox.Ok:
-				self.importFromOWCloud()
 
 
 
