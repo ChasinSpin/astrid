@@ -134,7 +134,8 @@ The general.json file stores configuration related general settings:
 		"fan_mode": "on",
 		"center_marker": "small cross",    
 		"voltage_warning": 11.5,
-    	"voltage_shutdown": 0.0
+    	"voltage_shutdown": 0.0,
+    	"fuzz_gps": false
 	}
 	
 | Variable | Description |
@@ -143,6 +144,7 @@ The general.json file stores configuration related general settings:
 | center_marker | When "Center Marker" is checked the displayed marked can be one of: crosshairs; rectangle or "small cross" |
 | voltage_warning | Specifies the voltage at which a popup warning is issued for Low Voltage. Set to 0 to disable. The warning (if enabled) only occurs once per session. |
 | voltage_shutdown | Specifies the voltage at which a auto shutdown occurs for Low Voltage. Set to 0 to disable. Note: Astrid will still consume 250mA @ 12V and more at lower voltages when it is shutdown as the Raspberry Pi is still on, i.e. it will still drain your battery but not as fast, however it does protect the SD Card and USB Drive from damage due to low voltage. If shutdown is cancelled. The shutdown (if enabled) only occurs once per session, if it cancelled it won't auto shutdown again until the next session. |
+| fuzz_gps | When true, a random amount of 5 degrees is added/subtracted from the GPS Latitude/Longitude and 500m from altitude.  This is used primarily for demo purposes to prevent personal information being leaked. On no account should this be enabled when real data for occultations is being acquired. |
 
 ## mount
 
