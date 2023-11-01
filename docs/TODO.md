@@ -1,6 +1,7 @@
 # TODO
 
 * astropy download
+* Add check for Raspberry Pi 4B 8Gb and popup message if no match
 * Planets for Simbad
 * Info screen for data from occelmnt (duration, error, magnitude, combined mag etc.)
 * Any value to updating duration of event via path computation?

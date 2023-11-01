@@ -2,6 +2,36 @@
 
 ## Introduction
 
+* [Global Shutter Camera](https://www.raspberrypi.com/documentation/accessories/camera.html)
+
+	| Name | Value | 
+	| ---- | ----- |
+	| Sensor | Sony IMX296LLR-C(Mono) / IMX296LQR-C (Color) Pregius Gen 2 |
+	| Architecture | Front Illuminated |
+	| Mono/Color | Color |
+	| Shutter | Global |
+	| Pixel size | 3.45um x 3.45um |
+	| Bits | RAW10 |
+	| Sensor resolution | 1456 x 1088 (1.58 Megapixels) |
+	| Sensor image area | 5.023mm x 3.754mm|`
+	| Sensor diagonal | 6.3mm | 
+	| Optical size | 1/2.9" |
+	| Binning | 1x |
+	| Dynamic range | TBD|
+	| Read noise | [2.2e](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
+	| Dark current @ 25C| [3.2e/p/s](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
+	| Full well capacity| [10.6Ke](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
+	| Quantum efficiency | [Peak QR: 68% @ 550nm](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
+   	| Gain | 1-16 |
+	| Maximum exposure time | 15.534385s |
+	| Minimum exposure time | 29uS |
+	| IR cut filter | Yes - [Removable, see "Filter Removal"](https://www.raspberrypi.com/documentation/accessories/camera.html) Filter type unknown, but maybe [Hoya CM500](http://unihedron.com/projects/darksky/hcm500.htm) i.e. same as HQ camera  |
+	| Mode: 0 | Size:(1456,1088) Bin:1 Bits:10 FOV:(100%,100%) MaxFPS:60.38 Exp:29us->15.534385s |
+	| Camera Datasheet | [Raspberry Pi Global Shutter Camera](https://datasheets.raspberrypi.com/gs-camera/gs-camera-product-brief.pdf)|
+	| Sensor Datasheet | [Full Datasheet](https://en.sunnywale.com/uploadfile/2023/0327/IMX296LQR-C_Fulldatasheet_Awin.pdf); [Summary Datasheet IMX296LQR](https://scientificimaging.com/wp-content/uploads/2021/01/FSM-IMX296_V1A-V1B_Datasheet_v1.1b_Full.pdf) |
+	| Raspberry Pi Documentation | [Cameras](https://www.raspberrypi.com/documentation/accessories/camera.html) |
+
+
 * [Raspberry Pi HQ](https://www.raspberrypi.com/documentation/accessories/camera.html)
 
 		
@@ -31,34 +61,6 @@
 	| Sensor Datasheet | [IMX477-AACK-C](https://www.uctronics.com/download/Image_Sensor/IMX477-DS.pdf) (IMX477R is a Raspberry Pi version, this is the closest sensor datasheet)|
 	| Raspberry Pi Documentation | [Cameras](https://www.raspberrypi.com/documentation/accessories/camera.html) |
 		
-* [Global Shutter Camera](https://www.raspberrypi.com/documentation/accessories/camera.html)
-
-	| Name | Value | 
-	| ---- | ----- |
-	| Sensor | Sony IMX296LQR-C Pregius Gen 2 |
-	| Architecture | Front Illuminated |
-	| Mono/Color | Color |
-	| Shutter | Global |
-	| Pixel size | 3.45um x 3.45um |
-	| Bits | RAW10 |
-	| Sensor resolution | 1456 x 1088 (1.58 Megapixels) |
-	| Sensor image area | 5.023mm x 3.754mm|`
-	| Sensor diagonal | 6.3mm | 
-	| Optical size | 1/2.9" |
-	| Binning | 1x |
-	| Dynamic range | TBD|
-	| Read noise | [2.2e](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
-	| Dark current @ 25C| [3.2e/p/s](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
-	| Full well capacity| [10.6Ke](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
-	| Quantum efficiency | [Peak QR: 68% @ 550nm](https://scientificimaging.com/knowledge-base/qe-curves-for-cmos-imagers/) |
-   	| Gain | 1-16 |
-	| Maximum exposure time | 15.534385s |
-	| Minimum exposure time | 29uS |
-	| IR cut filter | Yes - [Removable, see "Filter Removal"](https://www.raspberrypi.com/documentation/accessories/camera.html) Filter type unknown, but maybe [Hoya CM500](http://unihedron.com/projects/darksky/hcm500.htm) i.e. same as HQ camera  |
-	| Mode: 0 | Size:(1456,1088) Bin:1 Bits:10 FOV:(100%,100%) MaxFPS:60.38 Exp:29us->15.534385s |
-	| Camera Datasheet | [Raspberry Pi Global Shutter Camera](https://datasheets.raspberrypi.com/gs-camera/gs-camera-product-brief.pdf)|
-	| Sensor Datasheet | [Full Datasheet](https://en.sunnywale.com/uploadfile/2023/0327/IMX296LQR-C_Fulldatasheet_Awin.pdf); [Summary Datasheet IMX296LQR](https://scientificimaging.com/wp-content/uploads/2021/01/FSM-IMX296_V1A-V1B_Datasheet_v1.1b_Full.pdf) |
-	| Raspberry Pi Documentation | [Cameras](https://www.raspberrypi.com/documentation/accessories/camera.html) |
 
 ## Camera Notes
 

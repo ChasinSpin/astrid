@@ -18,7 +18,8 @@ Astrid compromises of:
 Astrid has the following features:
 
 * Highly accurate frame timestamping for occultations using GPS
-* Global Shutter (Sony IMX296 Sensor)
+* Global Shutter (Sony IMX296 Sensor Mono)
+* Controlled over VNC from Tablet/Computer/Phone (one can control many Astrids)
 * Can be paired with a telescope or camera lens
 * Audit trail for video
 * GPS Position/Altitude
@@ -26,8 +27,8 @@ Astrid has the following features:
 * Mount support: [IndiLib](https://indilib.org)
 * Focuser support: [IndiLib](https://indilib.org) - Coming Soon
 * Goto
-* Star Detection - Coming Soon
-* Autostretch
+* Star Detection
+* Stretch
 * Uncompressed raw data/video
 * .fits file (photos)
 * [Raw Astro Video Format (RAVF)](https://github.com/ChasinSpin/ravf) files for video (occultations)
@@ -36,7 +37,7 @@ Astrid has the following features:
 * Multiple Subs
 * Occelmnt support
 * Occultation metrics
-* Pre-Pointing
+* Unattended Pre-Pointing
 
 ![Astrid Front View](docs/images/astrid3.jpg)
 

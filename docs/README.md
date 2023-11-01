@@ -28,4 +28,5 @@ Please remember to Thumbs Up and Subscribe.
 * [Raspberry Pi Complete Installation Instructions](InstallComplete.md)
 * [OTEStamper Timing Board](OTEStamper.md)
 * [Troubleshooting](Troubleshooting.md)
+* [FAQ](FAQ.md)
 * [TODO](TODO.md)
