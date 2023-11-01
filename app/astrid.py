@@ -6,6 +6,7 @@ import json
 import atexit
 import argparse
 import logging
+import subprocess
 from Ui import Ui
 from settings import Settings
 from astsite import AstUtils
@@ -129,6 +130,23 @@ if __name__ == '__main__':
 		app.setStyleSheet(ss)	# Set the stylesheet
 
 
+	# Returns True if this RaspberryPi is supported to run Asrtid, otherwise False
+	
+	def isThisASupportedRaspberryPi() -> bool:
+		cmd = "/usr/bin/cat /proc/cpuinfo | /usr/bin/awk '/Revision/ {print $3}'"
+		revcode = subprocess.check_output(cmd, shell=True)
+
+		code = int(revcode, 16)
+		new = (code >> 23) & 0x1
+		model = (code >> 4) & 0xff
+		mem = (code >> 20) & 0x7
+
+		if new and model == 0x11 and mem >= 5 : # Note, 5 in the mem field is 8GB
+			return True
+		else:
+			return False
+
+
 	#
 	# MAIN
 	#
@@ -172,6 +190,9 @@ if __name__ == '__main__':
 		logger.error('ASTRID flash drive not present, aborting...')
 		shutdown_subprocesses()
 		sys.exit(0)
+
+	if not isThisASupportedRaspberryPi():
+		QMessageBox.critical(None, ' ', 'The Raspberry Pi in this Astrid is not a supported!\n\nSupported models are:\n    Raspberry Pi 4B - 8GB Ram\n\nThis configuration is unsupported and likely won\'t work, please replace the Raspberry Pi with a supported one.', QMessageBox.Ok)
 
 	# Launch OTEStamper
 	otestamper = OteStamper()
