@@ -134,6 +134,7 @@ if [ ! -z "$TMP" -a "$TMP" = "$ASTRID_FOLDER" ];then
 	echo "Moving files to destination..."
 	/usr/bin/rm -rf "${ASTRID_FOLDER}/__MACOSX"	
 	/usr/bin/mv "${ASTRID_FOLDER}/AstridUSB"/* "$ASTRID_FOLDER"
+	/usr/bin/rm -f "${ASTRID_FOLDER}/AstridUSB/.DS_Store"
 	/usr/bin/rmdir "${ASTRID_FOLDER}/AstridUSB"	
 else
 	echo "ERROR: USB Flash Drive Not Detected, ASTRID flash drive format not complete, try again"
