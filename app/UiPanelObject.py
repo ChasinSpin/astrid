@@ -17,8 +17,10 @@ from datetime import datetime, timedelta
 from astsite import AstSite
 from pathcomputation import PathComputation
 from owcloud import OWCloud
-import math
 
+
+
+# Imports data from OWCloud via a seperate thread
 
 class OWCloudThread(QThread):
 	importFromOWCloudError		= pyqtSignal(str)
@@ -43,53 +45,19 @@ class OWCloudThread(QThread):
 		else:
 			occultations = Settings.getInstance().occultations['occultations']
 
-			for event in events:
-				name		= event['Object']
-				ra		= (event['RAJ2000Hours'] / 24.0) * 360.0
-				dec		= event['DEJ2000Deg']	
-				eventDuration	= event['MaxDurSec']
-	
-				for station in event['Stations']:
-					if station['IsOwnStation']:
-						eventTime		= station['EventTimeUtc']
-						eventUncertainty	= station['ErrorInTimeSec']
-						stationName		= station['StationName']
+			for occultation in events:
+				# If the occultation already exists, delete it first
+				for i in range(len(occultations)):
+					if occultations[i]['name'] == occultation['name']:
+						occultations.pop(i)
+						break
 
-						extraSecs		= int(math.ceil(eventDuration * UiPanelObjectAddEdit.MOON_MULTIPLIER))
-						extraStartSecs		= extraSecs
-						extraEndSecs		= extraSecs
+				# Add the occultation
+				occultations.append(occultation)
 
-						eventCenterTime = datetime.strptime(eventTime.split('.')[0], '%Y-%m-%dT%H:%M:%S')
-				
-						# Calculate the Start/End Times
-						startTime = eventCenterTime
-						startTime -= timedelta(seconds = eventDuration / 2.0)
-						startTime -= timedelta(seconds = eventUncertainty)
-						startTime -= timedelta(seconds = extraStartSecs)
+				imported_count += 1
 
-						endTime = eventCenterTime
-						endTime += timedelta(seconds = eventDuration / 2.0)
-						endTime += timedelta(seconds = eventUncertainty)
-						endTime += timedelta(seconds = extraEndSecs)
-
-						eventCenterTime	= eventCenterTime.strftime("%Y-%m-%dT%H:%M:%S")
-						startTime	= startTime.strftime("%Y-%m-%dT%H:%M:%S")
-						endTime		= endTime.strftime("%Y-%m-%dT%H:%M:%S")
-	
-						occultation = { 'name': name + '-' + stationName, 'ra': ra, 'dec': dec, 'event_time': eventCenterTime, 'start_time': startTime, 'end_time': endTime, 'event_duration': eventDuration, 'event_uncertainty': eventUncertainty, 'occelmnt': {} }
-
-						# If the occultation already exists, delete it first
-						for i in range(len(occultations)):
-							if occultations[i]['name'] == occultation['name']:
-								occultations.pop(i)
-								break
-
-						# Add the occultation
-						occultations.append(occultation)
-
-						imported_count += 1
-
-						print(occultation)
+				print(occultation)
 
 			if imported_count > 0:
 				Settings.getInstance().writeSubsetting('occultations')
@@ -105,8 +73,6 @@ class UiPanelObject(UiPanel):
 	SEARCH_SIMBAD		= 'SIMBAD (online)'
 	SEARCH_CUSTOM		= 'Custom'
 	SEARCH_OCCULTATIONS	= 'Occultations'
-
-	MOON_MULTIPLIER = 10.0  # Multiplier for detecting moons, this gets multiplied by the event duration
 
 	def __init__(self, camera):
 		super().__init__('Object (ICRS)')
@@ -198,7 +164,7 @@ class UiPanelObject(UiPanel):
 			if   ret == 0:
 				self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
 			elif ret == 1:
-				ret2 = QMessageBox.information(self, ' ', 'To import from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: Currently there is no Occelmnt information available via the OWCloud API, so Chord Distance and Event Time are not automatically updated according to the site location in Astrid. If you require this feature, please add the event manually and copy and paste the occelmnt.\n\nNote 2: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION', QMessageBox.Ok | QMessageBox.Cancel)
+				ret2 = QMessageBox.information(self, ' ', 'To import from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION', QMessageBox.Ok | QMessageBox.Cancel)
 				if ret2 == QMessageBox.Ok:
 					self.importFromOWCloud()
 		else:
@@ -495,7 +461,6 @@ class UiPanelObject(UiPanel):
 
 
 	def importFromOWCloud(self):
-
 		self.thread = OWCloudThread()
 		self.thread.importFromOWCloudError.connect(self.__importFromOWCloudError)
 		self.thread.importFromOWCloudSuccess.connect(self.__importFromOWCloudSuccess)
