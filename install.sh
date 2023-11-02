@@ -29,7 +29,7 @@ osUpgradeNotificationsOff()
 	TMP=`/usr/bin/grep "type=updater" "$LXDE_PANEL_OLD"`
 	if [ ! -z "$TMP" ]; then
 		echo "Switching OS Upgrade Notifications OFF"
-		sudo /usr/bin/cat "$LXDE_PANEL_NEW" > "$LXDE_PANEL_OLD"
+		sudo sh -c '/usr/bin/cat "$LXDE_PANEL_NEW" > "$LXDE_PANEL_OLD"'
 	fi
 }
 
