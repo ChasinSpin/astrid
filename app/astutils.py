@@ -1,5 +1,7 @@
 import math
 import json
+import psutil
+import os, signal
 from settings import Settings
 
 
@@ -52,3 +54,18 @@ class AstUtils:
 			stylesheetStr = stylesheetStr.replace(key, cs[key])
 
 		return stylesheetStr
+
+
+	@classmethod
+	def isProcessByNameRunning(cls, name: str) -> bool:
+		process = list(filter(lambda p: p.name() == name, psutil.process_iter()))
+		if len(process) > 0:
+			return True
+		return False
+
+
+	@classmethod
+	def killProcessesByName(cls, name: str):
+		process = filter(lambda p: p.name() == name, psutil.process_iter())	
+		for p in process:
+			os.kill(p.pid, signal.SIGINT)

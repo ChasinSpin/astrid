@@ -34,6 +34,7 @@ from AstrometryDownload import AstrometryDownload
 from DisplayOps import DisplayOps
 from otestamper import OteStamper
 import logging
+from astutils import AstUtils
 #import gc
 
 
@@ -491,6 +492,15 @@ class CameraModel:
 		if self.ui.videoFrameRateWarning():
 			self.ui.panelTask.widgetRecord.setChecked(False)
 			return
+
+		if AstUtils.isProcessByNameRunning('chromium-browser'):
+			ret = QMessageBox.warning(self.ui, ' ', 'The Chromium Web Browser is running which will result in frames dropped in Astrid.  Do you wish to Kill Chromium?', QMessageBox.Yes | QMessageBox.Cancel)
+			if ret == QMessageBox.Yes:
+				AstUtils.killProcessesByName('chromium-browser')
+				time.sleep(2)
+			else:
+				self.ui.panelTask.widgetRecord.setChecked(False)
+				return
 
 		video_filename = self.settings['videoFolder'] + '/' + self.videoTarget  + datetime.utcnow().strftime('_%Y%m%d_%H%M%S') + '.ravf'
 

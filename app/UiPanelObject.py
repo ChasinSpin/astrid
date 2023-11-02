@@ -17,6 +17,8 @@ from datetime import datetime, timedelta
 from astsite import AstSite
 from pathcomputation import PathComputation
 from owcloud import OWCloud
+from astutils import AstUtils
+import time
 
 
 
@@ -189,10 +191,18 @@ class UiPanelObject(UiPanel):
 				self.camera.ui.panelTask.switchModeTo('OTE Video')
 			else:
 				return
-		
+
 		if self.camera.isOTEVideoMode():
 			if self.camera.ui.videoFrameRateWarning():
 				return
+
+			if AstUtils.isProcessByNameRunning('chromium-browser'):
+				ret = QMessageBox.warning(self, ' ', 'The Chromium Web Browser is running which will result in frames dropped in Astrid.  Do you wish to Kill Chromium?', QMessageBox.Yes | QMessageBox.Cancel)
+				if ret == QMessageBox.Yes:
+					AstUtils.killProcessesByName('chromium-browser')
+					time.sleep(2)
+				else:
+					return
 
 			self.dialog = UiDialogPanel('Auto Record OTE', UiPanelAutoRecord, args = {'camera': self.camera, 'object': self.occultationObject}, parent = self.camera.ui)
 			if self.dialog.result() == 1:
