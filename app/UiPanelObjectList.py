@@ -2,6 +2,8 @@ from processlogger import ProcessLogger
 from UiPanel import UiPanel
 from PyQt5.QtWidgets import QMessageBox
 from settings import Settings
+from UiDialogPanel import UiDialogPanel
+from UiPanelOccultationInfo import UiPanelOccultationInfo
 
 
 
@@ -41,12 +43,16 @@ class UiPanelObjectList(UiPanel):
 
 		self.widgetEdit		= self.addButton('Edit', True)
 		self.widgetDelete	= self.addButton('Delete', True)
+		self.widgetSpacer1	= self.addSpacer()
+		if self.database == 'Occultations':
+			self.widgetInfo		= self.addButton('Info', True)
 		self.widgetSelect	= self.addButton('Select', True)
 
 		self.widgetEdit.setEnabled(False)
 		self.widgetDelete.setEnabled(False)
 		self.widgetSelect.setEnabled(False)
 
+		self.widgetSpacer2	= self.addSpacer()
 		self.widgetCancel	= self.addButton('Cancel', True)
 
 		# If we have a least one item, select that one by default (this gets rid of the grayed out marker)
@@ -61,6 +67,8 @@ class UiPanelObjectList(UiPanel):
 		self.widgetList.itemSelectionChanged.connect(self.listItemChanged)
 		self.widgetEdit.clicked.connect(self.buttonEditPressed)
 		self.widgetDelete.clicked.connect(self.buttonDeletePressed)
+		if self.database == 'Occultations':
+			self.widgetInfo.clicked.connect(self.buttonInfoPressed)
 		self.widgetCancel.clicked.connect(self.buttonCancelPressed)
 		self.widgetSelect.clicked.connect(self.buttonSelectPressed)
 
@@ -95,6 +103,13 @@ class UiPanelObjectList(UiPanel):
 						self.logger.info('deleted %s from %s' % (item, self.db))
 						break
 				self.panel.acceptDialog()
+
+
+	def buttonInfoPressed(self):
+		item = self.selectedItem()
+		if item is not None:
+			UiPanelOccultationInfo
+			self.dialog = UiDialogPanel('Occultation Info', UiPanelOccultationInfo, args = {'occultationName': item})
 
 
 	def buttonCancelPressed(self):
