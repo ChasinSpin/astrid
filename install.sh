@@ -1,5 +1,23 @@
 #!/bin/sh
 
+
+
+# Switch Chromium Hardware Acceleration Off
+
+chromeHardwareAccelerationOff()
+{
+        CONFIG_FILE="/home/pi/.config/chromium/Local State"
+
+        TMP=`/usr/bin/grep '"hardware_acceleration_mode":{"enabled":true}' "$CONFIG_FILE"`
+        if [ ! -z "$TMP" ];then
+                echo "Switching Hardware Acceleration OFF for Chromium"
+                /usr/bin/sed 's/\"hardware_acceleration_mode\"\:{\"enabled\"\:true}/\"hardware_acceleration_mode\"\:{\"enabled\"\:false}/' "$CONFIG_FILE" > "$CONFIG_FILE".tmp
+                /usr/bin/cat "$CONFIG_FILE".tmp > "$CONFIG_FILE"
+                /usr/bin/rm -f "$CONFIG_FILE".tmp
+        fi
+}
+
+
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
 OTESTAMPER_FOLDER="$ASTRID_FOLDER/OTEStamper"
@@ -29,6 +47,8 @@ cd $APP_FOLDER
 echo "Making oteutils..."
 cd "$APP_FOLDER"
 ./make_oteutils.sh
+
+chromeHardwareAccelerationOff
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"

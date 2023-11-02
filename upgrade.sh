@@ -1,23 +1,5 @@
 #!/bin/sh
 
-
-# Switch Chromium Hardware Acceleration Off
-
-chromeHardwareAccelerationOff()
-{
-	CONFIG_FILE="/home/pi/.config/chromium/Local State"
-
-	TMP=`/usr/bin/grep '"hardware_acceleration_mode":{"enabled":true}' "$CONFIG_FILE"`
-	if [ ! -z "$TMP" ];then
-		echo "Switching Hardware Acceleration OFF for Chromium"
-		/usr/bin/sed 's/\"hardware_acceleration_mode\"\:{\"enabled\"\:true}/\"hardware_acceleration_mode\"\:{\"enabled\"\:false}/' "$CONFIG_FILE" > "$CONFIG_FILE".tmp
-		/usr/bin/cat "$CONFIG_FILE".tmp > "$CONFIG_FILE"
-		/usr/bin/rm -f "$CONFIG_FILE".tmp
-	fi
-}
-
-
-
 echo "*************************************************************"
 echo "*                      Upgrading ASTRID                     *"
 echo "* ASTRID MUST BE ABLE TO CONNECT TO THE INTERNET TO UPGRADE *"
@@ -53,8 +35,6 @@ cd /home/pi
 /usr/bin/mv astridUpgrade astrid
 cd /home/pi/astrid
 ./install.sh
-
-chromeHardwareAccelerationOff
 
 /usr/bin/rm -rf /home/pi/astridOld
 echo "**** Upgrade complete ****"
