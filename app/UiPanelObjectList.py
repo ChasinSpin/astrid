@@ -51,6 +51,7 @@ class UiPanelObjectList(UiPanel):
 		self.widgetEdit.setEnabled(False)
 		self.widgetDelete.setEnabled(False)
 		self.widgetSelect.setEnabled(False)
+		self.widgetInfo.setEnabled(False)
 
 		self.widgetSpacer2	= self.addSpacer()
 		self.widgetCancel	= self.addButton('Cancel', True)
@@ -60,7 +61,7 @@ class UiPanelObjectList(UiPanel):
 			self.widgetList.setCurrentRow(0)
 			self.listItemChanged()
 
-		self.setColumnWidth(1, 170)
+		self.setColumnWidth(1, 300)
 		
 
 	def registerCallbacks(self):
@@ -80,6 +81,7 @@ class UiPanelObjectList(UiPanel):
 		self.widgetEdit.setEnabled(True)
 		self.widgetDelete.setEnabled(True)
 		self.widgetSelect.setEnabled(True)
+		self.widgetInfo.setEnabled(True)
 
 
 	def buttonEditPressed(self):

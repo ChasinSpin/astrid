@@ -426,7 +426,7 @@ class UiPanelObjectAddEdit(UiPanel):
 					break
 
 		# Add the new one
-		occultations.append({"name": name, "ra": ra, "dec": dec, "event_time": event_time, "start_time": start_time, "end_time": end_time, "event_duration": event_duration, "event_uncertainty": event_uncertainty,  "occelmnt": occelmnt})
+		occultations.append({"name": name, "ra": ra, "dec": dec, "event_time": event_time, "start_time": start_time, "end_time": end_time, "event_duration": event_duration, "event_uncertainty": event_uncertainty,  "occelmnt": occelmnt, 'source': 'User'})
 
 		Settings.getInstance().writeSubsetting('occultations')
 		

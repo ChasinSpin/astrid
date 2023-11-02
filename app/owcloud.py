@@ -115,7 +115,7 @@ class OWCloud():
 					ra		= (float(star[1]) / 24.0) * 360.0
 					dec		= float(star[2])
 		
-					occultation = { 'name': name + '-' + stationName, 'ra': ra, 'dec': dec, 'event_time': eventCenterTime, 'start_time': startTime, 'end_time': endTime, 'event_duration': eventDuration, 'event_uncertainty': eventUncertainty, 'occelmnt': eventOccelmnt }
+					occultation = { 'name': name + ' - ' + stationName, 'ra': ra, 'dec': dec, 'event_time': eventCenterTime, 'start_time': startTime, 'end_time': endTime, 'event_duration': eventDuration, 'event_uncertainty': eventUncertainty, 'occelmnt': eventOccelmnt, 'source': 'OWCloud' }
 
 					# Add the occultation
 					occultations.append(occultation)

@@ -44,25 +44,24 @@ class OWCloudThread(QThread):
 		elif events is None:
 			self.importFromOWCloudError.emit('Events = None from OWCloud')
 			return
-		else:
+		elif len(events) > 0:
 			occultations = Settings.getInstance().occultations['occultations']
+			occultations_new = []
 
+			# This removes all OWCloud occultations we have
+			for i in range(len(occultations)):
+				if occultations[i]['source'] != 'OWCloud':
+					occultations_new.append(occultations[i])
+
+			# Now we add the new occultations
 			for occultation in events:
-				# If the occultation already exists, delete it first
-				for i in range(len(occultations)):
-					if occultations[i]['name'] == occultation['name']:
-						occultations.pop(i)
-						break
-
 				# Add the occultation
-				occultations.append(occultation)
-
+				occultations_new.append(occultation)
 				imported_count += 1
-
 				print(occultation)
 
-			if imported_count > 0:
-				Settings.getInstance().writeSubsetting('occultations')
+			Settings.getInstance().occultations['occultations'] = occultations_new
+			Settings.getInstance().writeSubsetting('occultations')
 
 		owcloud = None
 		self.importFromOWCloudSuccess.emit('Imported %d registered events/stations from OWCloud' % imported_count)
@@ -158,7 +157,7 @@ class UiPanelObject(UiPanel):
 			msgBox.setIcon(QMessageBox.Question)
 			msgBox.setText('How would you like to Add an occultation?')
 			msgBox.addButton('Manual Entry or Occelmnt', QMessageBox.AcceptRole)
-			msgBox.addButton('Import From OWCloud', QMessageBox.AcceptRole)
+			msgBox.addButton('Sync From OWCloud', QMessageBox.AcceptRole)
 			msgBox.setStandardButtons(QMessageBox.Cancel)
 		
 			ret = msgBox.exec()
@@ -166,7 +165,7 @@ class UiPanelObject(UiPanel):
 			if   ret == 0:
 				self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
 			elif ret == 1:
-				ret2 = QMessageBox.information(self, ' ', 'To import from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION', QMessageBox.Ok | QMessageBox.Cancel)
+				ret2 = QMessageBox.information(self, ' ', 'To sync from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION AND DELETE PREVIOUS EVENTS FROM OWCLOUD THAT NO LONGER EXIST.', QMessageBox.Ok | QMessageBox.Cancel)
 				if ret2 == QMessageBox.Ok:
 					self.importFromOWCloud()
 		else:
