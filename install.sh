@@ -9,13 +9,30 @@ chromeHardwareAccelerationOff()
         CONFIG_FILE="/home/pi/.config/chromium/Local State"
 
         TMP=`/usr/bin/grep '"hardware_acceleration_mode":{"enabled":true}' "$CONFIG_FILE"`
-        if [ ! -z "$TMP" ];then
+        if [ ! -z "$TMP" ]; then
                 echo "Switching Hardware Acceleration OFF for Chromium"
                 /usr/bin/sed 's/\"hardware_acceleration_mode\"\:{\"enabled\"\:true}/\"hardware_acceleration_mode\"\:{\"enabled\"\:false}/' "$CONFIG_FILE" > "$CONFIG_FILE".tmp
                 /usr/bin/cat "$CONFIG_FILE".tmp > "$CONFIG_FILE"
                 /usr/bin/rm -f "$CONFIG_FILE".tmp
         fi
 }
+
+
+
+# Switch OS Upgrade Notifications Off
+
+osUpgradeNotificationsOff()
+{
+	LXDE_PANEL_OLD="/etc/xdg/lxpanel/LXDE-pi/panels/panel"
+	LXDE_PANEL_NEW="/home/pi/astrid/install/lxde-panel"
+
+	TMP=`/usr/bin/grep "type=updater" "$LXDE_PANEL_OLD"`
+	if [ ! -z "$TMP" ]; then
+		echo "Switching OS Upgrade Notifications OFF"
+		sudo /usr/bin/cat "$LXDE_PANEL_NEW" > "$LXDE_PANEL_OLD"
+	fi
+}
+
 
 
 ASTRID_FOLDER="/home/pi/astrid"
@@ -49,6 +66,7 @@ cd "$APP_FOLDER"
 ./make_oteutils.sh
 
 chromeHardwareAccelerationOff
+osUpgradeNotificationsOff
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"
