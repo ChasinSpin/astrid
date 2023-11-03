@@ -1,6 +1,9 @@
 from UiPanel import UiPanel
 from settings import Settings
 from astcoord import AstCoord
+from owcloud import OWCloud
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import QUrl
 
 
 
@@ -28,6 +31,10 @@ class UiPanelOccultationInfo(UiPanel):
 		hasOccelmnt = False
 		if len(occultation['occelmnt'].keys()) > 0:
 			hasOccelmnt = True
+
+		self.owcloudUrl = None
+		if 'owcloudurl' in occultation.keys():
+			self.owcloudUrl = occultation['owcloudurl']
 
 		self.widgetName			= self.addLineEdit('Object Name', editable=False);	self.widgetName.setText(occultation['name'])
 
@@ -84,12 +91,17 @@ class UiPanelOccultationInfo(UiPanel):
 			self.widgetNote = self.addTextBox('Occultation was manually entered and contains no occelmnt data.\n\nTo get additional information about the star etc., import your sites from OWCloud or enter occelmnt data when manually adding events.', height = 40)
 			self.widgetNote.setFixedSize(UiPanelOccultationInfo.TEXT_BOX_WIDTH, UiPanelOccultationInfo.TEXT_BOX_HEIGHT)
 
+		if self.owcloudUrl is not None:
+			self.widgetOpenOWCloud		= self.addButton('Open on OWCloud')
 		self.widgetOK		= self.addButton('OK')
 
 		self.setColumnWidth(1, 300)
 
 
 	def registerCallbacks(self):
+		if self.owcloudUrl is not None:
+			self.widgetOpenOWCloud.clicked.connect(self.buttonOpenOnOWCloudPressed)
+			
 		self.widgetOK.clicked.connect(self.buttonOKPressed)
 
 
@@ -97,6 +109,11 @@ class UiPanelOccultationInfo(UiPanel):
 
 	def buttonOKPressed(self):
 		self.panel.acceptDialog()
+
+
+	def buttonOpenOnOWCloudPressed(self):
+		QDesktopServices.openUrl(QUrl(self.owcloudUrl))
+
 
 
 	# OPERATIONS

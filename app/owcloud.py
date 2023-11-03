@@ -14,6 +14,7 @@ class OWCloud():
 	URL_EVENTS_HOST		= 'https://www.occultwatcher.net:443'
 	URL_EVENTS_ENDPOINT	= '/api2/v1/events/details-list'
 	URL_OCCELMNT_ENDPOINT	= '/api2/v1/owc/event/my/%s/occelmnts'
+	URL_EVENTS_SEARCH	= '/api2/v1/owc/events-all/?objectId=%s&dt=%s&bf=0'
 	API_KEY			= b'6266393530376536666264303434623138383963653339396636396366613663'
 
 	MOON_MULTIPLIER = 10.0  # Multiplier for detecting moons, this gets multiplied by the event duration
@@ -37,7 +38,11 @@ class OWCloud():
 		handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
 		opener = urllib.request.build_opener(handler, httpsHa)
 
-		url = host + url + '?apikey=%s' % binascii.unhexlify(apiKey).decode('ascii')
+		if '?' in url:
+			sep = '&'
+		else:
+			sep = '?'
+		url = host + url + sep + 'apikey=%s' % binascii.unhexlify(apiKey).decode('ascii')
 
 		try:
 			response = opener.open(url, timeout=5)
@@ -111,11 +116,31 @@ class OWCloud():
 					if error is not None or eventOccelmnt is None:
 						return (eventOccelmnt, error)
 
+					elements	= eventOccelmnt['Occultations']['Event']['Elements'].split(',')
 					star		= eventOccelmnt['Occultations']['Event']['Star'].split(',')
+					object		= eventOccelmnt['Occultations']['Event']['Object'].split(',')
 					ra		= (float(star[1]) / 24.0) * 360.0
 					dec		= float(star[2])
-		
+
+					# Get the events details and create web to it
+					searchUrl = OWCloud.URL_EVENTS_SEARCH % (object[0], '%04d-%02d-%02d' % (int(elements[2]), int(elements[3]), int(elements[4])))
+					(events, error) = self.__getUrl(OWCloud.URL_EVENTS_HOST, searchUrl, OWCloud.API_KEY)
+
+					if error is not None or events is None:
+						return (events, error)
+
+					owcloudurl = None
+					if len(events) == 0:
+						print('Error: event not found')
+					elif len(events) > 1:
+						print('Error: too many events found')
+						owcloudurl = 'https://cloud.occultwatcher.net/event/%s' % events[0]['id']
+					else:
+						owcloudurl = 'https://cloud.occultwatcher.net/event/%s' % events[0]['id']
+
 					occultation = { 'name': name + ' - ' + stationName, 'ra': ra, 'dec': dec, 'event_time': eventCenterTime, 'start_time': startTime, 'end_time': endTime, 'event_duration': eventDuration, 'event_uncertainty': eventUncertainty, 'occelmnt': eventOccelmnt, 'source': 'OWCloud' }
+					if owcloudurl is not None:
+						occultation['owcloudurl'] = owcloudurl
 
 					# Add the occultation
 					occultations.append(occultation)
