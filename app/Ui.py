@@ -230,7 +230,7 @@ class Ui(QtWidgets.QMainWindow):
 	
 		if otestamper.status is None:
 			windowTitle = self.windowTitle
-			ovoltage = 0.0
+			voltage = 0.0
 		else:
 			voltage = otestamper.status['voltage']
 			windowTitle = self.windowTitle + ' (%0.2f Volts)' % voltage 
