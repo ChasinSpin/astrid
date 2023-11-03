@@ -239,7 +239,7 @@ class Ui(QtWidgets.QMainWindow):
 
 		settings_general = Settings.getInstance().general
 
-		if not self.disabledVoltageShutdown and settings_general['voltage_shutdown'] != 0 and voltage <= settings_general['voltage_shutdown']:
+		if not self.disabledVoltageShutdown and settings_general['voltage_shutdown'] != 0 and voltage <= settings_general['voltage_shutdown'] and voltage != 0:
 			msgBox = UiAutoCloseMessageBox()
 			msgBox.setIcon(QMessageBox.Critical)
 			shutdown_time = 20	# Seconds
@@ -258,7 +258,7 @@ class Ui(QtWidgets.QMainWindow):
 
 			self.disabledVoltageShutdown = True
 
-		if not self.disabledVoltageWarning and settings_general['voltage_warning'] != 0 and voltage <= settings_general['voltage_warning']:
+		if not self.disabledVoltageWarning and settings_general['voltage_warning'] != 0 and voltage <= settings_general['voltage_warning'] and voltage != 0:
 			msg = 'Low Voltage: %0.2f V' % voltage
 			QMessageBox.warning(self, ' ', msg, QMessageBox.Ok)
 			self.logger.critical(msg)
