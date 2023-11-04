@@ -40,6 +40,7 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 		self.buttonSearch		= QPushButton('Search')
 		self.widgetStatusBar		= QStatusBar()
 
+		self.widgetOccelmntXML.setObjectName('comboBoxOccelmntXML')
 		self.widgetStartDate.setDisplayFormat('yyyy-MM-dd')
 		self.widgetEndDate.setDisplayFormat('yyyy-MM-dd')
 		self.widgetLatitude.setValidator(DoubleValidator(-90.0, +90.0, 7))
