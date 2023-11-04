@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDateTime
-from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar, QTabWidget, QListWidget
+from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar, QTabWidget, QListWidget, QStatusBar
 from PyQt5.QtGui import QValidator, QDoubleValidator, QIntValidator, QPalette, QColor, QPixmap
 from UiWidgetHMSDMS import UiWidgetHMSDMS
 from UiValidators import DoubleValidator, IntValidator
@@ -10,6 +10,7 @@ from UiWidgetJoystick import UiWidgetJoystick
 from UiWidgetDirection import UiWidgetDirection
 from UiWidgetOpencv import UiWidgetOpencv
 from UiWidgetPlayerControls import UiWidgetPlayerControls
+from UiWidgetSearchXMLPredictions import UiWidgetSearchXMLPredictions
 
 
 
@@ -341,3 +342,21 @@ class UiPanel(QWidget):
 
 		self.rowIndex += 1
 		return controls
+
+
+	def addSearchXMLPredictions(self, width, height, callback_buttonCancelPressed) -> UiWidgetSearchXMLPredictions:
+		searchXMLPredictions = UiWidgetSearchXMLPredictions(width, height, callback_buttonCancelPressed)
+
+		self.layout.addWidget(searchXMLPredictions, self.rowIndex, 0, 1, 2, alignment=Qt.AlignCenter)
+
+		self.rowIndex += 1
+		return searchXMLPredictions
+
+
+	def addStatusBar(self):
+		statusBar = QStatusBar()
+	
+		self.layout.addWidget(statusBar, self.rowIndex, 0, 1, 2, alignment=Qt.AlignLeft)
+
+		self.rowIndex += 1
+		return statusBar

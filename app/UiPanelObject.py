@@ -13,6 +13,7 @@ from UiPanelAutoRecord import UiPanelAutoRecord
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from UiDialogPanel import UiDialogPanel
 from UiPanelAutoRecording import UiPanelAutoRecording
+from UiPanelSearchXMLPredictions import UiPanelSearchXMLPredictions
 from datetime import datetime, timedelta
 from astsite import AstSite
 from pathcomputation import PathComputation
@@ -158,6 +159,7 @@ class UiPanelObject(UiPanel):
 			msgBox.setText('How would you like to Add an occultation?')
 			msgBox.addButton('Manual Entry or Occelmnt', QMessageBox.AcceptRole)
 			msgBox.addButton('Sync From OWCloud', QMessageBox.AcceptRole)
+			msgBox.addButton("Search Occelmnt XML Lists", QMessageBox.AcceptRole)
 			msgBox.setStandardButtons(QMessageBox.Cancel)
 		
 			ret = msgBox.exec()
@@ -168,6 +170,8 @@ class UiPanelObject(UiPanel):
 				ret2 = QMessageBox.information(self, ' ', 'To sync from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION AND DELETE PREVIOUS EVENTS FROM OWCLOUD THAT NO LONGER EXIST.', QMessageBox.Ok | QMessageBox.Cancel)
 				if ret2 == QMessageBox.Ok:
 					self.importFromOWCloud()
+			elif ret == 2:
+				self.dialog = UiDialogPanel("Search Occelmnt XML Lists", UiPanelSearchXMLPredictions, args = {})
 		else:
 			self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
 

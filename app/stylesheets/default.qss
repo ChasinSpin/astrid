@@ -243,3 +243,62 @@ QPushButton#playerControls {
 	color: @colorMuted;
 	font: bold 14px;
 }
+
+QTableWidget {
+	background-color: @colorReadOnlyField;
+	color: @colorMuted;
+	border-style: none;
+}
+
+QTableWidget::item {
+	border-style: none;
+	border-right: 1px solid @colorFieldBg;
+	border-bottom: 1px solid @colorFieldBg;
+}
+
+QTableWidget QHeaderView
+{
+	background-color: @colorReadOnlyField;
+}
+
+QTableWidget QHeaderView::section {
+	background-color: @colorReadOnlyField;
+	color: @colorFg;
+	border-style: none;
+	border-bottom: 1px solid @colorMuted;
+	border-right: 1px solid @colorMuted;
+}
+
+QTableWidget QTableCornerButton::section {
+	/*background-color: @colorReadOnlyField;*/
+	background-color: @colorBg;
+	color: @colorFg;
+	border-style: none;
+	border-bottom: 1px solid @colorMuted;
+	border-right: 1px solid @colorMuted;
+	padding-top: 2px;
+	padding-left: 3px;
+}
+
+QTableWidget QHeaderView::section:horizontal {
+	border-top: 1px solid @colorMuted;
+	padding-top: 3px;
+	padding-left: 3px;
+}	
+
+QTableWidget QHeaderView::section:vertical {
+	border-left: 1px solid @colorMuted;
+	padding-left: 3px;
+}	
+
+QTableWidget QHeaderView::down-arrow {
+	width: 25px;
+	height: 25px;
+	image: url(arrow-down.png);
+}
+
+QTableWidget QHeaderView::up-arrow {
+	width: 25px;
+	height: 25px;
+	image: url(arrow.png);
+}

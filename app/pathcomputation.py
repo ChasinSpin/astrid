@@ -61,7 +61,7 @@ class PathComputation:
 		utcMicrosecs = int((utcHourSecs * 1000000.0) - (utcMins * 60 + utcSecs) * 1000000)
 
 		self.dateTimeAtClosest = datetime(int(elements[2]), int(elements[3]), int(elements[4]), utcHour, utcMins, utcSecs, utcMicrosecs)
-		print("dateTimeAtClosest = ",self.dateTimeAtClosest)
+		#print("dateTimeAtClosest = ",self.dateTimeAtClosest)
 
 		# calculate GAST at time of closest geocentric approach
 		self.gstMid = self.dateToGAST(self.dateTimeAtClosest)
@@ -73,7 +73,7 @@ class PathComputation:
 			self.apparentStarCoord = AstCoord.from24Deg(float(star[1]), float(star[2]),'icrs')
 			self.apparentStarCoord = self.apparentStarCoord.raDec360DegTete(obsdatetime=self.dateTimeAtClosest)
 
-		print("ApparentStarCoord:", self.apparentStarCoord)
+		#print("ApparentStarCoord:", self.apparentStarCoord)
 
 		#print("Closest Time:", self.dateTimeAtClosest)
 		#print("Closest X:", self.XatClosest)
