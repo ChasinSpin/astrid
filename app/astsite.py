@@ -13,7 +13,7 @@ class AstSite:
 	rh		= 0.0	# 0 to 1.0
 
 	@classmethod
-	def set(cls, name: str, lat: float, lon: float, alt: float, pressure = 101325.0, temperature = 15.0, rh = 0.5):
+	def set(cls, name: str, lat: float, lon: float, alt: float, pressure = 0.0, temperature = 15.0, rh = 0.5):
 		cls.name	= name
 		cls.lat		= lat
 		cls.lon		= lon
