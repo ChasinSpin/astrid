@@ -35,6 +35,23 @@ osUpgradeNotificationsOff()
 
 
 
+# Switch Auto Launch File Manager when USB Flash Drive Inserted Off
+
+fileManagerAutoLaunchOff()
+{
+	LXDE_PCMANFM_BKP="/home/pi/.config/pcmanfm/LXDE-pi/pcmanfm.conf~"
+	LXDE_PCMANFM_NEW="/home/pi/.config/pcmanfm/LXDE-pi/pcmanfm.conf"
+
+	TMP=`/usr/bin/grep "autorun=1" "$LXDE_PCMANFM_NEW"`
+	if [ ! -z "$TMP" ]; then
+		echo "Switching File Manager USB Drive Auto Launch OFF"
+		/usr/bin/sed 's/autorun=1/autorun=0/' "$LXDE_PCMANFM_NEW" > "$LXDE_PCMANFM_BKP"
+		/usr/bin/mv "$LXDE_PCMANFM_BKP" "$LXDE_PCMANFM_NEW"
+	fi
+}
+
+
+
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
 OTESTAMPER_FOLDER="$ASTRID_FOLDER/OTEStamper"
@@ -67,6 +84,7 @@ cd "$APP_FOLDER"
 
 chromeHardwareAccelerationOff
 osUpgradeNotificationsOff
+fileManagerAutoLaunchOff
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"
