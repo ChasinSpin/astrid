@@ -180,7 +180,7 @@ class OccelmntXMLSearch():
 
 					oEvent = OccelmntEvent(object = objectName, eventTime = eventTime, objectId = objectId, starId = starId, duration = duration, starMag = starMag, magDrop = magDrop, starAlt = starAlt, starDirection = starDirection, sunAlt = sunAltitude, pathWidthError = pathWidthError, distance = distKm, occelmnt = wrapped_event)
 					self.found_events.append(oEvent)
-					print('found event:', oEvent.details)
+					#print('found event:', oEvent.details)
 
 					self.__updateStatus(count, callback_status)
 					callback_foundEvent(oEvent)

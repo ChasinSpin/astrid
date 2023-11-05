@@ -61,7 +61,7 @@ class OccelmntXMLSearchThread(QThread):
 
 		self.search.searchEvents(self.lat, self.lon, self.alt, self.startDate, self.endDate, self.starMagLimit, self.magDropLimit, self.starAltLimit, self.sunAltLimit, self.distanceLimit, self.__statusUpdate, self.__foundEvent)
 
-		self.searchStatus.emit('Search Complete. Found %d events that matched criteria, from a total of %d events' % (len(self.search.found_events), self.search.total_events))
+		self.searchStatus.emit('Search Complete. Found %d events that matched criteria, from a total of %d events.  Click \"+\" to add event to Occultation Database.' % (len(self.search.found_events), self.search.total_events))
 
 		self.searchComplete.emit()
 
@@ -91,7 +91,11 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.layout.setColumnMinimumWidth(0, width)
 		self.setLayout(self.layout)
 
-		self.controlsWidget.widgetStatusBar.showMessage('Info: Click + on search result to add event to database')
+		self.__defaultStatusMsg()
+
+
+	def __defaultStatusMsg(self):
+		self.controlsWidget.widgetStatusBar.showMessage('Click Search to get started...')
 
 
 	def setupTableWidget(self, width, height):
@@ -170,6 +174,8 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.events = []
 
 		self.tableWidget.setSortingEnabled(True)
+
+		self.__defaultStatusMsg()
 	
 
 	def buttonExportPressed(self):
