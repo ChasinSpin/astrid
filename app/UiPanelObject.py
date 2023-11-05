@@ -1,4 +1,7 @@
 from processlogger import ProcessLogger
+import os
+import binascii
+import subprocess
 from UiPanel import UiPanel
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QApplication
 from astropy import units as u
@@ -33,8 +36,6 @@ class OWCloudThread(QThread):
 		super(QThread, self).__init__()
 
 
-	def run(self):
-		owcloud = OWCloud()
 		(events, error) = owcloud.getEvents()
 
 		imported_count = 0
@@ -69,12 +70,48 @@ class OWCloudThread(QThread):
 
 
 
+# Download Occelmnt Predictions on a seperate thread 
+
+class DownloadPredictionsThread(QThread):
+	downloadPredictionsStatus	= pyqtSignal(str)
+	downloadPredictionsFinished	= pyqtSignal()
+
+	def __init__(self, url):
+		super(QThread, self).__init__()
+
+		self.url = url
+
+
+	def run(self):
+		url = binascii.unhexlify(self.url).decode('ascii')
+		bname = os.path.basename(url)
+		download_path = Settings.getInstance().astrid_drive + '/' + bname
+
+		self.downloadPredictionsStatus.emit('Downloading: %s\n\nplease wait...' % bname)
+
+		
+		cmd = ['/usr/bin/wget', '-O', download_path, url]
+		print(cmd)
+		subprocess.run(args=cmd)
+
+		self.downloadPredictionsStatus.emit('Extracting: %s\n\nplease wait...' % bname)
+		cmd = ['/usr/bin/tar', '--directory', Settings.getInstance().astrid_drive, '-xvf', download_path]
+		print(cmd)
+		subprocess.run(args=cmd)
+
+		os.remove(download_path)
+
+		self.downloadPredictionsFinished.emit()
+
+
+
 class UiPanelObject(UiPanel):
 	# Initializes and displays a Panel
 
 	SEARCH_SIMBAD		= 'SIMBAD (online)'
 	SEARCH_CUSTOM		= 'Custom'
 	SEARCH_OCCULTATIONS	= 'Occultations'
+	PREDICTIONS_URL		= b'68747470733a2f2f6173747269642d646f776e6c6f6164732e73332e616d617a6f6e6177732e636f6d2f646f776e6c6f6164732f7374657665705f70726564696374696f6e735f323032335f323032345f76312e74787a'
 
 	def __init__(self, camera):
 		super().__init__('Object (ICRS)')
@@ -171,10 +208,17 @@ class UiPanelObject(UiPanel):
 				if ret2 == QMessageBox.Ok:
 					self.importFromOWCloud()
 			elif ret == 2:
+				predictions_folder = Settings.getInstance().predictions_folder
+				if not os.path.isdir(predictions_folder) or len(os.listdir(predictions_folder)) == 0:
+					ret3 = QMessageBox.information(self, ' ', 'Missing predictions data, download now? (requires internet connection))', QMessageBox.Yes | QMessageBox.No)
+					if ret3 == QMessageBox.Yes:
+						self.downloadPredictions()
+					else:
+						return
+
 				self.dialog = UiDialogPanel("Search Occelmnt XML Lists", UiPanelSearchXMLPredictions, args = {})
 		else:
 			self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
-
 
 
 	def buttonListPressed(self):
@@ -486,3 +530,29 @@ class UiPanelObject(UiPanel):
 		self.importFromOWCloudMsgBox.setStandardButtons(QMessageBox.NoButton)
 		
 		self.importFromOWCloudMsgBox.exec()
+
+
+	def __downloadPredictionsStatus(self, txt):
+		self.downloadPredictionsMsgBox.setText(txt)
+
+
+	def __downloadPredictionsFinished(self):
+		self.downloadPredictionsMsgBox.done(0)
+		self.downloadPredictionsMsgBox = None
+		self.thread2 = None
+
+
+	def downloadPredictions(self):
+		self.thread2 = DownloadPredictionsThread(self.PREDICTIONS_URL)
+		self.thread2.downloadPredictionsStatus.connect(self.__downloadPredictionsStatus)
+		self.thread2.downloadPredictionsFinished.connect(self.__downloadPredictionsFinished)
+		self.thread2.finished.connect(self.thread2.deleteLater)
+		self.thread2.start()
+
+		self.downloadPredictionsMsgBox = QMessageBox()
+		self.downloadPredictionsMsgBox.setIcon(QMessageBox.Information)
+		self.downloadPredictionsMsgBox.setText('Download predictions...')
+		self.downloadPredictionsMsgBox.setStandardButtons(QMessageBox.NoButton)
+		
+		self.downloadPredictionsMsgBox.exec()
+

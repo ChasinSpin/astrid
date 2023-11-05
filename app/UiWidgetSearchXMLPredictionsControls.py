@@ -6,12 +6,11 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QComboBox, 
 from datetime import datetime
 from astsite import AstSite
 from UiValidators import DoubleValidator
+from settings import Settings
 
 
 
 class UiWidgetSearchXMLPredictionsControls(QWidget):
-
-	FOLDER = 'predictions'
 
 	def __init__(self, callback_buttonCancelPressed, callback_buttonClearPressed, callback_buttonExportPressed, callback_buttonSearchPressed):
 		super().__init__()
@@ -96,7 +95,7 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 
 
 		# Add the list of files to the combo box
-		filenames = os.listdir(UiWidgetSearchXMLPredictionsControls.FOLDER)
+		filenames = os.listdir(Settings.getInstance().predictions_folder)
 		options = []
 		for fname in filenames:
 			if fname.endswith('.xml'):

@@ -114,6 +114,7 @@ class Settings:
 		self.read()
 
 		self.astrid_drive = astrid_drive
+		self.predictions_folder = self.astrid_drive + '/predictions'
 
 
 	@staticmethod

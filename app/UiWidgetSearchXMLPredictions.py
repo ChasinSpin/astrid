@@ -94,6 +94,7 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.__defaultStatusMsg()
 
 
+
 	def __defaultStatusMsg(self):
 		self.controlsWidget.widgetStatusBar.showMessage('Click Search to get started...')
 
@@ -238,16 +239,16 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.controlsWidget.buttonSearch.setEnabled(False)
 		self.controlsWidget.buttonExport.setEnabled(False)
 
-		self.thread = OccelmntXMLSearchThread(	'predictions/' + self.controlsWidget.widgetOccelmntXML.currentText(),	\
-							float(self.controlsWidget.widgetLatitude.text()),			\
-							float(self.controlsWidget.widgetLongitude.text()),			\
-							float(self.controlsWidget.widgetAltitude.text()),			\
-							startDate,								\
-							endDate,								\
-							float(self.controlsWidget.widgetStarMag.text()),			\
-							float(self.controlsWidget.widgetMagDrop.text()),			\
-							float(self.controlsWidget.widgetStarAltitude.text()),			\
-							float(self.controlsWidget.widgetSunAltitude.text()),			\
+		self.thread = OccelmntXMLSearchThread(	Settings.getInstance().predictions_folder + '/' + self.controlsWidget.widgetOccelmntXML.currentText(),	\
+							float(self.controlsWidget.widgetLatitude.text()),							\
+							float(self.controlsWidget.widgetLongitude.text()),							\
+							float(self.controlsWidget.widgetAltitude.text()),							\
+							startDate,												\
+							endDate,												\
+							float(self.controlsWidget.widgetStarMag.text()),							\
+							float(self.controlsWidget.widgetMagDrop.text()),							\
+							float(self.controlsWidget.widgetStarAltitude.text()),							\
+							float(self.controlsWidget.widgetSunAltitude.text()),							\
 							float(self.controlsWidget.widgetDistance.text())
 						     )
 
