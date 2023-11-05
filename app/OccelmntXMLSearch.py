@@ -72,7 +72,7 @@ class OccelmntXMLSearch():
 
 		(alt, az) = coord.fastRaDecToAltAz(lat, lon, obsdatetime)
 
-		print('Sun: %s, %s' % (str(alt), str(az)))
+		#print('Sun: %s, %s' % (str(alt), str(az)))
 
 		return alt
 
@@ -139,7 +139,7 @@ class OccelmntXMLSearch():
 				continue
 
 			(starAlt, starAz) = self.__starAltAz(float(occStar[9]), float(occStar[10]), lat, lon, occDateTime)
-			print('StarAzAlt %s %s   RA:%s DEC:%s' % (str(starAz), str(starAlt), occStar[9], occStar[10]))
+			#print('StarAzAlt %s %s   RA:%s DEC:%s' % (str(starAz), str(starAlt), occStar[9], occStar[10]))
 			if starAlt < starAltLimit:
 				continue
 

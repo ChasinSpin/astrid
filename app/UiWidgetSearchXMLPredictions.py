@@ -1,3 +1,5 @@
+import os
+import csv
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
@@ -5,6 +7,8 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QTableWidget, QTableWidgetItem
 from datetime import datetime, timezone
 from UiWidgetSearchXMLPredictionsControls import UiWidgetSearchXMLPredictionsControls
 from OccelmntXMLSearch import OccelmntXMLSearch, OccelmntEvent
+from PyQt5.QtWidgets import QMessageBox
+from settings import Settings
 
 
 
@@ -66,6 +70,7 @@ class UiWidgetSearchXMLPredictions(QWidget):
 
 	WIDTH_TABLE_DIFFERENCE	= 56
 	HEIGHT_TABLE_DIFFERENCE	= 320
+	CSV_FOLDER		= 'SearchResults'
 
 	def __init__(self, width, height, callback_buttonCancelPressed):
 		super().__init__()
@@ -93,13 +98,17 @@ class UiWidgetSearchXMLPredictions(QWidget):
 
 		self.tableWidget.setSortingEnabled(True)
 		self.tableWidget.setRowCount(1)
-		self.tableWidget.setColumnCount(dummy.columns())
+		self.tableWidget.setColumnCount(dummy.columns() + 1)
 		self.tableWidget.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
 		self.tableWidget.horizontalHeader().setSortIndicator(1, Qt.AscendingOrder)
 
 		dummy_keys = dummy.keys()
 		for i in range(dummy.columns()):
 			self.tableWidget.setHorizontalHeaderItem(i, QTableWidgetItem(dummy_keys[i]))
+
+		self.hiddenIndexColumn = self.tableWidget.columnCount() - 1
+		self.tableWidget.setHorizontalHeaderItem(self.hiddenIndexColumn, QTableWidgetItem('hiddenIndex'))
+		self.tableWidget.setColumnHidden(self.hiddenIndexColumn, True)
 
 		self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents) 
 		self.tableWidget.horizontalHeader().setStretchLastSection(True) 
@@ -119,10 +128,13 @@ class UiWidgetSearchXMLPredictions(QWidget):
 			self.tableWidget.setRowCount(rowCount + 1)
 			insertRow = rowCount
 
-		for r in range(event.columns()):
+		for c in range(event.columns()):
 			item = QTableWidgetItem()
-			item.setData(Qt.EditRole, event.getValueForEvent(event_keys[r]))
-			self.tableWidget.setItem(insertRow, r, item)
+			item.setData(Qt.EditRole, event.getValueForEvent(event_keys[c]))
+			self.tableWidget.setItem(insertRow, c, item)
+
+		# Add the hidden index referencing the row in events so we can export sorted as csv later
+		self.tableWidget.setItem(insertRow, self.hiddenIndexColumn, QTableWidgetItem(str(len(self.events))))
 
 		self.events.append(event)
 
@@ -151,8 +163,23 @@ class UiWidgetSearchXMLPredictions(QWidget):
 	
 
 	def buttonExportPressed(self):
-		pass
-	
+		if len(self.events) > 0:
+			folder = Settings.getInstance().astrid_drive + '/' + self.CSV_FOLDER
+			if not os.path.isdir(folder):
+				os.mkdir(folder)
+			fname = folder + '/occelmnt_search_' + datetime.utcnow().strftime('%Y%m%d_%H%M%S') + '.csv'
+
+			with open(fname, 'w', newline='') as csvfile:
+				writer = csv.DictWriter(csvfile, fieldnames=self.events[0].keys())
+
+				writer.writeheader()
+		
+				for row in range(self.tableWidget.rowCount()):
+					eventIndex = int(self.tableWidget.item(row, self.hiddenIndexColumn).text())
+					writer.writerow(self.events[eventIndex].details)
+
+			QMessageBox.information(self, ' ', 'Search results successfully exported to:\n\n    ' + fname, QMessageBox.Ok)
+
 
 	def buttonSearchPressed(self):
 		self.startSearch()
