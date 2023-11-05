@@ -10,7 +10,6 @@ from UiWidgetJoystick import UiWidgetJoystick
 from UiWidgetDirection import UiWidgetDirection
 from UiWidgetOpencv import UiWidgetOpencv
 from UiWidgetPlayerControls import UiWidgetPlayerControls
-from UiWidgetSearchXMLPredictions import UiWidgetSearchXMLPredictions
 
 
 
@@ -344,7 +343,10 @@ class UiPanel(QWidget):
 		return controls
 
 
-	def addSearchXMLPredictions(self, width, height, callback_buttonCancelPressed) -> UiWidgetSearchXMLPredictions:
+	def addSearchXMLPredictions(self, width, height, callback_buttonCancelPressed):
+		# Import defined here instead of at top to prevent circular import
+		from UiWidgetSearchXMLPredictions import UiWidgetSearchXMLPredictions
+
 		searchXMLPredictions = UiWidgetSearchXMLPredictions(width, height, callback_buttonCancelPressed)
 
 		self.layout.addWidget(searchXMLPredictions, self.rowIndex, 0, 1, 2, alignment=Qt.AlignCenter)

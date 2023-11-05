@@ -9,6 +9,8 @@ from UiWidgetSearchXMLPredictionsControls import UiWidgetSearchXMLPredictionsCon
 from OccelmntXMLSearch import OccelmntXMLSearch, OccelmntEvent
 from PyQt5.QtWidgets import QMessageBox
 from settings import Settings
+from UiDialogPanel import UiDialogPanel
+from UiPanelObjectAddEdit import UiPanelObjectAddEdit
 
 
 
@@ -89,10 +91,12 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.layout.setColumnMinimumWidth(0, width)
 		self.setLayout(self.layout)
 
+		self.controlsWidget.widgetStatusBar.showMessage('Info: Click + on search result to add event to database')
+
 
 	def setupTableWidget(self, width, height):
 		# Create dummy event, so we can get the keys for the headers
-		dummy = OccelmntEvent('', datetime.utcnow(), '', '', 0.0, 0.0, 0.0, 0.0, 'N', 0.0, 0.0, 0.0)
+		dummy = OccelmntEvent('', datetime.utcnow(), '', '', 0.0, 0.0, 0.0, 0.0, 'N', 0.0, 0.0, 0.0, None)
 
 		self.tableWidget = QTableWidget()
 
@@ -110,8 +114,12 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.tableWidget.setHorizontalHeaderItem(self.hiddenIndexColumn, QTableWidgetItem('hiddenIndex'))
 		self.tableWidget.setColumnHidden(self.hiddenIndexColumn, True)
 
+		self.tableWidget.setVerticalHeaderItem(0, QTableWidgetItem(' '))
+
 		self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents) 
 		self.tableWidget.horizontalHeader().setStretchLastSection(True) 
+
+		self.tableWidget.verticalHeader().sectionClicked.connect(self.tableRowClicked)
 
 		self.tableWidget.setFixedSize(width, height)
 
@@ -135,6 +143,7 @@ class UiWidgetSearchXMLPredictions(QWidget):
 
 		# Add the hidden index referencing the row in events so we can export sorted as csv later
 		self.tableWidget.setItem(insertRow, self.hiddenIndexColumn, QTableWidgetItem(str(len(self.events))))
+		self.tableWidget.setVerticalHeaderItem(insertRow, QTableWidgetItem('+'))
 
 		self.events.append(event)
 
@@ -157,6 +166,7 @@ class UiWidgetSearchXMLPredictions(QWidget):
 
 		self.tableWidget.clearContents()
 		self.tableWidget.setRowCount(1)
+		self.tableWidget.setVerticalHeaderItem(0, QTableWidgetItem(' '))
 		self.events = []
 
 		self.tableWidget.setSortingEnabled(True)
@@ -185,6 +195,15 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.startSearch()
 
 
+	def tableRowClicked(self, logicalIndex):
+		if self.tableWidget.verticalHeaderItem(logicalIndex).text() == '+':
+			eventIndex	= int(self.tableWidget.item(logicalIndex, self.hiddenIndexColumn).text())
+			occelmnt	= self.events[eventIndex].occelmnt
+			eventTime	= self.events[eventIndex].details['Event Time']
+			if occelmnt is not None:
+				self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': 'Occultations', 'camera': None, 'editValues': None, 'occelmnt': occelmnt, 'oldOccelmntWarning': True, 'eventCenterTime': eventTime}, parent = None)
+
+
 	# Operations
 
 	def __searchFoundEvent(self, event):
@@ -198,14 +217,21 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.thread = None
 		self.controlsWidget.buttonSearch.setEnabled(True)
 		self.controlsWidget.buttonExport.setEnabled(True)
+		if len(self.events) == 0:
+			QMessageBox.information(self, ' ', 'No events found, check:\n\n    1. Start and End dates fall within the range of the data\n    2. Other fields contain plausible values', QMessageBox.Ok)
 
 
 	def startSearch(self):
+		startDate = datetime.strptime(self.controlsWidget.widgetStartDate.dateTime().toString('yyyy-MM-dd hh:mm:ss'), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+		endDate   = datetime.strptime(self.controlsWidget.widgetEndDate.dateTime().toString('yyyy-MM-dd hh:mm:ss'), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+
+		if endDate < startDate:
+			QMessageBox.warning(self, ' ', 'End Date is before Start Date', QMessageBox.Ok)
+			return
+
 		self.controlsWidget.buttonSearch.setEnabled(False)
 		self.controlsWidget.buttonExport.setEnabled(False)
 
-		startDate = datetime.strptime(self.controlsWidget.widgetStartDate.dateTime().toString('yyyy-MM-dd hh:mm:ss'), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
-		endDate   = datetime.strptime(self.controlsWidget.widgetEndDate.dateTime().toString('yyyy-MM-dd hh:mm:ss'), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
 		self.thread = OccelmntXMLSearchThread(	'predictions/' + self.controlsWidget.widgetOccelmntXML.currentText(),	\
 							float(self.controlsWidget.widgetLatitude.text()),			\
 							float(self.controlsWidget.widgetLongitude.text()),			\

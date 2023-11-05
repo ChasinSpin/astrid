@@ -46,12 +46,15 @@ class UiPanelObjectList(UiPanel):
 		self.widgetSpacer1	= self.addSpacer()
 		if self.database == 'Occultations':
 			self.widgetInfo		= self.addButton('Info', True)
+		else:
+			self.widgetInfo		= None
 		self.widgetSelect	= self.addButton('Select', True)
 
 		self.widgetEdit.setEnabled(False)
 		self.widgetDelete.setEnabled(False)
 		self.widgetSelect.setEnabled(False)
-		self.widgetInfo.setEnabled(False)
+		if self.widgetInfo is not None:
+			self.widgetInfo.setEnabled(False)
 
 		self.widgetSpacer2	= self.addSpacer()
 		self.widgetCancel	= self.addButton('Cancel', True)
@@ -68,7 +71,7 @@ class UiPanelObjectList(UiPanel):
 		self.widgetList.itemSelectionChanged.connect(self.listItemChanged)
 		self.widgetEdit.clicked.connect(self.buttonEditPressed)
 		self.widgetDelete.clicked.connect(self.buttonDeletePressed)
-		if self.database == 'Occultations':
+		if self.widgetInfo is not None:
 			self.widgetInfo.clicked.connect(self.buttonInfoPressed)
 		self.widgetCancel.clicked.connect(self.buttonCancelPressed)
 		self.widgetSelect.clicked.connect(self.buttonSelectPressed)
@@ -81,7 +84,8 @@ class UiPanelObjectList(UiPanel):
 		self.widgetEdit.setEnabled(True)
 		self.widgetDelete.setEnabled(True)
 		self.widgetSelect.setEnabled(True)
-		self.widgetInfo.setEnabled(True)
+		if self.widgetInfo is not None:
+			self.widgetInfo.setEnabled(True)
 
 
 	def buttonEditPressed(self):

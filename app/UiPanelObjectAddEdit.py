@@ -24,6 +24,10 @@ class UiPanelObjectAddEdit(UiPanel):
 		self.editValues		= args['editValues']
 		self.panel		= panel
 
+		if 'oldOccelmntWarning' in args and args['oldOccelmntWarning'] == True:
+			self.widgetOldOccelmntWarning	= self.addTextBox('IMPORTANT: OWCloud may have more recent orbital elements, please verify against OWCloud', 60)
+			self.widgetOldOccelmntWarning.setFixedWidth(350)
+
 		self.widgetName		= self.addLineEdit('Object Name')
 
 		if self.database == 'Occultations' and self.editValues is None:
@@ -111,6 +115,18 @@ class UiPanelObjectAddEdit(UiPanel):
 		self.widgetCancel	= self.addButton('Cancel', True)
 
 		self.setColumnWidth(1, 170)
+
+		# If we passed an occelmnt as input, configure it
+		if 'eventCenterTime' in args:
+			self.eventCenterTimeProvided = True
+		else:
+			self.eventCenterTimeProvided = False
+		if 'occelmnt' in args and args['occelmnt'] is not None:
+			self.widgetOccelmnt.setText(args['occelmnt'])
+			self.textEditOccelmntChanged()
+			if self.eventCenterTimeProvided:
+				self.widgetEventTime.setDateTime(args['eventCenterTime'])
+			self.calcStartEndRecordingTimes()
 
 
 	def registerCallbacks(self):
@@ -284,11 +300,13 @@ class UiPanelObjectAddEdit(UiPanel):
 
 
 	def messageBoxConfirmEventTime(self):
-		ret = QMessageBox.question(self, ' ', "Is the event time the correct time for the event at the location you're targetting?  Are the calculated start and end times correct for automatic recording?", QMessageBox.Yes | QMessageBox.No)
-		if ret == QMessageBox.Yes:
-			return True
-		else:
-			return False
+		if not self.eventCenterTimeProvided:
+			ret = QMessageBox.question(self, ' ', "Is the event time the correct time for the event at the location you're targetting?  Are the calculated start and end times correct for automatic recording?", QMessageBox.Yes | QMessageBox.No)
+			if ret == QMessageBox.Yes:
+				return True
+			else:
+				return False
+		return True
 
 
 	def addUpdateObjectToCustomDatabase(self, name, coord, originalName = None):

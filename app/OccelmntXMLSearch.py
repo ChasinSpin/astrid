@@ -12,7 +12,8 @@ from astsite import AstSite
 
 class OccelmntEvent():
 
-	def __init__(self, object: str, eventTime: str, objectId: str, starId: str, duration: float, starMag: float, magDrop: float, starAlt: float, starDirection: str, sunAlt: float, pathWidthError: float, distance: float):
+	def __init__(self, object: str, eventTime: str, objectId: str, starId: str, duration: float, starMag: float, magDrop: float, starAlt: float, starDirection: str, sunAlt: float, pathWidthError: float, distance: float, occelmnt: dict):
+
 		self.details = {						\
 				'Object':		object,			\
 				'Event Time':		eventTime,		\
@@ -27,6 +28,12 @@ class OccelmntEvent():
 				'SunAlt°':		sunAlt,			\
 				'PathErr':		pathWidthError,		\
 				}	
+
+		if occelmnt is None:
+			self.occelmnt = None
+		else:
+			occelmnt = xmltodict.unparse(occelmnt, pretty=True, full_document=False)
+			self.occelmnt = '------ occelmnt file for Occult  BEGIN -----------------------------------\n' + occelmnt + '\n------ occelmnt file for Occult  END   -----------------------------------\n'
 
 
 	def getValueForEvent(self, key):
@@ -171,7 +178,7 @@ class OccelmntXMLSearch():
 
 					starDirection = self.__azToCompass(starAz)
 
-					oEvent = OccelmntEvent(object = objectName, eventTime = eventTime, objectId = objectId, starId = starId, duration = duration, starMag = starMag, magDrop = magDrop, starAlt = starAlt, starDirection = starDirection, sunAlt = sunAltitude, pathWidthError = pathWidthError, distance = distKm)
+					oEvent = OccelmntEvent(object = objectName, eventTime = eventTime, objectId = objectId, starId = starId, duration = duration, starMag = starMag, magDrop = magDrop, starAlt = starAlt, starDirection = starDirection, sunAlt = sunAltitude, pathWidthError = pathWidthError, distance = distKm, occelmnt = wrapped_event)
 					self.found_events.append(oEvent)
 					print('found event:', oEvent.details)
 
