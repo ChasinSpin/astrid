@@ -16,7 +16,7 @@ class OccelmntXMLSearchThread(QThread):
 	searchComplete		= pyqtSignal()
 
 
-	def __init__(self, xml_fname, lat, lon, alt, startDate, endDate, starMagLimit, magDropLimit):
+	def __init__(self, xml_fname, lat, lon, alt, startDate, endDate, starMagLimit, magDropLimit,  starAltLimit, sunAltLimit, distanceLimit):
 		super(QThread, self).__init__()
 
 		self.xml_fname		= xml_fname
@@ -27,6 +27,9 @@ class OccelmntXMLSearchThread(QThread):
 		self.endDate		= endDate
 		self.starMagLimit	= starMagLimit
 		self.magDropLimit	= magDropLimit
+		self.starAltLimit	= starAltLimit
+		self.sunAltLimit	= sunAltLimit
+		self.distanceLimit	= distanceLimit
 
 		self.search	= None
 
@@ -50,7 +53,7 @@ class OccelmntXMLSearchThread(QThread):
 		self.search = OccelmntXMLSearch(self.xml_fname)
 		self.searchStatus.emit('Total Events: %d' % self.search.total_events)
 
-		self.search.searchEvents(self.lat, self.lon, self.alt, self.startDate, self.endDate, self.starMagLimit, self.magDropLimit, self.__statusUpdate, self.__foundEvent)
+		self.search.searchEvents(self.lat, self.lon, self.alt, self.startDate, self.endDate, self.starMagLimit, self.magDropLimit, self.starAltLimit, self.sunAltLimit, self.distanceLimit, self.__statusUpdate, self.__foundEvent)
 
 		self.searchStatus.emit('Search Complete. Found %d events that matched criteria, from a total of %d events' % (len(self.search.found_events), self.search.total_events))
 
@@ -84,7 +87,7 @@ class UiWidgetSearchXMLPredictions(QWidget):
 
 	def setupTableWidget(self, width, height):
 		# Create dummy event, so we can get the keys for the headers
-		dummy = OccelmntEvent('', datetime.utcnow(), '', '', 0.0, 0.0, 0.0, 0.0, 0.0)
+		dummy = OccelmntEvent('', datetime.utcnow(), '', '', 0.0, 0.0, 0.0, 0.0, 'N', 0.0, 0.0, 0.0)
 
 		self.tableWidget = QTableWidget()
 
@@ -98,8 +101,8 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		for i in range(dummy.columns()):
 			self.tableWidget.setHorizontalHeaderItem(i, QTableWidgetItem(dummy_keys[i]))
 
-		self.tableWidget.horizontalHeader().setStretchLastSection(True) 
 		self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents) 
+		self.tableWidget.horizontalHeader().setStretchLastSection(True) 
 
 		self.tableWidget.setFixedSize(width, height)
 
@@ -132,6 +135,8 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		if self.thread is not None:
 			self.thread.abort()
 			self.thread = None
+		self.controlsWidget.buttonSearch.setEnabled(True)
+		self.controlsWidget.buttonExport.setEnabled(True)
 		self.callback_buttonCancelPressed()
 	
 
@@ -164,9 +169,13 @@ class UiWidgetSearchXMLPredictions(QWidget):
 
 	def __searchComplete(self):
 		self.thread = None
+		self.controlsWidget.buttonSearch.setEnabled(True)
+		self.controlsWidget.buttonExport.setEnabled(True)
 
 
 	def startSearch(self):
+		self.controlsWidget.buttonSearch.setEnabled(False)
+		self.controlsWidget.buttonExport.setEnabled(False)
 
 		startDate = datetime.strptime(self.controlsWidget.widgetStartDate.dateTime().toString('yyyy-MM-dd hh:mm:ss'), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
 		endDate   = datetime.strptime(self.controlsWidget.widgetEndDate.dateTime().toString('yyyy-MM-dd hh:mm:ss'), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
@@ -177,7 +186,10 @@ class UiWidgetSearchXMLPredictions(QWidget):
 							startDate,								\
 							endDate,								\
 							float(self.controlsWidget.widgetStarMag.text()),			\
-							float(self.controlsWidget.widgetMagDrop.text())
+							float(self.controlsWidget.widgetMagDrop.text()),			\
+							float(self.controlsWidget.widgetStarAltitude.text()),			\
+							float(self.controlsWidget.widgetSunAltitude.text()),			\
+							float(self.controlsWidget.widgetDistance.text())
 						     )
 
 		self.thread.searchFoundEvent.connect(self.__searchFoundEvent)

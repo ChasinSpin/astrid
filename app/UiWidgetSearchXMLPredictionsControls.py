@@ -22,7 +22,7 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 		self.layout.setRowMinimumHeight(5, 10)
 		self.layout.setRowMinimumHeight(8, 10)
 		self.layout.setColumnMinimumWidth(3, 80)
-		self.layout.setColumnMinimumWidth(5, 80)
+		self.layout.setColumnMinimumWidth(6, 80)
 
 
 		self.widgetOccelmntXML		= QComboBox()
@@ -33,7 +33,9 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 		self.widgetAltitude		= QLineEdit()
 		self.widgetStarMag		= QLineEdit()
 		self.widgetMagDrop		= QLineEdit()
-		self.widgetEventAltitude	= QLineEdit()
+		self.widgetStarAltitude		= QLineEdit()
+		self.widgetSunAltitude		= QLineEdit()
+		self.widgetDistance		= QLineEdit()
 		self.buttonCancel		= QPushButton('Cancel')
 		self.buttonClear		= QPushButton('Clear Results')
 		self.buttonExport		= QPushButton('Export as CSV')
@@ -48,7 +50,9 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 		self.widgetAltitude.setValidator(DoubleValidator(-20.0, 20000.0, 1))
 		self.widgetStarMag.setValidator(DoubleValidator(0.0, 30.0, 1))
 		self.widgetMagDrop.setValidator(DoubleValidator(0.0, 30.0, 1))
-		self.widgetEventAltitude.setValidator(DoubleValidator(0.0, 90.0, 1))
+		self.widgetStarAltitude.setValidator(DoubleValidator(0.0, 90.0, 1))
+		self.widgetSunAltitude.setValidator(DoubleValidator(-20.0, 0.0, 1))
+		self.widgetDistance.setValidator(DoubleValidator(0.0, 20000.0, 1))
 
 		self.layout.addWidget(QLabel('Occelment XML'),			0, 0, 1, 1, Qt.AlignVCenter)
 		self.layout.addWidget(self.widgetOccelmntXML, 			1, 0, 1, 2, Qt.AlignVCenter)
@@ -74,8 +78,14 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 		self.layout.addWidget(QLabel('Limit Event Magnitude Drop '),	3, 4, 1, 1, Qt.AlignVCenter)
 		self.layout.addWidget(self.widgetMagDrop, 			4, 4, 1, 1, Qt.AlignVCenter)
 
-		self.layout.addWidget(QLabel('Limit Event Altitude (deg)'),	6, 4, 1, 1, Qt.AlignVCenter)
-		self.layout.addWidget(self.widgetEventAltitude, 		7, 4, 1, 1, Qt.AlignVCenter)
+		self.layout.addWidget(QLabel('Limit Star Altitude (deg)'),	6, 4, 1, 1, Qt.AlignVCenter)
+		self.layout.addWidget(self.widgetStarAltitude, 			7, 4, 1, 1, Qt.AlignVCenter)
+
+		self.layout.addWidget(QLabel('Limit Sun Altitude (deg)'),	0, 5, 1, 1, Qt.AlignVCenter)
+		self.layout.addWidget(self.widgetSunAltitude, 			1, 5, 1, 1, Qt.AlignVCenter)
+
+		self.layout.addWidget(QLabel('Limit Distance (km)'),		3, 5, 1, 1, Qt.AlignVCenter)
+		self.layout.addWidget(self.widgetDistance, 			4, 5, 1, 1, Qt.AlignVCenter)
 
 		self.layout.addWidget(self.buttonClear, 			1, 7, 1, 1, Qt.AlignVCenter)
 		self.layout.addWidget(self.buttonExport, 			4, 7, 1, 1, Qt.AlignVCenter)
@@ -103,8 +113,9 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 		self.widgetAltitude.setText(str(AstSite.alt))
 		self.widgetStarMag.setText('14.0')
 		self.widgetMagDrop.setText('0.1')
-		self.widgetEventAltitude.setText('10.0')
-		self.widgetStatusBar.showMessage('This is a test')
+		self.widgetStarAltitude.setText('10.0')
+		self.widgetSunAltitude.setText('-15.0')
+		self.widgetDistance.setText('300.0')
 
 		self.setLayout(self.layout)
 

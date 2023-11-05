@@ -1,10 +1,11 @@
+import math
 from astsite import AstSite
 import astropy.units as u
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from astropy.time import Time
 from settings import Settings
 from astropy.utils.iers.iers import conf
-from astropy.coordinates import ICRS, FK4, FK5, TETE, AltAz, SkyCoord
+from astropy.coordinates import ICRS, FK4, FK5, TETE, AltAz, SkyCoord, EarthLocation
 
 
 """
@@ -164,7 +165,7 @@ class AstCoord:
 	# Returns altitude and azimuth including refraction corrections (pressure, temperture, humidity)
 	# This is jnow by definition	
 
-	def altAzRefracted(self, frame: str, obsdatetime = None):
+	def altAzRefractedByLocation(self, location: EarthLocation, frame: str, obsdatetime = None):
 		(coord, now) = self.__raDec360Deg(frame, jnow = True, obsdatetime = obsdatetime)
 		# Reference: https://stackoverflow.com/questions/60305302/converting-equatorial-to-alt-az-coordinates-is-very-slow
 		conf.remote_timeout = 0.1
@@ -173,6 +174,11 @@ class AstCoord:
 		conf.remote_timeout = 10.0
 		conf.auto_download = True
 		return (altAz.alt.deg, altAz.az.deg)
+
+
+	def altAzRefracted(self, frame: str, obsdatetime = None):
+		location = AstSite.location()
+		return self.altAzRefractedByLocation(location, frame, obsdatetime)
 
 
 	def meridianFlipMins(self):
@@ -234,6 +240,73 @@ class AstCoord:
 		"""
 		coord = self.skyCoord.transform_to(TETE(obstime = obsdatetime))
 		return (coord.ra.value, coord.dec.value)
+
+
+	def fastRaDecToAltAz(self, lat, lon, obsdatetime):
+		"""
+			Reference: https://astrogreg.com/convert_ra_dec_to_alt_az.html
+			Used primarily for speed
+			Requires apparentRa/Dec
+		"""
+
+		# Convert Ra/Dec/Lat/Lon to radians
+		(apparentRa, apparentDec) = (self.skyCoord.ra.value, self.skyCoord.dec.value)
+
+		apparentRa      = math.radians(apparentRa)
+		apparentDec     = math.radians(apparentDec)
+		lat             = math.radians(lat)
+		lon             = math.radians(lon)
+
+		jd_ut = (obsdatetime - datetime(2001,4,1,0,0,0, 0, tzinfo = timezone.utc)) / timedelta(days=1) + 2452000.5
+
+		# Meeus 13.5 and 13.6, modified so West longitudes are negative and 0 is North
+		gmst			= self.__fastGreenwichMeanSiderealTime(jd_ut)
+		localSiderealTime	= (gmst + lon) % (2.0 * math.pi)
+
+		H			= localSiderealTime - apparentRa
+		if H < 0.0:
+			H += 2.0 * math.pi
+		if H > math.pi:
+			H = H - 2.0 * math.pi
+
+		az	= (math.atan2(math.sin(H), math.cos(H) * math.sin(lat) - math.tan(apparentDec) * math.cos(lat)))
+		alt	= (math.asin(math.sin(lat) * math.sin(apparentDec) + math.cos(lat) * math.cos(apparentDec) * math.cos(H)))
+		az	-= math.pi
+
+		if az < 0.0:
+			az += 2.0 * math.pi
+			
+		alt = math.degrees(alt)
+		az = math.degrees(az)
+
+		return (alt, az)
+
+
+	def __fastGreenwichMeanSiderealTime(self, jd):
+		# "Expressions for IAU 2000 precession quantities" N. Capitaine1,P.T.Wallace2, and J. Chapront
+		t = ((jd - 2451545.0)) / 36525.0
+
+		gmst = self.__fastEarthRotationAngle(jd) + (0.014506 + 4612.156534*t + 1.3915817*t*t - 0.00000044*t*t*t - 0.000029956*t*t*t*t - 0.0000000368*t*t*t*t*t)/60.0/60.0*math.pi/180.0 # eq 42
+		gmst %= 2.0 * math.pi
+		if gmst < 0:
+			gmst += 2.0 * math.pi
+
+		return gmst
+
+
+	def __fastEarthRotationAngle(self, jd):
+		# IERS Technical Note No. 32
+
+		t = jd - 2451545.0
+		f = jd % 1.0
+
+		theta = 2.0 * math.pi * (f + 0.7790572732640 + 0.00273781191135448 * t)	# eq 14
+		theta %= 2.0 *math.pi
+		if theta < 0.0:
+			theta += 2.0 * math.pi
+
+		return theta
+
 
 
 """

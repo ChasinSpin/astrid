@@ -205,7 +205,7 @@ class PathComputation:
 		#    compute the distance between the FP position of the observer and shadow center, watch for the minimum distance
 		#    exit this loop when the geocentric distance of the observer projected along the asteroid's motion is greater than maxRadius
 		minDistance = None		# min distance from observer to asteroid shadow center
-		minH = None				# time of min distance
+		minH = None			# time of min distance
 
 		timeH = 0.0
 		while True:
