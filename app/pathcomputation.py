@@ -172,8 +172,8 @@ class PathComputation:
 			maxRange = max geocentric range for search (earth equatorial radii units)
 
 		Returns: tuple (minH, minDistanceKM)
-			minH = time of closest approach to observer ( in hours from geocentric mid-time )
-			minDistanceKM = chord distance in fundamental plane at time of closest approach (km)
+			 dte = time of closest approach to observer (python datetime)
+			 minDistanceKM = chord distance in fundamental plane at time of closest approach (km)
 
 			OR returns None if no minimum found => star not visible from observer's location
 		"""
@@ -317,19 +317,81 @@ class PathComputation:
 					centerX = self.XatClosest + self.dX * timeH + self.d2X * timeH * timeH + self.d3X * timeH * timeH * timeH
 					centerY = self.YatClosest + self.dY * timeH + self.d2Y * timeH * timeH + self.d3Y * timeH * timeH * timeH
 
+					# compute asteroid motion vector
+					motionX = self.dX + 2.0 * self.d2X * timeH + 3.0 * self.d3X * timeH * timeH
+					motionY = self.dY + 2.0 * self.d2Y * timeH + 3.0 * self.d3Y * timeH * timeH
+					# unit vector of motion
+					motionTotal = math.sqrt( motionX * motionX + motionY * motionY)
+					motionX = motionX / motionTotal
+					motionY = motionY / motionTotal
+
 					# check the distance between the observer's FP position and the shadow center FP position
 					diffX = centerX - oX
 					diffY = centerY - oY
 					diffTotal = math.sqrt( diffX * diffX + diffY * diffY)
 					if (diffTotal < minDistance):
 						minDistance = diffTotal
+						minCenterXY = (centerX, centerY)
+						minMotionXY = (motionX, motionY)
 						minH = timeH
 
 				# step forward in time
 				timeH = timeH + dHours
 
+		dteMin = self.dateTimeAtClosest + timedelta(hours=minH)
+
+		"""
+
+		DISABLED FOR NOW
+		# Calculate the extent of the shadow
+		#	minCenterXY is the position on the fundamental plane of the center of the asteroid shadow at minDistance
+		#	minMotionXY is the unit vector for the direction of motion along the fundamental plane at minDistance
+		#
+		#print('Min Motion XY:', minMotionXY)
+		#print('Min Center XY:', minCenterXY)
+
+		astRadiusFP		= (self.astDiamKM / self.C_BESS_A) 					# Convert the asteroid diameter (in km's) into the radius in the unit (-1 to 1) fundamental plane
+		scaledMotionVector	= (astRadiusFP * minMotionXY[0], astRadiusFP * minMotionXY[1])				# Scale the motion vector to the asteroid radius
+		#print('ScaledMotionVector:', scaledMotionVector)
+		shadowExtentXY		= (minCenterXY[0] + scaledMotionVector[0], minCenterXY[1] + scaledMotionVector[1])	# Extend the asteroid radius in the direction of motion (unit vector) along the asteroid center line
+		#print('ShadowExtentXY:', shadowExtentXY)
+
+		# Rotate shadowExtentXY around minCenterXY by -90 and 90 deg (perpendicular) to get the extent of the path in the fundemantal plane
+		limitPath1 = self.__rotatePointAboutCenter(shadowExtentXY, minCenterXY, 90)
+		limitPath2 = self.__rotatePointAboutCenter(shadowExtentXY, minCenterXY, -90)
+		#print('Limit Path1:', limitPath1)
+		#print('Limit Path2:', limitPath2)
+
+		# At this point, minCenterXY is the center location and limitPath1, limitPath2 are 2 points perpendicular to the motion of the asteroid, 1 diameter apart (all in the fundamental plane)
+		# Now project these points onto the earth's surface
+		gastEventTime = self.dateToGMST(dteMin)
+
+		latlon1 = self.bess_FtoGeodetic(limitPath1[0], limitPath1[1], starRA, starDEC, gastEventTime)
+		latlon2 = self.bess_FtoGeodetic(limitPath2[0], limitPath2[1], starRA, starDEC, gastEventTime)
+
+		# Convert latlon from radians to degrees
+		if latlon1 is not None:
+			latlon1 = (math.degrees(latlon1[0]), math.degrees(latlon1[1]))
+		if latlon2 is not None:
+			latlon2 = (math.degrees(latlon2[0]), math.degrees(latlon2[1]))
+
+		print('LatLon1:', latlon1)
+		print('LatLon2:', latlon2)
+
+		print('CenterOfAsteroidShadow:', self.centerOfAsteroidShadow(dteMin))
+		"""
+
 		# return time and distance of closest approach
-		return ( minH, minDistance * self.C_BESS_A )
+		return ( dteMin, minDistance * self.C_BESS_A )
+
+
+	def __rotatePointAboutCenter(self, point, center, rotation):
+		""" Rotates point(x,y) about center(x,y) by rotation degrees """
+		theta	= math.radians(rotation)
+		p	= (point[0] - center[0], point[1] - center[1])								# Translate to origin
+		p	= (p[0] * math.cos(theta) - p[1] * math.sin(theta), p[1] * math.cos(theta) - p[0] * math.sin(theta))	# Rotate
+		p	= (p[0] + center[0], p[1] + center[1])									# Translate back
+		return p
 
 
 	def dateToGAST(self, dteDate: datetime) -> float:
@@ -592,9 +654,8 @@ class PathComputation:
 		if minApproach is None:
 			return None
 	
-		minHrs		= minApproach[0]
+		dteMin		= minApproach[0]
 		minChord	= minApproach[1]
-		dteMin		= self.dateTimeAtClosest + timedelta(hours=minHrs)
 		return (dteMin, minChord * 1000.0)
 
 
