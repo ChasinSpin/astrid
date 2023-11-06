@@ -350,7 +350,7 @@ class PathComputation:
 		#print('Min Motion XY:', minMotionXY)
 		#print('Min Center XY:', minCenterXY)
 
-		astRadiusFP		= (self.astDiamKM / self.C_BESS_A) 					# Convert the asteroid diameter (in km's) into the radius in the unit (-1 to 1) fundamental plane
+		astRadiusFP		= (self.astDiamKM / self.C_BESS_A) / 2.0 						# Convert the asteroid diameter (in km's) into the radius in the unit (-1 to 1) fundamental plane
 		scaledMotionVector	= (astRadiusFP * minMotionXY[0], astRadiusFP * minMotionXY[1])				# Scale the motion vector to the asteroid radius
 		#print('ScaledMotionVector:', scaledMotionVector)
 		shadowExtentXY		= (minCenterXY[0] + scaledMotionVector[0], minCenterXY[1] + scaledMotionVector[1])	# Extend the asteroid radius in the direction of motion (unit vector) along the asteroid center line
