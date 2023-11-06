@@ -160,7 +160,6 @@ class UiWidgetSearchXMLPredictions(QWidget):
 	def buttonCancelPressed(self):
 		if self.thread is not None:
 			self.thread.abort()
-			self.thread = None
 		self.controlsWidget.buttonSearch.setEnabled(True)
 		self.controlsWidget.buttonExport.setEnabled(True)
 		self.callback_buttonCancelPressed()
@@ -221,6 +220,7 @@ class UiWidgetSearchXMLPredictions(QWidget):
 
 
 	def __searchComplete(self):
+		self.thread.wait()
 		self.thread = None
 		self.controlsWidget.buttonSearch.setEnabled(True)
 		self.controlsWidget.buttonExport.setEnabled(True)

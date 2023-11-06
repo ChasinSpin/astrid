@@ -248,7 +248,6 @@ class PlateSolver:
 
 
 	def __finished(self, success):
-		#self.thread = None	# Allow garbage collection
 		if success:
 			# Figure out focal length
 			(fov_width, _) = self.thread.field_size.split('x')
@@ -259,5 +258,10 @@ class PlateSolver:
 		else:
 			self.failure_callback()
 
+		self.thread.wait()
+		self.thread = None	# Allow garbage collection
+
+
 	def cancel(self):
 		self.thread.terminator()
+		self.thread.wait()

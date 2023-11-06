@@ -515,6 +515,8 @@ class UiPanelObject(UiPanel):
 		self.importFromOWCloudMsgBox.done(0)
 		QMessageBox.information(self, ' ', txt, QMessageBox.Ok)
 		self.importFromOWCloudMsgBox = None
+		self.thread.wait()
+		self.thread = None
 
 
 	def importFromOWCloud(self):
@@ -539,6 +541,7 @@ class UiPanelObject(UiPanel):
 	def __downloadPredictionsFinished(self):
 		self.downloadPredictionsMsgBox.done(0)
 		self.downloadPredictionsMsgBox = None
+		self.thread2.wait()
 		self.thread2 = None
 
 
