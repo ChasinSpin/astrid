@@ -51,6 +51,18 @@ fileManagerAutoLaunchOff()
 }
 
 
+# Install healpix
+
+installHealpix()
+{
+	TMP=`/usr/bin/pip3 list | grep cdshealpix`
+	if [ ! -z "$TMP" ];then
+		echo "Installing cdshealpix"
+		/usr/bin/pip3 install cdshealpix==0.6.4
+	fi
+}
+
+
 
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
@@ -85,6 +97,7 @@ cd "$APP_FOLDER"
 chromeHardwareAccelerationOff
 osUpgradeNotificationsOff
 fileManagerAutoLaunchOff
+installHealpix
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"
