@@ -1,58 +1,69 @@
 import math
 import struct
-from astcoord import AstCoord
-from astropy.coordinates import ICRS, FK5, SkyCoord
 import cdshealpix
+import astropy.units as u
+from astropy.time import Time
+from astcoord import AstCoord
+from astropy.coordinates import ICRS, FK5, SkyCoord, Distance
 
 
 
 class Star():
 
-	def __init__(self, source_id, ra, dec, epoch, mag_bp, mag_g, mag_rp, ruwe, flags, diameter, gaia_version, catalog_id, record_num):
+	def __init__(self, source_id, ra, dec, epoch, mag_bp, mag_g, mag_rp, ruwe, flags, diameter, gaia_version, catalog_id, record_num, parallax, pmra, pmdec):
 		super().__init__()
 
 		self.source_id		= source_id
-		self.ra			= ra		# 360 deg
-		self.dec		= dec		# +-90 deg
-		self.epoch		= epoch		# Year
+		self.ra			= ra			# 360 deg
+		self.dec		= dec			# +-90 deg
+		self.epoch		= '%0.2f' % epoch		# Year
 		self.mag_bp		= mag_bp
-		self.mag_g		= mag_g		# Commonly visual magnitude
+		self.mag_g		= mag_g			# Commonly visual magnitude
 		self.mag_rp		= mag_rp
-		self.ruwe		= ruwe		# Incorrect, investigate
+		self.ruwe		= ruwe			# Incorrect, investigate
 		self.flags		= flags
-		self.diameter		= diameter	# mas
+		self.diameter		= diameter		# mas
 		self.gaia_version	= gaia_version
 		self.catalog_id		= catalog_id
 		self.record_num		= record_num
-
-		# The ra/dec are specified according to the epoch (equinox)
-		self.coord=None
-		#self.coord = SkyCoord(self.ra, self.dec, frame='fk5', equinox='J%0.3f' % self.epoch, unit='deg')
-		#fk5_j2000 = FK5(equinox='J2000')
-		#self.coord = self.coord.transform_to(fk5_j2000)
-
-	"""
+		self.parallax		= parallax		# mas
+		self.pmra		= pmra			# mas/yr
+		self.pmdec		= pmdec			# mas/yr
+		self.coord		= None
 
 
-        @classmethod
-        def fromHMS(cls, ra: (int, int, float), dec: (int, int, float), frame: str):
-                ra = '%dh%dm%0.5f' % (ra[0], ra[1], ra[2])
-                dec = '%dd%dm%0.5f' % (dec[0], dec[1], dec[2])
-                skyCoord = SkyCoord(ra, dec, frame=frame)
-                return cls(skyCoord.transform_to('icrs'))
+	def epochPropogateToJ2000(self):
+		# Propogate the epoch from the epoch the star was measured at to J2000
 
+		# Create a skycoord with self.epoch
+		pcoord = SkyCoord(	ra		= self.ra * u.deg,
+					dec		= self.dec * u.deg,
+					distance	= Distance(parallax = self.parallax * u.mas),
+					pm_ra_cosdec	= self.pmra * u.mas/u.yr,
+					pm_dec		= self.pmdec * u.mas/u.yr,
+					obstime		= Time(self.epoch, format='jyear', scale='tcb')
+				)	
 
-        @classmethod
-        def from360Deg(cls, ra: float, dec: float, frame: str):
-                skyCoord = SkyCoord(ra, dec, frame=frame, unit="deg")
-                return cls(skyCoord.transform_to('icrs'))
-	"""
+		# Create epoch for J2000
+		epoch_j2000 = Time('2000.0', format='jyear', scale='tcb')
 
+		# Transform coordinate to the J2000 epoch
+		pcoord = pcoord.apply_space_motion(epoch_j2000)
+
+		# Note at this point, it contains the proper motion information
+		# e.g.
+		#	<SkyCoord (ICRS): (ra, dec, distance) in (deg, deg, pc)
+		#   		(2.88360204, 88.38051945, 1230.76923096)
+		#	(pm_ra_cosdec, pm_dec, radial_velocity) in (mas / yr, mas / yr, km / s)
+		#		(14.15892167, 2.01655003, -9.25708887e-05)>
+
+		# But we're gonna lose this (likely the correct approach) and recreate the object with the ICRS frame
+		self.coord = AstCoord.from360Deg(ra = pcoord.ra.value, dec = pcoord.dec.value, frame='icrs')
 
 
 	def __str__(self):
-		return 'gaia_id:%-19d gaia_version:%d catalog_id:%-16s ra:%-13.9f dec:%-12.9f epoch:%-0.2f mag_v:%-5.2f ruwe:%-6.3f flags:0x%02X diameter:%-5.3f record_num:%-8d skyCoord:%s' % \
-			(self.source_id, self.gaia_version, self.catalog_id, self.ra, self.dec, self.epoch, self.mag_g, self.ruwe, self.flags, self.diameter, self.record_num, self.coord)
+		return 'gaia_id:%-19d gaia_version:%d catalog_id:%-16s ra:%-13.9f dec:%-12.9f epoch:%s mag_v:%-5.2f ruwe:%-6.3f flags:0x%02X diameter:%-5.3f record_num:%-8d parallax:%f pmra:%f pmdec:%f skyCoord:%s' % \
+			(self.source_id, self.gaia_version, self.catalog_id, self.ra, self.dec, self.epoch, self.mag_g, self.ruwe, self.flags, self.diameter, self.record_num, self.parallax, self.pmra, self.pmdec, self.coord)
 
 
 
@@ -265,7 +276,7 @@ class StarLookup():
 			ra  /= 3600000
 			dec /= 3600000
 
-			star = Star(entry['source_id'], ra, dec, 2000 + entry['epoch'] * 0.001, entry['mag_bp']/1000.0, entry['mag_g']/1000.0, entry['mag_rp']/1000.0, (entry['reliability_indicator'] / 255.0) * 12.6 , entry['flags'], entry['star_diameter'] * 0.2, entry['g_version'], self.__catByIdNum(entry['cat_id'], entry['cat_num']), r)
+			star = Star(entry['source_id'], ra, dec, 2000 + entry['epoch'] * 0.001, entry['mag_bp']/1000.0, entry['mag_g']/1000.0, entry['mag_rp']/1000.0, (entry['reliability_indicator'] / 255.0) * 12.6 , entry['flags'], entry['star_diameter'] * 0.2, entry['g_version'], self.__catByIdNum(entry['cat_id'], entry['cat_num']), r, (entry['parallax'] * 12.5) / 1000, entry['pm_ra'] / 1000, entry['pm_dec'] / 1000)
 
 			records.append(star)
 
@@ -453,8 +464,9 @@ class StarLookup():
 
 starLookup = StarLookup()
 
-##ids = ['EDR3 2545442368322040320', 'HIP 117053', 'UCAC4 451-000373', 'TYC 2010-73-1']
 ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 4627-82-1', 'HIP 6793', 'HIP 6911', 'HIP 2942', 'TYC 1800-1974-1', 'TYC 4212-1079-1', 'EDR3 2545442368322040320', 'EDR3 2545440581615646208', 'EDR3 2543667309878982912', 'EDR3 575894439391955584']
  
 for id in ids:
-	print('Finding: %-24s Result: %s' % (id, starLookup.findStarById(id)))
+	star = starLookup.findStarById(id)
+	star.epochPropogateToJ2000()
+	print('Finding: %-24s Result: %s' % (id, star))

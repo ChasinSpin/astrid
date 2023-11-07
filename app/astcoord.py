@@ -56,6 +56,10 @@ class AstCoord:
 		#print("Creating %s (360 deg)" % self.skyCoord)
 
 
+	def __str__(self):
+		return str(self.skyCoord)
+
+
 	@classmethod
 	def fromHMS(cls, ra: (int, int, float), dec: (int, int, float), frame: str):
 		ra = '%dh%dm%0.5f' % (ra[0], ra[1], ra[2])
