@@ -1,7 +1,6 @@
 from UiPanel import UiPanel
 from settings import Settings
 from astcoord import AstCoord
-from owcloud import OWCloud
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtCore import QUrl
 

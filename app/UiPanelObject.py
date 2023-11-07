@@ -36,6 +36,8 @@ class OWCloudThread(QThread):
 		super(QThread, self).__init__()
 
 
+	def run(self):
+		owcloud		= OWCloud()
 		(events, error) = owcloud.getEvents()
 
 		imported_count = 0
@@ -67,7 +69,6 @@ class OWCloudThread(QThread):
 
 		owcloud = None
 		self.importFromOWCloudSuccess.emit('Imported %d registered events/stations from OWCloud' % imported_count)
-
 
 
 # Download Occelmnt Predictions on a seperate thread 
@@ -506,12 +507,16 @@ class UiPanelObject(UiPanel):
 
 
 	def __importFromOWCloudError(self, txt):
+		print('IERROR')
 		self.importFromOWCloudMsgBox.done(0)
 		QMessageBox.warning(self, ' ', txt, QMessageBox.Ok)
 		self.importFromOWCloudMsgBox = None
+		self.thread.wait()
+		self.thread = None
 
 
 	def __importFromOWCloudSuccess(self, txt):
+		print('ISUCCESS')
 		self.importFromOWCloudMsgBox.done(0)
 		QMessageBox.information(self, ' ', txt, QMessageBox.Ok)
 		self.importFromOWCloudMsgBox = None
@@ -523,7 +528,7 @@ class UiPanelObject(UiPanel):
 		self.thread = OWCloudThread()
 		self.thread.importFromOWCloudError.connect(self.__importFromOWCloudError)
 		self.thread.importFromOWCloudSuccess.connect(self.__importFromOWCloudSuccess)
-		self.thread.finished.connect(self.thread.deleteLater)
+		#self.thread.finished.connect(self.thread.deleteLater)
 		self.thread.start()
 
 		self.importFromOWCloudMsgBox = QMessageBox()
@@ -549,7 +554,7 @@ class UiPanelObject(UiPanel):
 		self.thread2 = DownloadPredictionsThread(self.PREDICTIONS_URL)
 		self.thread2.downloadPredictionsStatus.connect(self.__downloadPredictionsStatus)
 		self.thread2.downloadPredictionsFinished.connect(self.__downloadPredictionsFinished)
-		self.thread2.finished.connect(self.thread2.deleteLater)
+		#self.thread2.finished.connect(self.thread2.deleteLater)
 		self.thread2.start()
 
 		self.downloadPredictionsMsgBox = QMessageBox()
