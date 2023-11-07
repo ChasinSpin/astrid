@@ -1,11 +1,12 @@
 import math
 import struct
 from astcoord import AstCoord
+from astropy.coordinates import ICRS, FK5, SkyCoord
 
 
 class Star():
 
-	def __init__(self, source_id, ra, dec, epoch, mag_bp, mag_g, mag_rp, ruwe, flags, diameter, gaia_version, catalog_id):
+	def __init__(self, source_id, ra, dec, epoch, mag_bp, mag_g, mag_rp, ruwe, flags, diameter, gaia_version, catalog_id, record_num):
 		super().__init__()
 
 		self.source_id		= source_id
@@ -20,10 +21,36 @@ class Star():
 		self.diameter		= diameter	# mas
 		self.gaia_version	= gaia_version
 		self.catalog_id		= catalog_id
+		self.record_num		= record_num
+
+		# The ra/dec are specified according to the epoch (equinox)
+		self.coord=None
+		#self.coord = SkyCoord(self.ra, self.dec, frame='fk5', equinox='J%0.3f' % self.epoch, unit='deg')
+		#fk5_j2000 = FK5(equinox='J2000')
+		#self.coord = self.coord.transform_to(fk5_j2000)
+
+	"""
+
+
+        @classmethod
+        def fromHMS(cls, ra: (int, int, float), dec: (int, int, float), frame: str):
+                ra = '%dh%dm%0.5f' % (ra[0], ra[1], ra[2])
+                dec = '%dd%dm%0.5f' % (dec[0], dec[1], dec[2])
+                skyCoord = SkyCoord(ra, dec, frame=frame)
+                return cls(skyCoord.transform_to('icrs'))
+
+
+        @classmethod
+        def from360Deg(cls, ra: float, dec: float, frame: str):
+                skyCoord = SkyCoord(ra, dec, frame=frame, unit="deg")
+                return cls(skyCoord.transform_to('icrs'))
+	"""
+
+
 
 	def __str__(self):
-		return 'gaia_id:%-19d gaia_version:%d catalog_id:%-16s ra:%-13.9f dec:%-12.9f epoch:%-0.2f mag_v:%-5.2f ruwe:%-6.3f flags:0x%02X diameter:%-5.3f' % \
-			(self.source_id, self.gaia_version, self.catalog_id, self.ra, self.dec, self.epoch, self.mag_g, self.ruwe, self.flags, self.diameter)
+		return 'gaia_id:%-19d gaia_version:%d catalog_id:%-16s ra:%-13.9f dec:%-12.9f epoch:%-0.2f mag_v:%-5.2f ruwe:%-6.3f flags:0x%02X diameter:%-5.3f record_num:%-8d skyCoord:%s' % \
+			(self.source_id, self.gaia_version, self.catalog_id, self.ra, self.dec, self.epoch, self.mag_g, self.ruwe, self.flags, self.diameter, self.record_num, self.coord)
 
 
 
@@ -31,9 +58,10 @@ class StarLookup():
 
 	CATALOGS				= [ {'name': 'gaia', 'fname_data': 'Gaia16_EDR3.bin', 'fname_index': 'Gaia16_EDR3.inx', 'fname_hip_index': 'Hipparcos_Gaia16_EDR3.dat', 'fname_ucac4_index': 'U4_Gaia14.inx', 'fname_tyc_index': 'GSC Fields.dat'} ]
 	J2016_J2000_PROPER_MOTION_RADIUS	= 1.8	# The mximum search radius of proper motion between J2016 (Gaia) and J2000(icrs) in Arc Seconds https://www.cosmos.esa.int/web/gaia-users/archive/combine-with-other-data (Cross-Matching Catalogues(Basic))
+	debug					= False
 
 
-	def __init__(self, centerCoord: AstCoord, rotation: float, fieldOfView: (float,float), catalog = 'gaia'):
+	def __init__(self, catalog = 'gaia'):
 		"""
 			Creates a StarLookup object
 
@@ -77,48 +105,56 @@ class StarLookup():
 				Warning: Most of GAIA is J2016 and the results will need converting back to ICRS
 		"""
 		
-		if raRange[0] > raRange[1]:
+		raLower  = raRange[0]
+		raUpper  = raRange[1]
+		decLower = decRange[0]
+		decUpper = decRange[1]
+		
+		if raLower > raUpper:
 			raise ValueError('raRange: start > end')
-		if decRange[0] > decRange[1]:
+		if decLower > decUpper:
 			raise ValueError('decRange: start > end')
 
 		# Adjust RA and DEC for proper motion radius between 2016(Gaia) and 2000(icrs)
 		pm_radius_deg = self.J2016_J2000_PROPER_MOTION_RADIUS/3600.0
 
 		# In ra/dec are now out of range, pull the back in
-		raRange[0]  -= pm_radius_deg
-		if raRange[0] < 0:
-			raRange[0] = 0
+		raLower  -= pm_radius_deg
+		if raLower < 0:
+			raLower = 0
 
-		raRange[1]  += pm_radius_deg
-		if raRange[1] > 360:
-			raRange[1] = 360
+		raUpper  += pm_radius_deg
+		if raUpper > 360:
+			raUpper = 360
 
-		decRange[0] -= pm_radius_deg
-		if decRange[0] < -90:
-			devRange[0] = -90
+		decLower -= pm_radius_deg
+		if decLower < -90:
+			decLower = -90
 
-		decRange[1] += pm_radius_deg
-		if decRange[1] > 90:
-			decRange[1] = 90
+		decUpper += pm_radius_deg
+		if decUpper > 90:
+			decUpper = 90
 
 		# Get the stars
 		stars = []
-		decZones = self.__getDecZones(decRange[0], decRange[1])
+		decZones = self.__getDecZones(decLower, decUpper)
 		for decZone in decZones:
-			print('\nDec Zone: %d' % decZone)
+			if self.debug:
+				print('\nDec Zone: %d' % decZone)
 			zoneIndexStart = 361 * decZone
-			(startRecord, endRecord) = self.__getStartEndRecord(zoneIndexStart, raRange[0], raRange[1])
+			(startRecord, endRecord) = self.__getStartEndRecord(zoneIndexStart, raLower, raUpper)
 			stars += self.__readRecords(startRecord, endRecord)
 
 		return stars
 
 
 	def __getDecZones(self, startDec, endDec) -> list:
-		print('DEC Region:         %0.6f->%0.6f' % (startDec, endDec))
+		if self.debug:
+			print('DEC Region:         %0.6f->%0.6f' % (startDec, endDec))
 		startDec	= math.floor(startDec * 2) / 2.0	# Round down startDec to 0.5deg intervals
 		endDec		= math.ceil( endDec   * 2) / 2.0	# Round up endDec to 0.5deg intervals
-		print('DEC Region Rounded: %0.2f->%0.2f' % (startDec, endDec))
+		if self.debug:
+			print('DEC Region Rounded: %0.2f->%0.2f' % (startDec, endDec))
 
 		decZones = []
 		dec = startDec
@@ -135,10 +171,12 @@ class StarLookup():
 
 	def __getStartEndRecord(self, zoneIndexStart, startRa, endRa):
 		""" ra is in 360deg, startRa->endRa  (endRa is not inclusive) """
-		print('RA Region:         %0.6f->%0.6f' % (startRa, endRa))
+		if self.debug:
+			print('RA Region:         %0.6f->%0.6f' % (startRa, endRa))
 		startRa	= int(math.floor(startRa / 4.0) * 4.0)	# Round down startDec to 4deg intervals
 		endRa	= int(math.ceil( endRa   / 4.0) * 4.0)	# Round up endDec to 4deg intervals
-		print('RA Region Rounded: %d->%d' % (startRa, endRa))
+		if self.debug:
+			print('RA Region Rounded: %d->%d' % (startRa, endRa))
 
 		fp = open(self.fname_index, 'rb')
 
@@ -152,7 +190,8 @@ class StarLookup():
 		
 		fp.close()
 
-		print('Records:           %d->%d' % (startRecord, endRecord))
+		if self.debug:
+			print('Records:           %d->%d' % (startRecord, endRecord))
 
 		return (startRecord, endRecord)
 
@@ -224,13 +263,13 @@ class StarLookup():
 			ra  /= 3600000
 			dec /= 3600000
 
-			star = Star(entry['source_id'], ra, dec, 2000 + entry['epoch'] * 0.001, entry['mag_bp']/1000.0, entry['mag_g']/1000.0, entry['mag_rp']/1000.0, entry['reliability_indicator'] / 255.0 * 12.6, entry['flags'], entry['star_diameter'] * 0.2, entry['g_version'], self.__catByIdNum(entry['cat_id'], entry['cat_num']))
+			star = Star(entry['source_id'], ra, dec, 2000 + entry['epoch'] * 0.001, entry['mag_bp']/1000.0, entry['mag_g']/1000.0, entry['mag_rp']/1000.0, (entry['reliability_indicator'] / 255.0) * 12.6 , entry['flags'], entry['star_diameter'], entry['g_version'], self.__catByIdNum(entry['cat_id'], entry['cat_num']), r)
 
 			records.append(star)
 
-			#print(star)
-
-			#print(entry)
+			if self.debug:
+				print(star)
+				print(entry)
 
 		return records
 
@@ -285,8 +324,9 @@ class StarLookup():
 		gaiaMaxZone = int(math.floor((900 - ucac4Zone) / 2.5))
 		gaiaMinZone = int(math.floor((900.5 - ucac4Zone) / 2.5))
 
-		print('GaiaMinZone:', gaiaMinZone)
-		print('GaiaMaxZone:', gaiaMaxZone)
+		if self.debug:
+			print('GaiaMinZone:', gaiaMinZone)
+			print('GaiaMaxZone:', gaiaMaxZone)
 
 		fp = open(self.fname_ucac4_index, 'rb')
 
@@ -308,28 +348,58 @@ class StarLookup():
 		if raIndex < 0:
 			raIndex = 356
 
-		print('RaIndex:', raIndex)
+		if self.debug:
+			print('RaIndex:', raIndex)
 		
 		stars = []
 		for decZone in range(gaiaMinZone, gaiaMaxZone+1):
-			print('Dec Zone:', decZone)
+			if self.debug:
+				print('Dec Zone:', decZone)
 			zoneIndexStart = 361 * decZone 
 			(startRecord, endRecord) = self.__getStartEndRecord(zoneIndexStart, raIndex, raIndex + 3.9)
 			stars += self.__readRecords(startRecord, endRecord + 1)
 
-		print('ID:', id)
+		if self.debug:
+			print('ID:', id)
 		for star in stars:
 			if star.catalog_id == id:
 				return star
 
-		#print(stars)
 		return None
 		
 
 	def findTychosById(self, id: str) -> Star:
 		tycsplit = id.replace('TYC ', '').split('-')
-		#ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 2010-73-1']
-		pass
+		tycRegion = int(tycsplit[0])
+
+		fp = open(self.fname_tyc_index, 'rb')
+		fp.seek((tycRegion-1) * 16)
+		data = fp.read(16)
+		fp.close()
+		(raWesternLimit, raEasternLimit, decNorthernLimit, decSouthernLimit) = struct.unpack('=ffff', data)
+		if self.debug:
+			print('RaWesternLimit:', raWesternLimit)
+			print('RaEasternLimit:', raEasternLimit)
+			print('DecNorthernLimit:', decNorthernLimit)
+			print('DecoSouthernLImit:', decSouthernLimit)
+
+		# Make sure the ra/dec ranges are ascending
+		if raWesternLimit < raEasternLimit:
+			raRange = (raWesternLimit, raEasternLimit)
+		else:
+			raRange = (raEasternLimit, raWesternLimit)
+
+		if decNorthernLimit < decSouthernLimit:
+			decRange = (decNorthernLimit, decSouthernLimit)
+		else:
+			decRange = (decSouthernLimit, decNorthernLimit)
+
+		stars = self.findStarsInArea(raRange, decRange)
+		for star in stars:
+			if star.catalog_id == id:
+				return star
+		
+		return None
 
 
 	# DISABLED FOR NOW, as there doesn't seem to be a way to get to record id from source id
@@ -359,12 +429,10 @@ class StarLookup():
 			raise ValueError('Unknown Star Catalog')
 
 
-#coord = AstCoord.from360Deg(ra = 40.0, dec = 90.0, frame = 'icrs')
-#starLookup = StarLookup(centerCoord=coord, rotation=0.0, fieldOfView=(1.5,1.5))
-#starLookup.findStarsInArea(raRange = [0, 0.5], decRange=[-0.4,0.4])
+starLookup = StarLookup()
 
 ##ids = ['EDR3 2545442368322040320', 'HIP 117053', 'UCAC4 451-000373', 'TYC 2010-73-1']
-#ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 2010-73-1']
+ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 4627-82-1', 'HIP 6793', 'HIP 6911', 'HIP 2942', 'TYC 1800-1974-1', 'TYC 4212-1079-1']
  
-#for id in ids:
-#	print('Finding: %s  Result: %s' % (id, starLookup.findStarById(id)))
+for id in ids:
+	print('Finding: %-17s Result: %s' % (id, starLookup.findStarById(id)))
