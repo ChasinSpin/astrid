@@ -2,6 +2,8 @@ import math
 import struct
 from astcoord import AstCoord
 from astropy.coordinates import ICRS, FK5, SkyCoord
+import cdshealpix
+
 
 
 class Star():
@@ -263,7 +265,7 @@ class StarLookup():
 			ra  /= 3600000
 			dec /= 3600000
 
-			star = Star(entry['source_id'], ra, dec, 2000 + entry['epoch'] * 0.001, entry['mag_bp']/1000.0, entry['mag_g']/1000.0, entry['mag_rp']/1000.0, (entry['reliability_indicator'] / 255.0) * 12.6 , entry['flags'], entry['star_diameter'], entry['g_version'], self.__catByIdNum(entry['cat_id'], entry['cat_num']), r)
+			star = Star(entry['source_id'], ra, dec, 2000 + entry['epoch'] * 0.001, entry['mag_bp']/1000.0, entry['mag_g']/1000.0, entry['mag_rp']/1000.0, (entry['reliability_indicator'] / 255.0) * 12.6 , entry['flags'], entry['star_diameter'] * 0.2, entry['g_version'], self.__catByIdNum(entry['cat_id'], entry['cat_num']), r)
 
 			records.append(star)
 
@@ -402,9 +404,30 @@ class StarLookup():
 		return None
 
 
-	# DISABLED FOR NOW, as there doesn't seem to be a way to get to record id from source id
-	#def findGaiaById(self, id: str) -> Star:
-	#	pass
+	def findGaiaById(self, id: str) -> Star:
+		source_id = int(id.replace('EDR3 ', ''))
+
+		# Extract the healpix from the source id
+		# Reference: https://gea.esac.esa.int/archive/documentation/GDR2/Gaia_archive/chap_datamodel/sec_dm_main_tables/ssec_dm_gaia_source.html
+		healpix = int(source_id / 34359738368)
+		#print('HealPix', healpix)
+
+		centerHealpix = cdshealpix.healpix_to_skycoord(healpix, depth=12)
+		centerHealpix = (centerHealpix.ra.value[0], centerHealpix.dec.value[0])
+		#print('Ra:', centerHealpix[0])
+		#print('Dec:', centerHealpix[1])
+
+		# At order 12, each healpix is about 0.7 arcmin square, so we can determine the limits,
+		# add on 0.5 arcmin in both directions
+		pixel_radius_deg = 0.5/60.0
+		raRange = (centerHealpix[0] - pixel_radius_deg, centerHealpix[0] + pixel_radius_deg)
+		decRange = (centerHealpix[1] - pixel_radius_deg, centerHealpix[1] + pixel_radius_deg)
+
+		stars = self.findStarsInArea(raRange, decRange)
+		for star in stars:
+			if star.source_id == source_id:
+				return star
+		return None
 
 
 	def findStarById(self, id: str) -> Star:
@@ -422,9 +445,8 @@ class StarLookup():
 			return self.findUCAC4ById(id)
 		elif id.startswith('TYC '):
 			return self.findTychosById(id)
-		# DISABLED FOR NOW, as there doesn't seem to be a way to get to record id from source id
-		#elif id.startswith('EDR3 '):
-		#	return self.findGaiaById(id)
+		elif id.startswith('EDR3 '):
+			return self.findGaiaById(id)
 		else:
 			raise ValueError('Unknown Star Catalog')
 
@@ -432,7 +454,7 @@ class StarLookup():
 starLookup = StarLookup()
 
 ##ids = ['EDR3 2545442368322040320', 'HIP 117053', 'UCAC4 451-000373', 'TYC 2010-73-1']
-ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 4627-82-1', 'HIP 6793', 'HIP 6911', 'HIP 2942', 'TYC 1800-1974-1', 'TYC 4212-1079-1']
+ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 4627-82-1', 'HIP 6793', 'HIP 6911', 'HIP 2942', 'TYC 1800-1974-1', 'TYC 4212-1079-1', 'EDR3 2545442368322040320', 'EDR3 2545440581615646208', 'EDR3 2543667309878982912', 'EDR3 575894439391955584']
  
 for id in ids:
-	print('Finding: %-17s Result: %s' % (id, starLookup.findStarById(id)))
+	print('Finding: %-24s Result: %s' % (id, starLookup.findStarById(id)))
