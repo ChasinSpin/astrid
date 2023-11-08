@@ -239,7 +239,7 @@ class PlateSolver:
 		self.thread = PlateSolverThread(filename, scale_low, scale_high, starting_ra, starting_dec, starting_radius, self.settings['limit_objs'], self.settings['downsample'], self.settings['source_extractor'], self.obsdatetime)
 		self.thread.progress.connect(self.__progress)
 		self.thread.finished.connect(self.__finished)
-		self.thread.finished.connect(self.thread.deleteLater)
+		#self.thread.finished.connect(self.thread.deleteLater)
 		self.thread.start()
 
 
