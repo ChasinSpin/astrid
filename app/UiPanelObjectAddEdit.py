@@ -443,8 +443,23 @@ class UiPanelObjectAddEdit(UiPanel):
 					occultations.pop(i)
 					break
 
+		# Determine owcloudurl if we have an occelmnt
+		owcloudurl = None
+		if self.editValues is not None and 'owcloudurl' in self.editValues.keys():
+			owcloudurl = self.editValues['owcloudurl'] 
+
+		if owcloudurl is None and occelmnt is not None and len(occelmnt.keys()) > 0:
+			asteroidNumber = occelmnt['Occultations']['Event']['Object'].split(',')[0]
+			elements = occelmnt['Occultations']['Event']['Elements'].split(',')
+			eventDate = '%04d%02d%02d' % (int(elements[2]), int(elements[3]), int(elements[4]))
+			owcloudurl = 'https://cloud.occultwatcher.net/ext/locate?ast=%s&tag=IOTA&date=%s' % (asteroidNumber, eventDate)
+
 		# Add the new one
-		occultations.append({"name": name, "ra": ra, "dec": dec, "event_time": event_time, "start_time": start_time, "end_time": end_time, "event_duration": event_duration, "event_uncertainty": event_uncertainty,  "occelmnt": occelmnt, 'source': 'User'})
+		occ = {"name": name, "ra": ra, "dec": dec, "event_time": event_time, "start_time": start_time, "end_time": end_time, "event_duration": event_duration, "event_uncertainty": event_uncertainty,  "occelmnt": occelmnt, 'source': 'User'}
+		if owcloudurl is not None:
+			occ['owcloudurl'] = owcloudurl
+
+		occultations.append(occ)
 
 		Settings.getInstance().writeSubsetting('occultations')
 		

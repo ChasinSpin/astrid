@@ -2,7 +2,8 @@ import os
 import csv
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtGui import QDesktopServices, QFont
+from PyQt5.QtCore import Qt, QThread, QUrl, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QGridLayout, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractButton
 from datetime import datetime, timezone
 from UiWidgetSearchXMLPredictionsControls import UiWidgetSearchXMLPredictionsControls
@@ -61,7 +62,7 @@ class OccelmntXMLSearchThread(QThread):
 
 		self.search.searchEvents(self.lat, self.lon, self.alt, self.startDate, self.endDate, self.starMagLimit, self.magDropLimit, self.starAltLimit, self.sunAltLimit, self.distanceLimit, self.__statusUpdate, self.__foundEvent)
 
-		self.searchStatus.emit('Search Complete. Found %d events that matched criteria, from a total of %d events.  Click \"+\" to add event to Occultation Database.' % (len(self.search.found_events), self.search.total_events))
+		self.searchStatus.emit('Search Complete. Found %d events that matched criteria, from a total of %d events.  Click \"+\" to add event to Occultation Database, click asteroid name to open on OWCloud.' % (len(self.search.found_events), self.search.total_events))
 
 		self.searchComplete.emit()
 
@@ -125,6 +126,7 @@ class UiWidgetSearchXMLPredictions(QWidget):
 		self.tableWidget.horizontalHeader().setStretchLastSection(True) 
 
 		self.tableWidget.verticalHeader().sectionClicked.connect(self.tableRowClicked)
+		self.tableWidget.itemClicked.connect(self.itemClicked)
 
 		self.tableWidget.setFixedSize(width, height)
 
@@ -208,6 +210,16 @@ class UiWidgetSearchXMLPredictions(QWidget):
 			eventTime	= self.events[eventIndex].details['Event Time']
 			if occelmnt is not None:
 				self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': 'Occultations', 'camera': None, 'editValues': None, 'occelmnt': occelmnt, 'oldOccelmntWarning': True, 'eventCenterTime': eventTime}, parent = None)
+
+
+	def itemClicked(self, item):
+		if item.column() == 0:
+			eventIndex	= int(self.tableWidget.item(item.row(), self.hiddenIndexColumn).text())
+			details = self.events[eventIndex].details
+			asteroidNumber	= details['#']
+			eventDate = details['Event Time'].strftime('%Y%m%d')
+			owcloudurl = 'https://cloud.occultwatcher.net/ext/locate?ast=%s&tag=IOTA&date=%s' % (asteroidNumber, eventDate)
+			QDesktopServices.openUrl(QUrl(owcloudurl))
 
 
 	# Operations
