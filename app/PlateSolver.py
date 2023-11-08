@@ -263,5 +263,6 @@ class PlateSolver:
 
 
 	def cancel(self):
-		self.thread.terminator()
-		self.thread.wait()
+		if self.thread is not None:
+			self.thread.terminator()
+			self.thread.wait()
