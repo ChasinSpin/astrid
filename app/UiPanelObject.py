@@ -54,7 +54,7 @@ class OWCloudThread(QThread):
 
 			# This removes all OWCloud occultations we have
 			for i in range(len(occultations)):
-				if 'source' is not in occultations[i].keys() or occultations[i]['source'] != 'OWCloud':
+				if not 'source' in occultations[i].keys() or occultations[i]['source'] != 'OWCloud':
 					occultations_new.append(occultations[i])
 
 			# Now we add the new occultations
