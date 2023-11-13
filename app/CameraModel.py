@@ -35,6 +35,7 @@ from DisplayOps import DisplayOps
 from otestamper import OteStamper
 import logging
 from astutils import AstUtils
+from starcatalog import StarLookup, Star
 #import gc
 
 
@@ -304,6 +305,8 @@ class CameraModel:
 		self.zebras		= False
 		self.crosshairs		= False
 		self.stardetection	= False
+		self.annotation		= False
+		self.annotationStars	= None
 		self.videoTarget	= 'None'
 		self.search_full_sky	= False
 		self.trackingActivatedNotify = False
@@ -431,7 +434,7 @@ class CameraModel:
 			if self.autostretch:
 				stretch = (self.autoStretchLower, self.autoStretchUpper)
 
-			self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection)
+			self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
 
 			self.ui.panelDisplay.widgetFrameTime.setText(timestamp)		# Display the frame time
 
@@ -806,6 +809,11 @@ class CameraModel:
 		self.ui.indeterminateProgressBar(False)
 		if self.platesolveCallback is not None:
 			self.platesolveCallback(position, field_size, altAz)
+		else:
+			if self.annotation:
+				self.annotate(self.lastFitFile, index_file)
+				self.updateDisplayOptions()
+
 
 
 	def solveFieldCancel(self):
@@ -1148,6 +1156,11 @@ class CameraModel:
 		self.updateDisplayOptions()
 
 
+	def setAnnotation(self, enable):
+		self.annotation = enable
+		self.updateDisplayOptions()
+
+
 	def simulateMount(self):
 		self.simulate = True
 
@@ -1244,7 +1257,7 @@ class CameraModel:
 				if self.autostretch:
 					stretch = (self.autoStretchLower, self.autoStretchUpper)
 	
-				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection)
+				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
 	
 				self.qt_picamera.set_overlay(overlay.array)
 				overlay.array = None
@@ -1270,3 +1283,13 @@ class CameraModel:
 			OteStamper.getInstance().fanEnabled(True)
 		else:
 			OteStamper.getInstance().fanEnabled(False)
+
+
+	def annotate(self, fits_fname, index_file):
+		# Read WCS file
+		f_basename = os.path.splitext(os.path.basename(fits_fname))[0]
+		f_dirname = os.path.dirname(fits_fname)
+		wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
+
+		starLookup = StarLookup()
+		self.annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = 12.0)

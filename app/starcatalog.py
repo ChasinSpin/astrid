@@ -2,6 +2,9 @@ import math
 import struct
 import cdshealpix
 import astropy.units as u
+import numpy as np
+from astropy.io import fits
+from astropy.wcs import wcs
 from astropy.time import Time
 from astcoord import AstCoord
 from astropy.coordinates import ICRS, FK5, SkyCoord, Distance
@@ -88,20 +91,79 @@ class StarLookup():
 			raise ValueError('catalog %s not found' % catalog)
 
 
-	def findStarInFOV(self,  centerCoord: AstCoord, rotation: float, fieldOfView: (float,float)) -> [Star]:
+	def findStarsInFits(self,  wcsFile: str, magLimit) -> [Star]:
 		""""
 			Finds stars in the FOV
 
 			Parameters:
-				centerCoord	= Plate Solve Center
-				rotation	= Plate Solve Rotation
-				fieldOfView	= (width, height) - degrees
+				wcsFile	= the .wcs associated with the fits whioch is the result of the plate solve
 
 			Returns:
 				list of stars
 		"""
 
-		pass
+		# Read the WCS file to 
+		hdulist = fits.open(wcsFile)
+		w = wcs.WCS(hdulist[0].header)
+		hdulist.close()
+
+		print(w.wcs.name)
+		w.wcs.print_contents()
+		print(w.wcs.crpix)
+
+		# Derive the image width and height from the center pixel in the WCS
+		img_width = int(w.wcs.crpix[0]) * 2
+		img_height = int(w.wcs.crpix[1]) * 2
+		print('Width:', img_width)
+		print('Height:', img_height)
+		
+		# Visit all 4 corners of the image and determine the RA/DEC of each corner and add to a list of corners
+		raCorners = []	
+		decCorners = []	
+		for corner in [ [0, 0], [0, img_height], [img_width, img_height], [img_width, 0] ]:
+			coord = w.pixel_to_world(corner[0], corner[1])
+			raCorners.append(coord.ra.value)
+			decCorners.append(coord.dec.value)
+
+		# Determine the minimum and maximum RAs and DECs for the search
+		raRange = (min(raCorners), max(raCorners))	
+		decRange = (min(decCorners), max(decCorners))	
+
+		print('RaRange:', raRange)
+		print('DecRange:', decRange)
+
+		# Find all the stars in the raRange / decRange area
+		stars = self.findStarsInArea(raRange=raRange, decRange=decRange)
+		print('1st pass total stars:', len(stars))
+
+
+		# Convert the ra/dec of all the stars found back into pixel coordinates in the frame
+		worldCoords = np.zeros((len(stars),2), dtype=np.float64)
+		for i in range(len(stars)):
+			#(ra, dec) = stars[i].coord.raDec360Deg('icrs')
+			#worldCoords[i][0] = ra
+			#worldCoords[i][1] = dec
+			worldCoords[i][0] = stars[i].ra 
+			worldCoords[i][1] = stars[i].dec
+		pixelCoords = w.wcs_world2pix(worldCoords, 0)
+
+		# Scan the found stars and verifying the xy position is within the frame, building
+		# a shorter list of stars (starsInFrame) as we go and setting xy to the position
+		starsInFrame = []
+		for i in range(len(stars)):
+			if pixelCoords[i][0] >= 0 and pixelCoords[i][0] < img_width and \
+			   pixelCoords[i][1] >= 0 and pixelCoords[i][1] < img_height and \
+			   stars[i].mag_g < magLimit:
+				stars[i].xy = (pixelCoords[i][0], pixelCoords[i][1])
+				starsInFrame.append(stars[i])
+
+		stars = starsInFrame
+		for star in stars:
+			print('XY:', star.xy)
+
+		print('2nd pass total stars:', len(stars))
+	
+		return stars
 
 
 	def findStarsInArea(self, raRange: (float,float), decRange: (float, float)) -> [Star]:
@@ -462,11 +524,11 @@ class StarLookup():
 			raise ValueError('Unknown Star Catalog')
 
 
-starLookup = StarLookup()
+#starLookup = StarLookup()
 
-ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 4627-82-1', 'HIP 6793', 'HIP 6911', 'HIP 2942', 'TYC 1800-1974-1', 'TYC 4212-1079-1', 'EDR3 2545442368322040320', 'EDR3 2545440581615646208', 'EDR3 2543667309878982912', 'EDR3 575894439391955584']
+#ids = ['HIP 117053', 'UCAC4 451-000373', 'UCAC4 452-000700', 'TYC 4627-82-1', 'HIP 6793', 'HIP 6911', 'HIP 2942', 'TYC 1800-1974-1', 'TYC 4212-1079-1', 'EDR3 2545442368322040320', 'EDR3 2545440581615646208', 'EDR3 2543667309878982912', 'EDR3 575894439391955584']
  
-for id in ids:
-	star = starLookup.findStarById(id)
-	star.epochPropogateToJ2000()
-	print('Finding: %-24s Result: %s' % (id, star))
+#for id in ids:
+#	star = starLookup.findStarById(id)
+#	star.epochPropogateToJ2000()
+#	print('Finding: %-24s Result: %s' % (id, star))

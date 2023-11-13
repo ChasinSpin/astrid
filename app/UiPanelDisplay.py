@@ -8,6 +8,7 @@ class UiPanelDisplay(UiPanel):
 
 	def __init__(self, camera):
 		super().__init__('Display')
+
 		self.camera = camera
 		self.widgetAutoStretch		= self.addCheckBox('Stretch')
 		self.widgetAutoStretchLower	= self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
@@ -17,6 +18,7 @@ class UiPanelDisplay(UiPanel):
 		self.widgetStarDetection	= self.addCheckBox('Star Detection <= 0.5fps')
 		self.widgetFrameTime		= self.addLineEdit('Frame Acquisition Time (UTC)', editable = False)
 		self.widgetFrameTime.setFixedWidth(UiPanelDisplay.FIXED_WIDTH_TEXT_FRAMETIME)
+		self.widgetAnnotate		= self.addCheckBox('Annotate (Beta)')
 
 		self.widgetAutoStretchLower.setText('%0.1f' % self.camera.autoStretchLower)
 		self.widgetAutoStretchUpper.setText('%0.1f' % self.camera.autoStretchUpper)
@@ -29,6 +31,7 @@ class UiPanelDisplay(UiPanel):
 		self.widgetZebras.stateChanged.connect(self.checkBoxZebrasChanged)
 		self.widgetCrosshairs.stateChanged.connect(self.checkBoxCrosshairsChanged)
 		self.widgetStarDetection.stateChanged.connect(self.checkBoxStarDetectionChanged)
+		self.widgetAnnotate.stateChanged.connect(self.checkBoxAnnotateChanged)
 
 
 	def checkBoxAutoStretchChanged(self):
@@ -67,3 +70,11 @@ class UiPanelDisplay(UiPanel):
 		lower = float(self.widgetAutoStretchLower.text())
 		upper = float(self.widgetAutoStretchUpper.text())
 		self.camera.setAutoStretchLimits(lower, upper)
+
+
+	def checkBoxAnnotateChanged(self):
+		state = self.widgetAnnotate.checkState()
+		cState = False
+		if state == 2:
+			cState = True
+		self.camera.setAnnotation(cState)

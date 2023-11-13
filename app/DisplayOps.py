@@ -240,7 +240,21 @@ class DisplayOps():
 		self.calib_img = None
 
 
-	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection):
+	def __display_annotation(self, image_buffer, annotationStars):
+		src_height = 1088
+		src_width = 1456
+		dst_height = image_buffer.array[:, :, 0].shape[0]
+		dst_width = image_buffer.array[:, :, 0].shape[1]
+		print('src: %d %d' % (src_height, src_width))
+		print('dst: %d %d' % (dst_height, dst_width))
+		for star in annotationStars:
+			x = int(star.xy[0] * float(dst_width) / float(src_width))
+			y = int(star.xy[1] * float(dst_height) / float(src_height))
+			cv2.circle(image_buffer.array, (x, y), 5, (0, 255, 0), 1, cv2.LINE_AA)
+			cv2.putText(image_buffer.array, '%0.2f' % star.mag_g, (x-5, y-7), self.font, self.scale, (0,255,0),  self.thickness)
+
+
+	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars):
 		if video_frame_rate is not None and video_frame_rate > 0.5:
 			stardetection = False
 	
@@ -259,9 +273,11 @@ class DisplayOps():
 			self.__display_crosshairs(image_buffer)
 		if stardetection:
 			self.__display_stardetection(image_buffer)
+		if annotationStars is not None:
+			self.__display_annotation(image_buffer, annotationStars)
 
 
-	def overlayDisplayOnImageBuffer(self, image_buffer, video_recording, video_frame_rate, stretch, zebras, crosshairs, stardetection):
+	def overlayDisplayOnImageBuffer(self, image_buffer, video_recording, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars):
 		"""
 		Overlay Display On The image_buffer (it alters the image_buffer)
 	
@@ -271,6 +287,7 @@ class DisplayOps():
 		zebras			= True or False
 		crosshairs		= True or False
 		stardetection		= True or False
+		annotationStars		= List of stars
 		"""
 
 		if video_frame_rate is not None and video_recording:	# Some operations are too slow for video, disable them
@@ -280,11 +297,11 @@ class DisplayOps():
 		#print('Min:', np.min(image_buffer.array))
 		#print('Max:', np.max(image_buffer.array))
 
-		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection)
+		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars)
 		
 
 
-	def loadFitsPhotoWithOverlay(self, fits_filename, width, height, stretch, zebras, crosshairs, stardetection):
+	def loadFitsPhotoWithOverlay(self, fits_filename, width, height, stretch, zebras, crosshairs, stardetection, annotationStars):
 		"""
 		Load fits, adds the overlays and returns the new buffer suitable for use as an overlay
 	
@@ -294,6 +311,7 @@ class DisplayOps():
 		zebras			= True or False
 		crosshairs		= True or False
 		stardetection		= True or False
+		annotationStars		= List of stars
 		"""
 
 		fits_data = fits.getdata(fits_filename, ext = 0)
@@ -308,7 +326,7 @@ class DisplayOps():
 		image_buffer.array[:, :, 1]	= fits_data
 		image_buffer.array[:, :, 2]	= fits_data
 
-		self.__analyze_display_image_buffer(image_buffer, None, stretch, zebras, crosshairs, stardetection)
+		self.__analyze_display_image_buffer(image_buffer, None, stretch, zebras, crosshairs, stardetection, annotationStars)
 
 		image_buffer2 = ProxyImageBuffer(np.zeros((height, width, 4), dtype=np.uint8))
 		image_buffer2.array[:, :, 0]	= image_buffer.array[:, :, 0]
