@@ -8,6 +8,8 @@ from astropy.wcs import wcs
 from astropy.time import Time
 from astcoord import AstCoord
 from astropy.coordinates import ICRS, FK5, SkyCoord, Distance
+from astropy.stats import sigma_clipped_stats
+from pyqtree import Index
 
 
 
@@ -164,6 +166,95 @@ class StarLookup():
 		print('2nd pass total stars:', len(stars))
 	
 		return stars
+
+
+	def __drawCenterCircle(self, img: np.array, radius: int):
+		centerX = img.shape[1] / 2 - 0.5
+		centerY = img.shape[0] / 2 - 0.5
+
+		for y in range(img.shape[0]):
+			for x in range(img.shape[1]):
+				deltaX = x - centerX
+				deltaY = y - centerY
+				dist = math.sqrt(deltaX * deltaX + deltaY * deltaY)
+				if dist <= radius:
+					img[y][x] = 1
+
+
+	def calculateStarMetricsForFits(self,  fitsFile: str, stars: [Star], radiusPixels: int, sensorSaturationValue: int) -> ([Star], float, float, float):
+		"""
+			For each star in stars, extracts a cricle (denoted by radiusPixels) and looks for the largest value using
+			using sensorSatValue as the maximum and converting to % of saturation
+
+			Excludes stars radiuses that fall out of bounds or overlap other star radiuses
+
+			fitsFile	= fits file name
+			stars		= list of stars with xy positions already set
+			radiusPixels	= must be > 0  and represents the radius around the star we're looking at
+			sensorSatValue	= the maxmimum value the sensor can have for a pixel
+
+			Returns:
+				valid stars with peakSensor set to the % of sensor saturation within radius of the stars expected position
+				background mean as % of sensor saturation
+				background median as % of sensor saturation
+				background stddev as % of sensor saturation
+		"""
+
+		# Create the mask
+		diameter = radiusPixels * 2
+		mask_circle = np.zeros((diameter, diameter), dtype=np.uint16)
+		self.__drawCenterCircle(mask_circle, radiusPixels)
+
+		fits_data = fits.getdata(fitsFile, ext = 0)
+		width = fits_data.shape[1]
+		height = fits_data.shape[0]
+
+		# Calculate the background stats
+		bkg_mean, bkg_median, bkg_stddev = sigma_clipped_stats(fits_data, sigma=3.0)
+		bkg_mean = (bkg_mean / sensorSaturationValue) * 100.0
+		bkg_median = (bkg_median / sensorSaturationValue) * 100.0
+		bkg_stddev = (bkg_stddev / sensorSaturationValue) * 100.0
+
+		quadtree = Index(bbox = (0, 0, width, height))
+
+		# Create a quad tree of possible stars
+		possibleStars = []
+		for star in stars:
+			# Extract rectangle around star
+			x1 = int(round(star.xy[0] - radiusPixels))
+			x2 = int(round(star.xy[0] + radiusPixels))
+			y1 = int(round(star.xy[1] - radiusPixels))
+			y2 = int(round(star.xy[1] + radiusPixels))
+	
+			# If the rectangle is out of range of the frame, ignore
+			if x1 < 0 or x2 >= width or y1 < 0 or y2 >= height:
+				continue;
+
+			star.bbox = (x1, y1, x2, y2)
+			possibleStars.append(star)
+			
+			quadtree.insert(len(possibleStars)-1, star.bbox)
+
+		# Run through each possible star and check if it overlaps others, if it does, we cull it
+		isolatedStars = []
+		for star in possibleStars:
+			matches = quadtree.intersect(star.bbox)
+			if len(matches) == 1:
+				# If no other stars overlap 
+
+				# Extract the region containing the star
+				region = fits_data[star.bbox[1]:star.bbox[3], star.bbox[0]:star.bbox[2]]
+
+				# Mask the region
+				region = np.where(mask_circle == 1, region, 0)
+
+				# Find the maximum value in the region
+				star.peakSensor = (np.max(region) / sensorSaturationValue) * 100.0
+
+				isolatedStars.append(star)
+
+		return isolatedStars, bkg_mean, bkg_median, bkg_stddev
+
 
 
 	def findStarsInArea(self, raRange: (float,float), decRange: (float, float)) -> [Star]:

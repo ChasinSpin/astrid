@@ -1292,4 +1292,19 @@ class CameraModel:
 		wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
 
 		starLookup = StarLookup()
-		self.annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = 12.0)
+		self.annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = 14.0)
+		stars, bkg_mean, bkg_median, bkg_stddev  = starLookup.calculateStarMetricsForFits(fitsFile = fits_fname, stars = self.annotationStars, radiusPixels = 5, sensorSaturationValue = 1023)
+
+		print('Mag,PeakSensor')
+		stars.sort(key=lambda x: x.mag_g, reverse=False)
+		for star in stars:
+			if hasattr(star, 'peakSensor'):
+				print('%0.2f,%0.1f' % (star.mag_g, star.peakSensor))
+			#else:
+			#	print('No star detected')
+		print('Analyzed stars:', len(stars))
+
+	
+		print('bkg_mean: %0.2f%%' % bkg_mean)
+		print('bkg_median: %0.2f%%' % bkg_median)
+		print('bkg_stddev: %0.2f%%' % bkg_stddev)

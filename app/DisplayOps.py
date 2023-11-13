@@ -250,7 +250,7 @@ class DisplayOps():
 		for star in annotationStars:
 			x = int(star.xy[0] * float(dst_width) / float(src_width))
 			y = int(star.xy[1] * float(dst_height) / float(src_height))
-			cv2.circle(image_buffer.array, (x, y), 5, (0, 255, 0), 1, cv2.LINE_AA)
+			cv2.circle(image_buffer.array, (x, y), 7, (0, 255, 0), 1, cv2.LINE_AA)
 			cv2.putText(image_buffer.array, '%0.2f' % star.mag_g, (x-5, y-7), self.font, self.scale, (0,255,0),  self.thickness)
 
 

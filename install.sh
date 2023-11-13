@@ -63,6 +63,18 @@ installHealpix()
 }
 
 
+# Install pyqtree
+
+installPyqtree()
+{
+	TMP=`/usr/bin/pip3 list | grep pyqtree`
+	if [ ! -z "$TMP" ];then
+		echo "Installing pyqtree"
+		/usr/bin/pip3 install pyqtree==1.0.0
+	fi
+}
+
+
 
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
@@ -98,6 +110,7 @@ chromeHardwareAccelerationOff
 osUpgradeNotificationsOff
 fileManagerAutoLaunchOff
 installHealpix
+installPyqtree
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"
