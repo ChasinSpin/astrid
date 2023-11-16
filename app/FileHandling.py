@@ -4,6 +4,8 @@ from enum import IntEnum
 from astropy.io import fits
 from datetime import datetime
 from astutils import AstUtils
+from settings import Settings
+from astsite import AstSite
 
 
 
@@ -67,6 +69,19 @@ class FileHandling:
 		return fname
 
 
+	def __decimalDegreesToDMS(self, deg):
+		# Converts decimal degrees to dms for lat/lon
+		d = int(deg)
+		mins = (deg - d) * 60.0
+		m = int(mins)
+		s = (mins - m) * 60.0
+
+		m = abs(m)
+		s = abs(s)
+
+		return (d, m, s)
+		
+
 	def save_photo_dng(self, request, metadata):
 		fname = self.__getFilename('dng')
 		print("Saving:", fname)
@@ -117,7 +132,7 @@ class FileHandling:
 
 		hdr = hdul[0].header
 
-		hdr['INSTRUME']	= sensorModeExtra['model']
+		hdr['INSTRUME']	= 'Astrid:' + sensorModeExtra['model']
 		hdr['OBJECT']	= self.target
 		hdr['TELESCOP']	= AstUtils.selectedConfigName()
 		hdr['EXPTIME']	= metadata['ExposureTime'] / 1000000.0
@@ -133,6 +148,12 @@ class FileHandling:
 		hdr['OFFSET']	= 0
 		hdr['CVF']	= 0.0
 		hdr['PROGRAM']	= 'Astrid'
+		if Settings.getInstance().general['location_in_fits']:
+			(d, m, s) = self.__decimalDegreesToDMS(AstSite.lat)
+			hdr['SITELAT']	= '%3d %02d %0.3f' % (d, m, s)
+			(d, m, s) = self.__decimalDegreesToDMS(AstSite.lon)
+			hdr['SITELONG']	= '%3d %02d %0.3f' % (d, m, s)
+	
 		if position is None:
 			(ra, dec) = (0.0, 0.0)
 		else:

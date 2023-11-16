@@ -94,6 +94,7 @@ class Settings:
 			{'name': 'center_marker',			'type': 'choice',	'range': ['crosshairs', 'rectangle', 'small cross'],	'default': 2,			'decimalPlaces': None,	'editable': True,	'displayName': 'Center Marker Type',			'description': ''},
 			{'name': 'voltage_warning',			'type': 'float',	'range': [0, 14],				'default': 11.5,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Warning Voltage',			'description': ''},
 			{'name': 'voltage_shutdown',			'type': 'float',	'range': [0, 12],				'default': 0,				'decimalPlaces': 1,	'editable': True,	'displayName': 'Shutdown Voltage',			'description': ''},
+			{'name': 'location_in_fits',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Write GPS To Fits',			'description': ''},
 			{'name': 'fuzz_gps',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Fuzz GPS',				'description': ''},
 			{'name': 'annotation_mag',			'type': 'float',	'range': [0, 20],				'default': 14.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Annotation Mag Limit',			'description': ''},
 		]},
