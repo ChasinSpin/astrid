@@ -67,7 +67,7 @@ installHealpix()
 
 installPyqtree()
 {
-	TMP=`/usr/bin/pip3 list | grep pyqtree`
+	TMP=`/usr/bin/pip3 list | grep Pyqtree`
 	if [ -z "$TMP" ];then
 		echo "Installing pyqtree"
 		/usr/bin/pip3 install pyqtree==1.0.0
