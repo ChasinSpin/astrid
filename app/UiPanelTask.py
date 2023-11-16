@@ -376,7 +376,8 @@ class UiPanelTask(UiPanel):
 
 	def buttonDisplayChartPressed(self):
 		self.calcAnnotationStars(self.camera.lastFitFile)
-		self.displayExposureChart(self.camera.lastFitFile)
+		if self.starLookup is not None:
+			self.displayExposureChart(self.camera.lastFitFile)
 		if self.plateSolveDialog is not None:
 			self.plateSolveDialog.accept()
 			self.plateSolveDialog = None
@@ -385,8 +386,9 @@ class UiPanelTask(UiPanel):
 
 	def buttonOverlayMagnitudesPressed(self):
 		self.calcAnnotationStars(self.camera.lastFitFile)
-		self.camera.annotationStars = self.annotationStars
-		self.camera.updateDisplayOptions()
+		if self.starLookup is not None:
+			self.camera.annotationStars = self.annotationStars
+			self.camera.updateDisplayOptions()
 		if self.plateSolveDialog is not None:
 			self.plateSolveDialog.accept()
 			self.plateSolveDialog = None
@@ -457,8 +459,12 @@ class UiPanelTask(UiPanel):
 		wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
 
 		self.starLookup = StarLookup()
-		self.annotationStars = self.starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = Settings.getInstance().general['annotation_mag'])
-
+		try:
+			self.annotationStars = self.starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = Settings.getInstance().general['annotation_mag'])
+		except FileNotFoundError:
+			QMessageBox.critical(self, ' ', 'Star Catalogs Not Found!', QMessageBox.Ok)
+			self.starLookup = None
+			
 
 	def displayExposureChart(self, fits_fname):
 		stars, bkg_mean, bkg_median, bkg_stddev  = self.starLookup.calculateStarMetricsForFits(fitsFile = fits_fname, stars = self.annotationStars, radiusPixels = 5, sensorSaturationValue = 1023)
