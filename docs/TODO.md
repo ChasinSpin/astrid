@@ -27,7 +27,6 @@ https://forums.raspberrypi.com/viewtopic.php?t=331808
 * Refactor "evolved" CameraModel.py into a command based system and decouple everything so everything runs as a command, updating the UI as appropriate.  This will also get ready for command based operation/scripting. (similar approach to Siril)
 * Change to Indi Neutral https://www.indilib.org/api/classINDI_1_1Telescope.html
 * Put target on screen to show the star.
-* Star Catalogues HIP, TYC (Tycho 2), UCAC4, G-RADEC, (XZ, ZC - Use RADEC instead).  Dave Herald has a catalogue for occultations.  See also catalogues in Siril: https://siril.readthedocs.io/en/latest/astrometry/annotations.html
 * http://www.lunar-occultations.com/occult4/gaia16_edr3.zip
 * Use astrometry.net to annotate image and place marker for target on. Add star locations for target confirmation. Too slow to generate images: try using sirils catalogues to annotate or the catalogues above
 * Ability to display ravf and fits on pi
