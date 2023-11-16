@@ -28,7 +28,6 @@ from astcoord import AstCoord
 from ravf_encoder import RavfEncoder, RavfImageFormat, RavfColorType
 from UiPanelConnectFailedIndi import UiPanelConnectFailedIndi
 from UiPanelAstrometry import UiPanelAstrometry
-from UiPanelExposureChart import UiPanelExposureChart
 from UiDialogPanel import UiDialogPanel
 from PyQt5.QtWidgets import QMessageBox
 from AstrometryDownload import AstrometryDownload
@@ -36,7 +35,6 @@ from DisplayOps import DisplayOps
 from otestamper import OteStamper
 import logging
 from astutils import AstUtils
-from starcatalog import StarLookup, Star
 #import gc
 
 
@@ -420,7 +418,7 @@ class CameraModel:
 		nanoseconds_since_epoch = int(seconds_since_epoch * 1000000000)
 		request.timestamps['frame_start_nanoseconds_since_2010'] = nanoseconds_since_epoch # Note this is not when the frame capture ended, it's after it's read out
   
-		timestamp = now.strftime('%Y-%m-%d %H:%M:%S.%f')
+		#timestamp = now.strftime('%Y-%m-%d %H:%M:%S.%f')
 
 		self.qt_picamera.set_overlay(None)
 		
@@ -436,8 +434,6 @@ class CameraModel:
 				stretch = (self.autoStretchLower, self.autoStretchUpper)
 
 			self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
-
-			self.ui.panelDisplay.widgetFrameTime.setText(timestamp)		# Display the frame time
 
 		sensor_timestamp_delta = (metadata['SensorTimestamp'] - self.last_sensor_timestamp) / 1000
 		self.last_sensor_timestamp = metadata['SensorTimestamp']
@@ -688,6 +684,7 @@ class CameraModel:
 			file_output = 'test_full'
 
 		self.lastSolvedPosition = None
+		self.annotationStars = None
 
 		self.ui.panelTask.setEnabledUi(False)
 		self.picam2.start()
@@ -804,16 +801,16 @@ class CameraModel:
 		self.ui.indeterminateProgressBar(False)
 
 
-	def solveFieldSuccess(self, position, field_size, rotation_angle, index_file, focal_length, altAz):
+	def solveFieldSuccess(self, position, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis = False):
 		self.lastSolvedPosition = position
-		self.ui.panelTask.updatePlateSolveSuccess(self.lastSolvedPosition, field_size, rotation_angle, index_file, focal_length, altAz)
+		self.ui.panelTask.updatePlateSolveSuccess(self.lastSolvedPosition, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis)
 		self.ui.indeterminateProgressBar(False)
 		if self.platesolveCallback is not None:
 			self.platesolveCallback(position, field_size, altAz)
-		else:
-			if self.annotation:
-				self.annotate(self.lastFitFile, index_file)
-				self.updateDisplayOptions()
+
+
+	def solveFieldSuccessExpAnalysis(self, position, field_size, rotation_angle, index_file, focal_length, altAz):
+		self.solveFieldSuccess(position, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis = True)
 
 
 
@@ -824,9 +821,9 @@ class CameraModel:
 		self.ui.indeterminateProgressBar(False)
 
 
-	def solveField(self, fname):
+	def solveField(self, fname, expAnalysis = False):
 		self.ui.indeterminateProgressBar(True)
-		self.plateSolverThread = PlateSolver(fname, self.search_full_sky, progress_callback=self.statusMsg, success_callback=self.solveFieldSuccess, failure_callback=self.solveFieldFailed)
+		self.plateSolverThread = PlateSolver(fname, self.search_full_sky, progress_callback=self.statusMsg, success_callback=self.solveFieldSuccessExpAnalysis if expAnalysis else self.solveFieldSuccess, failure_callback=self.solveFieldFailed)
 
 
 	def polarAlignCallback(self, solveSuccess, position, delta=None):
@@ -1258,9 +1255,6 @@ class CameraModel:
 				if self.autostretch:
 					stretch = (self.autoStretchLower, self.autoStretchUpper)
 
-				if not self.annotate:
-					self.annotationStars = None
-	
 				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
 	
 				self.qt_picamera.set_overlay(overlay.array)
@@ -1287,30 +1281,3 @@ class CameraModel:
 			OteStamper.getInstance().fanEnabled(True)
 		else:
 			OteStamper.getInstance().fanEnabled(False)
-
-
-	def annotate(self, fits_fname, index_file):
-		# Read WCS file
-		f_basename = os.path.splitext(os.path.basename(fits_fname))[0]
-		f_dirname = os.path.dirname(fits_fname)
-		wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
-
-		starLookup = StarLookup()
-		self.annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = Settings.getInstance().general['annotation_mag'])
-		stars, bkg_mean, bkg_median, bkg_stddev  = starLookup.calculateStarMetricsForFits(fitsFile = fits_fname, stars = self.annotationStars, radiusPixels = 5, sensorSaturationValue = 1023)
-
-		print('Mag,PeakSensor')
-		stars.sort(key=lambda x: x.mag_g, reverse=False)
-		for star in stars:
-			if hasattr(star, 'peakSensor'):
-				print('%0.2f,%0.1f' % (star.mag_g, star.peakSensor))
-			#else:
-			#	print('No star detected')
-		print('Analyzed stars:', len(stars))
-
-	
-		print('bkg_mean: %0.2f%%' % bkg_mean)
-		print('bkg_median: %0.2f%%' % bkg_median)
-		print('bkg_stddev: %0.2f%%' % bkg_stddev)
-
-		self.dialog = UiDialogPanel('Exposure Analysis', UiPanelExposureChart, args = {'camera': self, 'stars': stars, 'bkg_mean': bkg_mean, 'bkg_median': bkg_median, 'bkg_stddev': bkg_stddev, 'fits_fname': fits_fname }, parent = self.ui)

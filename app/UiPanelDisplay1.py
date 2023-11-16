@@ -1,13 +1,14 @@
 from UiPanel import UiPanel
+from PyQt5.QtCore import QTimer
+from datetime import datetime
 
 
-class UiPanelDisplay(UiPanel):
+
+class UiPanelDisplay1(UiPanel):
 	# Initializes and displays a Panel
 
-	FIXED_WIDTH_TEXT_FRAMETIME = 230
-
 	def __init__(self, camera):
-		super().__init__('Display')
+		super().__init__('Display 1')
 
 		self.camera = camera
 		self.widgetAutoStretch		= self.addCheckBox('Stretch')
@@ -15,13 +16,16 @@ class UiPanelDisplay(UiPanel):
 		self.widgetAutoStretchUpper	= self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
 		self.widgetZebras		= self.addCheckBox('Zebras')
 		self.widgetCrosshairs		= self.addCheckBox('Center Marker')
-		self.widgetStarDetection	= self.addCheckBox('Star Detection <= 0.5fps')
-		self.widgetFrameTime		= self.addLineEdit('Frame Acquisition Time (UTC)', editable = False)
-		self.widgetFrameTime.setFixedWidth(UiPanelDisplay.FIXED_WIDTH_TEXT_FRAMETIME)
-		self.widgetAnnotate		= self.addCheckBox('Annotate (Beta)')
+		self.widgetStarDetection	= self.addCheckBox('Star Detect <=0.5fps')
+		self.widgetTime			= self.addLineEdit('UTC System Time', editable = False)
 
 		self.widgetAutoStretchLower.setText('%0.1f' % self.camera.autoStretchLower)
 		self.widgetAutoStretchUpper.setText('%0.1f' % self.camera.autoStretchUpper)
+
+		self.updateTimer = QTimer()
+		self.updateTimer.timeout.connect(self.__updateTimer)
+		self.updateTimer.setInterval(500)
+		self.updateTimer.start()
 
 
 	def registerCallbacks(self):
@@ -31,8 +35,9 @@ class UiPanelDisplay(UiPanel):
 		self.widgetZebras.stateChanged.connect(self.checkBoxZebrasChanged)
 		self.widgetCrosshairs.stateChanged.connect(self.checkBoxCrosshairsChanged)
 		self.widgetStarDetection.stateChanged.connect(self.checkBoxStarDetectionChanged)
-		self.widgetAnnotate.stateChanged.connect(self.checkBoxAnnotateChanged)
 
+
+	# CALLBACKS
 
 	def checkBoxAutoStretchChanged(self):
 		state = self.widgetAutoStretch.checkState()
@@ -72,9 +77,7 @@ class UiPanelDisplay(UiPanel):
 		self.camera.setAutoStretchLimits(lower, upper)
 
 
-	def checkBoxAnnotateChanged(self):
-		state = self.widgetAnnotate.checkState()
-		cState = False
-		if state == 2:
-			cState = True
-		self.camera.setAnnotation(cState)
+	# OPERATIONS
+
+	def __updateTimer(self):
+		self.widgetTime.setText(datetime.utcnow().strftime("%H:%M:%S - %b %d"))

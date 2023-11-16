@@ -1,3 +1,4 @@
+import os
 import math
 import numpy as np
 from astropy.io import fits
@@ -66,7 +67,11 @@ class UiPanelExposureChart(UiPanel):
 	# CALLBACKS
 
 	def buttonSavePressed(self):
-		self.widgetChart.grab().save('/media/pi/ASTRID/test.png')
+		expcharts_folder = Settings.getInstance().astrid_drive + '/expcharts'
+		if not os.path.isdir(expcharts_folder):
+			os.mkdir(expcharts_folder)
+		expchart_fname = expcharts_folder + '/ExposureChart_%s.png' % datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+		self.widgetChart.grab().save(expchart_fname)
 		self.panel.acceptDialog()
 
 

@@ -1,3 +1,6 @@
+import os
+import time
+import math
 from UiPanel import UiPanel
 from CameraModel import OperatingMode
 from settings import Settings
@@ -5,8 +8,9 @@ from PyQt5.QtWidgets import QVBoxLayout, QLabel, QMessageBox, QFileDialog
 from PyQt5.QtCore import Qt
 from astcoord import AstCoord
 from UiQDialog import UiQDialog
-import time
-import math
+from starcatalog import StarLookup, Star
+from UiDialogPanel import UiDialogPanel
+from UiPanelExposureChart import UiPanelExposureChart
 
 
 class UiPanelTask(UiPanel):
@@ -187,7 +191,7 @@ class UiPanelTask(UiPanel):
 			self.camera.stopRecording()
 
 
-	def buttonPlateSolvePressed(self, checked):
+	def buttonPlateSolvePressed(self, checked, expAnalysis = False):
 		if self.camera.lastFitFile == 'dummy.fit':
 			QMessageBox.warning(self, ' ', 'No photo to plate solve, take a photo first!', QMessageBox.Ok)
 		else:
@@ -200,11 +204,11 @@ class UiPanelTask(UiPanel):
 				else:
 					return
 
-			self.camera.solveField(self.camera.lastFitFile)
-			self.launchPlateSolveWidget()
+			self.camera.solveField(self.camera.lastFitFile, expAnalysis)
+			self.launchPlateSolveWidget(expAnalysis)
 
 
-	def launchPlateSolveWidget(self):
+	def launchPlateSolveWidget(self, expAnalysis):
 		self.plateSolveDialog = UiQDialog(parent = self.camera.ui, topLeft = (260, 20))
 		self.plateSolveDialog.setWindowFlags(Qt.CustomizeWindowHint | Qt.FramelessWindowHint | Qt.Tool)
 
@@ -237,6 +241,18 @@ class UiPanelTask(UiPanel):
 		panel.hideWidget(panel.syncOnly)
 		panel.ok	= panel.addButton('OK')
 		panel.hideWidget(panel.ok)
+
+
+		if expAnalysis:
+			panel.displayChart	= panel.addButton('Display Analysis Chart')
+			panel.overlayMagnitudes	= panel.addButton('Overlay Magnitudes ')
+			panel.displayChart.clicked.connect(self.buttonDisplayChartPressed)
+			panel.overlayMagnitudes.clicked.connect(self.buttonOverlayMagnitudesPressed)
+			panel.hideWidget(panel.displayChart)
+			panel.hideWidget(panel.overlayMagnitudes)
+		else:
+			panel.displayChart	= None
+			panel.overlayMagnitudes	= None
 		panel.cancel	= panel.addButton('Cancel')
 
 		# Setup Callbacks
@@ -253,7 +269,7 @@ class UiPanelTask(UiPanel):
 		self.plateSolveDialog.exec()
 
 
-	def updatePlateSolveSuccess(self, coord, field_size, rotation_angle, index_file, focal_length, altAzPlateSolve):
+	def updatePlateSolveSuccess(self, coord, field_size, rotation_angle, index_file, focal_length, altAzPlateSolve, expAnalysis = False):
 		if self.plateSolveDialog is not None:
 			ra = ''
 			dec = ''
@@ -277,7 +293,8 @@ class UiPanelTask(UiPanel):
 			panel.showWidget(panel.rotation)
 			panel.showWidget(panel.index)
 			if self.settings_mount['goto_capable']:
-				panel.showWidget(panel.syncGoto)
+				if not expAnalysis:
+					panel.showWidget(panel.syncGoto)
 			else:
 				if self.camera.objectCoords is not None and panel.altAzDirection is not None:
 					direction_indicator_platesolve = Settings.getInstance().platesolver['direction_indicator_platesolve']
@@ -285,7 +302,11 @@ class UiPanelTask(UiPanel):
 					panel.showWidget(panel.altAzDirection)
 					panel.altAzDirection.update(altAzDelta[0], altAzDelta[1], direction_indicator_platesolve)
 
-			panel.showWidget(panel.syncOnly)
+			if expAnalysis:
+				panel.showWidget(panel.displayChart)
+				panel.showWidget(panel.overlayMagnitudes)
+			else:
+				panel.showWidget(panel.syncOnly)
 			panel.adjustSize()
 			self.plateSolveDialog.adjustSize()
 			self.plateSolveDialog.show()
@@ -352,6 +373,25 @@ class UiPanelTask(UiPanel):
 			self.widgetPANext.setText('Cancel')
 			self.camera.polarAlign()
 
+
+	def buttonDisplayChartPressed(self):
+		self.calcAnnotationStars(self.camera.lastFitFile)
+		self.displayExposureChart(self.camera.lastFitFile)
+		if self.plateSolveDialog is not None:
+			self.plateSolveDialog.accept()
+			self.plateSolveDialog = None
+			self.starLookup = None
+
+
+	def buttonOverlayMagnitudesPressed(self):
+		self.calcAnnotationStars(self.camera.lastFitFile)
+		self.camera.annotationStars = self.annotationStars
+		self.camera.updateDisplayOptions()
+		if self.plateSolveDialog is not None:
+			self.plateSolveDialog.accept()
+			self.plateSolveDialog = None
+			self.starLookup = None
+
 	
 	# OPERATIONS
 
@@ -396,6 +436,7 @@ class UiPanelTask(UiPanel):
 			self.camera.solveFieldCancel()
 			self.plateSolveDialog.reject()
 			self.plateSolveDialog = None
+			self.starLookup = None
 
 
 	def buttonDirectionOkPressed(self):
@@ -407,3 +448,33 @@ class UiPanelTask(UiPanel):
 	def switchModeTo(self, text):
 		self.widgetTask.setCurrentText(text)
 		self.comboBoxTaskChanged(text)
+
+
+	def calcAnnotationStars(self, fits_fname):
+		# Read WCS file
+		f_basename = os.path.splitext(os.path.basename(fits_fname))[0]
+		f_dirname = os.path.dirname(fits_fname)
+		wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
+
+		self.starLookup = StarLookup()
+		self.annotationStars = self.starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = Settings.getInstance().general['annotation_mag'])
+
+
+	def displayExposureChart(self, fits_fname):
+		stars, bkg_mean, bkg_median, bkg_stddev  = self.starLookup.calculateStarMetricsForFits(fitsFile = fits_fname, stars = self.annotationStars, radiusPixels = 5, sensorSaturationValue = 1023)
+
+		print('Mag,PeakSensor')
+		stars.sort(key=lambda x: x.mag_g, reverse=False)
+		for star in stars:
+			if hasattr(star, 'peakSensor'):
+				print('%0.2f,%0.1f' % (star.mag_g, star.peakSensor))
+			#else:
+			#       print('No star detected')
+		print('Analyzed stars:', len(stars))
+
+
+		print('bkg_mean: %0.2f%%' % bkg_mean)
+		print('bkg_median: %0.2f%%' % bkg_median)
+		print('bkg_stddev: %0.2f%%' % bkg_stddev)
+
+		self.dialogExposureChart = UiDialogPanel('Exposure Analysis', UiPanelExposureChart, args = {'camera': self, 'stars': stars, 'bkg_mean': bkg_mean, 'bkg_median': bkg_median, 'bkg_stddev': bkg_stddev, 'fits_fname': fits_fname }, parent = self)

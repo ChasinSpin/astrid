@@ -4,13 +4,14 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QMessageBox, QProgressBar
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QMessageBox, QProgressBar
 from CameraModel import OperatingMode
 from UiPanel import UiPanel
 from UiPanelTask import UiPanelTask
 from UiPanelMount import UiPanelMount
 from UiPanelObject import UiPanelObject
-from UiPanelDisplay import UiPanelDisplay
+from UiPanelDisplay1 import UiPanelDisplay1
+from UiPanelDisplay2 import UiPanelDisplay2
 from UiPanelStatus import UiPanelStatus
 from settings import Settings
 from otestamper import OteStamper
@@ -40,7 +41,8 @@ class Ui(QtWidgets.QMainWindow):
 		# Create the panels
 		self.panelTask		= UiPanelTask(self.camera)
 		self.panelObject	= UiPanelObject(self.camera)
-		self.panelDisplay	= UiPanelDisplay(self.camera)
+		self.panelDisplay1	= UiPanelDisplay1(self.camera)
+		self.panelDisplay2	= UiPanelDisplay2(self.camera)
 		self.panelMount		= UiPanelMount(self.camera)
 		self.panelStatus	= UiPanelStatus(self.camera)
 
@@ -55,10 +57,12 @@ class Ui(QtWidgets.QMainWindow):
 		self.leftPaneWidget.setLayout(leftPaneLayout)
 
 		# Create the center Pane
-		centerPaneLayout = QVBoxLayout()
+		centerPaneLayout = QGridLayout()
 		centerPaneLayout.setSpacing(20)
-		centerPaneLayout.addWidget(self.panelDisplay)
-		centerPaneLayout.addWidget(camera.qt_picamera)
+
+		centerPaneLayout.addWidget(self.panelDisplay1, 0, 0, 1, 1)
+		centerPaneLayout.addWidget(self.panelDisplay2, 0, 1, 1, 1)
+		centerPaneLayout.addWidget(camera.qt_picamera, 1, 0, 1, 2)
 		camera.qt_picamera.setFixedSize(640,480)	
 		camera.qt_picamera.setObjectName('cameraView')
 		self.centerPaneWidget = QWidget()
@@ -179,7 +183,8 @@ class Ui(QtWidgets.QMainWindow):
 	def registerCallbacks(self):
 		self.panelTask.registerCallbacks()
 		self.panelObject.registerCallbacks()
-		self.panelDisplay.registerCallbacks()
+		self.panelDisplay1.registerCallbacks()
+		self.panelDisplay2.registerCallbacks()
 		self.panelMount.registerCallbacks()
 		self.panelStatus.registerCallbacks()
 
