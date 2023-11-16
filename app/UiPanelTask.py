@@ -145,8 +145,18 @@ class UiPanelTask(UiPanel):
 		self.camera.setPhotoCountTotal(count)
 
 
+	def __sanitizeJobName(self, txt):
+		txt = txt.replace(' ', '_')
+		txt = txt.replace('.', '_')
+		return txt
+	
+
 	def lineEditJobNameChanged(self):
 		txt = self.widgetJobName.text()
+		txt2 = self.__sanitizeJobName(txt)
+		if txt2 != txt:
+			txt = txt2
+			self.widgetJobName.setText(txt)
 		self.camera.setJobName(txt)
 
 
