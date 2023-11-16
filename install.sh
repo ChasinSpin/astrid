@@ -56,7 +56,7 @@ fileManagerAutoLaunchOff()
 installHealpix()
 {
 	TMP=`/usr/bin/pip3 list | grep cdshealpix`
-	if [ ! -z "$TMP" ];then
+	if [ -z "$TMP" ];then
 		echo "Installing cdshealpix"
 		/usr/bin/pip3 install cdshealpix==0.6.4
 	fi
@@ -68,7 +68,7 @@ installHealpix()
 installPyqtree()
 {
 	TMP=`/usr/bin/pip3 list | grep pyqtree`
-	if [ ! -z "$TMP" ];then
+	if [ -z "$TMP" ];then
 		echo "Installing pyqtree"
 		/usr/bin/pip3 install pyqtree==1.0.0
 	fi
@@ -80,7 +80,7 @@ installPyqtree()
 installQCharts()
 {
 	TMP=`/usr/bin/apt list --installed | grep python3-pyqt5.qtchart`
-	if [ ! -z "$TMP" ];then
+	if [ -z "$TMP" ];then
 		echo "Installing QCharts"
 		/usr/bin/sudo /usr/bin/apt-get install -y python3-pyqt5.qtchart
 	fi
