@@ -601,6 +601,8 @@ class StarLookup():
 				UCAC4 123-123456	(2nd number is zero padded)
 				TYC 1234-56789-1	(or -2 or -3)  Note: 56789 is NOT zero padded
 				EDR3 12345345348	(variable length number, not zero padded)
+	
+			Returns None in case of error or failure to find
 		"""
 
 		if   id.startswith('HIP '):

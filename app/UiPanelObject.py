@@ -1,5 +1,6 @@
 from processlogger import ProcessLogger
 import os
+import time
 import binascii
 import subprocess
 from UiPanel import UiPanel
@@ -22,7 +23,7 @@ from astsite import AstSite
 from pathcomputation import PathComputation
 from owcloud import OWCloud
 from astutils import AstUtils
-import time
+from starcatalog import StarLookup, Star
 
 
 
@@ -112,6 +113,7 @@ class UiPanelObject(UiPanel):
 	SEARCH_SIMBAD		= 'SIMBAD (online)'
 	SEARCH_CUSTOM		= 'Custom'
 	SEARCH_OCCULTATIONS	= 'Occultations'
+	SEARCH_OCCULTGAIA	= 'Occult Gaia'
 	PREDICTIONS_URL		= b'68747470733a2f2f6173747269642d646f776e6c6f6164732e73332e616d617a6f6e6177732e636f6d2f646f776e6c6f6164732f7374657665705f70726564696374696f6e735f323032335f323032345f76312e74787a'
 
 	def __init__(self, camera):
@@ -120,7 +122,7 @@ class UiPanelObject(UiPanel):
 		self.logger = self.processLogger.getLogger()
 		self.camera		= camera
 		self.occultationObject	= None
-		self.widgetDatabase	= self.addComboBox('Database', [UiPanelObject.SEARCH_SIMBAD, UiPanelObject.SEARCH_CUSTOM, UiPanelObject.SEARCH_OCCULTATIONS])
+		self.widgetDatabase	= self.addComboBox('Database', [self.SEARCH_SIMBAD, self.SEARCH_CUSTOM, self.SEARCH_OCCULTATIONS, self.SEARCH_OCCULTGAIA])
 		self.widgetDatabase.setObjectName('comboBoxDatabase')
 		self.widgetSearch	= self.addLineEdit('Search')
 		self.widgetRA		= self.addLineEditDouble('RA', 0.0, 24.0, 10, editable=False)
@@ -179,6 +181,17 @@ class UiPanelObject(UiPanel):
 			self.hideWidget(self.widgetAutoRecord)
 			self.showWidget(self.widgetAdd)
 			self.showWidget(self.widgetList)
+		elif text == UiPanelObject.SEARCH_OCCULTGAIA:
+			self.hideWidget(self.widgetEventTime)
+			self.hideWidget(self.widgetChord)
+			self.hideWidget(self.widgetPrepoint)
+			self.hideWidget(self.widgetAutoRecord)
+			self.hideWidget(self.widgetAdd)
+			self.hideWidget(self.widgetList)
+
+			gaia_index = Settings.getInstance().astrid_drive + '/catalogs/daveherald/Gaia16_EDR3.inx'
+			if not os.path.exists(gaia_index):
+				QMessageBox.warning(self, ' ', 'Star Catalog Requires Downloading.\n\nDownload:\n    https://astrid-downloads.s3.amazonaws.com/downloads/daveherald_star_catalogs_v1.txz\n\n and place at top level of USB Thumb Drive', QMessageBox.Ok)
 		else:
 			raise ValueError('Database not valid')
 
@@ -337,7 +350,10 @@ class UiPanelObject(UiPanel):
 		
 
 	def messageBoxSearchObjectFailed(self):
-		QMessageBox.information(self, ' ', 'Object not found !')
+		if self.widgetDatabase.currentText() == self.SEARCH_OCCULTGAIA:
+			QMessageBox.information(self, ' ', 'Object not found !\n\nValid Formats:\n    HIP 117053\n    HIP 6911\n    UCAC4 451-000373\n    TYC 4212-1079-1\n    EDR3 2545442368322040320\n\nNote:\n    UCAC4 123-123456 (2nd number is zero padded)\n    TYC 1234-56789-1 (or -2 or -3), 56789 is NOT zero padded\n    EDR3 12345345348 (variable length number, not zero padded)')
+		else:
+			QMessageBox.information(self, ' ', 'Object not found !')
 
 
 	def messageBoxWriteCustomFailed(self):
@@ -352,6 +368,8 @@ class UiPanelObject(UiPanel):
 			return self.findCustomObject(search)
 		elif text == UiPanelObject.SEARCH_OCCULTATIONS:
 			return self.findOccultationObject(search)
+		elif text == UiPanelObject.SEARCH_OCCULTGAIA:
+			return self.findStarCatalogObject(search)
 		else:
 			raise ValueError('Database not valid')
 
@@ -415,6 +433,35 @@ class UiPanelObject(UiPanel):
 		if obj is not None:
 			self.showWidget(self.widgetPrepoint)
 			self.showWidget(self.widgetAutoRecord)
+
+		return obj
+
+
+	def findStarCatalogObject(self, search):
+		""" Returns AstCoord, or None if not found """
+		obj = None
+
+		search = search.upper()
+
+		okCatalogs = ['HIP ', 'UCAC4 ', 'TYC ', 'EDR3 ']
+		validCatalog = False
+		for cat in okCatalogs:
+			if search.startswith(cat):
+				validCatalog = True
+				break
+		if not validCatalog:
+			ret3 = QMessageBox.information(self, ' ', 'Stars in the Occult Gaia catalog must start with HIP, UCAC4, TYC or EDR3.', QMessageBox.Ok)
+			return None
+
+		starLookup = StarLookup()
+		try:
+			star = starLookup.findStarById(search)
+		except FileNotFoundError:
+			star = None
+
+		if star is not None:
+			star.epochPropogateToJ2000()
+			obj = star.coord
 
 		return obj
 
