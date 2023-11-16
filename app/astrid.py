@@ -147,6 +147,22 @@ if __name__ == '__main__':
 			return False
 
 
+	# Delete old astrometry.cfg's, we now generate one in tmp now
+
+	def deleteAstrometryCfg():
+		global configs_fname, astrid_drive
+		if os.path.exists(configs_fname):
+			with open(configs_fname, 'r') as fp:
+				configs = json.load(fp)
+
+			for config in configs['configs']:
+				astrometryCfg = astrid_drive + '/configs/%s/astrometry.cfg' % config['configFolder']
+				try:
+					os.remove(astrometryCfg)
+				except FileNotFoundError:
+					pass
+
+
 	#
 	# MAIN
 	#
@@ -175,6 +191,8 @@ if __name__ == '__main__':
 	logger.debug('command args: %s' % sys.argv)
 	logger.debug('astrid_drive: %s' % astrid_drive)
 
+	# Delete old astrometry.cfg's, we now generate one in tmp now
+	deleteAstrometryCfg()
 
 	# Start the QtApplication
 	app = QApplication([])

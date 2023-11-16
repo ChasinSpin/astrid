@@ -75,6 +75,18 @@ installPyqtree()
 }
 
 
+# Install QCharts
+
+installQCharts()
+{
+	TMP=`/usr/bin/apt list --installed | grep python3-pyqt5.qtchart`
+	if [ ! -z "$TMP" ];then
+		echo "Installing QCharts"
+		/usr/bin/sudo /usr/bin/apt-get install -y python3-pyqt5.qtchart
+	fi
+}
+
+
 
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
@@ -111,6 +123,7 @@ osUpgradeNotificationsOff
 fileManagerAutoLaunchOff
 installHealpix
 installPyqtree
+installQCharts
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"

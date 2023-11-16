@@ -49,12 +49,12 @@ class AstrometryDownload:
 			self.seriesUrls.append(self.__generateURLsForSeriesIndex(i))
 
 
-	def __checkWriteAstrometryCfg(self):
-		astrometryCfg = Settings.settings_folder + '/astrometry.cfg'
+	def generateAstrometryCfg(self) -> str:
+		"""
+			Generates a temporary astrometry.cfg file given a focal length and returns it
+		"""
+		astrometryCfg = '/tmp/astrid_astrometry.cfg'
 		
-		if os.path.exists(astrometryCfg):
-			return
-
 		# Now we add these series to astrometry.cfg in the config
 		addPath = ''
 		for sUrls in self.seriesUrls:
@@ -68,6 +68,7 @@ class AstrometryDownload:
 		with open(astrometryCfg, 'w') as file:
 			file.write(txt)
 
+		return astrometryCfg
 
 
 	def astrometryFilesArePresent(self):
@@ -76,8 +77,6 @@ class AstrometryDownload:
 			for url in sUrls:
 				if not os.path.exists(url['filename']):
 					return False
-
-		self.__checkWriteAstrometryCfg()
 
 		return True
 
@@ -89,8 +88,6 @@ class AstrometryDownload:
 			for url in sUrls:
 				if not self.__downloadUrl(url['url'], url['filename'], callback):
 					return False
-
-		self.__checkWriteAstrometryCfg()
 
 		return True
 

@@ -28,6 +28,7 @@ from astcoord import AstCoord
 from ravf_encoder import RavfEncoder, RavfImageFormat, RavfColorType
 from UiPanelConnectFailedIndi import UiPanelConnectFailedIndi
 from UiPanelAstrometry import UiPanelAstrometry
+from UiPanelExposureChart import UiPanelExposureChart
 from UiDialogPanel import UiDialogPanel
 from PyQt5.QtWidgets import QMessageBox
 from AstrometryDownload import AstrometryDownload
@@ -1256,6 +1257,9 @@ class CameraModel:
 				stretch = None
 				if self.autostretch:
 					stretch = (self.autoStretchLower, self.autoStretchUpper)
+
+				if not self.annotate:
+					self.annotationStars = None
 	
 				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
 	
@@ -1292,7 +1296,7 @@ class CameraModel:
 		wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
 
 		starLookup = StarLookup()
-		self.annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = 14.0)
+		self.annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = Settings.getInstance().general['annotation_mag'])
 		stars, bkg_mean, bkg_median, bkg_stddev  = starLookup.calculateStarMetricsForFits(fitsFile = fits_fname, stars = self.annotationStars, radiusPixels = 5, sensorSaturationValue = 1023)
 
 		print('Mag,PeakSensor')
@@ -1308,3 +1312,5 @@ class CameraModel:
 		print('bkg_mean: %0.2f%%' % bkg_mean)
 		print('bkg_median: %0.2f%%' % bkg_median)
 		print('bkg_stddev: %0.2f%%' % bkg_stddev)
+
+		self.dialog = UiDialogPanel('Exposure Analysis', UiPanelExposureChart, args = {'camera': self, 'stars': stars, 'bkg_mean': bkg_mean, 'bkg_median': bkg_median, 'bkg_stddev': bkg_stddev, 'fits_fname': fits_fname }, parent = self.ui)

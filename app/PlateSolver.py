@@ -1,9 +1,13 @@
 import os
 import subprocess
+import shlex
 from astropy.io import fits
 from settings import Settings
 from astcoord import AstCoord
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from AstrometryDownload import AstrometryDownload
+from UiPanelAstrometry import UiPanelAstrometry
+from UiDialogPanel import UiDialogPanel
 
 
 # Plate solver uses ICRS coordinates, but internally uses FK5
@@ -12,7 +16,7 @@ class PlateSolverThread(QThread):
 	finished = pyqtSignal(bool)
 	progress = pyqtSignal(str)
 
-	def __init__(self, filename, scale_low, scale_high, starting_ra, starting_dec, starting_radius, limit_objs, downsample, source_extractor, obsdatetime):
+	def __init__(self, filename, scale_low, scale_high, starting_ra, starting_dec, starting_radius, limit_objs, downsample, source_extractor, obsdatetime, configFile):
 		super(QThread, self).__init__()
 		self.filename		= filename
 		self.scale_low		= scale_low
@@ -24,6 +28,7 @@ class PlateSolverThread(QThread):
 		self.downsample		= downsample
 		self.source_extractor	= source_extractor
 		self.obsdatetime	= obsdatetime
+		self.configFile		= configFile
 		self.altAz		= None
 
 
@@ -33,7 +38,7 @@ class PlateSolverThread(QThread):
 		astrometry_output = os.path.dirname(self.filename) + '/astrometry_tmp'
 
 		cmd = ["/usr/bin/solve-field",
-			"--config", Settings.settings_folder + '/' + 'astrometry.cfg',
+			"--config", self.configFile,
 			"--dir", astrometry_output,
 			#"--corr", "astrometry.corr",
 			"--overwrite",
@@ -67,7 +72,7 @@ class PlateSolverThread(QThread):
 
 		print("Command:", cmd)
 
-		self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+		self.process = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE)
 
 		sources = ""
 		location = ""
@@ -199,12 +204,20 @@ class PlateSolver:
 		self.obsdatetime = hdr['DATE-OBS']
 
 		# Calculate FOV
-		fov = (57.3 / self.settings['focal_length']) * self.frame_width_mm
+		self.focalLen = hdr['FOCALLEN']
+		fov = (57.3 / self.focalLen) * self.frame_width_mm
 		print("Sensor FOV: %f deg" % (fov))
 		scale_low = fov * self.settings['scale_low_factor']
 		scale_high = fov * self.settings['scale_high_factor']
 
 		print("Plate Solving: Frame_Width(mm):", self.frame_width_mm)
+
+		# Check we have the astrometry files we need, and download if we don't
+		astrometryDownload = AstrometryDownload(astrid_drive = Settings.getInstance().astrid_drive, focal_length = self.focalLen, frame_width_mm = self.frame_width_mm)
+		if not astrometryDownload.astrometryFilesArePresent():
+			dialog = UiDialogPanel('Astrometry Download', UiPanelAstrometry, args = astrometryDownload)
+		astrometryCfg = astrometryDownload.generateAstrometryCfg()
+		astrometryDownload = None
 
 		if search_full_sky:
 			# Don't use starting_coord, search the whole sky
@@ -236,7 +249,7 @@ class PlateSolver:
 		self.success_callback	= success_callback
 		self.failure_callback	= failure_callback
 
-		self.thread = PlateSolverThread(filename, scale_low, scale_high, starting_ra, starting_dec, starting_radius, self.settings['limit_objs'], self.settings['downsample'], self.settings['source_extractor'], self.obsdatetime)
+		self.thread = PlateSolverThread(filename, scale_low, scale_high, starting_ra, starting_dec, starting_radius, self.settings['limit_objs'], self.settings['downsample'], self.settings['source_extractor'], self.obsdatetime, astrometryCfg)
 		self.thread.progress.connect(self.__progress)
 		self.thread.finished.connect(self.__finished)
 		#self.thread.finished.connect(self.thread.deleteLater)

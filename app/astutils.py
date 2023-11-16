@@ -57,6 +57,16 @@ class AstUtils:
 
 
 	@classmethod
+	def selectedConfigName(cls):
+		configs_fname = Settings.getInstance().configs_folder + '/configs.json'
+		with open(configs_fname, 'r') as fp:
+			configs = json.load(fp)
+
+		selectedIndex = configs['selectedIndex']
+		return configs['configs'][selectedIndex]['summary']
+
+
+	@classmethod
 	def isProcessByNameRunning(cls, name: str) -> bool:
 		process = list(filter(lambda p: p.name() == name, psutil.process_iter()))
 		if len(process) > 0:

@@ -31,7 +31,6 @@ class UiPanelConfigSettings(UiPanel):
 		
 		self.settingsChanged	= []
 		self.configChanged	= False
-		self.focalLengthChange	= False
 
 		with open(self.configs_fname, 'r') as fp:
 			self.configs = json.load(fp)
@@ -91,15 +90,6 @@ class UiPanelConfigSettings(UiPanel):
 		else:
 			self.logger.info('settings, there were no changes to save')
 			 
-		if self.focalLengthChange:
-			astrometryCfg = os.path.dirname(self.configs_fname) + '/' + self.config['configFolder'] + '/astrometry.cfg'
-			try:
-				self.logger.info('focal length change, removing %s' % astrometryCfg)
-				os.remove(astrometryCfg)
-			except FileNotFoundError:
-				pass
-
-
 		if self.configChanged:
 			self.logger.info('saving config changes...')
 			
@@ -205,8 +195,6 @@ class UiPanelConfigSettings(UiPanel):
 			getattr(Settings.getInstance(), panel.name)[widget.name] = newValue
 			if not panel.name in self.settingsChanged:
 				self.settingsChanged.append(panel.name)
-			if widget.name == 'focal_length':
-				self.focalLengthChange = True
 	
 
 	def strChanged(self, panel, widget):

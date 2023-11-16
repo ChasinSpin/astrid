@@ -3,6 +3,7 @@ import numpy as np
 from enum import IntEnum
 from astropy.io import fits
 from datetime import datetime
+from astutils import AstUtils
 
 
 
@@ -118,7 +119,7 @@ class FileHandling:
 
 		hdr['INSTRUME']	= sensorModeExtra['model']
 		hdr['OBJECT']	= self.target
-		hdr['TELESCOP']	= 'my telescope'
+		hdr['TELESCOP']	= AstUtils.selectedConfigName()
 		hdr['EXPTIME']	= metadata['ExposureTime'] / 1000000.0
 		hdr['XPIXSZ']	= sensorModeExtra['pixelSize'][0]
 		hdr['YPIXSZ']	= sensorModeExtra['pixelSize'][1]

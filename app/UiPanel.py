@@ -10,6 +10,7 @@ from UiWidgetJoystick import UiWidgetJoystick
 from UiWidgetDirection import UiWidgetDirection
 from UiWidgetOpencv import UiWidgetOpencv
 from UiWidgetPlayerControls import UiWidgetPlayerControls
+from UiWidgetChart import UiWidgetChart
 
 
 
@@ -362,3 +363,12 @@ class UiPanel(QWidget):
 
 		self.rowIndex += 1
 		return statusBar
+
+
+	def addChart(self, width, height) -> UiWidgetOpencv:
+		chart = UiWidgetChart(width, height)
+
+		self.layout.addWidget(chart, self.rowIndex, 0, 1, 2, alignment=Qt.AlignCenter)
+
+		self.rowIndex += 1
+		return chart
