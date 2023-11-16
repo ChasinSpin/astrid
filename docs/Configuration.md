@@ -9,14 +9,13 @@ Config files are stored in /media/pi/ASTRID/configs and organized as follows:
 	* /media/pi/ASTRID/configs/observer.json
 	* /media/pi/ASTRID/configs/occultations.json
 	* /media/pi/ASTRID/configs/objects.json
-	* /media/pi/ASTRID/configs/configs.json	* /media/pi/ASTRID/configs/config1/
-		* astrometry.cfg
+	* /media/pi/ASTRID/configs/configs.json
+	* /media/pi/ASTRID/configs/config1/
 		* camera.json
 		* mount.json
 		* platesolver.json
 		* site.json	[Optional] 
 	* /media/pi/ASTRID/configs/config2/
-		* astrometry.cfg
 		* camera.json
 		* mount.json
 		* platesolver.json
@@ -79,12 +78,6 @@ This config.json file is used to present the selection of configs when Astrid is
 | selectedIndex | Index of the currently selected configuration. 0 based (first config entry is index 0, next is 1 etc.) |
 
 
-## astrometry
-
-The astrometry.cfg file is used primarily to specify the index files to use for platesolving, and is the config file for the astrometry.net platesolver (solve-field).  Index files are stored locally in the astrometry folder on the USB Flash Drive (i.e. the solver is offline and doesn't require the internet).
-
-astrometry.cfg is created as required based on the focal length and camera chosen in Astrid.  There is no need to create it or edit it.
-
 ## camera
 
 The camera.json file stores configuration related to the camera:
@@ -135,7 +128,9 @@ The general.json file stores configuration related general settings:
 		"center_marker": "small cross",    
 		"voltage_warning": 11.5,
     	"voltage_shutdown": 0.0,
-    	"fuzz_gps": false
+    	"location_in_fits": true,
+    	"fuzz_gps": false,
+    	"annotation_mag": 14.0
 	}
 	
 | Variable | Description |
@@ -144,7 +139,9 @@ The general.json file stores configuration related general settings:
 | center_marker | When "Center Marker" is checked the displayed marked can be one of: crosshairs; rectangle or "small cross" |
 | voltage_warning | Specifies the voltage at which a popup warning is issued for Low Voltage. Set to 0 to disable. The warning (if enabled) only occurs once per session. |
 | voltage_shutdown | Specifies the voltage at which a auto shutdown occurs for Low Voltage. Set to 0 to disable. Note: Astrid will still consume 250mA @ 12V and more at lower voltages when it is shutdown as the Raspberry Pi is still on, i.e. it will still drain your battery but not as fast, however it does protect the SD Card and USB Drive from damage due to low voltage. If shutdown is cancelled. The shutdown (if enabled) only occurs once per session, if it cancelled it won't auto shutdown again until the next session. |
+| location\_in\_fits | When true, the latitude and longitude from the GPS (current site) are written to the fits file as tags SITELAT and SITELONG. |
 | fuzz_gps | When true, a random amount of 5 degrees is added/subtracted from the GPS Latitude/Longitude and 500m from altitude.  This is used primarily for demo purposes to prevent personal information being leaked. On no account should this be enabled when real data for occultations is being acquired. |
+| annotation_mag | When annotating magnitudes of stars on photos, and when analyzing for exposure, stars dimmer than this magnitude are excluded. |
 
 ## mount
 

@@ -58,3 +58,5 @@ Astrid [Raw Astro Video Format (RAVF)](https://github.com/ChasinSpin/ravf) can b
 * Steve Preston of IOTA for his invaluable assistance
 * Bill Yeung for testing
 * Bob Anderson for PyMovie
+* Dave Herald - Star Catalogs and Occelmnt
+* Hristo Pavlov for OWCloud

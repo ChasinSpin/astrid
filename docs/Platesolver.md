@@ -79,8 +79,6 @@ Other index files if needed can be obtained here: [http://data.astrometry.net](h
 
 ##### Note: Astrometry index files are now automatically downloaded if needed, this section is for reference if you wish to use alternative index files.
 
-[Configuring the indexes in the astrometry.cfg file](Configuration.md)
-
 If you are having problems plate solving, or plate solving sometimes when there are few stars (typically at higher focal lengths), then you may wish to download an index on either side too.  For example, if index-5202 is your suggested index, you may wish to download index-5203 and then possibly 5201 (larger) so that the solver can look at all 3 index series.  As these files for lower-scale indexes are large, and take a long time to search, we recommend you don't do this unless necessary.
 
 References:

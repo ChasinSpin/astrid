@@ -94,7 +94,7 @@ The username / password to login to Astrid when prompted via VNC:
 
 ### Entering Text Into Astrid
 
-Text in VNC Viewer is entered by tapping the keyboard icon.  When entering text, be aware that you must **ALWAYS** press "Enter" after the text has been entered so that the text is accepted.
+Text in VNC Viewer is entered by tapping the keyboard icon.  When entering text, be aware that you must **ALWAYS** press "Return" or "Enter (some computers)"  after the text has been entered so that the text is accepted.
 
 ### Powering Off
 

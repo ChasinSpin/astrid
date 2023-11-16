@@ -19,3 +19,11 @@
 * **Is Astrid for Prepoint only?**
 
 	Astrid can be used with Goto scopes too, any scope supported by Indilib is supported by Astrid
+	
+* **Which video analysis software is supported?**
+	
+	Currently, only Bob Anderson's PyMovie has support to read the RAVF video files that Astrid generates. Astrid does not generate ADV format files due to the lack of 10-bit RAW support. Astrid also does not convert to FITs files, because there would be a loss of audit information that Astrid generates and that conversion would take a long time. Limovie and Tangra do not support RAVF at this time. Once the light curve has been extracted by PyMovie, it can be read in PyOTE, AOTA, ROTE or Occular.
+	
+* **Which light curve analysis software is supported?**
+
+	Once the light curve has been generated in PyMovie, it can be analyzed in PyOTE, AOTA, ROTE or Occular.

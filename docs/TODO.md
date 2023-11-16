@@ -1,11 +1,12 @@
 # TODO
 
 * astropy download
-* Add check for Raspberry Pi 4B 8Gb and popup message if no match
 * Planets for Simbad
-* Info screen for data from occelmnt (duration, error, magnitude, combined mag etc.)
+* Add message about waiting for green light to go out for shutdown.
+*  I would rather see that warning message about the 15 seconds *after* I click shutdown (along with the message "Shutting down...").  - Add as a timer on shutdown.
+* Remove unused options from Wifi Setup as it creates confusion
+* For Occultation Info Screen, calc Error In Time, Shadow Width, Path Uncertainty in km's
 * Any value to updating duration of event via path computation?
-* Look into frame rates 30-60fps on old Astrid (without the resistor/capacitor change) and see if it's double framing
 * Experiment with AELocked (looks like a converence thing)
 * Check into FITs, is it really storing 0-255 or 0-1023?
 Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 'DigitalGain': 1.0002992153167725, 'SensorBlackLevels': (3840, 3840, 3840, 3840), 'AeLocked': False, 'Lux': 400.0, 'FrameDuration': 200014, 'AnalogueGain': 1.0, 'ExposureTime': 199940}
@@ -24,9 +25,10 @@ https://forums.raspberrypi.com/viewtopic.php?t=331808
 * Make mount panel user configurable for J2000 or JNOW (Steve)
 * Update image in response to check boxes without requiring image to be retaken
 * Refactor "evolved" CameraModel.py into a command based system and decouple everything so everything runs as a command, updating the UI as appropriate.  This will also get ready for command based operation/scripting. (similar approach to Siril)
-* Change to Indi Neurtral https://www.indilib.org/api/classINDI_1_1Telescope.html
+* Change to Indi Neutral https://www.indilib.org/api/classINDI_1_1Telescope.html
 * Put target on screen to show the star.
 * Star Catalogues HIP, TYC (Tycho 2), UCAC4, G-RADEC, (XZ, ZC - Use RADEC instead).  Dave Herald has a catalogue for occultations.  See also catalogues in Siril: https://siril.readthedocs.io/en/latest/astrometry/annotations.html
+* http://www.lunar-occultations.com/occult4/gaia16_edr3.zip
 * Use astrometry.net to annotate image and place marker for target on. Add star locations for target confirmation. Too slow to generate images: try using sirils catalogues to annotate or the catalogues above
 * Ability to display ravf and fits on pi
 
