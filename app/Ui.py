@@ -136,19 +136,32 @@ class Ui(QtWidgets.QMainWindow):
 		os.system('sudo sh -c "/usr/bin/sync;/usr/bin/sync;/usr/bin/sync;/usr/bin/sleep 1;/usr/sbin/poweroff"')
 
 
+	def __closeUpdateMessageBox(self):
+		self.closeMsgBox.setText('Astrid will shutdown in %d seconds.\n\nWhen shutdown, VNC will appear to freeze and the VNC app or connection can be quit at this point.\n\nIMPORTANT: Always remember to properly shutdown Astrid and wait 15 seconds before removing power to avoid SD Card and USB Drive Corruption.\n\nThe green light on the side of Astrid will no longer flash when it is safe to remove power, but the red power light will still be on.' % self.closeCountdown)
+
+
+	def __updateCloseTimer(self):
+		self.closeCountdown -= 1
+		self.__closeUpdateMessageBox()
+		if self.closeCountdown <= 0:
+			self.closeMsgBox.done(0)
+
+
 	# Called when the window is closed
 
 	def closeEvent(self, event):
+		self.closeEvent = event
+
 		if self.camera.isVideoRecording():
 			QMessageBox.warning(self, ' ', 'Video is currently recording, stop recording before exiting Astrid.', QMessageBox.Ok)
-			event.ignore()
+			self.closeEvent.ignore()
 			return
 
 		msgBox = QMessageBox()
-		msgBox.setWindowTitle('Exit Confirmation?')
-		msgBox.setText('Exit Astrid?\n\nAlways remember to properly shutdown and wait 15 seconds\nbefore removing power to avoid SD Card corruption')
+		msgBox.setWindowTitle('Exit?')
+		msgBox.setText('Exit Astrid?')
 		msgBox.addButton(QMessageBox.Yes)
-		msgBox.addButton('Shutdown', QMessageBox.YesRole)
+		msgBox.addButton('Shutdown Astrid', QMessageBox.YesRole)
 		msgBox.addButton(QMessageBox.No)
 
 		ret = msgBox.exec()
@@ -156,13 +169,35 @@ class Ui(QtWidgets.QMainWindow):
 		if ret == QMessageBox.Yes:
 			print('User exited program!')
 			self.camera.shutdown()
-			event.accept()
+			self.closeEvent.accept()
 		elif ret == 0:
 			print('User exited the program and shutdown!')
-			self.shutdown_now()
-			event.accept()
+
+			self.closeCountdown = 45
+			self.closeMsgBox = QMessageBox()
+			self.closeMsgBox.setIcon(QMessageBox.Information)
+			self.__closeUpdateMessageBox()
+			self.closeMsgBox.addButton('Shutdown Immediately', QMessageBox.YesRole)
+			self.closeMsgBox.setStandardButtons(QMessageBox.Cancel)
+
+			self.closeTimer = QTimer()
+			self.closeTimer.timeout.connect(self.__updateCloseTimer)
+			self.closeTimer.setInterval(1000)
+			self.closeTimer.start()
+
+			ret = self.closeMsgBox.exec()
+
+			self.closeTimer.stop()
+			self.closeTimer = None
+
+			if ret == 0:
+				self.shutdown_now()
+				self.closeEvent.accept()
+				return
+			elif ret == QMessageBox.Cancel:
+				self.closeEvent.ignore()
 		else:
-			event.ignore()
+			self.closeEvent.ignore()
 
 
 	# Updates the UI, hiding / showing buttons to match the current Camera Mode
