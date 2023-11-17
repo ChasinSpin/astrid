@@ -24,6 +24,7 @@ from pathcomputation import PathComputation
 from owcloud import OWCloud
 from astutils import AstUtils
 from starcatalog import StarLookup, Star
+from StarCatalogExtract import StarCatalogExtract
 
 
 
@@ -189,9 +190,9 @@ class UiPanelObject(UiPanel):
 			self.hideWidget(self.widgetAdd)
 			self.hideWidget(self.widgetList)
 
-			gaia_index = Settings.getInstance().astrid_drive + '/catalogs/daveherald/Gaia16_EDR3.inx'
-			if not os.path.exists(gaia_index):
-				QMessageBox.warning(self, ' ', 'Star Catalog Requires Downloading.\n\nDownload:\n    https://astrid-downloads.s3.amazonaws.com/downloads/daveherald_star_catalogs_v1.txz\n\n and place at top level of USB Thumb Drive', QMessageBox.Ok)
+
+			starCatalogExtract = StarCatalogExtract()
+			starCatalogExtract.checkAndExtract()
 		else:
 			raise ValueError('Database not valid')
 
