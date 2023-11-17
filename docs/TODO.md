@@ -2,8 +2,6 @@
 
 * astropy download
 * Planets for Simbad
-* Add message about waiting for green light to go out for shutdown.
-*  I would rather see that warning message about the 15 seconds *after* I click shutdown (along with the message "Shutting down...").  - Add as a timer on shutdown.
 * Remove unused options from Wifi Setup as it creates confusion
 * For Occultation Info Screen, calc Error In Time, Shadow Width, Path Uncertainty in km's
 * Any value to updating duration of event via path computation?
