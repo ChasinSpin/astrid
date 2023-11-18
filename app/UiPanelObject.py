@@ -9,7 +9,9 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 from settings import Settings
 from astcoord import AstCoord
+from astropy.time import Time
 from astropy.coordinates.name_resolve import NameResolveError
+from astropy.coordinates import solar_system_ephemeris, get_body_barycentric, get_body
 from UiPanelObjectAddEdit import UiPanelObjectAddEdit
 from UiPanelObjectList import UiPanelObjectList
 from UiPanelPrepoint import UiPanelPrepoint
@@ -115,6 +117,7 @@ class UiPanelObject(UiPanel):
 	SEARCH_CUSTOM		= 'Custom'
 	SEARCH_OCCULTATIONS	= 'Occultations'
 	SEARCH_OCCULTGAIA	= 'Occult Gaia'
+	SEARCH_SOLARSYSTEM	= 'Solar System'
 	PREDICTIONS_URL		= b'68747470733a2f2f6173747269642d646f776e6c6f6164732e73332e616d617a6f6e6177732e636f6d2f646f776e6c6f6164732f7374657665705f70726564696374696f6e735f323032335f323032345f76312e74787a'
 
 	def __init__(self, camera):
@@ -123,7 +126,7 @@ class UiPanelObject(UiPanel):
 		self.logger = self.processLogger.getLogger()
 		self.camera		= camera
 		self.occultationObject	= None
-		self.widgetDatabase	= self.addComboBox('Database', [self.SEARCH_SIMBAD, self.SEARCH_CUSTOM, self.SEARCH_OCCULTATIONS, self.SEARCH_OCCULTGAIA])
+		self.widgetDatabase	= self.addComboBox('Database', [self.SEARCH_SIMBAD, self.SEARCH_CUSTOM, self.SEARCH_OCCULTATIONS, self.SEARCH_OCCULTGAIA, self.SEARCH_SOLARSYSTEM])
 		self.widgetDatabase.setObjectName('comboBoxDatabase')
 		self.widgetSearch	= self.addLineEdit('Search')
 		self.widgetRA		= self.addLineEditDouble('RA', 0.0, 24.0, 10, editable=False)
@@ -193,6 +196,13 @@ class UiPanelObject(UiPanel):
 
 			starCatalogExtract = StarCatalogExtract()
 			starCatalogExtract.checkAndExtract()
+		elif text == UiPanelObject.SEARCH_SOLARSYSTEM:
+			self.hideWidget(self.widgetEventTime)
+			self.hideWidget(self.widgetChord)
+			self.hideWidget(self.widgetPrepoint)
+			self.hideWidget(self.widgetAutoRecord)
+			self.hideWidget(self.widgetAdd)
+			self.hideWidget(self.widgetList)
 		else:
 			raise ValueError('Database not valid')
 
@@ -371,6 +381,8 @@ class UiPanelObject(UiPanel):
 			return self.findOccultationObject(search)
 		elif text == UiPanelObject.SEARCH_OCCULTGAIA:
 			return self.findStarCatalogObject(search)
+		elif text == UiPanelObject.SEARCH_SOLARSYSTEM:
+			return self.findSolarSystemObject(search)
 		else:
 			raise ValueError('Database not valid')
 
@@ -378,6 +390,10 @@ class UiPanelObject(UiPanel):
 	def findSimbadObject(self, search):
 		""" Returns AstCoord, or None if not found """
 		obj = None
+
+		if self.objectInSolarSystem(search):
+			QMessageBox.information(self, ' ', 'Simbad does not provide objects inside the solar system, please use the Solar System Database.')
+			return
 
 		self.camera.ui.indeterminateProgressBar(True)
 
@@ -404,6 +420,10 @@ class UiPanelObject(UiPanel):
 	def findCustomObject(self, search):
 		""" Returns AstCoord, or None if not found """
 		obj = None
+		if self.objectInSolarSystem(search):
+			QMessageBox.information(self, ' ', 'Custom does not provide objects inside the solar system, please use the Solar System Database.')
+			return
+
 		customObjects = Settings.getInstance().objects['custom_objects']
 		for object in customObjects:
 			if object['name'].lower() == search.lower():
@@ -463,6 +483,28 @@ class UiPanelObject(UiPanel):
 		if star is not None:
 			star.epochPropogateToJ2000()
 			obj = star.coord
+
+		return obj
+
+
+	def findSolarSystemObject(self, search):
+		""" Returns AstCoord, or None if not found """
+		obj = None
+
+		location = AstSite.location()
+		now = Time(datetime.utcnow(), scale='utc', location = location)
+		with solar_system_ephemeris.set('builtin'):
+			try:
+				obj = get_body(search, now, location)
+				#obj = get_body_barycentric(search, now)
+			except KeyError:
+				obj = None
+
+		if obj is not None:
+			#obj = obj.transform_to('icrs')
+			#obj.representation = 'spherical'
+			print(obj)
+			obj = AstCoord.from360Deg(ra=obj.ra.value, dec=obj.dec.value, frame='icrs')
 
 		return obj
 
@@ -612,3 +654,8 @@ class UiPanelObject(UiPanel):
 		
 		self.downloadPredictionsMsgBox.exec()
 
+
+	def objectInSolarSystem(self, search):
+		if search.lower() in ['sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']:
+			return True
+		return False
