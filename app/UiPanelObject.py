@@ -1,17 +1,18 @@
 from processlogger import ProcessLogger
 import os
 import time
+import math
 import binascii
 import subprocess
 from UiPanel import UiPanel
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QApplication
 from astropy import units as u
-from astropy.coordinates import SkyCoord
+from astropy.coordinates import SkyCoord, SphericalRepresentation
 from settings import Settings
 from astcoord import AstCoord
 from astropy.time import Time
 from astropy.coordinates.name_resolve import NameResolveError
-from astropy.coordinates import solar_system_ephemeris, get_body_barycentric, get_body
+from astropy.coordinates import solar_system_ephemeris, get_body_barycentric, get_body, cartesian_to_spherical
 from UiPanelObjectAddEdit import UiPanelObjectAddEdit
 from UiPanelObjectList import UiPanelObjectList
 from UiPanelPrepoint import UiPanelPrepoint
@@ -495,16 +496,16 @@ class UiPanelObject(UiPanel):
 		now = Time(datetime.utcnow(), scale='utc', location = location)
 		with solar_system_ephemeris.set('builtin'):
 			try:
-				obj = get_body(search, now, location)
-				#obj = get_body_barycentric(search, now)
+				#obj = get_body(search, now, location)
+				obj = get_body_barycentric(search, now)
 			except KeyError:
 				obj = None
 
 		if obj is not None:
 			#obj = obj.transform_to('icrs')
 			#obj.representation = 'spherical'
-			print(obj)
-			obj = AstCoord.from360Deg(ra=obj.ra.value, dec=obj.dec.value, frame='icrs')
+			obj =obj.represent_as(SphericalRepresentation)
+			obj = AstCoord.from360Deg(ra=(math.degrees(obj.lat.value) / 360.0) * 24.0, dec=math.degrees(obj.lon.value), frame='icrs')
 
 		return obj
 

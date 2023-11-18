@@ -1,5 +1,6 @@
 from processlogger import ProcessLogger
 import os
+import logging
 import requests
 from settings import Settings
 
@@ -19,7 +20,10 @@ class AstrometryDownload:
 
 	def __init__(self, astrid_drive, focal_length: float, frame_width_mm: float):
 		self.processLogger = ProcessLogger.getInstance()
-		self.logger = self.processLogger.getLogger()
+		if self.processLogger is None:
+			self.logger = logging.getLogger()
+		else:
+			self.logger = self.processLogger.getLogger()
 
 		series = AstrometryDownload.series
 		self.astrid_drive = astrid_drive
@@ -61,7 +65,7 @@ class AstrometryDownload:
 			series_folder = os.path.dirname(sUrls[0]['filename'])
 			addPath += 'add_path %s\n' % series_folder
 
-		with open('./astrometry.cfg', 'r') as file:
+		with open('/home/pi/astrid/app/astrometry.cfg', 'r') as file:
 			txt = file.read()
 			txt = txt.replace('ADD_PATH', addPath)
 
