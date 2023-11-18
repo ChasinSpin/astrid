@@ -494,18 +494,21 @@ class UiPanelObject(UiPanel):
 
 		location = AstSite.location()
 		now = Time(datetime.utcnow(), scale='utc', location = location)
+		#now = Time( datetime(2000,1,1,12,0,0,0), scale='utc', location = location)
 		with solar_system_ephemeris.set('builtin'):
 			try:
-				#obj = get_body(search, now, location)
-				obj = get_body_barycentric(search, now)
+				obj = get_body(search, now, location)
+				#obj = get_body_barycentric(search, now)
 			except KeyError:
 				obj = None
 
 		if obj is not None:
 			#obj = obj.transform_to('icrs')
 			#obj.representation = 'spherical'
-			obj =obj.represent_as(SphericalRepresentation)
-			obj = AstCoord.from360Deg(ra=(math.degrees(obj.lat.value) / 360.0) * 24.0, dec=math.degrees(obj.lon.value), frame='icrs')
+			#obj = obj.represent_as(SphericalRepresentation)
+			#print(obj)
+			#obj = obj.transform_to('icrs')
+			obj = AstCoord.from360Deg(ra=obj.ra.value, dec=obj.dec.value, frame='icrs')
 
 		return obj
 
