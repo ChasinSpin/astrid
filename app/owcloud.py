@@ -43,11 +43,12 @@ class OWCloud():
 			sep = '?'
 		url = host + url + sep + 'apikey=%s' % binascii.unhexlify(apiKey).decode('ascii')
 
+		#print('URL:', url)
 		try:
 			response = opener.open(url, timeout=5)
 		except Exception as error:
 			self.logger.error('Unable to download OWCloud data: %s' % str(error))
-			return (None, str(error))
+			return (None, str(error), error.code)
 		else:
 			self.logger.info('OWCloud Status: %d %s' % (response.status, response.reason))
 			if response.status == 200:
@@ -56,9 +57,9 @@ class OWCloud():
 				pp = pprint.PrettyPrinter(indent=4)
 				pp.pprint(owevents)
 
-				return (owevents, None)
+				return (owevents, None, response.status)
 			else:
-				return (None, 'Response status != 200: %d' % response.status)
+				return (None, 'Response status != 200: %d' % response.status, response.status)
 				
 
 	def getEvents(self):
@@ -71,7 +72,7 @@ class OWCloud():
 					error = None is there was no error, otherwise a textual representation of the error
 		"""
 		
-		(owevents, error) = self.__getUrl(OWCloud.URL_EVENTS_HOST, OWCloud.URL_EVENTS_ENDPOINT, OWCloud.API_KEY)
+		(owevents, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, OWCloud.URL_EVENTS_ENDPOINT, OWCloud.API_KEY)
 		if error is not None or owevents is None:
 			return (owevents, error)
 
@@ -110,10 +111,14 @@ class OWCloud():
 
 					# Get the occelmnt
 					occelmntUrl = OWCloud.URL_OCCELMNT_ENDPOINT % eventId
-					(eventOccelmnt, error) = self.__getUrl(OWCloud.URL_EVENTS_HOST, occelmntUrl, OWCloud.API_KEY)
+					(eventOccelmnt, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, occelmntUrl, OWCloud.API_KEY)
 
 					if error is not None or eventOccelmnt is None:
-						return (eventOccelmnt, error)
+						if status == 404:
+							self.logger.error('No Occelmnt found for %s' % stationName)
+							continue
+						else:
+							return (eventOccelmnt, error)
 
 					elements	= eventOccelmnt['Occultations']['Event']['Elements'].split(',')
 					star		= eventOccelmnt['Occultations']['Event']['Star'].split(',')
