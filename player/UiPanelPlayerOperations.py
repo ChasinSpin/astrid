@@ -16,6 +16,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetFileOpen	= self.addButton('Load Video')
 		self.widgetPlateSolve	= self.addButton('Plate Solve')
 		self.widgetSaveFrame	= self.addButton('Save Frame')
+		self.widgetMetadata	= self.addButton('Metadata')
 		self.widgetExportFits	= self.addButton('Export Fits Seq')
 
 		self.widgetAutoStretch          = self.addCheckBox('Stretch')
@@ -33,6 +34,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetFileOpen.clicked.connect(self.buttonFileOpenPressed)
 		self.widgetPlateSolve.clicked.connect(self.buttonPlateSolvePressed)
 		self.widgetSaveFrame.clicked.connect(self.buttonSaveFramePressed)
+		self.widgetMetadata.clicked.connect(self.buttonMetadataPressed)
 		self.widgetExportFits.clicked.connect(self.buttonExportFitsPressed)
 		self.widgetAutoStretch.stateChanged.connect(self.checkBoxAutoStretchChanged)
 		self.widgetAutoStretchLower.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
@@ -59,6 +61,11 @@ class UiPanelPlayerOperations(UiPanel):
 	def buttonSaveFramePressed(self):
 		self.saveFrameCallback()
 
+
+	def buttonMetadataPressed(self):
+		QMessageBox.information(self, ' ', self.metadataCallback(), QMessageBox.Ok)
+
+
 	def buttonExportFitsPressed(self):
 		self.exportFitsCallback()
 
@@ -80,7 +87,7 @@ class UiPanelPlayerOperations(UiPanel):
 
 	# OPERATIONS
 
-	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, saveFrameCallback, exportFitsCallback):
+	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, saveFrameCallback, exportFitsCallback, metadataCallback):
 		self.autoStretchCallback = autoStretchCallback
 		self.autoStretchLimitsCallback = autoStretchLimitsCallback
 		self.lineEditAutoStretchLimitsChanged()
@@ -89,6 +96,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.saveFrameCallback = saveFrameCallback
 		self.exportFitsCallback = exportFitsCallback
 		self.plateSolveCancelCallback = plateSolveCancelCallback
+		self.metadataCallback = metadataCallback
 
 
 	def plateSolveFinished(self):
@@ -98,6 +106,7 @@ class UiPanelPlayerOperations(UiPanel):
 	def __setEnabledButtons(self, enable):
 		self.widgetPlateSolve.setEnabled(enable)
 		self.widgetSaveFrame.setEnabled(enable)
+		self.widgetMetadata.setEnabled(enable)
 		self.widgetExportFits.setEnabled(enable)
 		self.widgetAutoStretch.setEnabled(enable)
 		self.widgetAutoStretchLower.setEnabled(enable)

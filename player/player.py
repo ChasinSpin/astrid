@@ -526,6 +526,13 @@ def __exportFitsSequenceFinished():
 	frameFirst()
 
 
+def metadata():
+	txt = ''
+	for entry in ravf.metadata():
+		txt += '%s: %s\n' % (entry[0], str(entry[1]))
+	return txt[:-1]
+
+
 
 
 if __name__ == '__main__':
@@ -630,7 +637,7 @@ if __name__ == '__main__':
 
 	# Start the main window
 	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext, togglePlay, setFrameNum)
-	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, saveFrame, exportFits)
+	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, saveFrame, exportFits, metadata)
 
 	QMessageBox.warning(window, ' ', 'Astrid Player currently obtains the focal length and various settings from the currently chosen configuration in Astrid.\n\nPlease ensure the matching configuration that the video was taken with is selected in Astrid.\n\nIf plate solving fails, then this is the likely cause.', QMessageBox.Ok)
 
