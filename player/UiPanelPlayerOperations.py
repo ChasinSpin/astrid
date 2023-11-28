@@ -16,13 +16,15 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetFileOpen	= self.addButton('Load Video')
 		self.widgetPlateSolve	= self.addButton('Plate Solve')
 		self.widgetSaveFrame	= self.addButton('Save Frame')
-		#self.widgetExportFits	= self.addButton('Export Fits')
+		self.widgetExportFits	= self.addButton('Export Fits Seq')
 
 		self.widgetAutoStretch          = self.addCheckBox('Stretch')
 		self.widgetAutoStretchLower     = self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
 		self.widgetAutoStretchUpper     = self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
 		self.widgetAutoStretchLower.setText('5')
 		self.widgetAutoStretchUpper.setText('30')
+
+		self.__setEnabledButtons(False)
 
 		self.setFixedWidth(150)
 
@@ -31,6 +33,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetFileOpen.clicked.connect(self.buttonFileOpenPressed)
 		self.widgetPlateSolve.clicked.connect(self.buttonPlateSolvePressed)
 		self.widgetSaveFrame.clicked.connect(self.buttonSaveFramePressed)
+		self.widgetExportFits.clicked.connect(self.buttonExportFitsPressed)
 		self.widgetAutoStretch.stateChanged.connect(self.checkBoxAutoStretchChanged)
 		self.widgetAutoStretchLower.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
 		self.widgetAutoStretchUpper.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
@@ -41,6 +44,7 @@ class UiPanelPlayerOperations(UiPanel):
 		folder	= self.astrid_drive + '/OTEVideo'
 		fname	= QFileDialog.getOpenFileName(self, 'Open file', folder, 'RAVF files (*.ravf)')[0]
 		if len(fname) != 0:
+			self.__setEnabledButtons(True)
 			self.loadRavf_callback(fname)
 
 
@@ -54,6 +58,9 @@ class UiPanelPlayerOperations(UiPanel):
 
 	def buttonSaveFramePressed(self):
 		self.saveFrameCallback()
+
+	def buttonExportFitsPressed(self):
+		self.exportFitsCallback()
 
 
 	def checkBoxAutoStretchChanged(self):
@@ -73,15 +80,25 @@ class UiPanelPlayerOperations(UiPanel):
 
 	# OPERATIONS
 
-	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, saveFrameCallback):
+	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, saveFrameCallback, exportFitsCallback):
 		self.autoStretchCallback = autoStretchCallback
 		self.autoStretchLimitsCallback = autoStretchLimitsCallback
 		self.lineEditAutoStretchLimitsChanged()
 
 		self.plateSolveCallback = plateSolveCallback
 		self.saveFrameCallback = saveFrameCallback
+		self.exportFitsCallback = exportFitsCallback
 		self.plateSolveCancelCallback = plateSolveCancelCallback
 
 
 	def plateSolveFinished(self):
 		self.widgetPlateSolve.setText('Plate Solve')
+
+
+	def __setEnabledButtons(self, enable):
+		self.widgetPlateSolve.setEnabled(enable)
+		self.widgetSaveFrame.setEnabled(enable)
+		self.widgetExportFits.setEnabled(enable)
+		self.widgetAutoStretch.setEnabled(enable)
+		self.widgetAutoStretchLower.setEnabled(enable)
+		self.widgetAutoStretchUpper.setEnabled(enable)

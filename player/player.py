@@ -5,6 +5,8 @@ import sys
 import json
 import argparse
 import subprocess
+#import numpy as np
+from astropy.io import fits
 
 sys.path.append('../app')
 
@@ -15,7 +17,7 @@ from astutils import AstUtils
 from UiDialogPanel import UiDialogPanel
 from UiPanelMessage import UiPanelMessage
 from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, QThread, pyqtSignal
 from ravf import RavfReader, RavfMetadataType, RavfFrameType, RavfColorType, RavfImageEndianess, RavfImageFormat, RavfEquinox, RavfImageUtils
 from FileHandling import *
 from astcoord import AstCoord
@@ -23,6 +25,49 @@ from datetime import timedelta, timezone
 from PlateSolver import PlateSolver
 from settings import Settings
 
+
+# Export Fits Sequence on a separate thread
+
+class ExportFitsSequenceThread(QThread):
+	exportFitsSequenceStatus	= pyqtSignal(str)
+	exportFitsSequenceFinished	= pyqtSignal()
+
+
+	def __init__(self):
+		super(QThread, self).__init__()
+
+
+	def run(self):
+		f_basename = os.path.splitext(ravf_filename)[0]
+		f_dir, f_fnamestem = os.path.split(f_basename)
+
+		f_seqfolder = f_basename + '_fits_seq'
+
+		try:
+			os.mkdir(f_seqfolder)
+		except FileExistsError:
+			print('%s already exists' % f_seqfolder)
+			pass
+
+		frameFirst()
+		for i in range(ravf.frame_count()):
+			img_filename = '%s/%s_%06d.fits' % (f_seqfolder, f_fnamestem, current_frame)
+			self.exportFitsSequenceStatus.emit('Exporting: ' + img_filename)
+
+			start_timestamp = frameStatus['start_timestamp']
+			epoch = datetime(2010, 1, 1, hour=0, minute=0, second=0, microsecond=0, tzinfo = timezone.utc) # 00:00:00 1st Jan 2010
+			frame_seconds_since_epoch = timedelta(seconds = start_timestamp / 1000000000)
+			obsDateTime = epoch + frame_seconds_since_epoch
+			#print(obsDateTime)
+			expTime = frameStatus['exposure_duration'] / 1000000000.0
+	
+			save_fits_frame(lastImage, img_filename, obsDateTime, expTime, current_frame)
+			print(img_filename)
+			frameNext()
+
+		self.exportFitsSequenceStatus.emit('Finished exporting fits sequence')
+
+		self.exportFitsSequenceFinished.emit()
 
 
 def closeRavf():
@@ -34,28 +79,28 @@ def closeRavf():
 
 
 def getRavfFrame(index):
-	global ravf_fp, ravf, window, width, height, autoStretch, autoStretchLower, autoStretchUpper, targetPosition, lastImage
+	global ravf_fp, ravf, window, width, height, autoStretch, autoStretchLower, autoStretchUpper, targetPosition, lastDisplayImage, lastImage, frameInfo, frameStatus
 
 	if ravf_fp is None or ravf is None:
 		return
 
-	(err, image, frameInfo, status) = ravf.getPymovieMainImageAndStatusData(ravf_fp, index)
+	(err, lastImage, frameInfo, frameStatus) = ravf.getPymovieMainImageAndStatusData(ravf_fp, index)
 
 	if err:
 		raise ValueError('error reading frame: %d', index)
 
-	#print(image.shape)
+	#print(lastImage.shape)
 
 	if targetPosition is not None:
-		scaledTargetPosition = (targetPosition[0] * (width/image.shape[1]), targetPosition[1] * (height/image.shape[0]))
+		scaledTargetPosition = (targetPosition[0] * (width/lastImage.shape[1]), targetPosition[1] * (height/lastImage.shape[0]))
 		scaledTargetPosition = (int(scaledTargetPosition[0]), int(scaledTargetPosition[1]))
 	else:
 		scaledTargetPosition = None
 
-	image = cv2.resize(image, (width, height), interpolation = cv2.INTER_AREA)
+	lastDisplayImage = cv2.resize(lastImage, (width, height), interpolation = cv2.INTER_AREA)
 
 	if autoStretch:
-		mono = image.astype(np.float32)
+		mono = lastDisplayImage.astype(np.float32)
 
 		if autoStretchLower < autoStretchUpper:
 			mono -= autoStretchLower
@@ -74,7 +119,7 @@ def getRavfFrame(index):
 		mono = np.clip(mono, 0, 65535)
 		mono = mono.astype(np.uint16)
 
-		image = mono
+		lastDisplayImage = mono
 
 	if scaledTargetPosition is not None:
 		print('Scaled Target Position:', scaledTargetPosition)
@@ -83,14 +128,12 @@ def getRavfFrame(index):
 		lineLength = 30
 		x = scaledTargetPosition[0]
 		y = scaledTargetPosition[1]
-		cv2.line(image, (x, y-lineGap), (x, y-lineLength), (32000), 3)
-		cv2.line(image, (x, y+lineGap), (x, y+lineLength), (32000), 3)
-		cv2.line(image, (x-lineGap, y), (x-lineLength, y), (32000), 3)
-		cv2.line(image, (x+lineGap, y), (x+lineLength, y), (32000), 3)
+		cv2.line(lastDisplayImage, (x, y-lineGap), (x, y-lineLength), (32000), 3)
+		cv2.line(lastDisplayImage, (x, y+lineGap), (x, y+lineLength), (32000), 3)
+		cv2.line(lastDisplayImage, (x-lineGap, y), (x-lineLength, y), (32000), 3)
+		cv2.line(lastDisplayImage, (x+lineGap, y), (x+lineLength, y), (32000), 3)
 
-	lastImage = image
-
-	window.panelFrame.widgetLastFrame.updateWithCVImage(image)
+	window.panelFrame.widgetLastFrame.updateWithCVImage(lastDisplayImage)
 	window.panelFrame.widgetControls.lastFrameLineEdit.setText('%d' % (ravf.frame_count()-1))
 	updateCurrentFrame()
 
@@ -158,7 +201,7 @@ def playTimerCallback():
 
 
 def togglePlay():
-	global playing, window, playTimer
+	global ravf_fp, ravf, playing, window, playTimer
 
 	if ravf_fp is None or ravf is None:
 		return
@@ -345,7 +388,7 @@ def plateSolve():
 
 
 def saveFrame():
-	global lastImage, ravf_filename, current_frame, window
+	global ravf_fp, ravf, lastDisplayImage, ravf_filename, current_frame, window
 
 	if ravf_fp is None or ravf is None:
 		return
@@ -355,13 +398,117 @@ def saveFrame():
 	img_filename = '%s_frame_%d.png' % (f_basename, current_frame)
 		
 	print('Saving frame (and solve) to:', img_filename)
-	cv2.imwrite(img_filename, lastImage)
+	cv2.imwrite(img_filename, lastDisplayImage)
 
 	window.showStatusMessage('Saved frame to: %s' % img_filename)
 
 
+
+
+def __decimalDegreesToDMS(deg):
+	# Converts decimal degrees to dms for lat/lon
+	d = int(deg)
+	mins = (deg - d) * 60.0
+	m = int(mins)
+	s = (mins - m) * 60.0
+
+	m = abs(m)
+	s = abs(s)
+
+	return (d, m, s)
+
 	
-	
+def save_fits_frame(arr, fname, obsDateTime, expTime, sequence):
+	global ravf
+
+	hdu = fits.PrimaryHDU(arr)
+	hdul = fits.HDUList([hdu])
+
+	hdr = hdul[0].header
+
+	hdr['INSTRUME']	= '%s:%s' % (ravf.metadata_value('INSTRUMENT'), ravf.metadata_value('INSTRUMENT-SENSOR'))
+	hdr['OBJECT']	= str(ravf.metadata_value('OBJNAME'))
+	hdr['TELESCOP']	= str(ravf.metadata_value('TELESCOPE'))
+
+	hdr['EXPTIME']	= expTime
+	hdr['OBS_ID']	= '%06d' % sequence
+
+	if ravf.metadata_value('SENSOR-PIXEL-SIZE-X') is not None:
+		hdr['XPIXSZ']	= ravf.metadata_value('INSTRUMENT-SENSOR-PIXEL-SIZE-X')
+	if ravf.metadata_value('SENSOR-PIXEL-SIZE-Y') is not None:
+		hdr['YPIXSZ']	= ravf.metadata_value('INSTRUMENT-SENSOR-PIXEL-SIZE-Y')
+
+	hdr['XBINNING']	= ravf.metadata_value('IMAGE-BINNING-X')
+	hdr['YBINNING']	= ravf.metadata_value('IMAGE-BINNING-Y')
+
+	if ravf.metadata_value('FOCAL-LENGTH') is not None:
+		hdr['FOCALLEN']	= ravf.metadata_value('FOCAL-LENGTH')
+
+	hdr['IMAGETYP']	= 'Light Frame'
+	hdr['GAIN']	= ravf.metadata_value('INSTRUMENT-GAIN')
+	hdr['OFFSET']	= ravf.metadata_value('INSTRUMENT-OFFSET')
+	hdr['CVF']	= 0.0
+	hdr['PROGRAM']	= str(ravf.metadata_value('RECORDER-SOFTWARE'))
+
+	(d, m, s) = __decimalDegreesToDMS(ravf.metadata_value('LATITUDE'))
+	hdr['SITELAT']	= '%3d %02d %0.3f' % (d, m, s)
+	(d, m, s) = __decimalDegreesToDMS(ravf.metadata_value('LONGITUDE'))
+	hdr['SITELONG']	= '%3d %02d %0.3f' % (d, m, s)
+
+	hdr['RA']	= ravf.metadata_value('RA')
+	hdr['DEC']	= ravf.metadata_value('DEC')
+
+	if ravf.metadata_value('COLOR-TYPE') != 0:
+		if ravf.metadata_value('COLOR_TYPE') == 4:
+			hdr['BAYERPAT']	= 'BGGR'
+		hdr['XBAYROFF'] = 0
+		hdr['YBAYROFF'] = 0
+
+	hdr['BSCALE']	= 1.0
+	hdr['BZERO']	= 32768.0
+	file_creation_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+	obs_time = obsDateTime.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+	hdr['DATE']	= file_creation_time		# Time of file creation UTC
+	hdr['DATE-OBS']	= obs_time			# Start Time of the observation UTC
+	hdr['ROWORDER'] = 'TOP-DOWN'			# Siril Request - Reference: https://free-astro.org/index.php?title=Siril:FITS_orientation
+
+	#print(repr(hdu.header))
+
+	hdul.writeto(fname, overwrite=True)
+	hdul.close()
+
+
+def exportFits():
+	global ravf_fp, ravf, playing, ravf_filename, current_frame, window, lastImage, frameInfo, frameStatus, thread
+
+	if ravf_fp is None or ravf is None:
+		return
+
+	if playing:
+		togglePlay()
+
+	if QMessageBox.information(window, ' ', 'Astrid writes the RAVF video file format which can be read in PyMovie for light curve analysis.  RAVF contains a detailed audit trail, metadata and is raw data.\n\nFITS Sequence Export is provided here as a convenience for software that does not yet support the RAVF file format, however in the conversion process the audit trail and some of the metadata will be sacrificed.\n\nRAVF is always the preferred choice of file format for Astrid video files as zipping up 1000\'s of individual fits files for video is an inefficient and cumbersome form of storage/transfer.\n\nPlease contact the developer of your application and ask that they support the RAVF format.', QMessageBox.Ok | QMessageBox.Cancel) == QMessageBox.Cancel:
+		return
+
+	thread = ExportFitsSequenceThread()
+	thread.exportFitsSequenceFinished.connect(__exportFitsSequenceFinished)
+	thread.exportFitsSequenceStatus.connect(__exportFitsSequenceStatus)
+	#thread.finished.connect(self.thread.deleteLater)
+	thread.start()
+
+
+def __exportFitsSequenceStatus(text):
+	global window
+	window.showStatusMessage(text)
+
+
+def __exportFitsSequenceFinished():
+	global thread
+	#print('__exportFitsSequenceFinished')
+	thread.wait()
+	thread = None
+	frameFirst()
+
 
 
 
@@ -380,8 +527,12 @@ if __name__ == '__main__':
 	plateSolveFitsFile	= None
 	plateSolverThread	= None
 	targetPosition		= None
+	lastDisplayImage	= None
 	lastImage		= None
 	ravf_filename		= None
+	frameInfo		= None
+	frameStatus		= None
+	thread			= None
 
 	width		= int(1456/2)
 	height		= int(1088/2)
@@ -462,7 +613,7 @@ if __name__ == '__main__':
 
 	# Start the main window
 	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext, togglePlay, setFrameNum)
-	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, saveFrame)
+	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, saveFrame, exportFits)
 
 	QMessageBox.warning(window, ' ', 'Astrid Player currently obtains the focal length and various settings from the currently chosen configuration in Astrid.\n\nPlease ensure the matching configuration that the video was taken with is selected in Astrid.\n\nIf plate solving fails, then this is the likely cause.', QMessageBox.Ok)
 
