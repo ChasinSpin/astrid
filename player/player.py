@@ -35,6 +35,7 @@ class ExportFitsSequenceThread(QThread):
 
 	def __init__(self):
 		super(QThread, self).__init__()
+		self.terminate_now = False
 
 
 	def run(self):
@@ -51,6 +52,9 @@ class ExportFitsSequenceThread(QThread):
 
 		frameFirst()
 		for i in range(ravf.frame_count()):
+			if self.terminate_now:
+				break
+
 			img_filename = '%s/%s_%06d.fits' % (f_seqfolder, f_fnamestem, current_frame)
 			self.exportFitsSequenceStatus.emit('Exporting: ' + img_filename)
 
@@ -64,8 +68,11 @@ class ExportFitsSequenceThread(QThread):
 			save_fits_frame(lastImage, img_filename, obsDateTime, expTime, current_frame)
 			print(img_filename)
 			frameNext()
-
-		self.exportFitsSequenceStatus.emit('Finished exporting fits sequence')
+		
+		if self.terminate_now:
+			self.exportFitsSequenceStatus.emit('Aborting fits sequence export, export incomplete!')
+		else:
+			self.exportFitsSequenceStatus.emit('Finished exporting fits sequence')
 
 		self.exportFitsSequenceFinished.emit()
 
@@ -479,7 +486,7 @@ def save_fits_frame(arr, fname, obsDateTime, expTime, sequence):
 
 
 def exportFits():
-	global ravf_fp, ravf, playing, ravf_filename, current_frame, window, lastImage, frameInfo, frameStatus, thread
+	global ravf_fp, ravf, playing, ravf_filename, current_frame, window, lastImage, frameInfo, frameStatus, thread, exportFitsSeqMsgBox
 
 	if ravf_fp is None or ravf is None:
 		return
@@ -496,6 +503,14 @@ def exportFits():
 	#thread.finished.connect(self.thread.deleteLater)
 	thread.start()
 
+	exportFitsSeqMsgBox = QMessageBox()
+	exportFitsSeqMsgBox.setIcon(QMessageBox.Information)
+	exportFitsSeqMsgBox.setText('Please wait, exporting fits sequence...')
+	exportFitsSeqMsgBox.setStandardButtons(QMessageBox.Cancel)
+
+	if exportFitsSeqMsgBox.exec() == QMessageBox.Cancel:
+		thread.terminate_now = True
+
 
 def __exportFitsSequenceStatus(text):
 	global window
@@ -503,10 +518,11 @@ def __exportFitsSequenceStatus(text):
 
 
 def __exportFitsSequenceFinished():
-	global thread
-	#print('__exportFitsSequenceFinished')
+	global thread, exportFitsSeqMsgBox
 	thread.wait()
 	thread = None
+	exportFitsSeqMsgBox.done(0)
+	exportFitsSeqMsgBox = None
 	frameFirst()
 
 
@@ -533,6 +549,7 @@ if __name__ == '__main__':
 	frameInfo		= None
 	frameStatus		= None
 	thread			= None
+	exportFitsSeqMsgBox	= None
 
 	width		= int(1456/2)
 	height		= int(1088/2)
