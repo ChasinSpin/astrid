@@ -3,10 +3,11 @@
 * [Host Not Found](#host-not-found)
 * [GPS Poor Reception](#gps-poor-reception)
 * [Mouse Problems On Tablet](#mouse-problems-on-table)
-* [Simbad Planets Inaccurate](#simbad-planets-inaccurate)
+* [Android Host Not Found](#android-host-not-found)
 * [Indi Testing](#indi-testing)
 * [Tuning GPS PPS Offset](#tuning-gps-pps-offset)
 * [GPS Accuracy](#gps-accuracy)
+* [Intermittent Power](#intermittent-power)
 
 ## Host Not Found
 
@@ -23,9 +24,9 @@ A good solid GPS signal is required for both timing and positioning.  If the Tim
 
 If you have to move the mouse on a tablet to be able to select a button, enter text into a field etc., then change "Interactive" to "Touch Panel" in your VNC settings.
 
-## Simbad Planets Inaccurate
+## Android Host Not Found
 
-Planets looked up on Simbad have incorrect RA/DECs, for now use other software to determine RA/DEC and input manually.
+Newer Androids support the mDNS/Bonjour protocol, such that hostnames with .local in can be resolved.  However older androids do not support this, so please upgrade your OS to the latest version.
 
 ## Some spots on VNC are blurred
 
@@ -169,3 +170,11 @@ GT-U7 (based on Neo 6m): [GPS-based Timing - Application Note](https://content.u
 		2023-04-01 04:24:37 PPS              1     22.018      0.025  2.773e-07 N  1  2.463e-07  1.091e-11  1.000e-09  2.195e-05  5.507e-05
 		2023-04-01 04:25:09 PPS              1     22.014      0.042 -1.401e-06 N  1  6.271e-07 -6.953e-08  1.000e-09  2.176e-05  5.504e-05
 		2023-04-01 04:25:41 PPS              1     22.007      0.055 -7.043e-07 N  1  5.887e-07 -1.249e-10  1.000e-09  2.425e-05  5.663e-05
+		
+## Intermittent Power
+
+Astrid has a professional type DC Jack (for a long lifespan).  Often the cause of intermittent power is that the DC Plug has only been partially inserted so that plug is only retained lightly.  Please be sure to push the plug further past the initial resistance, so that it is fully inserted.
+
+Another cause of intermittent power is a poor power supply that cannot supply the current required by Astrid.
+
+Please note that intermittent power is bad for Astrid and can corrupt SD Cards and USB Flash Drives.

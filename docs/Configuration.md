@@ -124,6 +124,7 @@ The camera.json file stores configuration related to the camera:
 The general.json file stores configuration related general settings:
 
 	{
+		"station_number": 0,
 		"fan_mode": "on",
 		"center_marker": "small cross",    
 		"voltage_warning": 11.5,
@@ -135,6 +136,7 @@ The general.json file stores configuration related general settings:
 	
 | Variable | Description |
 | -------- | ----------- |
+| station_number | station number of the astrid, e.g. hostname: astrid1 would be station number 1.  Note the station number is stored on the USB Flash Drive, so will move around with the USB Flash Drive.  Range 1..10000 |
 | fan_mode | on = fan always on; idle = fan on when not recording; off = fan off. If you're experiencing vibration effects with long focal lengths, or you are imaging in extreme cold and want to retain heat, this setting can be used.  Note: Although the Raspberry Pi should reduce speed if it gets too hot, there's a slim possibility of damage.  If you live in a hot climate, or it's inside, you probably want the fan on all the time. It is suggested that if considering switching the fan off, then the Raspberry Pi should have the heat sinks installed. |
 | center_marker | When "Center Marker" is checked the displayed marked can be one of: crosshairs; rectangle or "small cross" |
 | voltage_warning | Specifies the voltage at which a popup warning is issued for Low Voltage. Set to 0 to disable. The warning (if enabled) only occurs once per session. |

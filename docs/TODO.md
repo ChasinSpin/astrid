@@ -1,7 +1,21 @@
 # TODO
 
+* Make job names takes the name of the object
+* Astrid saves fits files as .fit, change to fits (maybe)
+* Identify target with circle after platesolve
+* GPS Antenna must be attached when recording video, no GPS popup msg or prevent recording as it currently hangs
+* Indicator of frame count when recording darks, maybe get rid of darks? (not really needed)
+* Add mag drop calculator to Astrid
+* Multiple deletes on events
+* automatic report fill out
+* Generate KMZ for multi station videos
+* Order occultations by the next one first, can more be automated?  Can frame rate be pre entered?
+* Multiple astrids app starts cause permissions folder
+* Quotes in Wifi names = bad Ted's Wifi, update doc
+* Versions on upgrades
+* New OWCloud Integration
+* Videos: Event Search, OWCloud Integration, Exposure Analysis
 * astropy download
-* Planets for Simbad
 * Remove unused options from Wifi Setup as it creates confusion
 * For Occultation Info Screen, calc Error In Time, Shadow Width, Path Uncertainty in km's
 * Any value to updating duration of event via path computation?
