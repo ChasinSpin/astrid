@@ -64,10 +64,11 @@ class OWCloudThread(QThread):
 
 			# Now we add the new occultations
 			for occultation in events:
-				# Add the occultation
-				occultations_new.append(occultation)
-				imported_count += 1
-				print(occultation)
+				# Add the occultation, but don't import expired occultations
+				if datetime.strptime(occultation['event_time'], '%Y-%m-%dT%H:%M:%S') >= datetime.utcnow():
+					occultations_new.append(occultation)
+					imported_count += 1
+					print(occultation)
 
 			Settings.getInstance().occultations['occultations'] = occultations_new
 			Settings.getInstance().writeSubsetting('occultations')
