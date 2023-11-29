@@ -90,6 +90,7 @@ class Settings:
 		]},
 
 		{'group': 'general', 'settings': [
+			{'name': 'station_number',			'type': 'int',		'range': [1, 10000],				'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Station Number',			'description': ''},
 			{'name': 'fan_mode',				'type': 'choice',	'range': ['on', 'idle', 'off'],			'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Fan Mode',				'description': ''},
 			{'name': 'center_marker',			'type': 'choice',	'range': ['crosshairs', 'rectangle', 'small cross'],	'default': 2,			'decimalPlaces': None,	'editable': True,	'displayName': 'Center Marker Type',			'description': ''},
 			{'name': 'voltage_warning',			'type': 'float',	'range': [0, 14],				'default': 11.5,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Warning Voltage',			'description': ''},

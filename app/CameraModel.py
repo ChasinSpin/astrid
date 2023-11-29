@@ -1,6 +1,7 @@
 from processlogger import ProcessLogger
 import sys
 import cv2
+import platform
 from datetime import datetime
 from pprint import *
 from picamera2 import Picamera2, MappedArray, Controls
@@ -28,6 +29,7 @@ from astcoord import AstCoord
 from ravf_encoder import RavfEncoder, RavfImageFormat, RavfColorType
 from UiPanelConnectFailedIndi import UiPanelConnectFailedIndi
 from UiPanelAstrometry import UiPanelAstrometry
+from UiPanelObject import UiPanelObject
 from UiDialogPanel import UiDialogPanel
 from PyQt5.QtWidgets import QMessageBox
 from AstrometryDownload import AstrometryDownload
@@ -390,7 +392,10 @@ class CameraModel:
 		if Settings.getInstance().general['fuzz_gps']:
 			AstSite.set('Fuzzed', 0.00001, 0.00001, 0.0)
 			OteStamper.getInstance().fuzzGps()
-			ret = QMessageBox.warning(self.ui, ' ', 'GPS Fuzzing is enabled to cloak location, GPS Positioning is incorrect.  Disable General/Fuzz GPS in settings for real position.', QMessageBox.Ok)
+			QMessageBox.warning(self.ui, ' ', 'GPS Fuzzing is enabled to cloak location, GPS Positioning is incorrect.  Disable General/Fuzz GPS in settings for real position.', QMessageBox.Ok)
+
+		if Settings.getInstance().general['station_number'] == 0:
+			 QMessageBox.warning(self.ui, ' ', 'Station Number (e.g. 1 in astrid1) is not set.\n\nPlease set the number to identify this station in Settings / General.', QMessageBox.Ok)
 
 
 
@@ -555,7 +560,40 @@ class CameraModel:
 		self.processLogger.queue.put( { 'cmd': 'change_file', 'fname': video_logfile } )
 		self.processLogger.setPropagate(False)	# Otherwise a default logger outputs subprocess logging information
 
-		encoder = RavfEncoder(filename = video_filename, image_format = ravf_image_format, color_type = ravf_color_type, ra = ra, dec = dec, binning = bining, objName = objName, shutter_ns = self.picam2_video_config['controls']['ExposureTime'] * 1000, sensor = self.picam2.camera_properties['Model'], frameDuration = self.videoFrameDuration, camera = self)
+		metadata = {
+				'image_format':		ravf_image_format,
+				'color_type':		ravf_color_type,
+				'ra':			ra,
+				'dec':			dec,
+				'binning':		bining,
+				'objName':		objName,
+				'shutter_ns':		self.picam2_video_config['controls']['ExposureTime'] * 1000,
+				'sensor':		self.picam2.camera_properties['Model'],
+				'frameDurationMicros':	self.videoFrameDuration,
+				'telescope':		AstUtils.selectedConfigName(),
+				'sensorPixelSizeX': 	self.picam2.camera_properties['UnitCellSize'][0]/1000.0,
+				'sensorPixelSizeY': 	self.picam2.camera_properties['UnitCellSize'][1]/1000.0,
+				'focalLength':		Settings.getInstance().platesolver['focal_length'],
+				'hostname':		platform.node(),
+				'stationNumber':	Settings.getInstance().general['station_number'],
+			}
+
+		if self.ui.panelObject.widgetDatabase.currentText() == UiPanelObject.SEARCH_OCCULTATIONS:
+			occultations = Settings.getInstance().occultations['occultations']
+			for object in occultations:
+				if object['name'] == objName:
+					metadata['occultationPredictedCenterTime'] = object['event_time']
+					if object['occelmnt'] is not None:
+						occelmnt = object['occelmnt']
+						if len(occelmnt.keys()) > 0:
+							occ_star				= occelmnt['Occultations']['Event']['Star'].split(',')
+							occ_object				= occelmnt['Occultations']['Event']['Object'].split(',')
+							metadata['occultationObjectNumber']	= occ_object[0]
+							metadata['occultationObjectName']	= occ_object[1]
+							metadata['occultationStar']		= occ_star[0]
+					break
+
+		encoder = RavfEncoder(filename = video_filename, metadata = metadata, camera = self)
 
 		self.picam2.start_recording(encoder, None)
 		self.operatingSubMode = OperatingVideoMode.RECORDING

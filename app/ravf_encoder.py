@@ -21,7 +21,7 @@ class RavfEncoder(Encoder):
 
 	MINIMUM_FRAME_DURATION_MICROS = 16563	# Maximum frame rate the camera can be set to, for the IMX296 this is just over 60fps
 
-	def __init__(self, filename: str, image_format: RavfImageFormat, color_type: RavfColorType, ra: float, dec: float, binning: (int, int), objName: str, shutter_ns: int, sensor: str, frameDuration: int, camera: object):
+	def __init__(self, filename: str, metadata: dict, camera: object):
 		super().__init__()
 
 		self.processLogger = ProcessLogger.getInstance()
@@ -29,24 +29,18 @@ class RavfEncoder(Encoder):
 
 		self.camera			= camera
 		self.filename			= filename
-		self.frameDurationMicros	= frameDuration
-		self.frameHalfDurationMicros	= int(frameDuration/2.0)
-		self.image_format		= image_format
-		self.color_type			= color_type
+		self.metadata			= metadata
+		
+		self.frameHalfDurationMicros	= int(self.metadata['frameDurationMicros']/2.0)
 		self.lastTimestamp		= 0
 		self.otestamper			= OteStamper.getInstance()
 		self.lastSequence		= 0
 		self.firstFrame			= True
 		self.lastTimeFrame		= 0
-		self.ra				= ra
-		self.dec			= dec
-		self.binning			= binning
-		self.objName			= objName
-		self.shutter_ns			= shutter_ns
-		self.sensor			= sensor
 		self.lastCameraTimestamp	= 0
 		self.syncState			= 0
 		self.recording			= False
+
 
 
 	def start(self):
@@ -68,14 +62,14 @@ class RavfEncoder(Encoder):
 		recording_start_utc = int(recording_start_utc)
 
 		self.__required_metadata_entries = [
-			('COLOR-TYPE',                  int(self.color_type.value)),
+			('COLOR-TYPE',                  int(self.metadata['color_type'].value)),
 			('IMAGE-ENDIANESS',             int(RavfImageEndianess.LITTLE_ENDIAN.value)),
 			('IMAGE-WIDTH',                 int(self.width)),
 			('IMAGE-HEIGHT',                int(self.height)),
 			('IMAGE-ROW-STRIDE',            int(self.stride)),
-			('IMAGE-FORMAT',                int(self.image_format.value)),
-			('IMAGE-BINNING-X',             self.binning[0]),
-			('IMAGE-BINNING-Y',             self.binning[1]),
+			('IMAGE-FORMAT',                int(self.metadata['image_format'].value)),
+			('IMAGE-BINNING-X',             self.metadata['binning'][0]),
+			('IMAGE-BINNING-Y',             self.metadata['binning'][1]),
 			('FRAME-TIMING-ACCURACY',       int(4)),
 			('LATITUDE',                    self.otestamper.status['latitude']), 
 			('LONGITUDE',                   self.otestamper.status['longitude']),
@@ -88,30 +82,44 @@ class RavfEncoder(Encoder):
 			('INSTRUMENT-SERIAL',           '00001'),
 			('INSTRUMENT-FIRMWARE-VERSION', '0.9a'),
 			('INSTRUMENT-GAIN',             Settings.getInstance().camera['gain']),
-			('INSTRUMENT-SENSOR',           self.sensor),
+			('INSTRUMENT-SENSOR',           self.metadata['sensor']),
 			('INSTRUMENT-GAMMA',            1.0),
-			('INSTRUMENT-SHUTTER',          self.shutter_ns),
+			('INSTRUMENT-SHUTTER',          self.metadata['shutter_ns']),
 			('INSTRUMENT-OFFSET',           0),
 			('RECORDER-SOFTWARE',           'Astrid'),
 			('RECORDER-SOFTWARE-VERSION',   '0.9a'),
 			('RECORDER-HARDWARE',           'OTEStamper'),
 			('RECORDER-HARDWARE-VERSION',   '0.9a'),
-			('OBJNAME',                     self.objName),
-			('RA',                          self.ra),
-			('DEC',                         self.dec),
+			('OBJNAME',                     self.metadata['objName']),
+			('RA',                          self.metadata['ra']),
+			('DEC',                         self.metadata['dec']),
 			('EQUINOX',                     0),
-			('COMMENT',                     'Astrid Testing'), 
+			('COMMENT',                     'Astrid RAVF Format'), 
 			('RECORDING-START-UTC',         recording_start_utc),
+			('TELESCOPE',			self.metadata['telescope']),
 		]
 
-		"""
-			RavfMetadataEntry('TELESCOPE',                   RavfMetadataType.UTF8STRING, ''),
-		"""
 		self.logger.info(self.__required_metadata_entries)
 
 		self.__user_metadata_entries = [
-			('MY-USER-COMMENT', RavfMetadataType.UTF8STRING, 'This is a test comment'),
+			('INSTRUMENT-SENSOR-PIXEL-SIZE-X',	RavfMetadataType.FLOAT32,	self.metadata['sensorPixelSizeX']),
+			('INSTRUMENT-SENSOR-PIXEL-SIZE-Y',	RavfMetadataType.FLOAT32,	self.metadata['sensorPixelSizeY']),
+			('FOCAL-LENGTH',			RavfMetadataType.FLOAT32,	self.metadata['focalLength']),
+			('STATION-NUMBER',			RavfMetadataType.UINT16,	self.metadata['stationNumber']),
+			('STATION-HOSTNAME',			RavfMetadataType.UTF8STRING,	self.metadata['hostname']),
 		]
+
+		if 'occultationPredictedCenterTime' in self.metadata.keys():
+			self.__user_metadata_entries.append( ('OCCULTATION-PREDICTED-CENTER-TIME',	RavfMetadataType.UTF8STRING,	self.metadata['occultationPredictedCenterTime']) )
+
+		if 'occultationObjectNumber' in self.metadata.keys():
+			self.__user_metadata_entries.append( ('OCCULTATION-OBJECT-NUMBER',		RavfMetadataType.UTF8STRING,	self.metadata['occultationObjectNumber']) )
+
+		if 'occultationObjectName' in self.metadata.keys():
+			self.__user_metadata_entries.append( ('OCCULTATION-OBJECT-NAME',		RavfMetadataType.UTF8STRING,	self.metadata['occultationObjectName']) )
+
+		if 'occultationStar' in self.metadata.keys():
+			self.__user_metadata_entries.append( ('OCCULTATION-STAR',			RavfMetadataType.UTF8STRING,	self.metadata['occultationStar']) )
 
 		self.logger.info('Width: %d' % self.width)
 		self.logger.info('Height: %d' % self.height)
@@ -165,7 +173,7 @@ class RavfEncoder(Encoder):
 
 				if state == 0 and self.exposureNsMatchesFrameDuration(self.otestamper.frameInfo['frameDuration'], halfDurationMicros):
 					state = 1
-				elif state == 1 and self.exposureNsMatchesFrameDuration(self.otestamper.frameInfo['frameDuration'], self.frameDurationMicros):
+				elif state == 1 and self.exposureNsMatchesFrameDuration(self.otestamper.frameInfo['frameDuration'], self.metadata['frameDurationMicros']):
 					break
 
 
@@ -196,7 +204,7 @@ class RavfEncoder(Encoder):
 			return
 		elif self.syncState == 1:
 			# We now set back to the original rate and wait for the half rate to appear
-			self.camera.configureVideoFrameDuration(self.frameDurationMicros)
+			self.camera.configureVideoFrameDuration(self.metadata['frameDurationMicros'])
 			if self.exposureNsMatchesFrameDuration(exposure_duration_ns, self.frameHalfDurationMicros):
 				self.syncState = 3
 			else:
@@ -211,7 +219,7 @@ class RavfEncoder(Encoder):
 		elif self.syncState == 3:
 			# We now wait for the original rate to appear in the video stream
 			self.camera.ui.waitingToSyncMessageBoxUpdateCount(self.waiting_frame_count)
-			if self.exposureNsMatchesFrameDuration(exposure_duration_ns, self.frameDurationMicros):
+			if self.exposureNsMatchesFrameDuration(exposure_duration_ns, self.metadata['frameDurationMicros']):
 				self.syncState = 4
 				self.eatFrameInfosTillStart()
 				self.camera.statusMsg('Frame Sync Achieved, Recording started')
@@ -229,8 +237,8 @@ class RavfEncoder(Encoder):
 		# Identify dropped frames from the camera
 		if not self.firstFrame:
 			camera_timestamp_delta = fb.metadata.timestamp - self.lastCameraTimestamp
-			if camera_timestamp_delta > (1.5 * self.shutter_ns):
-				numFramesDropped = round(camera_timestamp_delta / self.shutter_ns) - 1
+			if camera_timestamp_delta > (1.5 * self.metadata['shutter_ns']):
+				numFramesDropped = round(camera_timestamp_delta / self.metadata['shutter_ns']) - 1
 				self.otestamper.statistics['dropped_camera'] += abs(numFramesDropped)
 				self.logger.warning('camera frames dropped: %d' % numFramesDropped)
 				self.logger.warning('fbTimestamp:%d lastCameraTimestamp:%d Delta: %d' % (fb.metadata.timestamp, self.lastCameraTimestamp, camera_timestamp_delta))

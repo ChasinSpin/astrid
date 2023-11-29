@@ -1,7 +1,9 @@
 from PlateSolver import *
 from astutils import AstUtils
 from UiPanel import UiPanel
-from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from UiPanelMetadata import UiPanelMetadata
+
+from PyQt5.QtWidgets import QFileDialog
 
 
 class UiPanelPlayerOperations(UiPanel):
@@ -63,7 +65,7 @@ class UiPanelPlayerOperations(UiPanel):
 
 
 	def buttonMetadataPressed(self):
-		QMessageBox.information(self, ' ', self.metadataCallback(), QMessageBox.Ok)
+		dialog = UiDialogPanel('Metadata', UiPanelMetadata, args = {'metadata': self.metadataCallback()}, parent = self)
 
 
 	def buttonExportFitsPressed(self):
