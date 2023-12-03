@@ -98,6 +98,13 @@ if __name__ == '__main__':
 		return True
 
 
+	def fixAstridMultipleDrives():
+		# If we have multiple drives (ASTRID and ASTRID1), then highly likely ASTRID is a folder accidentally created
+		if os.path.isdir(astrid_drive) and os.path.isdir(astrid_drive + '1'):
+			os.system('sudo sh -c "/usr/bin/umount /dev/sda1;/usr/bin/rmdir /media/pi/ASTRID"')
+			os.system('/usr/bin/udisksctl mount -b /dev/sda1 --no-user-interaction')
+
+
 	def setStylesheet():
 		""" Reads a stylesheet and using colorscheme, replaces the color macros """	
 		ss = AstUtils.read_file_as_string(stylesheet)
@@ -176,6 +183,9 @@ if __name__ == '__main__':
 	astrid_drive = args.astrid_drive
 	configs_fname = astrid_drive + '/configs/configs.json'
 	log_filename = astrid_drive + '/astrid.log'
+
+	# Fix where ASTRID folder has been created in /media/pi/ASTRID, preventing mounting of the USB Drive in the correct place
+	fixAstridMultipleDrives()
 
 	# Setup logger
 	multiprocessing.set_start_method('forkserver')
