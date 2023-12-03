@@ -101,6 +101,7 @@ if __name__ == '__main__':
 	def fixAstridMultipleDrives():
 		# If we have multiple drives (ASTRID and ASTRID1), then highly likely ASTRID is a folder accidentally created
 		if os.path.isdir(astrid_drive) and os.path.isdir(astrid_drive + '1'):
+			print('Removing extra /media/pi/ASTRID folder so USB Drive can be mounted')
 			os.system('sudo sh -c "/usr/bin/umount /dev/sda1;/usr/bin/rmdir /media/pi/ASTRID"')
 			os.system('/usr/bin/udisksctl mount -b /dev/sda1 --no-user-interaction')
 
