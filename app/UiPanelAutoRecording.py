@@ -73,7 +73,14 @@ class UiPanelAutoRecording(UiPanel):
 			# Waiting for start time
 			if dt < self.start_time:
 				deltaSecs = (self.start_time - dt).total_seconds()
-				msg = '%d seconds until recording starts at %s'	% (deltaSecs, self.start_time.strftime("%Y-%m-%dT%H:%M:%S"))
+				if deltaSecs > (5 * 60):
+					delta = int(deltaSecs / 60)
+					deltaText = 'minutes'
+				else:
+					delta = deltaSecs
+					deltaText = 'seconds'
+					
+				msg = '%d %s until recording starts at %s'	% (delta, deltaText, self.start_time.strftime("%Y-%m-%dT%H:%M:%S"))
 				if deltaSecs >= 1 and deltaSecs <= 6 and Settings.getInstance().camera['buzzer_enable']:
 					OteStamper.getInstance().buzzerEnabled(True if int(deltaSecs) % 2 == 0 else False)
 			else:
