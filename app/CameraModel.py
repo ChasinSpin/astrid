@@ -649,7 +649,7 @@ class CameraModel:
 
 		self.updateFan()
 
-		if self.settings['prompt_dark_after_acquisition'] and not self.plannedAutoShutdown:
+		if self.settings['prompt_dark_after_acquisition2'] and not self.plannedAutoShutdown:
 			self.ui.messageBoxTakeDark()
 		
 

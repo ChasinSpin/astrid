@@ -48,7 +48,7 @@ class Settings:
 			{'name': 'polar_align_test',			'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Polar Align Test Mode',			'description': ''},
 			{'name': 'polar_align_rotation',		'type': 'float',	'range': [0.0,90.0],				'default': 90.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Polar Align Rotation amount',		'description': ''},
 			{'name': 'default_photo_exposure',		'type': 'float',	'range': [0.0,30.0],				'default': 1.0,				'decimalPlaces': 6,	'editable': True,	'displayName': 'Default Photo Exposure',		'description': ''},
-			{'name': 'prompt_dark_after_acquisition',	'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Prompt For Darks After Acquisition',	'description': ''},
+			{'name': 'prompt_dark_after_acquisition2',	'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Prompt For Darks After Acquisition',	'description': ''},
 			{'name': 'dither_ra',				'type': 'float',	'range': [0.0,10.0],				'default': 0.001,			'decimalPlaces': 6,	'editable': True,	'displayName': 'Dithering RA Amount',			'description': ''},
 			{'name': 'dither_dec',				'type': 'float',	'range': [0.0,10.0],				'default': 0.01,			'decimalPlaces': 6,	'editable': True,	'displayName': 'Dithering DEC Amount',			'description': ''},
 			{'name': 'photosFolder',			'type': 'str',		'range': None,					'default': '/media/pi/ASTRID/Photo',	'decimalPlaces': None,	'editable': False,	'displayName': 'Photos Folder Location',		'description': ''},

@@ -23,12 +23,11 @@ class UiPanelAutoRecord(UiPanel):
 		self.widgetInfo		= self.addTextBox('IMPORTANT PREREQUISITES FOR AUTO RECORDING:\n' \
 			'\n' \
 			'1. Telescope is already on target and tracking OR prepointed\n' \
-			'2. Darks already taken (or taken soon after recording) at the same gain/frame rate\n' \
-			'3. Frame rate and gain are set to the correct values\n' \
-			'4. Calculated start/end times are correct for the occultation\n' \
-			'5. All status buttons (bottom right) are green consistently\n' \
-			'6. Target is within the Field Of View of the Telescope/Camera\n' \
-			'7. Focus remains stable thru recording\n' \
+			'2. Frame rate and gain are set to the correct values\n' \
+			'3. Calculated start/end times are correct for the occultation\n' \
+			'4. All status buttons (bottom right) are green consistently\n' \
+			'5. Target is within the Field Of View of the Telescope/Camera\n' \
+			'6. Focus remains stable thru recording\n' \
 			'\n' \
 			'If any of above are not true, press "Cancel" and address first.\n')
 
