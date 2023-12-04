@@ -2,6 +2,8 @@ from processlogger import ProcessLogger
 import sys
 import cv2
 import platform
+import subprocess
+import shutil
 from datetime import datetime
 from pprint import *
 from picamera2 import Picamera2, MappedArray, Controls
@@ -40,8 +42,9 @@ from astutils import AstUtils
 #import gc
 
 
-pa_test_images_folder = '/home/pi/astrid/app/pa_test_images/'
-VIDEO_BUFFER_COUNT = 12
+na_report_form_url	= 'https://www.asteroidoccultation.com/observations/Forms/NorthAmerica_AstReportForm_V5.6.12.xlsx'
+pa_test_images_folder	= '/home/pi/astrid/app/pa_test_images/'
+VIDEO_BUFFER_COUNT	= 12
 
 # Some Rules:
 #	1. We must also have a main stream, so we use that for the preview
@@ -394,9 +397,23 @@ class CameraModel:
 			OteStamper.getInstance().fuzzGps()
 			QMessageBox.warning(self.ui, ' ', 'GPS Fuzzing is enabled to cloak location, GPS Positioning is incorrect.  Disable General/Fuzz GPS in settings for real position.', QMessageBox.Ok)
 
-		if Settings.getInstance().general['station_number'] == 0:
-			 QMessageBox.warning(self.ui, ' ', 'Station Number (e.g. 1 in astrid1) is not set.\n\nPlease set the number to identify this station in Settings / General.', QMessageBox.Ok)
+		if Settings.getInstance().observer['station_number'] == 0:
+			 QMessageBox.warning(self.ui, ' ', 'Station Number (e.g. 1 in astrid1) is not set.\n\nPlease set the number to identify this station in Settings / Observer.', QMessageBox.Ok)
 
+		if Settings.getInstance().telescope['aperture'] == 0:
+			 QMessageBox.warning(self.ui, ' ', 'Telescope Aperture is not set. This is required for auto filling of the North American Occultation Report Form.\n\nPlease set the Aperture in Settings / Telescope.', QMessageBox.Ok)
+
+		self.__checkDownloadNAReportForm()
+
+
+
+	def __checkDownloadNAReportForm(self):
+		report_file = Settings.getInstance().astrid_drive + '/' + na_report_form_url.split('/')[-1]
+		if Settings.getInstance().observer['create_na_report'] and not os.path.exists(report_file):
+			if QMessageBox.information(self.ui, ' ', 'The North American Occultation Report Form needs downloading to enable automatic report filling.\n\nAn internet connection is required for download.\n\nDownload now?', QMessageBox.Yes|QMessageBox.Cancel) == QMessageBox.Yes:
+				cmd = ['/usr/bin/wget', '-O', report_file, na_report_form_url]
+				print(cmd)
+				subprocess.run(args=cmd)
 
 
 	# Display the timestamp on the frame
@@ -507,15 +524,6 @@ class CameraModel:
 				self.ui.panelTask.widgetRecord.setChecked(False)
 				return
 
-		video_filename = self.settings['videoFolder'] + '/' + self.videoTarget  + datetime.utcnow().strftime('_%Y%m%d_%H%M%S') + '.ravf'
-
-		# No longer possible, each video_filename is unique because of the timestamp
-		#if os.path.exists(video_filename):
-		#	self.ui.messageBoxVideoFileOverwriteQuestion(video_filename)
-		#	self.ui.panelTask.widgetRecord.setChecked(False)
-		#	return
-		print(video_filename)
-
 		self.ui.indeterminateProgressBar(True)
 
 		self.ui.panelTask.setEnabledUi(False)
@@ -555,11 +563,6 @@ class CameraModel:
 		bining = (bining, bining)
 		objName = self.ui.panelObject.widgetSearch.text()
 
-		video_logfile = video_filename.replace('.ravf', '.log')
-		self.logger.info('switching logging to: %s' % video_logfile)
-		self.processLogger.queue.put( { 'cmd': 'change_file', 'fname': video_logfile } )
-		self.processLogger.setPropagate(False)	# Otherwise a default logger outputs subprocess logging information
-
 		metadata = {
 				'image_format':		ravf_image_format,
 				'color_type':		ravf_color_type,
@@ -575,7 +578,9 @@ class CameraModel:
 				'sensorPixelSizeY': 	self.picam2.camera_properties['UnitCellSize'][1]/1000.0,
 				'focalLength':		Settings.getInstance().platesolver['focal_length'],
 				'hostname':		platform.node(),
-				'stationNumber':	Settings.getInstance().general['station_number'],
+				'stationNumber':	Settings.getInstance().observer['station_number'],
+				'instrumentAperture':	Settings.getInstance().telescope['aperture'],
+				'instrumentOpticalType':Settings.getInstance().telescope['optical_type'],
 			}
 
 		if self.ui.panelObject.widgetDatabase.currentText() == UiPanelObject.SEARCH_OCCULTATIONS:
@@ -592,6 +597,35 @@ class CameraModel:
 							metadata['occultationObjectName']	= occ_object[1]
 							metadata['occultationStar']		= occ_star[0]
 					break
+
+		now = datetime.utcnow()
+		video_stem = self.videoTarget + now.strftime('_%Y%m%d_%H%M%S') + '_' + str(Settings.getInstance().observer['station_number'])
+		video_filename = self.settings['videoFolder'] + '/' + video_stem + '/' + video_stem + '.ravf'
+		video_folder = self.settings['videoFolder'] + '/' + video_stem
+		os.mkdir(video_folder)
+		print(video_filename)
+		video_logfile = video_filename.replace('.ravf', '.log')
+
+		# Figure out if we should create a North American Report Form
+		report_template = Settings.getInstance().astrid_drive + '/' + na_report_form_url.split('/')[-1]
+		if 'occultationStar' in metadata.keys() and Settings.getInstance().observer['create_na_report'] and os.path.exists(report_template):
+			observer_surname = Settings.getInstance().observer['observer_name'].split(' ')
+			if len(observer_surname) >= 2:
+				observer_surname = observer_surname[-1]
+			else:
+				observer_surname = observer_surname[0]
+			na_report_form = '%04d%02d%02d_%s_%s_%s_%d_POS.xlsx' % (now.year, now.month, now.day, metadata['occultationObjectNumber'].replace(' ','-'), metadata['occultationObjectName'].replace(' ','-'), observer_surname, Settings.getInstance().observer['station_number'])
+			na_report_form = '%s/%s' % (video_folder, na_report_form)
+			#print('Report Template:', report_template)
+			#print('NA Report Form:', na_report_form)
+			shutil.copy(report_template, na_report_form)	
+		else:
+			na_report_form = None
+		metadata['naReportForm'] = na_report_form
+
+		self.logger.info('switching logging to: %s' % video_logfile)
+		self.processLogger.queue.put( { 'cmd': 'change_file', 'fname': video_logfile } )
+		self.processLogger.setPropagate(False)	# Otherwise a default logger outputs subprocess logging information
 
 		encoder = RavfEncoder(filename = video_filename, metadata = metadata, camera = self)
 

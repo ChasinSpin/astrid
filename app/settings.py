@@ -28,6 +28,7 @@ class Settings:
 		{'name': 'occultations',	'global': False,	'editable': False,	'displayName': 'Occultations'},
 		{'name': 'site',		'global': True,		'editable': False,	'displayName': 'Site'},
 		{'name': 'observer',		'global': False,	'editable': True,	'displayName': 'Observer'},
+		{'name': 'telescope',		'global': True,		'editable': True,	'displayName': 'Telescope'},
 		{'name': 'general',		'global': True,		'editable': True,	'displayName': 'General'},
 	]
 
@@ -83,16 +84,25 @@ class Settings:
 		]},
 	
 		{'group': 'observer', 'settings': [
-			{'name': 'observer_name',			'type': 'str',		'range': None,					'default': 'John Doe',			'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Name',				'description': ''},
-			{'name': 'observer_id',				'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Indentifier',			'description': ''},
+			{'name': 'observer_name',			'type': 'str',		'range': None,					'default': 'John Doe',			'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Full Name',			'description': ''},
+			{'name': 'observer_id',				'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Email',			'description': ''},
 			{'name': 'owcloud_login',			'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Login',			'description': ''},
 			{'name': 'owcloud_password',			'type': 'str',		'range': None,					'default': 'password',			'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Password',			'description': ''},
+			{'name': 'station_number',			'type': 'int',		'range': [1, 10000],				'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Station Number',			'description': ''},
+			{'name': 'create_na_report',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Create North American Report Form',	'description': ''},
+		]},
+
+		{'group': 'telescope', 'settings': [
+			{'name': 'aperture',				'type': 'int',		'range': [0, 10000],				'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Aperture(mm)',				'description': ''},
+			{'name': 'optical_type',			'type': 'choice',	'range': ['SCT including Cass and Mak',
+													  'Newtonian', 'Refractor',
+													  'Dobsonian'],				'default': 'Refractor',			'decimalPlaces': None,	'editable': True,	'displayName': 'Optical Type',				'description': ''},
 		]},
 
 		{'group': 'general', 'settings': [
-			{'name': 'station_number',			'type': 'int',		'range': [1, 10000],				'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Station Number',			'description': ''},
 			{'name': 'fan_mode',				'type': 'choice',	'range': ['on', 'idle', 'off'],			'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Fan Mode',				'description': ''},
-			{'name': 'center_marker',			'type': 'choice',	'range': ['crosshairs', 'rectangle', 'small cross'],	'default': 2,			'decimalPlaces': None,	'editable': True,	'displayName': 'Center Marker Type',			'description': ''},
+			{'name': 'center_marker',			'type': 'choice',	'range': ['crosshairs', 'rectangle',
+													  'small cross'],			'default': 2,				'decimalPlaces': None,	'editable': True,	'displayName': 'Center Marker Type',			'description': ''},
 			{'name': 'voltage_warning',			'type': 'float',	'range': [0, 14],				'default': 11.5,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Warning Voltage',			'description': ''},
 			{'name': 'voltage_shutdown',			'type': 'float',	'range': [0, 12],				'default': 0,				'decimalPlaces': 1,	'editable': True,	'displayName': 'Shutdown Voltage',			'description': ''},
 			{'name': 'location_in_fits',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Write GPS To Fits',			'description': ''},

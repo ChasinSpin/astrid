@@ -16,6 +16,7 @@ import queue    # imported for using queue.Empty exception
 import multiprocessing
 from framewriter import FrameWriter
 from processravfwriter import ProcessRavfWriter
+from fillinnareport import FillInNAReport
 
 class RavfEncoder(Encoder):
 
@@ -56,6 +57,7 @@ class RavfEncoder(Encoder):
 		# Calculate nanoseconds since 2010 from the system for recording start time
 		# Note this time is not necessarily accurate, it's just a guideline
 		recording_start_utc = datetime.utcnow()
+		self.start_observing_time = (recording_start_utc.hour, recording_start_utc.minute, float(recording_start_utc.second) + (recording_start_utc.microsecond/1000000.0))
 		recording_start_utc = time.mktime(recording_start_utc.timetuple())    # Convert to unix epoch
 		recording_start_utc -= 1262304000
 		recording_start_utc *= 1000000000                                     # Convert to nanoseconds
@@ -121,6 +123,12 @@ class RavfEncoder(Encoder):
 		if 'occultationStar' in self.metadata.keys():
 			self.__user_metadata_entries.append( ('OCCULTATION-STAR',			RavfMetadataType.UTF8STRING,	self.metadata['occultationStar']) )
 
+		if 'instrumentAperture' in self.metadata.keys():
+			self.__user_metadata_entries.append( ('INSTRUMENT-APERTURE',			RavfMetadataType.UINT16,	self.metadata['instrumentAperture']) )
+
+		if 'instrumentOpticalType' in self.metadata.keys():
+			self.__user_metadata_entries.append( ('INSTRUMENT-OPTICAL-TYPE',		RavfMetadataType.UTF8STRING,	self.metadata['instrumentOpticalType']) )
+
 		self.logger.info('Width: %d' % self.width)
 		self.logger.info('Height: %d' % self.height)
 		self.logger.info('Stride: %d' % self.stride)
@@ -140,12 +148,17 @@ class RavfEncoder(Encoder):
 		# stop closes the file
 		super().stop()
 		self.otestamper.stopRecordingVideo()
+		now = datetime.utcnow()
+		self.stop_observing_time = (now.hour, now.minute, float(now.second) + (now.microsecond/1000000.0))
 		self.otestamper.startUpdateStatusTimer()
 		self.framewriter.stopRecordingVideo()
 		self.logger.info(self.otestamper.statistics)
 		self.processLogger.queue.put( { 'cmd': 'revert' } )	# Revert back to astrid.log for logging
 		self.logger.info('switching back to astrid.log')
 		self.processLogger.setPropagate(True)			# Switch progation to the default logger back on
+		if self.metadata['naReportForm'] is not None:
+			self.camera.statusMsg('Updating xlsx')
+			FillInNAReport(self.metadata['naReportForm'], self.__required_metadata_entries, self.__user_metadata_entries, self.start_observing_time, self.stop_observing_time)
 		self.camera.statusMsg('Recording Finished')
 
 

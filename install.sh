@@ -75,6 +75,20 @@ installPyqtree()
 }
 
 
+
+# Install openpyxl
+
+installOpenpyxl()
+{
+	TMP=`/usr/bin/pip3 list | grep openpyxl`
+	if [ -z "$TMP" ];then
+		echo "Installing openpyxl"
+		/usr/bin/pip3 install openpyxl==3.1.2
+	fi
+}
+
+
+
 # Install QCharts
 
 installQCharts()
@@ -124,6 +138,7 @@ fileManagerAutoLaunchOff
 installHealpix
 installPyqtree
 installQCharts
+installOpenpyxl
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"
