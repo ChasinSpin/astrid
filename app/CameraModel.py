@@ -1089,6 +1089,11 @@ class CameraModel:
 		print("Set Object:", object)
 
 
+	def setJobNameUi(self, object):
+		self.setJobName(object)
+		self.ui.panelTask.widgetJobName.setText(object)
+
+
 	def searchObject(self, search):
 		print("Search Object:", search)
 
@@ -1096,7 +1101,7 @@ class CameraModel:
 
 		if obj is not None:
 			self.ui.panelObject.setRaDec(obj)
-
+			self.setJobNameUi(search.replace(' ', '_').replace('(','').replace(')',''))
 
 			if self.ui.panelObject.messageBoxSearchObjectSuccess(search, obj):
 				self.objectCoords = obj
@@ -1110,6 +1115,8 @@ class CameraModel:
 			self.ui.panelObject.setRaDec(None)
 			self.objectCoords = None
 			self.ui.panelObject.messageBoxSearchObjectFailed()
+			self.setJobNameUi('None')
+
 
 	def clearObject(self):
 		if self.ui is not None and self.ui.panelObject is not None:
@@ -1118,6 +1125,7 @@ class CameraModel:
 			self.ui.panelObject.widgetSearch.setText('')
 			self.ui.panelObject.widgetEventTime.setText('')
 			self.ui.panelObject.widgetChord.setText('')
+			self.setJobNameUi('None')
 
 
 	def setObjectCoords(self, coords):
