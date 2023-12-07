@@ -115,7 +115,7 @@ Focal length will depend on the focal reducers used and the distance the camera 
  	
 If using the IOTA 0.5X Focal Reducer, be aware that you may need to insert spacer rings to get the maximum focal reduction.
  	
-![IOTA Focal Reducer](images/assembly50.jpg)
+![IOTA Focal Reducer](https://occultations.org/night-eagle-2-pro-astro-edition-ordering-page/)
 
 ## Multiple Astrids
 

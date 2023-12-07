@@ -27,7 +27,7 @@ The partial kit includes:
 | 1 | [Sandisk 128GB Extreme Pro USB 3.2 SDCZ880-128G-GAM46](https://www.amazon.com/SanDisk-128GB-Extreme-Solid-State/dp/B08GYM5F8G/ref=sr_1_3?crid=3V64CEU0M0KOW&keywords=SanDisk%2B128GB%2BExtreme%2BPRO%2BUSB%2B3.2%2BSolid%2BState%2BFlash%2BDrive%2B-%2BSDCZ880-128G-GAM46&qid=1695578870&sprefix=sandisk%2B128gb%2Bextreme%2Bpro%2Busb%2B3.2%2Bsolid%2Bstate%2Bflash%2Bdrive%2B-%2Bsdcz880-128g-gam46%2Caps%2C237&sr=8-3&th=1) |
 | 1 | [Battery/Power](PowerSupply.md) |
 | 1 | [12V Power Lead](PowerSupply.md) |
-| 1 | [0.5X IOTA 1.25" Focal Reducer (CS Mount) and 3 Extension Rings](docs/UsageGuide.md#focal-reducers-and-length) - usually required | 
+| 1 | [0.5X IOTA 1.25" Focal Reducer (CS Mount) and 3 Extension Rings](UsageGuide.md#focal-reducers-and-length) - usually required [Purchase Link](https://occultations.org/night-eagle-2-pro-astro-edition-ordering-page/)| 
 
 ## Tools Required
 

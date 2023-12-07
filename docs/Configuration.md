@@ -15,11 +15,13 @@ Config files are stored in /media/pi/ASTRID/configs and organized as follows:
 		* mount.json
 		* platesolver.json
 		* site.json	[Optional] 
+		* ...
 	* /media/pi/ASTRID/configs/config2/
 		* camera.json
 		* mount.json
 		* platesolver.json
 		* site.json	[Optional] 
+		* ...
 
 		
 File formats:
@@ -34,6 +36,7 @@ File formats:
 * [occultations.json](#occultations)
 * [platesolver.json](#platesolver)
 * [site.json](#site)
+* [telescope.json](#telescope)
 
 Note: You may find it easier to validate any JSON with an online validator in case of errors in entry.
 
@@ -93,7 +96,7 @@ The camera.json file stores configuration related to the camera:
 		"polar_align_test": false,
 		"polar_align_rotation": 90.0,
 		"default_photo_exposure": 5.0,
-		"prompt_dark_after_acquisition": true,
+		"prompt_dark_after_acquisition2": false,
 		"dither_ra": 0.0010,
 		"dither_dec": 0.0100,
 		"photosFolder": "/media/pi/ASTRID/Photo",
@@ -113,7 +116,7 @@ The camera.json file stores configuration related to the camera:
 | polar\_align\_test | If set to "true", test files for the Polar Alignment routine are used from so that it can be tested during daylight hours. Ordinarily set to false unless testing.|
 | polar\_align\_rotation | The number of degrees to rotate the scope during polar alignment.  This should be no more than 90.0 degrees and should not be less than 60.0 degrees. 90.0 degrees is the suggested value for accurate polar alignment. |
 | default\_photo\_exposure | This is the default exposure in seconds provided in the exposure box in Astrid.  It suggested that this should be set to the exposure that is needed to get a consistant plate solve, e.g. 1.0 - 5.0 seconds. |
-| prompt\_dark\_after\_acquisition | If set to true, a message box prompts the use to record 100 frames of dark video after an acquisition |
+| prompt\_dark\_after\_acquisition2 | If set to true, a message box prompts the use to record 100 frames of dark video after an acquisition |
 | dither_ra / dither_dec) | When the box is checked and "# Subs" is greater than 1, this value is used to randomly dither in RA/DEC to prevent walking noise when stacking.  The values are in degrees and represent the maximum the position can be dithered |
 | photosFolder | Location to store fits files taken in Task = Photo Mode, set to "/media/pi/ASTRID/Photo" |
 | videoFolder | Location to store RAVF files (video files) taken in Task = OTE Video "/media/pi/ASTRID/OTEVideo" |
@@ -124,7 +127,6 @@ The camera.json file stores configuration related to the camera:
 The general.json file stores configuration related general settings:
 
 	{
-		"station_number": 0,
 		"fan_mode": "on",
 		"center_marker": "small cross",    
 		"voltage_warning": 11.5,
@@ -136,7 +138,6 @@ The general.json file stores configuration related general settings:
 	
 | Variable | Description |
 | -------- | ----------- |
-| station_number | station number of the astrid, e.g. hostname: astrid1 would be station number 1.  Note the station number is stored on the USB Flash Drive, so will move around with the USB Flash Drive.  Range 1..10000 |
 | fan_mode | on = fan always on; idle = fan on when not recording; off = fan off. If you're experiencing vibration effects with long focal lengths, or you are imaging in extreme cold and want to retain heat, this setting can be used.  Note: Although the Raspberry Pi should reduce speed if it gets too hot, there's a slim possibility of damage.  If you live in a hot climate, or it's inside, you probably want the fan on all the time. It is suggested that if considering switching the fan off, then the Raspberry Pi should have the heat sinks installed. |
 | center_marker | When "Center Marker" is checked the displayed marked can be one of: crosshairs; rectangle or "small cross" |
 | voltage_warning | Specifies the voltage at which a popup warning is issued for Low Voltage. Set to 0 to disable. The warning (if enabled) only occurs once per session. |
@@ -212,7 +213,9 @@ The observer.json file stores information about the observer, this information i
 		"observer_name": "John Doe",
 		"observer_id": "johndoe@example.com",
 		"owcloud_login": "johndoe@example.com",
-		"owcloud_password": "password"
+		"owcloud_password": "password",
+		"station_number": 0,
+		"create_na_report": true
 	}
 	
 | Variable | Description |
@@ -221,6 +224,8 @@ The observer.json file stores information about the observer, this information i
 | observer\_id | Set to the observer id. This could be email address, a number etc. |
 | owcloud\_login | Set to the owcloud login, usually email address |
 | owcloud\_password | Set to the owcloud password |
+| station_number | Station number of the astrid, e.g. hostname: astrid1 would be station number 1.  Note the station number is stored on the USB Flash Drive, so will move around with the USB Flash Drive.  Range 1..10000 |
+| create\_na\_report | If true, creates a filled in North American Occultation Report Form after the video has finished recording for occultations |  
 
 ## occultations
 
@@ -303,3 +308,17 @@ The site.json file stores information related to the current site. This file is 
 | latitude | Latitude of the site. |
 | longitude | Longitude of the site. (negative numbers are west of Greenwich, London, UK).|
 | altitude | Altitude of the site in meters (floating point number). |
+
+## telescope
+
+The telescope.json file stores information related to the telescope and is used to provide information for the North American Occultation Report Form:
+
+	{
+    	"aperture": 0,
+    	"optical_type": "Refractor"
+	}
+	
+| Variable | Description |
+| -------- | ----------- |
+| aperture | The aperture of the telescope in millimeters. Range 0..10000 |
+| optical_type | The optical type of the telescope. "SCT including Cass and Mak", "Newtonian", "Refractor" or "Dobsonian" |

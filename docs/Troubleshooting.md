@@ -8,6 +8,7 @@
 * [Tuning GPS PPS Offset](#tuning-gps-pps-offset)
 * [GPS Accuracy](#gps-accuracy)
 * [Intermittent Power](#intermittent-power)
+* [Lines On Video](#lines-on-video)
 
 ## Host Not Found
 
@@ -178,3 +179,11 @@ Astrid has a professional type DC Jack (for a long lifespan).  Often the cause o
 Another cause of intermittent power is a poor power supply that cannot supply the current required by Astrid.
 
 Please note that intermittent power is bad for Astrid and can corrupt SD Cards and USB Flash Drives.
+
+## Lines On Video
+
+If you encounter intermittent lines on video, investigate where the Astrid was placed.  Do not place near High Voltage power lines, which are often along roads.
+
+Although this hasn't been definitively demonstrated yet / seen in a recording, it has been seen a couple of times over a VNC connection at a specific site which had power lines directly above an Astrid.
+
+It may impact either Wifi to the device running VNC, or induce into the sensitive CMOS sensor on the camera.
