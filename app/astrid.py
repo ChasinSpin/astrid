@@ -15,13 +15,14 @@ from UiPanelConfig import UiPanelConfig
 from UiPanelMessage import UiPanelMessage
 from UiSplashScreen import UiSplashScreen
 from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QCoreApplication, QUrl
+from PyQt5.QtGui import QPixmap, QDesktopServices
 from CameraModel import CameraModel, OperatingMode
 from processlogger import ProcessLogger
 from otestamper import OteStamper
 from framewriter import FrameWriter
 import time
+import urllib.request
 import multiprocessing
 
 if __name__ == '__main__':
@@ -171,6 +172,36 @@ if __name__ == '__main__':
 					pass
 
 
+	def isUpdateNeeded():
+		global splash_screen
+
+		try:
+			with urllib.request.urlopen('https://raw.githubusercontent.com/ChasinSpin/astrid/main/version.txt', timeout=10) as response:
+				github_version = response.read().decode('utf-8').strip()
+		except Exception as e:
+			logger.info('Astrid version check failed (no internet?): %s' % str(e))
+			return
+
+		with open('/home/pi/astrid/version.txt') as f:
+			current_version = f.read().strip()
+
+		logger.info('Version Current Astrid: %s' % current_version)
+		logger.info('Version GitHub: %s' % github_version)
+
+		if not current_version == github_version:
+			qm_exit = QMessageBox.warning(None, ' ', 'A newer version of Astrid has been released.\n\nYour are using version %s and the latest version is: %s.\n\nAstrid follows the Rapid Application Development (RAD) model. You get more features and better stability with the latest version of the software and any support is conditional on the problem occuring with latest version being installed.\n\nChoose "Help" to see the release notes to find out what you\'re missing out on (wait for browser to launch).\n\nTo upgrade, first close Astrid and choose "Astrid Upgrade" on the desktop. ' % (current_version, github_version), QMessageBox.Ok | QMessageBox.Close | QMessageBox.Help)
+
+			if   qm_exit == QMessageBox.Close:
+				splash_screen.close()
+				logger.warning('user closed version warning, aborting...')
+				shutdown_subprocesses()
+				sys.exit(0)
+			elif qm_exit == QMessageBox.Help:
+				QDesktopServices.openUrl(QUrl('https://raw.githubusercontent.com/ChasinSpin/astrid/main/releasenotes.txt'))
+				
+
+
+
 	#
 	# MAIN
 	#
@@ -230,6 +261,9 @@ if __name__ == '__main__':
 	# Launch FrameWriter
 	framewriter = FrameWriter()
 	processes.append(framewriter)
+
+	# Do a version check
+	isUpdateNeeded()
 
 	# Read settings
 	splash_screen.setMessage('Loading: Reading settings...')
