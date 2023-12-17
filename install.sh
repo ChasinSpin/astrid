@@ -101,6 +101,39 @@ installQCharts()
 }
 
 
+# Install mdio-tool
+
+installMdioTool()
+{
+	if [ ! -f /usr/local/bin/mdio-tool ];then
+		echo "Installing mdio-tool"
+		cd /home/pi
+		/usr/bin/git clone https://www.github.com/ChasinSpin/mdio-tool
+		cd mdio-tool
+		/usr/bin/mkdir build-dir
+		cd build-dir
+		/usr/bin/cmake ..
+		/usr/bin/make
+		/usr/bin/sudo /usr/bin/make install
+		/usr/bin/make clean
+		cd ..
+		/usr/bin/rm -rf build-dir
+	fi
+}
+
+
+# Install Mdio Autohotspot
+
+installAutoHotspotMdio()
+{
+	TMP=`/usr/bin/grep "mdio-tool" /usr/bin/autohotspot`
+	if [ -z "$TMP" ];then
+		echo "Installing mdio autohotspot"
+		/usr/bin/cat /home/pi/astrid/scripts/autohotspot > /usr/bin/autohotspot
+	fi
+}
+
+
 
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
@@ -139,6 +172,8 @@ installHealpix
 installPyqtree
 installQCharts
 installOpenpyxl
+installMdioTool
+installAutoHotspotMdio
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"
