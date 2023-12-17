@@ -33,6 +33,7 @@ if __name__ == '__main__':
 	cam			= None
 	otestamper		= None
 	framewriter		= None
+	current_version		= None
 	processes		= []
 
 
@@ -89,7 +90,8 @@ if __name__ == '__main__':
 
 
 	def getConfig(configs_fname):
-		dialog = UiDialogPanel('Choose Config', UiPanelConfig, args = {'configs_fname': configs_fname, 'astrid_drive': astrid_drive, 'settings_callback': settingsCallback, 'stylesheet_callback': setStylesheet})
+		global current_version
+		dialog = UiDialogPanel('Choose Config - Astrid v%s' % current_version, UiPanelConfig, args = {'configs_fname': configs_fname, 'astrid_drive': astrid_drive, 'settings_callback': settingsCallback, 'stylesheet_callback': setStylesheet})
 
 
 	def checkAstridDrivePresent() -> bool:
@@ -173,7 +175,7 @@ if __name__ == '__main__':
 
 
 	def isUpdateNeeded():
-		global splash_screen
+		global splash_screen, current_version
 
 		try:
 			urllib.request.urlcleanup()

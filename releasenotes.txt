@@ -1,3 +1,9 @@
+Version 1.0.001:
+================
+
+	Added Astrid version number to Config Dialog on startup - Suggestion Ted Blank
+
+
 Version 1.0.0:
 ==============
 
