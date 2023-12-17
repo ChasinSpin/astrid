@@ -176,6 +176,7 @@ if __name__ == '__main__':
 		global splash_screen
 
 		try:
+			urllib.request.urlcleanup()
 			with urllib.request.urlopen('https://raw.githubusercontent.com/ChasinSpin/astrid/main/version.txt', timeout=10) as response:
 				github_version = response.read().decode('utf-8').strip()
 		except Exception as e:
