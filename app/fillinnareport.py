@@ -97,6 +97,8 @@ class FillInNAReport():
 			'StoppedObservingHours':	'F37',
 			'StoppedObservingMins':		'H37',
 			'StoppedObservingSecs':		'J37',
+			'VideoFormat':			'L25',
+			'ExposureIntegration':		'P25',
 		}
 
 		for key in cell_mapping.keys():
@@ -155,11 +157,11 @@ class FillInNAReport():
 					self.sheet[cell_mapping['ElevationUnits']] = 'm'
 					self.sheet[cell_mapping['ElevationDatum']] = 'WGS84'
 			elif key == 'Timing':
-				self.sheet[cell_mapping['Timing']] = 'GPS - other linking'
+				self.sheet[cell_mapping[key]] = 'GPS - other linking'
 			elif key == 'TimingDevice':
-				self.sheet[cell_mapping['TimingDevice']] = 'ASTRID'
+				self.sheet[cell_mapping[key]] = 'ASTRID'
 			elif key == 'Detector':
-				self.sheet[cell_mapping['Detector']] = 'ASTRID'
+				self.sheet[cell_mapping[key]] = 'ASTRID'
 			elif key == 'OtherDetectorRelatedInfo':
 				sensor = self.__get_metadata('required', 'INSTRUMENT-SENSOR')
 				gain   = self.__get_metadata('required', 'INSTRUMENT-GAIN')
@@ -189,3 +191,7 @@ class FillInNAReport():
 				self.sheet[cell_mapping['StoppedObservingHours']] = '%02d' % self.stopped_utc[0]
 				self.sheet[cell_mapping['StoppedObservingMins']] = '%02d' % self.stopped_utc[1]
 				self.sheet[cell_mapping['StoppedObservingSecs']] = '%02.3f' % self.stopped_utc[2]
+			elif key == 'VideoFormat':
+				self.sheet[cell_mapping[key]] = 'ADVS'
+			elif key == 'ExposureIntegration':
+				self.sheet[cell_mapping[key]] = 'Other'

@@ -42,7 +42,8 @@ from astutils import AstUtils
 #import gc
 
 
-na_report_form_url	= 'https://www.asteroidoccultation.com/observations/Forms/NorthAmerica_AstReportForm_V5.6.12.xlsx'
+#na_report_form_url	= 'https://www.asteroidoccultation.com/observations/Forms/NorthAmerica_AstReportForm_V5.6.12.xlsx'
+na_report_form_url	= 'https://astrid-downloads.s3.amazonaws.com/downloads/NorthAmerica_AstReportForm_V5.6.12.xlsx'
 pa_test_images_folder	= '/home/pi/astrid/app/pa_test_images/'
 VIDEO_BUFFER_COUNT	= 12
 
