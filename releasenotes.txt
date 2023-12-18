@@ -11,6 +11,8 @@ Version 1.0.001:
 	* Site "Yellow" status increased from a 10m difference to 15m difference to reduce triggering.
 	
 	* Auto record will now start if the recoding start after the event start time, but before the event end time
+	
+	* Added frame timestamp to Player
 
 
 Version 1.0.0:

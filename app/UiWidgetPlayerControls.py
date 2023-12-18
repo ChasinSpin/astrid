@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QToolButton, QComboBox, QMessa
 class UiWidgetPlayerControls(QWidget):
 
 	FRAME_NUM_WIDTH = 70
+	FRAME_TIMESTAMP_WIDTH = 220
 
 	def __init__(self, callback_firstFrame, callback_lastFrame, callback_prevFrame, callback_nextFrame, callback_togglePlay, callback_setFrameNum):
 		super().__init__()
@@ -50,6 +51,11 @@ class UiWidgetPlayerControls(QWidget):
 		self.lastFrameLineEdit = QLineEdit()
 		self.lastFrameLineEdit.setReadOnly(True)
 		self.lastFrameLineEdit.setFixedWidth(UiWidgetPlayerControls.FRAME_NUM_WIDTH)
+		self.spacer = QLabel()
+		self.spacer.setText(' ')
+		self.timeLineEdit = QLineEdit()
+		self.timeLineEdit.setReadOnly(True)
+		self.timeLineEdit.setFixedWidth(UiWidgetPlayerControls.FRAME_TIMESTAMP_WIDTH)
 
 		self.buttonPlayPause = QPushButton('Play')
 		self.buttonPlayPause.setObjectName('playerControls')
@@ -64,6 +70,10 @@ class UiWidgetPlayerControls(QWidget):
 		self.layout.addWidget(self.currentFrameLineEdit, 0, 5, Qt.AlignLeft)
 		self.layout.addWidget(self.labelOf, 0, 6, Qt.AlignLeft)
 		self.layout.addWidget(self.lastFrameLineEdit, 0, 7, Qt.AlignLeft)
+		self.layout.addWidget(self.spacer, 0, 8, Qt.AlignLeft)
+		self.layout.addWidget(self.timeLineEdit, 0, 9, Qt.AlignLeft)
+
+		#self.timeLineEdit.setText('')
 
 		self.setLayout(self.layout)
 		

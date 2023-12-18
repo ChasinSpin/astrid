@@ -142,6 +142,7 @@ def getRavfFrame(index):
 
 	window.panelFrame.widgetLastFrame.updateWithCVImage(lastDisplayImage)
 	window.panelFrame.widgetControls.lastFrameLineEdit.setText('%d' % (ravf.frame_count()-1))
+	window.panelFrame.widgetControls.timeLineEdit.setText(frameInfo['start_timestamp_date'] + ' ' + frameInfo['start_timestamp_time'])
 	updateCurrentFrame()
 
 
