@@ -283,8 +283,8 @@ class UiPanelObject(UiPanel):
 				start_time = self.dialog.dialog.panel.start_time
 				end_time = self.dialog.dialog.panel.end_time
 				event_time = datetime.strptime(self.occultationObject['event_time'], '%Y-%m-%dT%H:%M:%S')
-				if start_time <= datetime.utcnow():
-                        		QMessageBox.warning(self, ' ', 'Start time is before now, old event, unable to record!', QMessageBox.Ok)
+				if end_time <= datetime.utcnow():
+                        		QMessageBox.warning(self, ' ', 'End time is before now, old event, unable to record!', QMessageBox.Ok)
 				else:
 					self.dialog = UiDialogPanel('Auto Recording', UiPanelAutoRecording, args = {'start_time': start_time, 'end_time': end_time, 'event_time': event_time, 'camera': self.camera}, parent = self.camera.ui, modal = True)
 
