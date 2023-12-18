@@ -129,7 +129,7 @@ installAutoHotspotMdio()
 	TMP=`/usr/bin/grep "mdio-tool" /usr/bin/autohotspot`
 	if [ -z "$TMP" ];then
 		echo "Installing mdio autohotspot"
-		/usr/bin/cat /home/pi/astrid/scripts/autohotspot > /usr/bin/autohotspot
+		sudo /usr/bin/cp /home/pi/astrid/scripts/autohotspot /usr/bin/autohotspot
 	fi
 }
 

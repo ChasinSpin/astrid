@@ -1,3 +1,9 @@
+Version 1.0.003:
+================
+
+	* Fixed autohotspot upgrade installer
+
+
 Version 1.0.002:
 ================
 
