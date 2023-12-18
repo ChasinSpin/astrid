@@ -1,3 +1,9 @@
+Version 1.0.002:
+================
+
+	* Added privacy policy
+
+
 Version 1.0.001:
 ================
 
@@ -18,14 +24,14 @@ Version 1.0.001:
 Version 1.0.0:
 ==============
 
-	Added wifi network connectivity indicator on ethernet port:
+	* Added wifi network connectivity indicator on ethernet port:
 		Flashing alternate green/yellow = connected to a known wifi network (typically with internet)
 		Solid green/yellow = advertising astrid hotspot wifi (no internet connection)
 
-	Added version identfication and upgrade prompt when online
+	* Added version identfication and upgrade prompt when online
 
 
 Version 0.9.30:
 ===============
 
-	Initial version
+	* Initial version

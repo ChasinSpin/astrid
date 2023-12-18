@@ -406,6 +406,12 @@ class CameraModel:
 
 		self.__checkDownloadNAReportForm()
 
+		hidden = Settings.getInstance().hidden
+		if hidden['privacy_notice'] > 0:
+			 hidden['privacy_notice'] -= 1
+			 Settings.getInstance().writeSubsetting('hidden')
+
+			 QMessageBox.warning(self.ui, ' ', 'Astrid Privacy Notice:\n\nAstrid records some very personal information about you, including (but not limited to): your exact location, name, address, phone, email, owcloud account/password etc.\n\nThis informtion is transferred to others when you use:\n   Auto report data filling\n   Transfer a video file\n   Transfer a light curve\n   Transfer a fits image\n   Connect to a webserver to download something\n   Possible other situations not listed above\n\nAdditionally your reporting organization, and anybody else that you provide a light curve analysis/report or RAVF/FITS file too will also have access to this information via the metadata and audit trail Astrid provides.  You should be aware that IOTA/other reporting organizations, desktop applications and tools disseminate this information to other parties which also includes public access to this data and it may be published on forums and websites.\n\nAdditionally if your USB Drive used with Astrid was to be stolen, or accessed, this personal information maybe compromised.\n\nBy clicking "OK" below, you confirm that you are aware of this and that you have chosen to share you information publically.\n\nYou may also contact your reporting organization to arrange a pseudonym if necessary.\n\nThis privacy notice will appear for the first 3 times Astrid is used (times remaining: %d)' % hidden['privacy_notice'], QMessageBox.Ok)
 
 
 	def __checkDownloadNAReportForm(self):

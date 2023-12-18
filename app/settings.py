@@ -30,6 +30,7 @@ class Settings:
 		{'name': 'observer',		'global': False,	'editable': True,	'displayName': 'Observer'},
 		{'name': 'telescope',		'global': True,		'editable': True,	'displayName': 'Telescope'},
 		{'name': 'general',		'global': True,		'editable': True,	'displayName': 'General'},
+		{'name': 'hidden',		'global': False,	'editable': False,	'displayName': 'Hidden'},
 	]
 
 
@@ -108,6 +109,10 @@ class Settings:
 			{'name': 'location_in_fits',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Write GPS To Fits',			'description': ''},
 			{'name': 'fuzz_gps',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Fuzz GPS',				'description': ''},
 			{'name': 'annotation_mag',			'type': 'float',	'range': [0, 20],				'default': 14.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Annotation Mag Limit',			'description': ''},
+		]},
+
+		{'group': 'hidden', 'settings': [
+			{'name': 'privacy_notice',			'type': 'int',		'range': None,					'default': 3,				'decimalPlaces': None,	'editable': False,	'displayName': 'Privacy Notice Counter',		'description': ''},
 		]},
 	]
 
