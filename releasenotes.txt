@@ -10,7 +10,7 @@ Version 1.0.001:
 
 	* Site "Yellow" status increased from a 10m difference to 15m difference to reduce triggering.
 	
-	* Auto record will now start if the recoding start after the event start time, but before the event end time
+	* Auto record will now start if the recoding start time is after the event start time, but before the event end time
 	
 	* Added frame timestamp to Player
 
@@ -19,7 +19,7 @@ Version 1.0.0:
 ==============
 
 	Added wifi network connectivity indicator on ethernet port:
-		Flashing alternate green/yellow = connected to known wifi network (typically with internet)
+		Flashing alternate green/yellow = connected to a known wifi network (typically with internet)
 		Solid green/yellow = advertising astrid hotspot wifi (no internet connection)
 
 	Added version identfication and upgrade prompt when online
