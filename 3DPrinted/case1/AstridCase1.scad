@@ -46,7 +46,7 @@
 // Camera deformation
 
 // THESE MAY NEED CHANGING, IF THERE ARE CLEARANCE ISSUES, OR HADRDWARE DIFFERENCES
-partNum                     = 6;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers
+partNum                     = 9;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56
 logoNum                     = 3;            // 1 = Eclipse (short text), 2 = Eclipse (full text), 3 = Asteroid Occultation
 externalGps                 = true;         // Make a whole for an external GPS if true
 nutDiameter                 = 5.8 + 0.2;    // This is point to point
@@ -225,7 +225,9 @@ if ( partNum == 6 )
 
 if ( partNum == 7 ) cameraGpsWashers();
     
-if ( partNum == 8 )   fanCover();
+if ( partNum == 8 ) fanCover();
+
+if ( partNum == 9 ) cameraGpsWashersX56();
 
 
 //translate( [-piBoardDimensions[0]/2, -piBoardDimensions[1]/2, caseBottomTopThickness + caseBottomPiClearance] )
@@ -281,6 +283,30 @@ module cameraGpsWashers()
         translate( [0, 0, gpsWasherLozengeDimensions[2]] )
             lozenge(gpsWasherLozengeRetainerDimensions[0], gpsWasherLozengeRetainerDimensions[1], gpsWasherLozengeRetainerDimensions[2]);
     }
+}
+
+
+
+module cameraGpsWashersX56()
+{
+    for (x = [0:40:120] )
+        for (y = [0:8:105])
+        {
+            translate( [x, y, 0] )
+            {
+                translate( [-15, 0, 0] )
+                    donut(gpsWasherDimensions[0], gpsWasherDimensions[1], gpsWasherDimensions[2]);
+                translate( [-25, 0, 0] )
+                    donut(gpsWasherDimensions[0], gpsWasherDimensions[1], gpsWasherDimensions[2]);
+    
+                translate( [0, 0, 0] )
+                {
+                    lozenge(gpsWasherLozengeDimensions[0], gpsWasherLozengeDimensions[1], gpsWasherLozengeDimensions[2]);
+                    translate( [0, 0, gpsWasherLozengeDimensions[2]] )
+                        lozenge(gpsWasherLozengeRetainerDimensions[0], gpsWasherLozengeRetainerDimensions[1], gpsWasherLozengeRetainerDimensions[2]);
+                }
+            }
+        }
 }
 
 

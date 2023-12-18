@@ -1,5 +1,16 @@
 # TODO
 
+* Ted swings file (negative altitude)
+* Any chance you could allow a dynamic (local) change of the limiting magnitude during Exposure Analysis, rather than forcing us to stop and restart Astrid to get to the settings for Simulator? - Ted
+* For target identification, dotted green circle for the predicted location on a prepoint and solid green for goto.  Call button Target ID.
+* Magnitudes Cluttered on Display Analysis
+* Significant red errors when recording with Software Leap Seconds
+* Continuous tracking
+* Add YYYYMMDD_ to folder name (check that's correct on IOTA Report format
+* Repeat prepoint when failed 
+* Mention heat sinks in the kit
+* SNR of stars
+* Teds comment about shutdown
 * Astrid saves fits files as .fit, change to fits (maybe)
 * Identify target with circle after platesolve
 * GPS Antenna must be attached when recording video, no GPS popup msg or prevent recording as it currently hangs
@@ -7,9 +18,7 @@
 * Multiple deletes on events
 * Generate KMZ for multi station videos
 * Order occultations by the next one first, can more be automated?  Can frame rate be pre entered?
-* Multiple astrids app starts cause permissions folder
 * Quotes in Wifi names = bad Ted's Wifi, update doc
-* Versions on upgrades
 * astropy download
 * Remove unused options from Wifi Setup as it creates confusion
 * For Occultation Info Screen, calc Error In Time, Shadow Width, Path Uncertainty in km's

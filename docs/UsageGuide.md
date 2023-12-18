@@ -42,7 +42,19 @@ Once every minute, networks are checked, and Astrid may switch to a new network 
 
 So, if you can't connect, then look for the possibility of Astrid being on another network. 
 
+The ethernet port flashes alternate Green/Yellow when connected to a known WiFi Network and is solid Green/Yellow when Astrid is generating it's own Wifi Hotspot (Adhoc Network).
+
 ##### If you are hot-spotting through a phone to connect to Astrid, be aware that some cellular plans limit throughput through the phones hotspot and may result in very slow VNC response.
+
+### Ethernet (wired connection)
+
+Astrid also has an ethernet port that can be used.  If you're having problems with your WiFi at home due to poor signal where Astrid is switching between Wifi and Hotspot, you can also remove your Home Wifi from Astrid and use an ethernet connection instead.
+
+Plug in your ethernet connection, connect to Astrid via the Hotspot and start a terminal on the desktop (black square with >_ in - the leftmost one), and then type:
+
+	sudo systemctl stop dnsmasq
+	
+This will allow you to connect to the internet via the ethernet cable.
 
 ## First Light
 

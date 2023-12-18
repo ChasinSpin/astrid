@@ -15,6 +15,8 @@
 It can take a few minutes for astrid.local to be pushed to the device you are 
 connecting from's DNS.
 
+Make sure you are on the correct WiFi network, the ethernet port flashes alternate Green/Yellow when connected to a known WiFi Network and is solid Green/Yellow when Astrid is generating it's own Wifi Hotspot (Adhoc Network).
+
 ## GPS Poor Reception
 
 A good solid GPS signal is required for both timing and positioning.  If the Timing/GPS buttons are not constantly Green in Astrid, then you should look into the positioning of the GPS antenna. It is suggested to mount the antenna facing the sky and with a clear view of it.  Mounting the antenna on the telescope is not recommended because most tubes are metal or carbon fiber and the reception will be poor, the telescope also moves and that can cause the view of the sky to change for the GPS receiver.  Equally, mounting too close to the tripod or electronics may interfere with reception.
