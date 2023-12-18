@@ -85,6 +85,20 @@ def closeRavf():
 		ravf_fp = None
 
 
+def drawTarget(img, centerGap, lineLength, lineThickness, pos, colors):
+	x = pos[0]
+	y = pos[1]
+
+	for colorThickness in [[colors[0], lineThickness*3], [colors[1], lineThickness]]:
+		color		= colorThickness[0]
+		thickness	= colorThickness[1]
+
+		cv2.line(img, (x, y-centerGap), (x, y-lineLength), (color), thickness)
+		cv2.line(img, (x, y+centerGap), (x, y+lineLength), (color), thickness)
+		cv2.line(img, (x-centerGap, y), (x-lineLength, y), (color), thickness)
+		cv2.line(img, (x+centerGap, y), (x+lineLength, y), (color), thickness)
+
+
 def getRavfFrame(index):
 	global ravf_fp, ravf, window, width, height, autoStretch, autoStretchLower, autoStretchUpper, targetPosition, lastDisplayImage, lastImage, frameInfo, frameStatus
 
@@ -130,15 +144,7 @@ def getRavfFrame(index):
 
 	if scaledTargetPosition is not None:
 		print('Scaled Target Position:', scaledTargetPosition)
-
-		lineGap = 10
-		lineLength = 30
-		x = scaledTargetPosition[0]
-		y = scaledTargetPosition[1]
-		cv2.line(lastDisplayImage, (x, y-lineGap), (x, y-lineLength), (32000), 3)
-		cv2.line(lastDisplayImage, (x, y+lineGap), (x, y+lineLength), (32000), 3)
-		cv2.line(lastDisplayImage, (x-lineGap, y), (x-lineLength, y), (32000), 3)
-		cv2.line(lastDisplayImage, (x+lineGap, y), (x+lineLength, y), (32000), 3)
+		drawTarget(lastDisplayImage, 10, 30, 1, scaledTargetPosition, [20000, 40000])
 
 	window.panelFrame.widgetLastFrame.updateWithCVImage(lastDisplayImage)
 	window.panelFrame.widgetControls.lastFrameLineEdit.setText('%d' % (ravf.frame_count()-1))
@@ -395,7 +401,7 @@ def plateSolve():
 	plateSolverThread = PlateSolver(plateSolveFitsFile, search_full_sky, progress_callback=plateSolveStatusMsg, success_callback=plateSolveSuccess, failure_callback=plateSolveFailed)
 
 
-def saveFrame():
+def savePng():
 	global ravf_fp, ravf, lastDisplayImage, ravf_filename, current_frame, window
 
 	if ravf_fp is None or ravf is None:
@@ -411,6 +417,32 @@ def saveFrame():
 	window.showStatusMessage('Saved frame to: %s' % img_filename)
 
 
+def saveFits():
+	global ravf_fp, ravf, lastImage, ravf_filename, current_frame, window, frameStatus, targetPosition
+
+	if ravf_fp is None or ravf is None:
+		return
+
+	f_basename = os.path.splitext(ravf_filename)[0]
+
+	img_filename = '%s_frame_finder_%d.fit' % (f_basename, current_frame)
+
+	print('Saving frame to:', img_filename)
+
+	start_timestamp = frameStatus['start_timestamp']
+	epoch = datetime(2010, 1, 1, hour=0, minute=0, second=0, microsecond=0, tzinfo = timezone.utc) # 00:00:00 1st Jan 2010
+	frame_seconds_since_epoch = timedelta(seconds = start_timestamp / 1000000000)
+	obsDateTime = epoch + frame_seconds_since_epoch
+	#print(obsDateTime)
+	expTime = frameStatus['exposure_duration'] / 1000000000.0
+
+	if targetPosition is not None:
+		print('Target Position:', targetPosition)
+		drawTarget(lastImage, 20, 60, 1, (int(targetPosition[0]), int(targetPosition[1])), [0, 65535])
+	
+	save_fits_frame(lastImage, img_filename, obsDateTime, expTime, current_frame)
+
+	window.showStatusMessage('Saved frame to: %s' % img_filename)
 
 
 def __decimalDegreesToDMS(deg):
@@ -638,7 +670,7 @@ if __name__ == '__main__':
 
 	# Start the main window
 	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext, togglePlay, setFrameNum)
-	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, saveFrame, exportFits, metadata)
+	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, savePng, saveFits, exportFits, metadata)
 
 	QMessageBox.warning(window, ' ', 'Astrid Player currently obtains the focal length and various settings from the currently chosen configuration in Astrid.\n\nPlease ensure the matching configuration that the video was taken with is selected in Astrid.\n\nIf plate solving fails, then this is the likely cause.', QMessageBox.Ok)
 

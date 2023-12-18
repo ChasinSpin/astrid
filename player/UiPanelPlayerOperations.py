@@ -17,7 +17,8 @@ class UiPanelPlayerOperations(UiPanel):
 
 		self.widgetFileOpen	= self.addButton('Load Video')
 		self.widgetPlateSolve	= self.addButton('Plate Solve')
-		self.widgetSaveFrame	= self.addButton('Save Frame')
+		self.widgetSavePng	= self.addButton('Save Png Image')
+		self.widgetSaveFits	= self.addButton('Save Fits Finder')
 		self.widgetMetadata	= self.addButton('Metadata')
 		self.widgetExportFits	= self.addButton('Export Fits Seq')
 
@@ -35,7 +36,8 @@ class UiPanelPlayerOperations(UiPanel):
 	def registerCallbacks(self):
 		self.widgetFileOpen.clicked.connect(self.buttonFileOpenPressed)
 		self.widgetPlateSolve.clicked.connect(self.buttonPlateSolvePressed)
-		self.widgetSaveFrame.clicked.connect(self.buttonSaveFramePressed)
+		self.widgetSavePng.clicked.connect(self.buttonSavePngPressed)
+		self.widgetSaveFits.clicked.connect(self.buttonSaveFitsPressed)
 		self.widgetMetadata.clicked.connect(self.buttonMetadataPressed)
 		self.widgetExportFits.clicked.connect(self.buttonExportFitsPressed)
 		self.widgetAutoStretch.stateChanged.connect(self.checkBoxAutoStretchChanged)
@@ -60,8 +62,12 @@ class UiPanelPlayerOperations(UiPanel):
 			self.plateSolveCancelCallback()
 
 
-	def buttonSaveFramePressed(self):
-		self.saveFrameCallback()
+	def buttonSavePngPressed(self):
+		self.savePngCallback()
+
+
+	def buttonSaveFitsPressed(self):
+		self.saveFitsCallback()
 
 
 	def buttonMetadataPressed(self):
@@ -89,13 +95,14 @@ class UiPanelPlayerOperations(UiPanel):
 
 	# OPERATIONS
 
-	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, saveFrameCallback, exportFitsCallback, metadataCallback):
+	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, savePngCallback, saveFitsCallback, exportFitsCallback, metadataCallback):
 		self.autoStretchCallback = autoStretchCallback
 		self.autoStretchLimitsCallback = autoStretchLimitsCallback
 		self.lineEditAutoStretchLimitsChanged()
 
 		self.plateSolveCallback = plateSolveCallback
-		self.saveFrameCallback = saveFrameCallback
+		self.savePngCallback = savePngCallback
+		self.saveFitsCallback = saveFitsCallback
 		self.exportFitsCallback = exportFitsCallback
 		self.plateSolveCancelCallback = plateSolveCancelCallback
 		self.metadataCallback = metadataCallback
@@ -107,7 +114,8 @@ class UiPanelPlayerOperations(UiPanel):
 
 	def __setEnabledButtons(self, enable):
 		self.widgetPlateSolve.setEnabled(enable)
-		self.widgetSaveFrame.setEnabled(enable)
+		self.widgetSavePng.setEnabled(enable)
+		self.widgetSaveFits.setEnabled(enable)
 		self.widgetMetadata.setEnabled(enable)
 		self.widgetExportFits.setEnabled(enable)
 		self.widgetAutoStretch.setEnabled(enable)

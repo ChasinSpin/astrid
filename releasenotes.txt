@@ -1,3 +1,11 @@
+Version 1.0.004:
+================
+
+	* Added "Save Fits Finder" to Player, which can be used after a plate solver to identify the target.  This can be loaded as a finder image into pymovie to make it easy to place targets - Suggestion Brian Heimes
+
+	* Improved constrast of target maker in Player by using 2 contrasting colors
+
+
 Version 1.0.003:
 ================
 
