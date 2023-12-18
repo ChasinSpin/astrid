@@ -8,6 +8,8 @@ Version 1.0.001:
 
 	Moved Time from Display 1 Panel to Status Panel - Suggestion Ted Blank
 
+	Site "Yellow" status increased from a 10m difference to 15m difference to reduce triggering.
+
 
 Version 1.0.0:
 ==============
