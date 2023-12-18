@@ -7,6 +7,8 @@ from UiPanelGps import UiPanelGps
 from UiPanelTiming import UiPanelTiming
 from UiPanelAcquisition import UiPanelAcquisition
 from UiDialogPanel import UiDialogPanel
+from PyQt5.QtCore import QTimer
+from datetime import datetime
 
 
 class UiPanelStatus(UiPanel):
@@ -19,12 +21,12 @@ class UiPanelStatus(UiPanel):
 		self.widgetGps		= self.addStatusButton('GPS')
 		self.widgetTiming	= self.addStatusButton('Timing')
 		self.widgetAcquisition	= self.addStatusButton('Acquisition')
+		self.widgetTime		= self.addLineEdit('UTC Time', editable = False)
 
 		self.widgetSite.setStatus(UiStatusButton.STATUS_UNKNOWN)
 		self.widgetGps.setStatus(UiStatusButton.STATUS_UNKNOWN)
 		self.widgetTiming.setStatus(UiStatusButton.STATUS_ADEQUATE)
 		self.widgetAcquisition.setStatus(UiStatusButton.STATUS_GOOD)
-
 
 		self.displayedSite		= False
 		self.displayedGps		= False
@@ -34,6 +36,11 @@ class UiPanelStatus(UiPanel):
 		self.dialog = None
 
 		self.updateStatusLabel()
+
+		self.updateTimer = QTimer()
+		self.updateTimer.timeout.connect(self.__updateTimer)
+		self.updateTimer.setInterval(500)
+		self.updateTimer.start()
 
 
 	def registerCallbacks(self):
@@ -104,4 +111,5 @@ class UiPanelStatus(UiPanel):
 		self.titleLabel.setStatus(statuses[minStatus])
 
 
-# self.widgetSite.setStatus(UiStatusButton.STATUS_GOOD)
+	def __updateTimer(self):
+		self.widgetTime.setText(datetime.utcnow().strftime("%H:%M:%S - %b %d"))

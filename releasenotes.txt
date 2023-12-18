@@ -3,6 +3,11 @@ Version 1.0.001:
 
 	Added Astrid version number to Config Dialog on startup - Suggestion Ted Blank
 
+	North American Report Form AutoFill now fills out corrected values as per Jerry B.  Also IOTA had version 5.6.12 labelled 5.6.11 internally.
+	Please delete previous template form from the USB Drive after software upgrade, and launch Astrid to download the new one.
+
+	Moved Time from Display 1 Panel to Status Panel - Suggestion Ted Blank
+
 
 Version 1.0.0:
 ==============

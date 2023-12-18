@@ -1,6 +1,4 @@
 from UiPanel import UiPanel
-from PyQt5.QtCore import QTimer
-from datetime import datetime
 
 
 
@@ -17,15 +15,9 @@ class UiPanelDisplay1(UiPanel):
 		self.widgetZebras		= self.addCheckBox('Zebras')
 		self.widgetCrosshairs		= self.addCheckBox('Center Marker')
 		self.widgetStarDetection	= self.addCheckBox('Star Detect <=0.5fps')
-		self.widgetTime			= self.addLineEdit('UTC System Time', editable = False)
 
 		self.widgetAutoStretchLower.setText('%0.1f' % self.camera.autoStretchLower)
 		self.widgetAutoStretchUpper.setText('%0.1f' % self.camera.autoStretchUpper)
-
-		self.updateTimer = QTimer()
-		self.updateTimer.timeout.connect(self.__updateTimer)
-		self.updateTimer.setInterval(500)
-		self.updateTimer.start()
 
 
 	def registerCallbacks(self):
@@ -78,6 +70,3 @@ class UiPanelDisplay1(UiPanel):
 
 
 	# OPERATIONS
-
-	def __updateTimer(self):
-		self.widgetTime.setText(datetime.utcnow().strftime("%H:%M:%S - %b %d"))
