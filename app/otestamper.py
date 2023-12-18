@@ -148,7 +148,7 @@ class OteStamper:
 			if self.ui.panelStatus:
 				if self.status['fix'] < 2 or AstSite.distanceFromGps(self.status['latitude'], self.status['longitude']) >= 50.0:
 					self.ui.panelStatus.widgetSite.setStatus(UiStatusButton.STATUS_POOR)
-				elif self.status['fix'] == 2 or self.status['pdop'] > 5.0 or self.status['hdop'] > 5.0 or self.status['vdop'] > 5.0 or AstSite.distanceFromGps(self.status['latitude'], self.status['longitude']) >= 10.0:
+				elif self.status['fix'] == 2 or self.status['pdop'] > 5.0 or self.status['hdop'] > 5.0 or self.status['vdop'] > 5.0 or AstSite.distanceFromGps(self.status['latitude'], self.status['longitude']) >= 15.0:
 					self.ui.panelStatus.widgetSite.setStatus(UiStatusButton.STATUS_ADEQUATE)
 				elif self.status['fix'] == 3:
 					self.ui.panelStatus.widgetSite.setStatus(UiStatusButton.STATUS_GOOD)
