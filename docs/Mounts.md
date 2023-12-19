@@ -12,6 +12,7 @@
 | EQMOD Mounts | Most Should Work | /dev/ttyUSB0, 115200, parkmethod=park, Connect via USB to the mount directly (unplug SynScan) |
 | Losmandy Gemini 2 | In Progress | /dev/ttyACM0, 9600|
 | Vixen Starbook Ten | Yes | Connect to ethernet port on the Pi. Point Dec West at start up (home position), accept warning about sun, then connect Astrid.  Note Park on Starbook Ten often means RA is rotated, it is okay to start a polar alignment from this position. |
+| LX200 Classic | Yes | /dev/ttyUSB0, 9600, parkmethod=park, Indi Telescope Device Id=LX200 Classic, Indi Module = indi_lx200classic   Tested in AltAz, should work in Equatorial.  Tracking is permanently on with this mount. Connect via USB to the mount directly with this: https://www.clearline-tech.com/repair-parts/lx200/lx200-usb-adapter.html |
 | Fixed Mounts (Prepoint) | Yes | Use Simulator |
 
 ### Mounts we don't recommended
