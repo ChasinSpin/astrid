@@ -1,3 +1,9 @@
+Version 1.0.005:
+================
+
+	* Fixed bug where Astrid quits when fits file does not contain FOCALLEN value
+
+
 Version 1.0.004:
 ================
 

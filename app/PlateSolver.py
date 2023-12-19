@@ -204,7 +204,11 @@ class PlateSolver:
 		self.obsdatetime = hdr['DATE-OBS']
 
 		# Calculate FOV
-		self.focalLen = hdr['FOCALLEN']
+		if 'FOCALLEN' in hdr.keys():
+			self.focalLen = hdr['FOCALLEN']
+		else:
+			self.focalLen = Settings.getInstance().platesolver['focal_length']
+
 		fov = (57.3 / self.focalLen) * self.frame_width_mm
 		print("Sensor FOV: %f deg" % (fov))
 		scale_low = fov * self.settings['scale_low_factor']
