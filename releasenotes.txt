@@ -3,6 +3,8 @@ Version 1.0.005:
 
 	* Fixed bug where Astrid quits when fits file does not contain FOCALLEN value
 
+	* Upped max frame rate to 5000 fps for daylight focusing
+
 
 Version 1.0.004:
 ================

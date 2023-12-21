@@ -25,7 +25,7 @@ class UiPanelTask(UiPanel):
 			options.append('Polar Align')
 		self.widgetTask		= self.addComboBox('Task', options)
 		self.widgetTask.setObjectName('comboBoxTask')
-		self.widgetFrameRate	= self.addLineEditDouble('Frame Rate(fps)', 0.0, 600.38, 2)
+		self.widgetFrameRate	= self.addLineEditDouble('Frame Rate(fps)', 0.0, 5000.00, 2)
 		self.widgetFrameRate.setText('10.0')
 		self.widgetExposure	= self.addLineEditDouble('Exposure(s)', 0.000000, 15.534385, 6)
 		self.widgetExposure.setText(str(Settings.getInstance().camera['default_photo_exposure']))
