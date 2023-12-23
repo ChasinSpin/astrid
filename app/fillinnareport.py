@@ -128,9 +128,27 @@ class FillInNAReport():
 					elif star.startswith('HIP'):
 						starCatalog = 'HIP  xxxxxx'
 						starNumber = star.replace('HIP ', '')
+					elif star.startswith('UCAC2'):
+						starCatalog = 'UCAC2        xxxxxxxx'
+						starNumber = star.replace('UCAC2 ', '')
+					elif star.startswith('UCAC3'):
+						starCatalog = 'UCAC3     xxx - xxxxxx'
+						starNumber = star.replace('UCAC3 ', '')
 					elif star.startswith('UCAC4'):
 						starCatalog = 'UCAC4     xxx - xxxxxx'
 						starNumber = star.replace('UCAC4 ', '')
+					elif star.startswith('G'):
+						starCatalog = 'G-coords hhmmss.s?ddmmss'
+						starNumber = star.replace('G', '')
+					elif star.startswith('URAT1'):
+						starCatalog = 'URAT1    xxx - xxxxxxx'
+						starNumber = star.replace('URAT1 ', '')
+					elif star.startswith('1B'):
+						starCatalog = '1B    xxx - xxxxxxx'
+						starNumber = star.replace('1B ', '')
+					elif star.startswith('1N'):
+						starCatalog = '1N    xxx - xxxxxxx'
+						starNumber = star.replace('1N ', '')
 
 					if starCatalog is not None and starNumber is not None:
 						self.sheet[cell_mapping['StarCatalog']] = starCatalog

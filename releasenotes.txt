@@ -1,3 +1,9 @@
+Version 1.0.006:
+================
+
+	* Auto-Fill of North American report form now handles star catalogs: UCAC2, UCAC3, 1B, 1N, URAT1 and G
+
+
 Version 1.0.005:
 ================
 
