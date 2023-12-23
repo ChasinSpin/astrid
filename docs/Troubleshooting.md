@@ -9,6 +9,8 @@
 * [GPS Accuracy](#gps-accuracy)
 * [Intermittent Power](#intermittent-power)
 * [Lines On Video](#lines-on-video)
+* [Mount or Prepoint Has Wrong Position](#mount-or-prepoint-has-wrong-position)
+
 
 ## Host Not Found
 
@@ -189,3 +191,11 @@ If you encounter intermittent lines on video, investigate where the Astrid was p
 Although this hasn't been definitively demonstrated yet / seen in a recording, it has been seen a couple of times over a VNC connection at a specific site which had power lines directly above an Astrid.
 
 It may impact either Wifi to the device running VNC, or induce into the sensitive CMOS sensor on the camera.
+
+## Mount or Prepoint Has Wrong Position
+
+First thing to try is take another photo, plate solve and goto, then repeat this process one more time, the star field should remaining in a similar position indicating the position is correct.
+
+Other things to check (for example if Prepoint is an incorrect position), is your time and event details.
+
+A valid GPS position, Time and site location are required for accurate positioning via a goto or prepoint.  Please ensure all status buttons are Green.

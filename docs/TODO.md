@@ -9,7 +9,6 @@
 * Add YYYYMMDD_ to folder name (check that's correct on IOTA Report format
 * Repeat prepoint when failed 
 * Mention heat sinks in the kit
-* SNR of stars
 * Teds comment about shutdown
 * Astrid saves fits files as .fit, change to fits (maybe)
 * Identify target with circle after platesolve
