@@ -163,13 +163,13 @@ class UiPanel(QWidget):
 
 	def addLineEditDouble(self, title: str, bottom: float, top: float, decimalPlaces: int, editable = True) -> QLineEdit:
 		lineEdit = self.addLineEdit(title, editable)
-		lineEdit.setValidator(DoubleValidator(bottom, top, decimalPlaces))
+		lineEdit.setValidator(DoubleValidator(bottom, top, decimalPlaces, lineEdit))
 		return lineEdit
 		
 
 	def addLineEditInt(self, title: str, bottom: int, top: int, editable = True) -> QLineEdit:
 		lineEdit = self.addLineEdit(title, editable)
-		lineEdit.setValidator(IntValidator(bottom, top))
+		lineEdit.setValidator(IntValidator(bottom, top, lineEdit))
 		return lineEdit
 
 

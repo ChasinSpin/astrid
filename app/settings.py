@@ -47,7 +47,7 @@ class Settings:
 			{'name': 'photo_format',			'type': 'choice',	'range': ['fit'],				'default': 'fit',			'decimalPlaces': None,	'editable': False,	'displayName': 'Photo Format',				'description': ''},
 			{'name': 'radec_format',			'type': 'choice',	'range': ['hmsdms','hour','deg'],		'default': 'hmsdms',			'decimalPlaces': None,	'editable': True,	'displayName': 'Ra/Dec Display Format',			'description': ''},
 			{'name': 'polar_align_test',			'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Polar Align Test Mode',			'description': ''},
-			{'name': 'polar_align_rotation',		'type': 'float',	'range': [0.0,90.0],				'default': 90.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Polar Align Rotation amount',		'description': ''},
+			{'name': 'polar_align_rotation',		'type': 'float',	'range': [60.0,90.0],				'default': 90.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Polar Align Rotation amount',		'description': ''},
 			{'name': 'default_photo_exposure',		'type': 'float',	'range': [0.0,30.0],				'default': 1.0,				'decimalPlaces': 6,	'editable': True,	'displayName': 'Default Photo Exposure',		'description': ''},
 			{'name': 'prompt_dark_after_acquisition2',	'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Prompt For Darks After Acquisition',	'description': ''},
 			{'name': 'dither_ra',				'type': 'float',	'range': [0.0,10.0],				'default': 0.001,			'decimalPlaces': 6,	'editable': True,	'displayName': 'Dithering RA Amount',			'description': ''},
@@ -62,7 +62,7 @@ class Settings:
 			{'name': 'indi_module',				'type': 'str',		'range': None,					'default': 'indi_simulator_telescope',	'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Module',				'description': ''},
 			{'name': 'indi_telescope_device_id',		'type': 'str',		'range': None,					'default': 'Telescope Simulator',	'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Telescope Device Id',		'description': ''},
 			{'name': 'indi_usb_tty',			'type': 'str',		'range': None,					'default': '/dev/ttyUSB0',		'decimalPlaces': None,	'editable': True,	'displayName': 'Indi USB tty',				'description': ''},
-			{'name': 'baud',				'type': 'int',		'range': [0,256000],				'default': 9600,			'decimalPlaces': None,	'editable': True,	'displayName': 'Baud Rate',				'description': ''},
+			{'name': 'baud',				'type': 'int',		'range': [110,256000],				'default': 9600,			'decimalPlaces': None,	'editable': True,	'displayName': 'Baud Rate',				'description': ''},
 			{'name': 'align_axis',				'type': 'choice',	'range': ['eq','altaz'],			'default': 'eq',			'decimalPlaces': None,	'editable': True,	'displayName': 'Mount Alignment Type',			'description': ''},
 			{'name': 'goto_capable',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Goto Capability',			'description': ''},
 			{'name': 'tracking_capable',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Tracking Capability',			'description': ''},
@@ -74,12 +74,12 @@ class Settings:
 	
 		{'group': 'platesolver', 'settings': [
 			{'name': 'focal_length',			'type': 'float',	'range': [2, 5000],				'default': 200.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Focal Length',				'description': ''},
-			{'name': 'search_radius_deg',			'type': 'float',	'range': [0.0, 30.0],				'default': 5.0,				'decimalPlaces': 2,	'editable': True,	'displayName': 'Search Radius(deg)',			'description': ''},
-			{'name': 'limit_objs',				'type': 'int',		'range': [0, 10000],				'default': 1002,			'decimalPlaces': None,	'editable': True,	'displayName': 'Limit Results Objects',			'description': ''},
+			{'name': 'search_radius_deg',			'type': 'float',	'range': [1.0, 30.0],				'default': 5.0,				'decimalPlaces': 2,	'editable': True,	'displayName': 'Search Radius(deg)',			'description': ''},
+			{'name': 'limit_objs',				'type': 'int',		'range': [5, 10000],				'default': 1002,			'decimalPlaces': None,	'editable': True,	'displayName': 'Limit Results Objects',			'description': ''},
 			{'name': 'downsample',				'type': 'int',		'range': [1, 10],				'default': 2,				'decimalPlaces': None,	'editable': True,	'displayName': 'Downsample Image',			'description': ''},
 			{'name': 'source_extractor',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Use Source Extractor',			'description': ''},
-			{'name': 'scale_low_factor',			'type': 'float',	'range': [0.0, 10.0],				'default': 0.1,				'decimalPlaces': 2,	'editable': True,	'displayName': 'Focal Length Low Factor',		'description': ''},
-			{'name': 'scale_high_factor',			'type': 'float',	'range': [0.0, 10.0],				'default': 1.25,			'decimalPlaces': 2,	'editable': True,	'displayName': 'Focal Length High Factor',		'description': ''},
+			{'name': 'scale_low_factor',			'type': 'float',	'range': [0.01, 0.9],				'default': 0.1,				'decimalPlaces': 2,	'editable': True,	'displayName': 'Focal Length Low Factor',		'description': ''},
+			{'name': 'scale_high_factor',			'type': 'float',	'range': [1.01, 5.0],				'default': 1.25,			'decimalPlaces': 2,	'editable': True,	'displayName': 'Focal Length High Factor',		'description': ''},
 			{'name': 'direction_indicator_polar_align',	'type': 'choice',	'range': ['None', '1 Arrow', '2 Arrows'],	'default': 2,				'decimalPlaces': None,	'editable': True,	'displayName': 'Direction Indicator for Polar Align',	'description': ''},
 			{'name': 'direction_indicator_platesolve',	'type': 'choice',	'range': ['None', '1 Arrow', '2 Arrows'],	'default': 1,				'decimalPlaces': None,	'editable': True,	'displayName': 'Direction Indicator for Plate Solving',	'description': ''},
 		]},
@@ -94,7 +94,7 @@ class Settings:
 		]},
 
 		{'group': 'telescope', 'settings': [
-			{'name': 'aperture',				'type': 'int',		'range': [0, 10000],				'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Aperture(mm)',				'description': ''},
+			{'name': 'aperture',				'type': 'int',		'range': [5, 10000],				'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Aperture(mm)',				'description': ''},
 			{'name': 'optical_type',			'type': 'choice',	'range': ['SCT including Cass and Mak',
 													  'Newtonian', 'Refractor',
 													  'Dobsonian'],				'default': 'Refractor',			'decimalPlaces': None,	'editable': True,	'displayName': 'Optical Type',				'description': ''},

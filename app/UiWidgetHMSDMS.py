@@ -29,11 +29,11 @@ class UiWidgetHMSDMS(QWidget):
 			self.secsEdit.setReadOnly(True)
 		else:
 			if hmsdms == 'hms':
-				self.hoursDegEdit.setValidator(IntValidator(0, 23))
+				self.hoursDegEdit.setValidator(IntValidator(0, 23, self.hoursDegEdit))
 			else:
-				self.hoursDegEdit.setValidator(IntValidator(-90, 90))
-			self.minsEdit.setValidator(IntValidator(0, 59))
-			self.secsEdit.setValidator(DoubleValidator(0, 59.99999, 5))
+				self.hoursDegEdit.setValidator(IntValidator(-90, 90, self.hoursDegEdit))
+			self.minsEdit.setValidator(IntValidator(0, 59, self.minsEdit))
+			self.secsEdit.setValidator(DoubleValidator(0, 59.99999, 5, self.secsEdit))
 
 		self.layout = QHBoxLayout()
 		self.layout.setSpacing(0)
