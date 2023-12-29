@@ -134,6 +134,14 @@ installAutoHotspotMdio()
 }
 
 
+# Install Autohotspot Setup
+
+installAutoHotspotSetup()
+{
+	/usr/bin/cp /home/pi/astrid/scripts/autohotspot-setup.sh /home/pi/Autohotspot/autohotspot-setup.sh
+}
+
+
 
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
@@ -174,6 +182,7 @@ installQCharts
 installOpenpyxl
 installMdioTool
 installAutoHotspotMdio
+installAutoHotspotSetup
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"

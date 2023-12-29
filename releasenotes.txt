@@ -1,3 +1,9 @@
+Version 1.0.007:
+================
+
+	* Added Remove wifi network and Disable Local DNS to Wifi Setup
+
+
 Version 1.0.006:
 ================
 
