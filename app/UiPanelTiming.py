@@ -15,13 +15,14 @@ class UiPanelTiming(UiPanel):
 
 	def __init__(self, title, panel):
 		super().__init__(title)
-		self.panel			= panel
-		self.widgetPps			= self.addLineEdit('PPS', editable=False)
-		self.widgetLeapSeconds		= self.addLineEdit('Leap Seconds', editable=False)
-		self.widgetLeapSecondsSource	= self.addLineEdit('Leap Seconds Source', editable=False)
-		self.widgetTime			= self.addLineEdit('GPS Time', editable=False)
-		self.widgetSystemGPSDelta	= self.addLineEdit('GPS/System Time Delta(s)', editable=False)
-		self.widgetOK			= self.addButton('OK')
+		self.panel				= panel
+		self.widgetPps				= self.addLineEdit('PPS', editable=False)
+		self.widgetLeapSeconds			= self.addLineEdit('Leap Seconds', editable=False)
+		self.widgetLeapSecondsSource		= self.addLineEdit('Leap Seconds Source', editable=False)
+		self.widgetTime				= self.addLineEdit('GPS Time', editable=False)
+		self.widgetSystemGPSDeltaChrony		= self.addLineEdit('GPS/System Time Delta(s) - Chrony', editable=False)
+		self.widgetSystemGPSDeltaTimestamp	= self.addLineEdit('GPS/System Time Delta(s) - Timestamp', editable=False)
+		self.widgetOK				= self.addButton('OK')
 
 		OteStamper.getInstance().setGpsTimeCallback(self.__updateTimer)
 
@@ -29,7 +30,7 @@ class UiPanelTiming(UiPanel):
 		process = subprocess.Popen('/usr/bin/chronyc tracking | /usr/bin/grep "System time" | /usr/bin/sed "s/NTP/GPS/" | /usr/bin/sed "s/System time     : //"', stdout=subprocess.PIPE, shell=True)
 		(output, err) = process.communicate()
 		process.status = process.wait()
-		self.widgetSystemGPSDelta.setText(output.decode('utf-8'))
+		self.widgetSystemGPSDeltaChrony.setText(output.decode('utf-8'))
 
 		self.setColumnWidth(1, UiPanelTiming.fixedWidth)
 
@@ -63,8 +64,10 @@ class UiPanelTiming(UiPanel):
 			dt = datetime.fromtimestamp(status['unixEpoch'])
 		except OverflowError:
 			self.widgetTime.setText('Unknown')
+			self.widgetSystemGPSDeltaTimestamp.setText('Unknown')
 		else:
 			self.widgetTime.setText(dt.strftime('%Y-%m-%d %H:%M:%S'))
+			self.widgetSystemGPSDeltaTimestamp.setText('GPS is %d seconds ahead of system' % status['deltaSystemTimeSecs'])
 
 
 	# OPERATIONS

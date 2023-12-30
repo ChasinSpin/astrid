@@ -253,12 +253,20 @@ class UiPanelObject(UiPanel):
 
 
 	def buttonPrepointPressed(self):
+		if not self.camera.ui.panelStatus.goForRecordingVideo():
+			QMessageBox.critical(self, ' ', 'Status buttons must be Green to Prepoint!  Check GPS connection, update site and/or wait until signal is acquired.', QMessageBox.Ok)
+			return
+
 		if not self.camera.isPhotoMode():
 			self.camera.ui.panelTask.switchModeTo('Photo')
 		self.dialog = UiDialogPanel('Prepoint', UiPanelPrepoint, args = {'camera': self.camera, 'object': self.occultationObject}, parent = self.camera.ui)
 
 
 	def buttonAutoRecordPressed(self):
+		if not self.camera.ui.panelStatus.goForRecordingVideo():
+			QMessageBox.critical(self, ' ', 'Status buttons must be Green to AutoRecord!  Check GPS connection, update site and/or wait until signal is acquired.', QMessageBox.Ok)
+			return
+
 		if not self.camera.isOTEVideoMode():
 			ret = QMessageBox.question(self, ' ', 'Auto Recording is only available when camera is in OTE Video Mode. Switch Mode To OTE Video?', QMessageBox.Yes | QMessageBox.Cancel)
 			if ret == QMessageBox.Yes:

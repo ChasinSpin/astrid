@@ -180,10 +180,14 @@ class UiPanelTask(UiPanel):
 		self.camera.setFullSkySolve(tState)
 
 
-	def buttonRecordPressed(self, checked):
-		print('Button Record Pressed:', checked)
 
 	def buttonRecordPressed(self, checked):
+		if self.widgetTask.currentText() == 'OTE Video' and not self.camera.ui.panelStatus.goForRecordingVideo():
+			QMessageBox.critical(self, ' ', 'Status buttons must be Green to Record Video!  Check GPS connection, update site and/or wait until signal is acquired.', QMessageBox.Ok)
+			if checked:
+				self.widgetRecord.setChecked(False)
+			return
+
 		print('Button Record Pressed:', checked)
 		if checked:
 			self.camera.startRecording()

@@ -3,6 +3,14 @@ Version 1.0.007:
 
 	* Added Remove wifi network and Disable Local DNS to Wifi Setup
 
+	* Reduced startup time with no internet by 5 seconds
+	
+	* Timing Status Button is now red when system time differs from GPS time by more than 2 second
+	
+	* GPS Time/System Time difference split out to Delta Chrony and Delta Timestamp
+
+	* Video recording, prepointing and auto record prevented if GPS/Timing/Acquisition are not Green and/or Site is Red
+	
 
 Version 1.0.006:
 ================

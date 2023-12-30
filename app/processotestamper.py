@@ -210,6 +210,9 @@ class ProcessOteStamper:
 			vdop		/= 100.0
 			voltage		= (voltage * 3.3) / (1023.0 * 0.1754385)
 
+			dt = datetime.fromtimestamp(unixEpoch)
+			deltaSystemTimeSecs = (dt - datetime.utcnow()).total_seconds()
+
 			if self.fuzz_gps:
 				(latitude, longitude, altitude) = self.fuzzGps(latitude, longitude, altitude)
 
@@ -224,6 +227,7 @@ class ProcessOteStamper:
 					'leapSeconds': leapSeconds,
 					'clockStatus': clockStatus,
 					'unixEpoch': unixEpoch,
+					'deltaSystemTimeSecs': deltaSystemTimeSecs,
 					'voltage': voltage }
 
 			self.__queue_clear(self.queue_gpsInfo)

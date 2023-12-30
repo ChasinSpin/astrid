@@ -160,11 +160,18 @@ class OteStamper:
 				elif self.status['fix'] == 3:
 					self.ui.panelStatus.widgetGps.setStatus(UiStatusButton.STATUS_GOOD)
 
+				deltaSystemTimeSecs = abs(self.status['deltaSystemTimeSecs'])
 				if (self.status['clockStatus'] & 0x03) == 0x03:
 					if (self.status['clockStatus'] & 0x10) == 0x10:
-						self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_ADEQUATE)
+						if deltaSystemTimeSecs >= 2:
+							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_POOR)
+						else:
+							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_ADEQUATE)
 					elif ((self.status['clockStatus'] & 0x04) == 0x04) or ((self.status['clockStatus'] & 0x08) == 0x08):
-						self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_GOOD)
+						if deltaSystemTimeSecs >= 2:
+							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_POOR)
+						else:
+							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_GOOD)
 					else:
 						self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_POOR)
 				else:

@@ -177,13 +177,15 @@ if __name__ == '__main__':
 	def isUpdateNeeded():
 		global splash_screen, current_version
 
+		""" Prompts to upgrade if needed.  Also returns False if no internet and True if internet is connected. """
+
 		try:
 			urllib.request.urlcleanup()
-			with urllib.request.urlopen('https://raw.githubusercontent.com/ChasinSpin/astrid/main/version.txt', timeout=10) as response:
+			with urllib.request.urlopen('https://raw.githubusercontent.com/ChasinSpin/astrid/main/version.txt', timeout=5) as response:
 				github_version = response.read().decode('utf-8').strip()
 		except Exception as e:
 			logger.info('Astrid version check failed (no internet?): %s' % str(e))
-			return
+			return False
 
 		with open('/home/pi/astrid/version.txt') as f:
 			current_version = f.read().strip()
@@ -201,8 +203,8 @@ if __name__ == '__main__':
 				sys.exit(0)
 			elif qm_exit == QMessageBox.Help:
 				QDesktopServices.openUrl(QUrl('https://raw.githubusercontent.com/ChasinSpin/astrid/main/releasenotes.txt'))
-				
 
+		return True
 
 
 	#
@@ -266,7 +268,7 @@ if __name__ == '__main__':
 	processes.append(framewriter)
 
 	# Do a version check
-	isUpdateNeeded()
+	AstUtils.setInternetPresent(isUpdateNeeded())
 
 	# Read settings
 	splash_screen.setMessage('Loading: Reading settings...')

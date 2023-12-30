@@ -79,3 +79,13 @@ class AstUtils:
 		process = filter(lambda p: p.name() == name, psutil.process_iter())	
 		for p in process:
 			os.kill(p.pid, signal.SIGINT)
+
+	
+	@classmethod
+	def setInternetPresent(cls, present: bool):
+		cls.present = present
+
+
+	@classmethod
+	def isInternetPresent(cls) -> bool:
+		return cls.present

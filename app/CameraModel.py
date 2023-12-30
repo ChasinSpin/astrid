@@ -24,6 +24,7 @@ import string
 import IndiDevices
 from astropy.coordinates import FK5, SkyCoord
 from astropy.time import Time
+from astropy.utils.iers import conf
 import astropy.units as u
 from astropy.io import fits
 from astsite import AstSite
@@ -295,6 +296,13 @@ class CameraModel:
 			AstSite.set(settings_site['name'], settings_site['latitude'], settings_site['longitude'], settings_site['altitude'])
 		else:
 			AstSite.set('Unknown', 0.00001, 0.00001, 0.0)
+
+		# Often IERs data needs to be downloaded, but this will cause astropy to bomb if offline, so we disable max age if offline
+		if AstUtils.isInternetPresent():
+			self.logger.info('Internet is available, IERs will be downloaded as needed')
+		else:
+			self.logger.info('Internet is not available, using potentially old IERs data')
+			conf.auto_max_age = None
 
 		self.filePlateSolve	= False
 		self.plateSolverThread	= None	
