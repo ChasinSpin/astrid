@@ -72,7 +72,8 @@ class UiPanelPrepoint(UiPanel):
 	# CALLBACKS	
 
 	def buttonGotoPressed(self):
-		self.camera.gotoNoTracking(self.prepoint)
+		self.widgetGoto.setEnabled(False)
+		self.camera.gotoNoTracking(self.prepoint, self.widgetGoto)
 
 
 	def buttonPhotoProcPressed(self):

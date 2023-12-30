@@ -1317,11 +1317,17 @@ class CameraModel:
 		self.dialogPrepoint.photoProcComplete(position, field_size, altAz)
 
 
-	def gotoNoTracking(self, coords):
+	def gotoNoTracking(self, coords, gotoButton):
+		self.prepointGotoButton = gotoButton
 		self.indi.telescope.tracking(False)
 		self.ui.panelMount.resetUpcomingMeridianFlasher()
 		if self.mountCanMove():
-			self.indi.telescope.goto(coords, no_tracking = True)
+			self.indi.telescope.goto(coords, no_tracking = True, slewCompleteCallback = self.gotoNoTrackingComplete)
+
+
+	def gotoNoTrackingComplete(self):
+		self.prepointGotoButton.setEnabled(True)
+
 
 	def isPhotoMode(self):
 		if self.operatingMode == OperatingMode.PHOTO:

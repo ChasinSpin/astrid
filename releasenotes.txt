@@ -1,3 +1,9 @@
+Version 1.0.008:
+================
+
+	* Goto button is now disabled on Goto Prepoints whilst the scope is moving
+
+
 Version 1.0.007:
 ================
 

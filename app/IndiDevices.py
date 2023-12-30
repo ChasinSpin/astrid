@@ -318,7 +318,9 @@ class IndiTelescope:
 		self.sendSwitch(self.park_state, [enable, not enable] )
 
 
-	def goto(self, icrs_coord, already_in_mount_native=False, no_tracking = False):
+	def goto(self, icrs_coord, already_in_mount_native=False, no_tracking = False, slewCompleteCallback = None):
+		self.slewCompleteCallback = slewCompleteCallback
+
 		if no_tracking:
 			values = [False, True, False]	# Set state to SLEW (no tracking). This should work, but often mounts often enable tracking anyway, so we try but use locktrackingOff to ensure
 			self.lockTrackingOff = True
@@ -326,6 +328,7 @@ class IndiTelescope:
 			values = [True, False, False]	# Set state to TRACK (which is SLEW and then TRACK)
 			self.lockTrackingOff = False
 		self.sendSwitch(self.on_coord_set, values)
+
 
 		# We set the desired coordinates
 		if not self.settings['mount_is_j2000'] and not already_in_mount_native:
@@ -486,6 +489,10 @@ class IndiTelescope:
 				tracking_enabled = self.telescope_track_state[0].getState()
 				self.tracking_update_callback(tracking_enabled)
 				if tracking_enabled and self.lockTrackingOff:
+
+					if self.slewCompleteCallback is not None:
+						self.slewCompleteCallback()
+						self.slewCompleteCallback = None
 					self.sendSwitch(self.telescope_track_state, [False, True])
 			else:
 				# If tracking should be off, switch it off (normally needed to non goto/tracking mounts
