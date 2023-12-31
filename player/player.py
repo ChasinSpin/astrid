@@ -4,7 +4,7 @@ import os
 import sys
 import json
 import argparse
-#import numpy as np
+import numpy as np
 from astropy.io import fits
 
 sys.path.append('../app')
@@ -277,6 +277,12 @@ def setAutoStretch(stretch):
 	getRavfFrame(current_frame)
 
 
+def setStackFrames(value):
+	global stackFrames
+
+	stackFrames = value
+
+
 def loadRavf(fname):
 	global ravf_fp, ravf, current_frame, targetPosition, ravf_filename
 	closeRavf()
@@ -339,25 +345,54 @@ def plateSolveFailed():
 
 
 def plateSolve():
-	global ravf_fp, ravf, window, width, height, plateSolveFitsFile, plateSolverThread
+	global ravf_fp, ravf, window, width, height, plateSolveFitsFile, plateSolverThread, stackFrames
 
 	if ravf_fp is None or ravf is None:
 		return
-
-	frame = ravf.frame_by_index(ravf_fp, current_frame)
-
-	if frame is None:
-		raise ValueError('error reading frame: %d', current_frame)
 
 	stride = ravf.metadata_value('IMAGE-ROW-STRIDE')
 	ravf_height = ravf.metadata_value('IMAGE-HEIGHT')
 	ravf_width = ravf.metadata_value('IMAGE-WIDTH')	
 
-	if ravf.metadata_value('IMAGE-FORMAT') == RavfImageFormat.FORMAT_PACKED_10BIT.value:
-		#print('Found 10bit packed')
-		image = RavfImageUtils.bytes_to_np_array(frame.data, stride, ravf_height)
-		image = RavfImageUtils.unstride_10bit(image, ravf_width, ravf_height)
-		image = RavfImageUtils.unpack_10bit_pigsc(image, ravf_width, ravf_height, stride)
+	lowerFrame = current_frame
+	upperFrame = current_frame + stackFrames
+
+	if upperFrame >= ravf.frame_count():
+		delta = upperFrame - ravf.frame_count()
+		upperFrame -= delta
+		lowerFrame -= delta
+
+		if lowerFrame < 0:
+			lowerFrame = 0
+		if upperFrame <= lowerFrame:
+			upperFrame += 1
+
+	first = True
+	for frame_index in range(lowerFrame, upperFrame, 1):
+		frame = ravf.frame_by_index(ravf_fp, frame_index)
+
+		if frame is None:
+			raise ValueError('error reading frame: %d', frame_index)
+
+		if ravf.metadata_value('IMAGE-FORMAT') == RavfImageFormat.FORMAT_PACKED_10BIT.value:
+			#print('Found 10bit packed')
+			image = RavfImageUtils.bytes_to_np_array(frame.data, stride, ravf_height)
+			image = RavfImageUtils.unstride_10bit(image, ravf_width, ravf_height)
+			image = RavfImageUtils.unpack_10bit_pigsc(image, ravf_width, ravf_height, stride)
+
+			if first:
+				first = False
+				imageAccum = image
+			else:
+				imageAccum = np.add(imageAccum, image)
+				image = imageAccum
+
+			print('Image Shape:', image.shape)
+			print('Image Dtype:', image.dtype)
+
+	#delta = upperFrame - lowerFrame
+	#if delta > 1:
+	#	image = image / delta
 
 	search_full_sky = True
 
@@ -576,6 +611,7 @@ if __name__ == '__main__':
 	frameStatus		= None
 	thread			= None
 	exportFitsSeqMsgBox	= None
+	stackFrames		= 1
 
 	width		= int(1456/2)
 	height		= int(1088/2)
@@ -656,7 +692,7 @@ if __name__ == '__main__':
 
 	# Start the main window
 	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext, togglePlay, setFrameNum)
-	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, savePng, saveFits, exportFits, metadata)
+	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, savePng, saveFits, exportFits, metadata, setStackFrames)
 
 	QMessageBox.warning(window, ' ', 'Astrid Player currently obtains the focal length and various settings from the currently chosen configuration in Astrid.\n\nPlease ensure the matching configuration that the video was taken with is selected in Astrid.\n\nIf plate solving fails, then this is the likely cause.', QMessageBox.Ok)
 

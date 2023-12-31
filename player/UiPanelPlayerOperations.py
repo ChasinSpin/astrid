@@ -16,6 +16,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.loadRavf_callback	= args['loadRavf_callback']
 
 		self.widgetFileOpen	= self.addButton('Load Video')
+		#self.widgetStackFrames  = self.addLineEditInt('Stack Frames', 1, 10, editable=True)
 		self.widgetPlateSolve	= self.addButton('Plate Solve')
 		self.widgetSavePng	= self.addButton('Save Png Image')
 		self.widgetSaveFits	= self.addButton('Save Fits Finder')
@@ -25,6 +26,8 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetAutoStretch          = self.addCheckBox('Stretch')
 		self.widgetAutoStretchLower     = self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
 		self.widgetAutoStretchUpper     = self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
+
+		#self.widgetStackFrames.setText('1')
 		self.widgetAutoStretchLower.setText('5')
 		self.widgetAutoStretchUpper.setText('30')
 
@@ -35,6 +38,7 @@ class UiPanelPlayerOperations(UiPanel):
 
 	def registerCallbacks(self):
 		self.widgetFileOpen.clicked.connect(self.buttonFileOpenPressed)
+		#self.widgetStackFrames.editingFinished.connect(self.lineEditStackFramesChanged)
 		self.widgetPlateSolve.clicked.connect(self.buttonPlateSolvePressed)
 		self.widgetSavePng.clicked.connect(self.buttonSavePngPressed)
 		self.widgetSaveFits.clicked.connect(self.buttonSaveFitsPressed)
@@ -93,9 +97,15 @@ class UiPanelPlayerOperations(UiPanel):
 		self.autoStretchLimitsCallback(lower, upper)
 
 
+	def lineEditStackFramesChanged(self):
+		stackFrames = int(self.widgetStackFrames.text())
+		self.stackFramesCallback(stackFrames)
+
+
+
 	# OPERATIONS
 
-	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, savePngCallback, saveFitsCallback, exportFitsCallback, metadataCallback):
+	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, savePngCallback, saveFitsCallback, exportFitsCallback, metadataCallback, stackFramesCallback):
 		self.autoStretchCallback = autoStretchCallback
 		self.autoStretchLimitsCallback = autoStretchLimitsCallback
 		self.lineEditAutoStretchLimitsChanged()
@@ -106,6 +116,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.exportFitsCallback = exportFitsCallback
 		self.plateSolveCancelCallback = plateSolveCancelCallback
 		self.metadataCallback = metadataCallback
+		self.stackFramesCallback = stackFramesCallback
 
 
 	def plateSolveFinished(self):
@@ -114,6 +125,7 @@ class UiPanelPlayerOperations(UiPanel):
 
 	def __setEnabledButtons(self, enable):
 		self.widgetPlateSolve.setEnabled(enable)
+		#self.widgetStackFrames.setEnabled(enable)
 		self.widgetSavePng.setEnabled(enable)
 		self.widgetSaveFits.setEnabled(enable)
 		self.widgetMetadata.setEnabled(enable)
