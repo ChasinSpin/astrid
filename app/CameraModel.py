@@ -897,14 +897,13 @@ class CameraModel:
 		self.ui.panelTask.updatePlateSolveSuccess(self.lastSolvedPosition, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis)
 		self.ui.indeterminateProgressBar(False)
 		if self.platesolveCallback is not None:
-			self.platesolveCallback(position, field_size, altAz)
+			self.platesolveCallback(position, field_size, altAz, target_position)
 		if target_position is not None and self.objectTarget:
 			self.updateDisplayOptions()
 
 
 	def solveFieldSuccessExpAnalysis(self, position, field_size, rotation_angle, index_file, focal_length, altAz, target_position):
 		self.solveFieldSuccess(position, field_size, rotation_angle, index_file, focal_length, altAz, target_position, expAnalysis = True)
-
 
 
 	def solveFieldCancel(self):
@@ -914,9 +913,13 @@ class CameraModel:
 		self.ui.indeterminateProgressBar(False)
 
 
-	def solveField(self, fname, expAnalysis = False):
+	def solveField(self, fname, expAnalysis = False, override_target_coord = None):
 		self.ui.indeterminateProgressBar(True)
-		self.plateSolverThread = PlateSolver(fname, self.search_full_sky, progress_callback=self.statusMsg, success_callback=self.solveFieldSuccessExpAnalysis if expAnalysis else self.solveFieldSuccess, failure_callback=self.solveFieldFailed, target_coord = self.objectCoords)
+		if override_target_coord is not None:
+			target_coord = override_target_coord
+		else:
+			target_coord = self.objectCoords
+		self.plateSolverThread = PlateSolver(fname, self.search_full_sky, progress_callback=self.statusMsg, success_callback=self.solveFieldSuccessExpAnalysis if expAnalysis else self.solveFieldSuccess, failure_callback=self.solveFieldFailed, target_coord = target_coord)
 
 
 	def polarAlignCallback(self, solveSuccess, position, delta=None):
@@ -1301,9 +1304,10 @@ class CameraModel:
 		Settings.getInstance().writeSubsetting('camera')
 
 
-	def takePhotoSolveSync(self, dialog):
+	def takePhotoSolveSync(self, dialog, prepoint_coord):
 		self.photoCallback = self.takePhotoSolveSync2
 		self.dialogPrepoint = dialog
+		self.prepoint_coord = prepoint_coord
 		self.startRecording()
 
 	
@@ -1318,14 +1322,17 @@ class CameraModel:
 			fname = self.lastFitFile
 
 		self.platesolveCallback = self.takePhotoSolveSync3
-		self.solveField(fname)
+		self.solveField(fname, override_target_coord = self.prepoint_coord)
 
 
-	def takePhotoSolveSync3(self, position, field_size, altAz):
+	def takePhotoSolveSync3(self, position, field_size, altAz, target_position):
+		self.lastSolvedPosition = position
+		self.solvedTargetPixelPosition = target_position
 		self.platesolveCallback = None
 		print('Syncing solved position:', position.raDecHMSStr('icrs'))
 		self.syncLastPlateSolve()
 		self.dialogPrepoint.photoProcComplete(position, field_size, altAz)
+		self.updateDisplayOptions()
 
 
 	def gotoNoTracking(self, coords, gotoButton):

@@ -3,6 +3,8 @@ Version 1.0.010:
 
 	* All goto prepoints now switch tracking on after the prepoint and then immediately off so slew complete can be detectedo
 
+	* Testing on obejct target crosshairs on prepoint showed and issue with prepoints where the target was displayed instead, fixed (not completely tested due to cloud coming in)
+
 
 Version 1.0.009:
 ================

@@ -81,7 +81,7 @@ class UiPanelPrepoint(UiPanel):
 		self.widgetPhotoProc.setEnabled(False)
 		if self.widgetAltAzDirection is not None:
 			self.widgetAltAzDirection.setEnabled(False)
-		self.camera.takePhotoSolveSync(self)
+		self.camera.takePhotoSolveSync(self, self.prepoint)
 
 
 	def buttonCancelPressed(self):
