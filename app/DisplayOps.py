@@ -254,7 +254,28 @@ class DisplayOps():
 			cv2.putText(image_buffer.array, '%0.2f' % star.mag_g, (x-5, y-7), self.font, self.scale, (0,255,0),  self.thickness)
 
 
-	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars):
+	def __display_object_target(self, image_buffer, pos, targetOutsideImage):
+		centerGap = 10
+		lineLength = 30
+		lineThickness = 1
+		colors = [(0, 0, 0), (255, 0, 0) if targetOutsideImage else (0, 255, 0)]
+
+		x = pos[0]
+		y = pos[1]
+
+		img = image_buffer.array
+
+		for colorThickness in [[colors[0], lineThickness*3], [colors[1], lineThickness]]:
+			color           = colorThickness[0]
+			thickness       = colorThickness[1]
+
+			cv2.line(img, (x, y-centerGap), (x, y-lineLength), (color), thickness)
+			cv2.line(img, (x, y+centerGap), (x, y+lineLength), (color), thickness)
+			cv2.line(img, (x-centerGap, y), (x-lineLength, y), (color), thickness)
+			cv2.line(img, (x+centerGap, y), (x+lineLength, y), (color), thickness)
+
+
+	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition, targetOutsideImage):
 		if video_frame_rate is not None and video_frame_rate > 0.5:
 			stardetection = False
 	
@@ -275,6 +296,8 @@ class DisplayOps():
 			self.__display_stardetection(image_buffer)
 		if annotationStars is not None:
 			self.__display_annotation(image_buffer, annotationStars)
+		if targetPixelPosition is not None:
+			self.__display_object_target(image_buffer, targetPixelPosition, targetOutsideImage)
 
 
 	def overlayDisplayOnImageBuffer(self, image_buffer, video_recording, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars):
@@ -297,11 +320,46 @@ class DisplayOps():
 		#print('Min:', np.min(image_buffer.array))
 		#print('Max:', np.max(image_buffer.array))
 
-		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars)
-		
+		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, None, False)
 
 
-	def loadFitsPhotoWithOverlay(self, fits_filename, width, height, stretch, zebras, crosshairs, stardetection, annotationStars):
+	def __pointOnRect(self, x, y, minX, minY, maxX, maxY):
+		"""
+			for a point (x, y) outside a rectangle denoted by minX/Y/maxX/Y, returns the intersection point 
+			Reference: https://stackoverflow.com/questions/1585525/how-to-find-the-intersection-point-between-a-line-and-a-rectangle
+		"""
+		midX = (minX + maxX) / 2
+		midY = (minY + maxY) / 2
+		m = (midY - y) / (midX - x)
+
+		if x <= midX:
+			# check "left" side
+			minXy = m * (minX - x) + y
+			if minY <= minXy and minXy <= maxY:
+				return (minX, minXy)
+
+		if x >= midX:
+			# check "right" side
+			maxXy = m * (maxX - x) + y
+			if minY <= maxXy and maxXy <= maxY:
+				return (maxX, maxXy)
+
+		if y <= midY:
+			# check "top" side
+			minYx = (minY - y) / m + x
+			if minX <= minYx and minYx <= maxX:
+				return (minYx, minY)
+
+		if y >= midY:
+			# check "bottom" side
+			maxYx = (maxY - y) / m + x
+			if minX <= maxYx and maxYx <= maxX:
+				return (maxYx, maxY)
+
+		return (x, y)	# Should never happen
+
+
+	def loadFitsPhotoWithOverlay(self, fits_filename, width, height, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition):
 		"""
 		Load fits, adds the overlays and returns the new buffer suitable for use as an overlay
 	
@@ -312,12 +370,25 @@ class DisplayOps():
 		crosshairs		= True or False
 		stardetection		= True or False
 		annotationStars		= List of stars
+		targetPixelPosition	= Position of target in pixels on the original fits image, None if no target
 		"""
 
 		fits_data = fits.getdata(fits_filename, ext = 0)
 		fits_data = fits_data.astype(np.float32)
 		fits_data /= 4.0
 		fits_data = fits_data.astype(np.uint8)
+
+		targetOutsideImage = False
+		if targetPixelPosition is not None:
+			# If pixel is outside the image, then bring back inside bounds and identify
+			x = targetPixelPosition[0]
+			y = targetPixelPosition[1]
+			if x < 0 or x >= fits_data.shape[1] or y < 0 or y >= fits_data.shape[0]:
+				targetOutsideImage = True
+				(x, y) = self.__pointOnRect(x, y, 0, 0, fits_data.shape[1]-1, fits_data.shape[0]-1)
+
+			# Scale the target pixel position to the image size
+			targetPixelPosition = (int(x * width/fits_data.shape[1]), int(y * height/fits_data.shape[0]))
 
 		fits_data = cv2.resize(fits_data, (width, height))
 
@@ -326,7 +397,7 @@ class DisplayOps():
 		image_buffer.array[:, :, 1]	= fits_data
 		image_buffer.array[:, :, 2]	= fits_data
 
-		self.__analyze_display_image_buffer(image_buffer, None, stretch, zebras, crosshairs, stardetection, annotationStars)
+		self.__analyze_display_image_buffer(image_buffer, None, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition, targetOutsideImage)
 
 		image_buffer2 = ProxyImageBuffer(np.zeros((height, width, 4), dtype=np.uint8))
 		image_buffer2.array[:, :, 0]	= image_buffer.array[:, :, 0]

@@ -1,3 +1,11 @@
+Version 1.0.009:
+================
+	
+	* Object target crosshairs are now displayed when a target or prepoint location is selected
+
+	* Changing target was causing a crash with the new UIValidator, fixed
+
+
 Version 1.0.008:
 ================
 

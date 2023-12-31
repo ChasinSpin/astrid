@@ -80,6 +80,7 @@ class DoubleValidator(QDoubleValidator):
 			f = float(p_str)
 		except:
 			p_str = self.originalValue
+			print('Fixup: <%s> OriginalValue:<%s>' % (p_str, self.originalValue))
 			f = float(p_str)
 
 		if f < self.bottom():

@@ -191,9 +191,10 @@ class PlateSolver:
 	# progress_callback takes a string
 	# finished_callback is called at the end
 	# starting_coord	the starting RA/DEC location for the search in icrs format, if set to None it's obtained from the fits
+	# target_coord		the RA/DEC of the target, or None if there is none
 	# It's important to keep a reference to this object, otherwise the thread will be garbage collected and killed
 
-	def __init__(self, filename, search_full_sky, progress_callback, success_callback, failure_callback, starting_coord = None):
+	def __init__(self, filename, search_full_sky, progress_callback, success_callback, failure_callback, starting_coord = None, target_coord = None):
 
 		self.settings = Settings.getInstance().platesolver
 
@@ -252,8 +253,10 @@ class PlateSolver:
 		self.progress_callback	= progress_callback
 		self.success_callback	= success_callback
 		self.failure_callback	= failure_callback
+		self.target_coord	= target_coord
+		self.filename		= filename
 
-		self.thread = PlateSolverThread(filename, scale_low, scale_high, starting_ra, starting_dec, starting_radius, self.settings['limit_objs'], self.settings['downsample'], self.settings['source_extractor'], self.obsdatetime, astrometryCfg)
+		self.thread = PlateSolverThread(self.filename, scale_low, scale_high, starting_ra, starting_dec, starting_radius, self.settings['limit_objs'], self.settings['downsample'], self.settings['source_extractor'], self.obsdatetime, astrometryCfg)
 		self.thread.progress.connect(self.__progress)
 		self.thread.finished.connect(self.__finished)
 		#self.thread.finished.connect(self.thread.deleteLater)
@@ -271,7 +274,34 @@ class PlateSolver:
 			fov_width = float(fov_width)
 			focal_length = 57.3 / (fov_width / self.frame_width_mm)
 			print('Plate Solver Success: Pos:%s FOV:%s Rot:%s Index:%s FL:%fmm' % (self.thread.icrs_coords.raDecHMSStr('icrs'), self.thread.field_size, self.thread.rotation_angle, self.thread.index_file, focal_length))
-			self.success_callback(self.thread.icrs_coords, self.thread.field_size, self.thread.rotation_angle, self.thread.index_file, focal_length, self.thread.altAz)
+
+			if self.target_coord is not None:
+				"""
+					If we have a target specified, determine the coordinates of it in the original image (NOT the image on screen)
+					Note: It's possible the target coordinates are out of the frame too, always check they lie within the frame
+					in the success callback
+				"""
+				
+				f_basename = os.path.splitext(os.path.basename(self.filename))[0]
+				f_dirname = os.path.dirname(self.filename)
+				wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
+				(ra, dec) = self.target_coord.raDec360Deg('icrs')
+
+				cmd = ['/usr/bin/wcs-rd2xy', '-w', wcsFile, '-r',  '%0.9f' % ra, '-d', '%0.9f' % dec]
+				print(cmd)
+				output = subprocess.check_output(cmd)
+				print('Pixel conversion output:', output)
+				output = str(output)
+				output = output.split('-> pixel (')[1]
+				output = output.split(')')[0]
+				pixel_coord_target = output.split(', ')
+				targetPosition = (float(pixel_coord_target[0]), float(pixel_coord_target[1]))
+
+				print('Pixel Coordindates of the Target:', pixel_coord_target)  # Note these are coorindates in the original image, NOT the image on screen
+			else:
+				targetPosition = None
+
+			self.success_callback(self.thread.icrs_coords, self.thread.field_size, self.thread.rotation_angle, self.thread.index_file, focal_length, self.thread.altAz, targetPosition)
 		else:
 			self.failure_callback()
 

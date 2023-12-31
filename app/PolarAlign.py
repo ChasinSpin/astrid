@@ -154,7 +154,7 @@ class PolarAlign:
 		self.callback(False, None)
 
 
-	def __step1_solved(self, position, field_size, rotation_angle, index_file, focal_length, altAz):
+	def __step1_solved(self, position, field_size, rotation_angle, index_file, focal_length, altAz, target_position):
 		self.A.read_results()
 		self.A_J2000		= self.__get_J2000(self.A)
 		self.A_pix		= self.__J2000_to_pix(self.A, self.A_J2000)
@@ -188,7 +188,7 @@ class PolarAlign:
 		self.callback(False, None)
 
 	
-	def __step3_solved(self, position, field_size, rotation_angle, index_file, focal_length, altAz):
+	def __step3_solved(self, position, field_size, rotation_angle, index_file, focal_length, altAz, target_position):
 		self.B.read_results()
 		self.B_J2000		= self.__get_J2000(self.B)
 		self.B_pix		= self.__J2000_to_pix(self.A, self.B_J2000)
@@ -220,7 +220,7 @@ class PolarAlign:
 		self.NCP_to_date_altaz_deg = np.asarray([NCP_to_date_altaz.alt.deg, NCP_to_date_altaz.az.deg])
 
 		self.I = self.B
-		self.__step4_solved(position, field_size, rotation_angle, index_file, focal_length, altAz)
+		self.__step4_solved(position, field_size, rotation_angle, index_file, focal_length, altAz, target_position)
 
 
 	def step4(self, img, search_full_sky, callback):
@@ -235,7 +235,7 @@ class PolarAlign:
 		self.callback(False, None)
 
 
-	def __step4_solved(self, position, field_size, rotation_angle, index_file, focal_length, altAz):
+	def __step4_solved(self, position, field_size, rotation_angle, index_file, focal_length, altAz, target_position):
 		self.I.read_results()
 		I_time		= self.__get_time(self.I)
 		I_J2000		= self.__get_J2000(self.I)

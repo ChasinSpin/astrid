@@ -317,6 +317,7 @@ class CameraModel:
 		self.autostretch	= False
 		self.zebras		= False
 		self.crosshairs		= False
+		self.objectTarget	= True
 		self.stardetection	= False
 		self.annotation		= False
 		self.annotationStars	= None
@@ -331,6 +332,7 @@ class CameraModel:
 		self.videoBufferCount	= VIDEO_BUFFER_COUNT
 		self.plannedAutoShutdown= False
 		self.displayOps		= DisplayOps(self)
+		self.solvedTargetPixelPosition = None
 
 		#Picamera2.set_logging(Picamera2.DEBUG)
 
@@ -884,20 +886,24 @@ class CameraModel:
 	def solveFieldFailed(self):
 		#self.plateSolverThread = None	
 		print("Plate Solver Failed")
+		self.solvedTargetPixelPosition = None
 		self.ui.panelTask.updatePlateSolveFailed()
 		self.ui.indeterminateProgressBar(False)
 
 
-	def solveFieldSuccess(self, position, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis = False):
+	def solveFieldSuccess(self, position, field_size, rotation_angle, index_file, focal_length, altAz, target_position, expAnalysis = False):
 		self.lastSolvedPosition = position
+		self.solvedTargetPixelPosition = target_position
 		self.ui.panelTask.updatePlateSolveSuccess(self.lastSolvedPosition, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis)
 		self.ui.indeterminateProgressBar(False)
 		if self.platesolveCallback is not None:
 			self.platesolveCallback(position, field_size, altAz)
+		if target_position is not None and self.objectTarget:
+			self.updateDisplayOptions()
 
 
-	def solveFieldSuccessExpAnalysis(self, position, field_size, rotation_angle, index_file, focal_length, altAz):
-		self.solveFieldSuccess(position, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis = True)
+	def solveFieldSuccessExpAnalysis(self, position, field_size, rotation_angle, index_file, focal_length, altAz, target_position):
+		self.solveFieldSuccess(position, field_size, rotation_angle, index_file, focal_length, altAz, target_position, expAnalysis = True)
 
 
 
@@ -910,7 +916,7 @@ class CameraModel:
 
 	def solveField(self, fname, expAnalysis = False):
 		self.ui.indeterminateProgressBar(True)
-		self.plateSolverThread = PlateSolver(fname, self.search_full_sky, progress_callback=self.statusMsg, success_callback=self.solveFieldSuccessExpAnalysis if expAnalysis else self.solveFieldSuccess, failure_callback=self.solveFieldFailed)
+		self.plateSolverThread = PlateSolver(fname, self.search_full_sky, progress_callback=self.statusMsg, success_callback=self.solveFieldSuccessExpAnalysis if expAnalysis else self.solveFieldSuccess, failure_callback=self.solveFieldFailed, target_coord = self.objectCoords)
 
 
 	def polarAlignCallback(self, solveSuccess, position, delta=None):
@@ -1244,6 +1250,11 @@ class CameraModel:
 		self.updateDisplayOptions()
 
 
+	def setObjectTarget(self, enable):
+		self.objectTarget = enable
+		self.updateDisplayOptions()
+
+
 	def setStarDetection(self, enable):
 		self.stardetection = enable
 		self.updateDisplayOptions()
@@ -1356,7 +1367,7 @@ class CameraModel:
 				if self.autostretch:
 					stretch = (self.autoStretchLower, self.autoStretchUpper)
 
-				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
+				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars, self.solvedTargetPixelPosition if self.objectTarget else None)
 	
 				self.qt_picamera.set_overlay(overlay.array)
 				overlay.array = None

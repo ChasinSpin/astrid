@@ -13,9 +13,11 @@ class UiPanelDisplay1(UiPanel):
 		self.widgetAutoStretchLower	= self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
 		self.widgetAutoStretchUpper	= self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
 		self.widgetZebras		= self.addCheckBox('Zebras')
-		self.widgetCrosshairs		= self.addCheckBox('Center Marker')
+		#self.widgetCrosshairs		= self.addCheckBox('Center Marker')
+		self.widgetObjectTarget		= self.addCheckBox('Object Target')
 		self.widgetStarDetection	= self.addCheckBox('Star Detect <=0.5fps')
 
+		self.widgetObjectTarget.setChecked(True)
 		self.widgetAutoStretchLower.setText('%0.1f' % self.camera.autoStretchLower)
 		self.widgetAutoStretchUpper.setText('%0.1f' % self.camera.autoStretchUpper)
 
@@ -25,7 +27,8 @@ class UiPanelDisplay1(UiPanel):
 		self.widgetAutoStretchLower.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
 		self.widgetAutoStretchUpper.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
 		self.widgetZebras.stateChanged.connect(self.checkBoxZebrasChanged)
-		self.widgetCrosshairs.stateChanged.connect(self.checkBoxCrosshairsChanged)
+		#self.widgetCrosshairs.stateChanged.connect(self.checkBoxCrosshairsChanged)
+		self.widgetObjectTarget.stateChanged.connect(self.checkBoxObjectTargetChanged)
 		self.widgetStarDetection.stateChanged.connect(self.checkBoxStarDetectionChanged)
 
 
@@ -47,12 +50,20 @@ class UiPanelDisplay1(UiPanel):
 		self.camera.setZebras(zState)
 
 
-	def checkBoxCrosshairsChanged(self, checked):
-		state = self.widgetCrosshairs.checkState()
+	#def checkBoxCrosshairsChanged(self, checked):
+	#	state = self.widgetCrosshairs.checkState()
+	#	cState = False
+	#	if state == 2:
+	#		cState = True
+	#	self.camera.setCrossHairs(cState)
+
+
+	def checkBoxObjectTargetChanged(self, checked):
+		state = self.widgetObjectTarget.checkState()
 		cState = False
 		if state == 2:
 			cState = True
-		self.camera.setCrossHairs(cState)
+		self.camera.setObjectTarget(cState)
 
 
 	def checkBoxStarDetectionChanged(self, checked):

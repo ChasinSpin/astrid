@@ -4,7 +4,6 @@ import os
 import sys
 import json
 import argparse
-import subprocess
 #import numpy as np
 from astropy.io import fits
 
@@ -306,7 +305,7 @@ def plateSolveStatusMsg(text):
 	window.showStatusMessage(text)
 
 
-def plateSolveSuccess(position, field_size, rotation_angle, index_file, focal_length, altAz):
+def plateSolveSuccess(position, field_size, rotation_angle, index_file, focal_length, altAz, target_position):
 	global ravf, targetPosition, current_frame, window
 
 	print('Position:', position)
@@ -315,23 +314,9 @@ def plateSolveSuccess(position, field_size, rotation_angle, index_file, focal_le
 	print('Index File:', index_file)
 	print('Focal Length:', focal_length)
 	print('Alt Az:', altAz)
+	print('Target Position:', target_position)
 
-	f_basename = os.path.splitext(os.path.basename(plateSolveFitsFile))[0]
-	f_dirname = os.path.dirname(plateSolveFitsFile)
-	wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
-	(ra, dec) = (ravf.metadata_value('RA'), ravf.metadata_value('DEC'))
-
-	cmd = ['/usr/bin/wcs-rd2xy', '-w', wcsFile, '-r',  '%0.9f' % ra, '-d', '%0.9f' % dec]
-	print(cmd)
-	output = subprocess.check_output(cmd)
-	print('Pixel conversion output:', output)
-	output = str(output)
-	output = output.split('-> pixel (')[1]
-	output = output.split(')')[0]
-	pixel_coord_target = output.split(', ')
-	targetPosition = (float(pixel_coord_target[0]), float(pixel_coord_target[1]))
-
-	print('Pixel Coordindates of the Target:', pixel_coord_target)	# Note these are coorindates in the original image, NOT the image on screen
+	targetPosition = target_position
 
 	getRavfFrame(current_frame)
 
@@ -398,7 +383,8 @@ def plateSolve():
 	plateSolveFitsFile = fileHandling.save_photo_fit(imageData, metadata, mode, modeExtra, obsDateTime, focalLength, position)
 
 	print('Plate Solving')
-	plateSolverThread = PlateSolver(plateSolveFitsFile, search_full_sky, progress_callback=plateSolveStatusMsg, success_callback=plateSolveSuccess, failure_callback=plateSolveFailed)
+	target_coord = AstCoord.from360Deg(ravf.metadata_value('RA'), ravf.metadata_value('DEC'), 'icrs')
+	plateSolverThread = PlateSolver(plateSolveFitsFile, search_full_sky, progress_callback=plateSolveStatusMsg, success_callback=plateSolveSuccess, failure_callback=plateSolveFailed, target_coord = target_coord)
 
 
 def savePng():
