@@ -50,11 +50,9 @@ The ethernet port flashes alternate Green/Yellow when connected to a known WiFi 
 
 Astrid also has an ethernet port that can be used.  If you're having problems with your WiFi at home due to poor signal where Astrid is switching between Wifi and Hotspot, you can also remove your Home Wifi from Astrid and use an ethernet connection instead.
 
-Plug in your ethernet connection, connect to Astrid via the Hotspot and start a terminal on the desktop (black square with >_ in - the leftmost one), and then type:
+Plug in your ethernet connection, connect to Astrid via the Hotspot and start Wifi Setup on the desktop.  Select "9 = Disable Local DNS (when on ethernet only)" to disable the local dns server and use your ethernets network source so it can connect to the internet.
 
-	sudo systemctl stop dnsmasq
-	
-This will allow you to connect to the internet via the ethernet cable.
+However, after this point, connecting to the Astrid Hotspot over Wifi will no longer work and despite sometimes still seeing the Hotspot advertised, it won't work reliably if connected to.  To set back to the normal behaviour where the Hotspot works as normal, shutdown Astrid and remove the ethernet connection and power back on again.
 
 ## First Light
 

@@ -2,7 +2,6 @@
 
 * Ted swings file (negative altitude)
 * Any chance you could allow a dynamic (local) change of the limiting magnitude during Exposure Analysis, rather than forcing us to stop and restart Astrid to get to the settings for Simulator? - Ted
-* For target identification, dotted green circle for the predicted location on a prepoint and solid green for goto.  Call button Target ID.
 * Magnitudes Cluttered on Display Analysis
 * Significant red errors when recording with Software Leap Seconds
 * Continuous tracking

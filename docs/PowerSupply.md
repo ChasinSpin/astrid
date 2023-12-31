@@ -16,6 +16,8 @@ LiFePO4 (Lithium Phosphate) battery chemistry is recommended for safety, cold we
 
 We particularly like the batteries made by Dakota and we own a few due to the exceptional cold-weather performance and warranty. 
 
+Avoid the TalentCell and other power banks other than the ones listed below, often they have mediocre batteries and converters that can't keep up with the current / voltage required by Astrid and aren't the specifications they list.
+
 If traveling by air with Lithium batteries, be aware that there are regulations depending on the size of the battery, and you should verify with your airline before travel.
 
 For example, the [TSA guidelines](https://www.tsa.gov/travel/security-screening/whatcanibring/all?combine=batteries&page=1#:~:text=Lithium%20batteries%20with%20100%20watt%20hours%20or%20less%20in%20a%20device&text=Spare%20(uninstalled)%20lithium%20ion%20and,in%20carry%2Don%20baggage%20only)
@@ -25,7 +27,6 @@ For example, the [TSA guidelines](https://www.tsa.gov/travel/security-screening/
 | Battery | Capacity | Tested | Runtime (hrs) | Runtime With Mount (hrs) | Meets FAA Carry On Regulations | Comments |
 | --- | --- | --- | --- | --- | --- | --- |
 | [8 Energizer L91 Lithium AA](https://data.energizer.com/pdfs/l91.pdf) | 36Wh | No | 5-6 | Not feasable | Yes | Buy  at destination. Good to -15C, lower with less runtime. |
-| [Talentcell Rechargable Power Bank](https://www.amazon.com/gp/product/B00ME3ZH7C) | 60Wh | No | 8-9 | 2.5-3 | Yes | Based on  18650, not safer LiFePo4. Only small mounts. |
 | [Dakota 12V 7Ah](https://dakotalithium.com/product/dakota-lithium-12v-7ah-battery-69/) | 84Wh | No | 12-14 | 3.5-4.5 | Yes | |
 | [Celestron PowerTank Lithium (18771)](https://www.celestron.com/products/powertank-lithium) | 84Wh | No | 12-14 | 3.5-4.5 | Yes | Expensive |
 | [Dakota 12V 10Ah](https://dakotalithium.com/product/dakota-lithium-12v-10ah-battery/) | 120Wh | No | 17-20 | 5-6.5 | Yes | |
