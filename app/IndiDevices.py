@@ -321,11 +321,13 @@ class IndiTelescope:
 	def goto(self, icrs_coord, already_in_mount_native=False, no_tracking = False, slewCompleteCallback = None):
 		self.slewCompleteCallback = slewCompleteCallback
 
+		# Although we could set tracking to off as part of the slew, some mounts would comply and some wouldn't,
+		# and we also need to detect the switch back to Tracking to indicate the slew is complete, so we enable tracking and then switch
+		# if off afterwards via lockTrackingOff if needed
+		values = [True, False, False]	# Set state to TRACK (which is SLEW and then TRACK)
 		if no_tracking:
-			values = [False, True, False]	# Set state to SLEW (no tracking). This should work, but often mounts often enable tracking anyway, so we try but use locktrackingOff to ensure
 			self.lockTrackingOff = True
 		else:
-			values = [True, False, False]	# Set state to TRACK (which is SLEW and then TRACK)
 			self.lockTrackingOff = False
 		self.sendSwitch(self.on_coord_set, values)
 

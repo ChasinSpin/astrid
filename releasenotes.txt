@@ -1,3 +1,9 @@
+Version 1.0.010:
+================
+
+	* All goto prepoints now switch tracking on after the prepoint and then immediately off so slew complete can be detectedo
+
+
 Version 1.0.009:
 ================
 	
