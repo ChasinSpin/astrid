@@ -5,6 +5,8 @@ Version 1.0.010:
 
 	* Testing on obejct target crosshairs on prepoint showed and issue with prepoints where the target was displayed instead, fixed (not completely tested due to cloud coming in)
 
+	* Derated GPS/Timing/Acquition to permit recording when yellow too
+
 
 Version 1.0.009:
 ================

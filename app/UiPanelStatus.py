@@ -118,9 +118,9 @@ class UiPanelStatus(UiPanel):
 	def goForRecordingVideo(self) -> bool:
 		""" Returns True if we're a go for recording video """
 		if (self.widgetSite.status == UiStatusButton.STATUS_GOOD or self.widgetSite.status == UiStatusButton.STATUS_ADEQUATE) and \
-		   self.widgetGps.status == UiStatusButton.STATUS_GOOD and \
-		   self.widgetTiming.status == UiStatusButton.STATUS_GOOD and \
-		   self.widgetAcquisition.status == UiStatusButton.STATUS_GOOD:
+		   (self.widgetGps.status == UiStatusButton.STATUS_GOOD or self.widgetGps.status == UiStatusButton.STATUS_ADEQUATE) and \
+		   (self.widgetTiming.status == UiStatusButton.STATUS_GOOD or self.widgetTiming.status == UiStatusButton.STATUS_GOOD) and \
+		   (self.widgetAcquisition.status == UiStatusButton.STATUS_GOOD or self.widgetAcquisition.status == UiStatusButton.STATUS_ADEQUATE):
 			return True
 
 		return False
