@@ -210,7 +210,11 @@ class ProcessOteStamper:
 			vdop		/= 100.0
 			voltage		= (voltage * 3.3) / (1023.0 * 0.1754385)
 
-			dt = datetime.fromtimestamp(unixEpoch)
+			try:
+				dt = datetime.fromtimestamp(unixEpoch)
+			except:
+				dt = datetime.fromtimestamp(1704160281)
+
 			deltaSystemTimeSecs = (dt - datetime.utcnow()).total_seconds()
 
 			if self.fuzz_gps:
