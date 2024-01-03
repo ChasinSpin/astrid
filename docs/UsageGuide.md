@@ -247,3 +247,5 @@ To integrate one of these files into Astrid, please do the following:
 5. Place USB Drive back in Astrid, and under "Object", click "Add" and "Search Occelment XML Lists" and choose your xml list which should be visible now.
 
 The predictions folder and/or your xml file can be copied between USB Drives or to the USB Drive if you are updating.
+
+Please note that clicking on the event to link to OWCloud will only work with IOTA-tagged events.  This is a limitation of OWCloud, and there are no plans for OWCloud to implement linking of non-IOTA tagged events at this time.
