@@ -99,6 +99,7 @@ class FillInNAReport():
 			'StoppedObservingSecs':		'J37',
 			'VideoFormat':			'L25',
 			'ExposureIntegration':		'P25',
+			'CommentLine3':			'D44',	
 		}
 
 		for key in cell_mapping.keys():
@@ -213,3 +214,5 @@ class FillInNAReport():
 				self.sheet[cell_mapping[key]] = 'ADVS'
 			elif key == 'ExposureIntegration':
 				self.sheet[cell_mapping[key]] = 'Other'
+			elif key == 'CommentLine3':
+				self.sheet[cell_mapping[key]] = 'This report was pre-populated by Astrid'

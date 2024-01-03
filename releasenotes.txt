@@ -7,6 +7,8 @@ Version 1.0.011:
 
 	* Added INSTRUMENT-FRAMES-PER-SECOND to metadata
 
+	* Added "This report was pre-populated by Astrid" the north american report form
+
 
 Version 1.0.010:
 ================
