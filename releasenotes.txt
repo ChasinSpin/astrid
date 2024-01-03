@@ -1,7 +1,15 @@
+Version 1.0.011:
+================
+
+	* Fixed bug where occasionally on startup with new unixEpoch generator, datetime would crash and status boxes turn purple
+
+	* Increased allowable system time / gps time delta from 2 to 30 seconds
+
+
 Version 1.0.010:
 ================
 
-	* All goto prepoints now switch tracking on after the prepoint and then immediately off so slew complete can be detectedo
+	* All goto prepoints now switch tracking on after the prepoint and then immediately off so slew complete can be detected
 
 	* Testing on obejct target crosshairs on prepoint showed and issue with prepoints where the target was displayed instead, fixed (not completely tested due to cloud coming in)
 

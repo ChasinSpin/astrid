@@ -19,6 +19,8 @@ class OteStamper:
 
 	__instance = None
 
+	DELTA_SYSTEM_TIME_SECS_MAX = 30
+
 
 	def __init__(self):
 		if OteStamper.__instance != None:
@@ -163,12 +165,12 @@ class OteStamper:
 				deltaSystemTimeSecs = abs(self.status['deltaSystemTimeSecs'])
 				if (self.status['clockStatus'] & 0x03) == 0x03:
 					if (self.status['clockStatus'] & 0x10) == 0x10:
-						if deltaSystemTimeSecs >= 2:
+						if deltaSystemTimeSecs >= self.DELTA_SYSTEM_TIME_SECS_MAX:
 							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_POOR)
 						else:
 							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_ADEQUATE)
 					elif ((self.status['clockStatus'] & 0x04) == 0x04) or ((self.status['clockStatus'] & 0x08) == 0x08):
-						if deltaSystemTimeSecs >= 2:
+						if deltaSystemTimeSecs >= self.DELTA_SYSTEM_TIME_SECS_MAX:
 							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_POOR)
 						else:
 							self.ui.panelStatus.widgetTiming.setStatus(UiStatusButton.STATUS_GOOD)
