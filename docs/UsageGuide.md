@@ -249,3 +249,6 @@ To integrate one of these files into Astrid, please do the following:
 The predictions folder and/or your xml file can be copied between USB Drives or to the USB Drive if you are updating.
 
 Please note that clicking on the event to link to OWCloud will only work with IOTA-tagged events.  This is a limitation of OWCloud, and there are no plans for OWCloud to implement linking of non-IOTA tagged events at this time.
+
+Once an event is identified, hit the "+" to add the event to Astrid.
+The Occult Element format does not provide an error time in it's specification, so Astrid defaults the error to 0.001s, please determine the error via other means and update so the start/end times are calculated correctly automatically for the event.
