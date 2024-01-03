@@ -109,6 +109,7 @@ class RavfEncoder(Encoder):
 			('FOCAL-LENGTH',			RavfMetadataType.FLOAT32,	self.metadata['focalLength']),
 			('STATION-NUMBER',			RavfMetadataType.UINT16,	self.metadata['stationNumber']),
 			('STATION-HOSTNAME',			RavfMetadataType.UTF8STRING,	self.metadata['hostname']),
+			('INSTRUMENT-FRAMES-PER-SECOND',	RavfMetadataType.FLOAT32,	1.0/(self.metadata['shutter_ns']/1000000000.0)),
 		]
 
 		if 'occultationPredictedCenterTime' in self.metadata.keys():

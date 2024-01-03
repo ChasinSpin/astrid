@@ -5,6 +5,8 @@ Version 1.0.011:
 
 	* Increased allowable system time / gps time delta from 2 to 30 seconds
 
+	* Added INSTRUMENT-FRAMES-PER-SECOND to metadata
+
 
 Version 1.0.010:
 ================
