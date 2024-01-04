@@ -27,3 +27,26 @@
 * **Which light curve analysis software is supported?**
 
 	Once the light curve has been generated in PyMovie, it can be analyzed in PyOTE, AOTA, ROTE or Occular.
+
+* **Astrid, Hot Climates, Cold Weather, and moisture**
+
+	Astrid normally runs above ambient temperature, so generally inside the case little moisture or ice will accumulate.  However if the temperature outside is substantially below freezing, to the point that condensation would form on the case when brought inside, then it is advisable to place in a container until warmed to room temperature and then open the container to remove any remaining moisture.  This would be the same treatment you would apply to a telescope.
+
+	Astrid is not waterproof and shouldn't be subjected to rain. Also it's not weatherproof, so don't leave outside permanently, as is the same with most astromonical equipment.
+
+	One user loosely covers Astrid on top with a plastic bag leaving space for venting if they have concerns about rain overnight.  Astrid does generate heat, and it's advisable to not completely enclose to avoid overheating.
+
+	Also, Astrid is subjected to Canadian weather and so far has been tested to -16C with no issues encountered to date.
+	
+	In hot climates, make sure you have adequate venting around Astrid.
+	
+* **Stealth Mode - removing lights for unattended operation**
+
+	Astrid has a number of leds on it that may blink or glow, they are made available so that the status of the device can be seen:
+	
+	* GPS LED (red flashing once per second with GPS fix)
+	* Raspberry Pi: Red LED (power) and Green LED (activity)
+	* Network Status LEDs (Green and Yellow, flashing or static)
+
+	To use Astrid stealthily, just cover these LEDs with electrical tape on the case. (the GPS LED can be accessed by unbolting the case where the Astrid Logo is, and covering the LED on the GPS board with electrical tape).  Scotch Super 33+ is a suggested electrical tape.
+	
