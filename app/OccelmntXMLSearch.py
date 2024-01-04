@@ -111,7 +111,7 @@ class OccelmntXMLSearch():
 			return 'NW'
 		
 
-	def searchEvents(self, lat, lon, alt, startDate, endDate, starMagLimit, magDropLimit, starAltLimit, sunAltLimit, distanceLimit, callback_status, callback_foundEvent):
+	def searchEvents(self, lat, lon, alt, startDate, endDate, starMagLimit, magDropLimit, starAltLimit, sunAltLimit, distanceLimit, asteroidNum, callback_status, callback_foundEvent):
 		count = 0
 
 		for event in self.events:
@@ -134,6 +134,8 @@ class OccelmntXMLSearch():
 			magDrop		= round(float(occStar[11]), 1)
 
 			# we cull in order of cpu time, cull the quick things first
+			if asteroidNum != '' and asteroidNum is not None and occObject[0] != asteroidNum:
+				continue
 			if starMag > starMagLimit:
 				continue
 			if magDrop< magDropLimit:

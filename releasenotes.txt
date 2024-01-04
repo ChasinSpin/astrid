@@ -1,3 +1,9 @@
+Version 1.0.012:
+================
+
+	* Adding asteroid number search to search occelmnt xml
+
+
 Version 1.0.011:
 ================
 

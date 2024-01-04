@@ -23,7 +23,7 @@ class OccelmntXMLSearchThread(QThread):
 	searchComplete		= pyqtSignal()
 
 
-	def __init__(self, xml_fname, lat, lon, alt, startDate, endDate, starMagLimit, magDropLimit,  starAltLimit, sunAltLimit, distanceLimit):
+	def __init__(self, xml_fname, lat, lon, alt, startDate, endDate, starMagLimit, magDropLimit,  starAltLimit, sunAltLimit, distanceLimit, asteroidNum):
 		super(QThread, self).__init__()
 
 		self.xml_fname		= xml_fname
@@ -37,6 +37,7 @@ class OccelmntXMLSearchThread(QThread):
 		self.starAltLimit	= starAltLimit
 		self.sunAltLimit	= sunAltLimit
 		self.distanceLimit	= distanceLimit
+		self.asteroidNum	= asteroidNum
 
 		self.search	= None
 
@@ -60,7 +61,7 @@ class OccelmntXMLSearchThread(QThread):
 		self.search = OccelmntXMLSearch(self.xml_fname)
 		self.searchStatus.emit('Total Events: %d' % self.search.total_events)
 
-		self.search.searchEvents(self.lat, self.lon, self.alt, self.startDate, self.endDate, self.starMagLimit, self.magDropLimit, self.starAltLimit, self.sunAltLimit, self.distanceLimit, self.__statusUpdate, self.__foundEvent)
+		self.search.searchEvents(self.lat, self.lon, self.alt, self.startDate, self.endDate, self.starMagLimit, self.magDropLimit, self.starAltLimit, self.sunAltLimit, self.distanceLimit, self.asteroidNum, self.__statusUpdate, self.__foundEvent)
 
 		self.searchStatus.emit('Search Complete. Found %d events that matched criteria, from a total of %d events.  Click \"+\" to add event to Occultation Database, click asteroid name to open on OWCloud.' % (len(self.search.found_events), self.search.total_events))
 
@@ -261,7 +262,8 @@ class UiWidgetSearchXMLPredictions(QWidget):
 							float(self.controlsWidget.widgetMagDrop.text()),							\
 							float(self.controlsWidget.widgetStarAltitude.text()),							\
 							float(self.controlsWidget.widgetSunAltitude.text()),							\
-							float(self.controlsWidget.widgetDistance.text())
+							float(self.controlsWidget.widgetDistance.text()),							\
+							self.controlsWidget.widgetAsteroidNum.text()
 						     )
 
 		self.thread.searchFoundEvent.connect(self.__searchFoundEvent)

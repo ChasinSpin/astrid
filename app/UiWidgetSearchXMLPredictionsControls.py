@@ -25,6 +25,7 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 
 
 		self.widgetOccelmntXML		= QComboBox()
+		self.widgetAsteroidNum		= QLineEdit()
 		self.widgetStartDate		= QDateEdit()
 		self.widgetEndDate		= QDateEdit()
 		self.widgetLatitude		= QLineEdit()
@@ -55,6 +56,9 @@ class UiWidgetSearchXMLPredictionsControls(QWidget):
 
 		self.layout.addWidget(QLabel('Occelment XML'),			0, 0, 1, 1, Qt.AlignVCenter)
 		self.layout.addWidget(self.widgetOccelmntXML, 			1, 0, 1, 2, Qt.AlignVCenter)
+
+		self.layout.addWidget(QLabel('Asteroid #'),			0, 2, 1, 1, Qt.AlignVCenter)
+		self.layout.addWidget(self.widgetAsteroidNum, 			1, 2, 1, 1, Qt.AlignVCenter)
 
 		self.layout.addWidget(QLabel('Start Date (UTC)'),		3, 0, 1, 1, Qt.AlignVCenter)
 		self.layout.addWidget(self.widgetStartDate, 			4, 0, 1, 1, Qt.AlignVCenter)
