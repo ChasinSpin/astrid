@@ -1,3 +1,11 @@
+Version 1.0.013:
+================
+
+	* North American Report AutoFill has some fields as text that should be numbers for auto processing by IOTA, fixed
+
+	* Fixed so that return/enter now works on fields (validators).  Qt validators are poorly designed, there shouldn't need to be so many special cases like this.
+
+
 Version 1.0.012:
 ================
 
