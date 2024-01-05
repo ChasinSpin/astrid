@@ -115,9 +115,9 @@ class FillInNAReport():
 					self.sheet[cell_mapping['EventYear']]		= predicted_time.year
 					self.sheet[cell_mapping['EventMonth']]		= self.MONTHS[predicted_time.month-1]
 					self.sheet[cell_mapping['EventDay']]		= predicted_time.day
-					self.sheet[cell_mapping['PredictedHours']]	= '%02d' % predicted_time.hour
-					self.sheet[cell_mapping['PredictedMinutes']]	= '%02d' % predicted_time.minute
-					self.sheet[cell_mapping['PredictedSeconds']]	= '%02d' % predicted_time.second
+					self.sheet[cell_mapping['PredictedHours']]	= predicted_time.hour
+					self.sheet[cell_mapping['PredictedMinutes']]	= predicted_time.minute
+					self.sheet[cell_mapping['PredictedSeconds']]	= predicted_time.second
 			elif key == 'StarCatalog':
 				star = self.__get_metadata('user', 'OCCULTATION-STAR')
 				if star is not None:
@@ -172,7 +172,7 @@ class FillInNAReport():
 				altitude = self.__get_metadata('required', 'ALTITUDE')
 				if altitude is not None:
 					altitude = float(altitude)
-					self.sheet[cell_mapping['Elevation']] = '%0.1f' % altitude
+					self.sheet[cell_mapping['Elevation']] = altitude
 					self.sheet[cell_mapping['ElevationUnits']] = 'm'
 					self.sheet[cell_mapping['ElevationDatum']] = 'WGS84'
 			elif key == 'Timing':
@@ -196,20 +196,20 @@ class FillInNAReport():
 				if aperture is not None and focalLength is not None and aperture > 0:
 					aperture = float(aperture)
 					focalLength = float(focalLength)
-					self.sheet[cell_mapping['Aperture']] = '%0.1f' % (aperture / 10.0)
+					self.sheet[cell_mapping['Aperture']] = (aperture / 10.0)
 					self.sheet[cell_mapping['ApertureUnits']] = 'cm'
 					focalRatio = focalLength / aperture
-					self.sheet[cell_mapping['FocalRatio']] = '%0.1f' % focalRatio
+					self.sheet[cell_mapping['FocalRatio']] = focalRatio
 			elif key == 'TelescopeType':
 				self.__fill_value(cell, 'user', 'INSTRUMENT-OPTICAL-TYPE')
 			elif key == 'StartedObservingHours':
-				self.sheet[cell_mapping['StartedObservingHours']] = '%02d' % self.started_utc[0]
-				self.sheet[cell_mapping['StartedObservingMins']] = '%02d' % self.started_utc[1]
-				self.sheet[cell_mapping['StartedObservingSecs']] = '%02.3f' % self.started_utc[2]
+				self.sheet[cell_mapping['StartedObservingHours']] = self.started_utc[0]
+				self.sheet[cell_mapping['StartedObservingMins']] = self.started_utc[1]
+				self.sheet[cell_mapping['StartedObservingSecs']] = self.started_utc[2]
 			elif key == 'StoppedObservingHours':
-				self.sheet[cell_mapping['StoppedObservingHours']] = '%02d' % self.stopped_utc[0]
-				self.sheet[cell_mapping['StoppedObservingMins']] = '%02d' % self.stopped_utc[1]
-				self.sheet[cell_mapping['StoppedObservingSecs']] = '%02.3f' % self.stopped_utc[2]
+				self.sheet[cell_mapping['StoppedObservingHours']] = self.stopped_utc[0]
+				self.sheet[cell_mapping['StoppedObservingMins']] = self.stopped_utc[1]
+				self.sheet[cell_mapping['StoppedObservingSecs']] = self.stopped_utc[2]
 			elif key == 'VideoFormat':
 				self.sheet[cell_mapping[key]] = 'ADVS'
 			elif key == 'ExposureIntegration':
