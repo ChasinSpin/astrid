@@ -63,6 +63,10 @@ class DoubleValidator(QDoubleValidator):
 		# 	Save Changes = Acceptable (save, no fixup, focus = 0)
 		# Although Intermediate does not save, usuaully this is followed by a save button and will save
 		if focus:
+			if self.originalValue == p_str:
+				#print('*** VALID: Acceptable')
+				return QValidator.Acceptable, p_str, p_pos
+
 			#print('*** VALID: Intermediate')
 			return QValidator.Intermediate, p_str, p_pos
 		else:
@@ -159,6 +163,10 @@ class IntValidator(QIntValidator):
 		# 	Save Changes = Acceptable (save, no fixup, focus = 0)
 		# Although Intermediate does not save, usuaully this is followed by a save button and will save
 		if focus:
+			if self.originalValue == p_str:
+				#print('*** VALID: Acceptable')
+				return QValidator.Acceptable, p_str, p_pos
+
 			#print('*** VALID: Intermediate')
 			return QValidator.Intermediate, p_str, p_pos
 		else:
