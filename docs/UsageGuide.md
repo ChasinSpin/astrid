@@ -1,6 +1,7 @@
 # Usage Guide
 
 * [Startup](#startup)
+* [Windows Zeroconf](#windows-zeroconf)
 * [Wi-Fi](#wi-fi)
 * [First Light](#first-light)
 * [Connect Via VNC](#connect-via-vnc)
@@ -25,6 +26,38 @@
 * Keep sensor clean.  The best way to do this is to use a camera puffer and keep the sensor covered at all times, either with a cap or a focal reducer.  If you need to clean the sensor, use a regular sensor cleaning kit.  As with regular astrophotography, a dirty sensor is indicated by sharply focused defects on the image (*less defined defects are dirt on the lens or telescope*).
 * [Connect via VNC](#connect-via-vnc)
 
+## Windows Zeroconf
+
+Zeroconf (also known as mDNS and Bonjour) is a way to save users from entering IP addresses (e.g. 10.0.0.5) and being able to use name.local instead: [https://en.wikipedia.org/wiki/Zero-configuration_networking
+](https://en.wikipedia.org/wiki/Zero-configuration_networking)
+
+Ordinarily, this means you can use one address to connect to Astrid despite being on different networks.  On Mac and iOS, this works fine; however, on some Windows and Android devices, zeroconf is broken, and Astrid will require an IP address and a different hostname depending on the network it's connected to.
+
+When Astrid is advertising its own AdHoc Network (typically on mobile deployments), the IP address is likely to be 10.0.0.5 as Astrid is generating that network. When connected to your home network, it will be whatever DHCP address your home network assigned.
+
+As you need to know the IP address your Astrid is on when connected to your home network so you can connect to it, it's suggested to set up Astrid on your home network in your WiFi router as a Permanent (or Static) DHCP address.  You will likely need the MAC address for that permanent assignment, which can be determined with the following command in Terminal (Black square icon with >_) in Astrid:
+
+	ifconfig wlan0
+	
+The output will look like this:
+
+	pi@astrid1:~ $ ifconfig wlan0
+	wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.20.32  netmask 255.255.255.0  broadcast 192.168.20.255
+        inet6 fe80::9033:3538:7601:78fd  prefixlen 64  scopeid 0x20<link>
+        ether dc:a6:32:b2:eb:72  txqueuelen 1000  (Ethernet)
+        RX packets 760  bytes 66334 (64.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1592  bytes 1806203 (1.7 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+you should look for the hexadecimal number after "ether", in this case the MAC address is:
+
+	dc:a6:32:b2:eb:72
+
+You need to enter that hexadecimal number into your router and assign an IP address, you then use that same IP address for the respective VNC connection.
+
+
 ## Wi-Fi
 
 Astrid uses [AutoHotspot](https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/157-raspberry-pi-auto-wifi-hotspot-switch-internet#:~:text=AutoHotspot%20Script,-This%20is%20the&text=Allowing%20all%20connected%20devices%20to,be%20used%20with%20hidden%20SSID%27s.) to manage Wi-Fi connections, these can be configured via the "Wifi Setup" icon on Astrid's desktop.
@@ -35,7 +68,7 @@ Astrid looks for a Wi-Fi connection it knows first and will connect to it when f
 | --------- | -------------- |
 | Wi-Fi SSID | AstridHotspot |
 | Wi-Fi Password | iotaiota |
-| Hostname | astrid.local |
+| Hostname | astrid.local (or 10.0.0.5) |
 
 If Astrid can see multiple networks it knows, then it may connect or change between them randomly.
 
@@ -63,7 +96,7 @@ When Astrid is started for the first time, no Wi-Fi networks are configured and 
 | --------- | -------------- |
 | Wi-Fi SSID | AstridHotspot |
 | Wi-Fi Password | iotaiota |
-| Hostname | astrid.local |
+| Hostname | astrid.local (or 10.0.0.5) |
 
 To connect, you will need to connect to this Wi-Fi network you will need to use VNC, see [Connect Via VNC](#connect-via-vnc).  Once connected, you can use the "Wi-Fi Setup" icon on your desktop to add Wi-Fi networks you require.
 
@@ -89,8 +122,8 @@ When setting up the client, we suggest you use "astrid.local" for the hostname i
 To add Astrid to VNC Viewer:
 
 1. Click on the "+" button
-2. Address: astrid.local
-3. Name: astrid.local
+2. Address: astrid.local  (or 10.0.0.5 on windows)
+3. Name: astrid.local  (or 10.0.0.5 on windows)
 4. Picture Quality: Automatic
 5. Interaction: Touch Panel (Tablet) or Mouse (Computer)
 6. Update desktop preview: On or Off

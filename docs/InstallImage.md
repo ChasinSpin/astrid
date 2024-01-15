@@ -24,7 +24,7 @@ Insert card into Raspberry Pi and boot - see [Startup in UsageGuide](UsageGuide.
 | --------- | -------------- |
 | Wifi SSID | AstridHotspot |
 | Wifi Password | iotaiota |
-| Hostname | astrid.local |
+| Hostname | astrid.local (or 10.0.0.5 on windows) |
 
 Note: It can take a few mins for astrid.local to be pushed to the device you are connecting from and may result in Hostname not found.
 
