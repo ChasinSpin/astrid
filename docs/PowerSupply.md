@@ -35,7 +35,7 @@ Also, any larger power bank/power packs that have a 120V inverter are often squa
 
 Using LiFePO4 (Lithium Phosphate) 12V batteries instead is safer, significantly cheaper, and works (see below).
 
-_There is one exception to this recommendation, and that is the Celestron Lithium and Lithium Pro LiFePO4 power banks(only), which are designed for astronomy applications.  However, as of now, these are untested with Astrid and they are significantly more expensive than an equivalent battery.  If you use one and it is working without power dropouts, please inform us._
+_There is one exception to this recommendation, and that is the Celestron Lithium and Lithium Pro LiFePO4 power banks(only), which are designed for astronomy applications.  However, as of now, only the Lithium Pro has been tested with Astrid and they are significantly more expensive than an equivalent battery._
 
 # Household Power
 
@@ -48,15 +48,18 @@ Astrid can be powered at home with a 4A or greater 12V DC regulated center posit
 
 Field deployments will typically need a battery, here are our suggestions. We use a 10Ah Dakota LiFePO4 12V battery.
 
-Be sure to use the correct charger for the battery or power pack recommended by the manufacturer to avoid damage and fuse with a 5A fuse.  Ensure the wiring used is large enough to handle the current required to avoid overheating, insulation melting, and voltage drops.
+Be sure to use the correct charger for the battery recommended by the manufacturer to avoid damage and fuse with a 5A fuse.  Ensure the wiring used is large enough to handle the current required to avoid overheating, insulation melting, and voltage drops.  The fuse is a safety measure and is to prevent the situation where the output jack may touch the positive terminal accidentally and short the battery.
+
 
 LiFePO4 (Lithium Phosphate) battery chemistry is recommended for safety, cold weather performance, and battery longevity.  You should also verify that the battery has a BMC (Battery Management Controller) on board.  Lithium Ion and Lithium Polymer batteries should be avoided due to safety concerns, fire risk/explosion.
 
-We particularly like the batteries made by Dakota, and we own a few due to their exceptional cold-weather performance and warranty. 
+We particularly like the batteries made by Dakota, and we own a few due to their exceptional cold-weather performance and warranty. The same batteries that are ideal for Astrid are also used for Fish Finders/Sonars and can be found in Outdoors Stores and on Amazon.
 
 If traveling by air with lithium batteries, be aware that there are regulations depending on the size of the battery, and you should verify with your airline before traveling.
 
 For example, the [TSA guidelines](https://www.tsa.gov/travel/security-screening/whatcanibring/all?combine=batteries&page=1#:~:text=Lithium%20batteries%20with%20100%20watt%20hours%20or%20less%20in%20a%20device&text=Spare%20(uninstalled)%20lithium%20ion%20and,in%20carry%2Don%20baggage%20only)
+
+Do not attempt to use Alkaline batteries (or Zinc-Carbon/Zinc-Chloride) to run Astrid, the internal resistance of these batteries (AA's for example), mean that they are unable to supply the peak current required.  It may be possible to run good quality NiMH AA batteries like the Eneloop Pro, but only for around 2 hrs when configured as 10 batteries in series in a battery holder with solder lugs and 16 gauge wiring... at which point an LiFePO4 is cheaper anyway, runs longer and is less prone to problems.
 
 **Runtimes are approximate.  "Runtime" means Astrid alone (typically tripod mount).  "Runtime with Mount" assumes a mid-sized mount (EQ5/AM5) with a current draw of ~1Amp.**
 
@@ -67,8 +70,8 @@ For example, the [TSA guidelines](https://www.tsa.gov/travel/security-screening/
 | [Dakota 12V 18Ah](https://dakotalithium.com/product/dakota-lithium-12v-12ah-18-amp-hour-lifepo4-iron-phosphate-battery/) | 216Wh | Yes | 32-36 | 10-12 | No | |
 | [Dakota 12V 54Ah](https://dakotalithium.com/product/dakota-lithium-12v-12ah-18-amp-hour-lifepo4-iron-phosphate-battery/) | 691Wh | Yes |90-100 | 30-34 | No | Expensive |
 | Sealed Lead Acid Gel Battery | 120Wh | No | 14-17 | 4.5-5.5 | No | Heavy |
-| [Celestron PowerTank Lithium (18771)](https://www.celestron.com/products/powertank-lithium) | 84Wh | No | 12-14 | 3.5-4.5 | Yes | Expensive |
-| [Celestron PowerTank Lithium Pro (18768)](https://www.celestron.com/products/powertank-lithium-pro) | 158Wh | No | 23-26 | 7-8.5 | Yes | Expensive |
+| [Celestron PowerTank Lithium (18771)](https://www.celestron.com/products/powertank-lithium) | 84Wh | No | 12-14 | 3.5-4.5 | Yes | Expensive (untested) |
+| [Celestron PowerTank Lithium Pro (18768)](https://www.celestron.com/products/powertank-lithium-pro) | 158Wh | Yes | 23-26 | 7-8.5 | Yes | Expensive.  Tested by Steve Conard and Brian Heimes.  The telescope port requires 250mA draw minimum to stay on and the cigarette lighter port requires 420mA minimum. Suggest powering Astrid from the telescope port.  If the power tank is cutting power to Astrid, then a dew heater can be added to increase current.  Also the 5.5 x 2.1mm connector does not have enough length for proper engagement, you should add an extension chord with a longer jack.  Capacity indicators on the Celestron Power Tank are not accurate, otherwise runs fine.  |
 | [8 Energizer L91 Lithium AA](https://data.energizer.com/pdfs/l91.pdf) | 36Wh | No | 5-6 | Not feasable | Yes | Buy  at destination. Good to -15C, lower with less runtime. Batteries are expensive and require a solder lug battery holder as most battery holders have small gauge wiring. A small lithium battery you can carry on a plane (e.g., the 10Ah Dakota listed above) is often the most cost-effective option if used more than once. |
 
 # Power Connectors
