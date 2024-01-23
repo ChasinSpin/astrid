@@ -4,7 +4,7 @@ Astrid with the OTEStamper board should be powered via the 12-15 Volt 2.1x5.5mm 
 
 Supply voltages outside of this range will likely damage the board and the Raspberry Pi and may corrupt the SD Card.  We recommend against using 12V Cigarette lighter-type connectors, as they often disconnect easily and can lead to SD Card corruption when that happens.
 
-5.1-5.2VDC is generated internally by the OTEStamper board for the Raspberry Pi to run.  Please make sure that any wiring and the connector you use to supply Astrid can handle at least 2A. For reasonable run length, this means 16AWG or thicker for the wire, and likely 14AWG if you're supplying a larger mount too.
+5.1-5.2VDC is generated internally by the OTEStamper board for the Raspberry Pi to run.  Please make sure that any wiring and the connector you use to supply Astrid can handle at least 2A. For reasonable run length, this means 16AWG or thicker for the wire, and likely 14AWG if you're supplying a larger mount too.  18AWG is really the least that should be considered and only for short runs and for only powering Astrid.
 
 # Power Banks / Power Packs
 
