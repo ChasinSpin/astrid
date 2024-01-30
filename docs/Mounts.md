@@ -14,20 +14,8 @@
 | Vixen Starbook Ten | Yes | Connect to ethernet port on the Pi. Point Dec West at start up (home position), accept warning about sun, then connect Astrid.  Note Park on Starbook Ten often means RA is rotated, it is okay to start a polar alignment from this position. |
 | LX200 Classic | Yes | /dev/ttyUSB0, 9600, parkmethod=park, Indi Telescope Device Id=LX200 Classic, Indi Module = indi_lx200classic   Tested in AltAz, should work in Equatorial.  Tracking is permanently on with this mount. Connect via USB to the mount directly with this: https://www.clearline-tech.com/repair-parts/lx200/lx200-usb-adapter.html |
 | Skywatcher AZ GTI | Yes | /dev/ttyUSB0, parkmethod=park, Indi Telescope Device Id = Skywatcher Alt-Az, Indi Module=indi_skywatcherAltAzMount   Alt Az mount, baud=9600, example Skywatcher Virtuoso GTI 150p.  Power mount on with tube horizontal and pointing north (the park position). Use EQMod Cable. Regularly on startup, says "Failed to connect to mount", just click Try Again |
+| Celestron Nexstar 6 SE (likely 8 SE too and other celestron mounts) | Yes |  /dev/ttyUSB0, parkmethod=park, Indi Telescope Device Id=Celestron AUX, Indi Module=indi_celestron_aux, baud=19200, Indi Custom Properties=Celestron AUX.PORT_TYPE.PORT\_HC\_USB=On;Celestron AUX.CORDWRAP.INDI\_ENABLED=On   (note "Celestron AUX" has a space in it. Note: USB connection via the handset (USB-A to USB-Mini B) is tested, also connection via the AUX port may work but will require settings changes.  IMPORTANT: Power to the mount must be on.  The handset will show text even when not powered as it can get power via the USB, but the mount won't connect. LCD will have red backlight when power to the mount is on.  Mount must be powered on horizontal pointing North. Occasionally when started, mount may need "Try Again" on startup. Nexstar tracking is terrible, it's suggested to use the SE6/SE8 for prepoint goto.  Do not do any star alignment prior to (or after) connecting the mount, it's not required as this bypasses the regular mount firmware. |
 | Fixed Mounts (Prepoint) | Yes | Use Simulator |
-
-### Mounts we don't recommended
-
-* Celestron Nexstar 6 SE (likely 8 SE too). Dec/RA vary whilst running causing some short exposures to be trailed randomly. Mount can't be updated for Time and Location after the scope is aligned).  Star alignment on the handset should work but didn't during testing (the scope could have been faulty).  If attempting to use, then you will need to align the scope prior to connecting with ASTRID, and you will need to set the time and location exactly from the handset.  Also, RA/DEC was often reported incorrectly.
-
-		"name": "NexStar SE",
-		"indi_module": "indi_celestron_gps",
-		"indi_telescope_device_id": "Celestron GPS",
-		"indi_usb_tty": "/dev/ttyUSB0",
-		"mount_needs_slew_state": false,
-		"mount_is_j2000": false,
-		"local_offset": "0.00"
-
 
 ### Mount Onboarding/Testing/Verification
 
