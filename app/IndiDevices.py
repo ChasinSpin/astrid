@@ -151,6 +151,13 @@ class IndiTelescope:
 
 		# Get the connect mode switch
 		print('Device_ID:', device_id)
+
+		if self.settings['indi_custom_properties'] is not None and len(self.settings['indi_custom_properties']) > 0:
+			for property in self.settings['indi_custom_properties'].split(';'):
+				cmd = ['/usr/bin/indi_setprop', property]
+				print(cmd)
+				subprocess.run(args=cmd)
+
 		self.connectionModeSwitch = self.getSwitch('CONNECTION_MODE')
 		if self.connectionModeSwitch:
 			if self.device_id == 'Starbook Ten':

@@ -61,6 +61,7 @@ class Settings:
 			{'name': 'name',				'type': 'str',		'range': None,					'default': 'Simulator',			'decimalPlaces': None,	'editable': True,	'displayName': 'Display Name',				'description': ''},
 			{'name': 'indi_module',				'type': 'str',		'range': None,					'default': 'indi_simulator_telescope',	'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Module',				'description': ''},
 			{'name': 'indi_telescope_device_id',		'type': 'str',		'range': None,					'default': 'Telescope Simulator',	'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Telescope Device Id',		'description': ''},
+			{'name': 'indi_custom_properties',		'type': 'str',		'range': None,					'default': '',				'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Custom Properties',		'description': ''},
 			{'name': 'indi_usb_tty',			'type': 'str',		'range': None,					'default': '/dev/ttyUSB0',		'decimalPlaces': None,	'editable': True,	'displayName': 'Indi USB tty',				'description': ''},
 			{'name': 'baud',				'type': 'int',		'range': [110,256000],				'default': 9600,			'decimalPlaces': None,	'editable': True,	'displayName': 'Baud Rate',				'description': ''},
 			{'name': 'align_axis',				'type': 'choice',	'range': ['eq','altaz'],			'default': 'eq',			'decimalPlaces': None,	'editable': True,	'displayName': 'Mount Alignment Type',			'description': ''},
