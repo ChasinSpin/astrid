@@ -18,6 +18,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetFileOpen	= self.addButton('Load Video')
 		#self.widgetStackFrames  = self.addLineEditInt('Stack Frames', 1, 10, editable=True)
 		self.widgetPlateSolve	= self.addButton('Plate Solve')
+		self.widgetAnnotate	= self.addButton('Annotate')
 		self.widgetSavePng	= self.addButton('Save Png Image')
 		self.widgetSaveFits	= self.addButton('Save Fits Finder')
 		self.widgetMetadata	= self.addButton('Metadata')
@@ -40,6 +41,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.widgetFileOpen.clicked.connect(self.buttonFileOpenPressed)
 		#self.widgetStackFrames.editingFinished.connect(self.lineEditStackFramesChanged)
 		self.widgetPlateSolve.clicked.connect(self.buttonPlateSolvePressed)
+		self.widgetAnnotate.clicked.connect(self.buttonAnnotatePressed)
 		self.widgetSavePng.clicked.connect(self.buttonSavePngPressed)
 		self.widgetSaveFits.clicked.connect(self.buttonSaveFitsPressed)
 		self.widgetMetadata.clicked.connect(self.buttonMetadataPressed)
@@ -64,6 +66,10 @@ class UiPanelPlayerOperations(UiPanel):
 			self.widgetPlateSolve.setText('Cancel')
 		else:
 			self.plateSolveCancelCallback()
+
+
+	def buttonAnnotatePressed(self):
+		self.annotateCallback()
 
 
 	def buttonSavePngPressed(self):
@@ -105,7 +111,7 @@ class UiPanelPlayerOperations(UiPanel):
 
 	# OPERATIONS
 
-	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, savePngCallback, saveFitsCallback, exportFitsCallback, metadataCallback, stackFramesCallback):
+	def setCallbacks(self, autoStretchCallback, autoStretchLimitsCallback, plateSolveCallback, plateSolveCancelCallback, savePngCallback, saveFitsCallback, exportFitsCallback, metadataCallback, stackFramesCallback, annotateCallback):
 		self.autoStretchCallback = autoStretchCallback
 		self.autoStretchLimitsCallback = autoStretchLimitsCallback
 		self.lineEditAutoStretchLimitsChanged()
@@ -117,6 +123,7 @@ class UiPanelPlayerOperations(UiPanel):
 		self.plateSolveCancelCallback = plateSolveCancelCallback
 		self.metadataCallback = metadataCallback
 		self.stackFramesCallback = stackFramesCallback
+		self.annotateCallback = annotateCallback
 
 
 	def plateSolveFinished(self):
@@ -125,6 +132,7 @@ class UiPanelPlayerOperations(UiPanel):
 
 	def __setEnabledButtons(self, enable):
 		self.widgetPlateSolve.setEnabled(enable)
+		self.widgetAnnotate.setEnabled(enable)
 		#self.widgetStackFrames.setEnabled(enable)
 		self.widgetSavePng.setEnabled(enable)
 		self.widgetSaveFits.setEnabled(enable)

@@ -1,3 +1,9 @@
+Version 1.0.014:
+================
+
+	* Added annotation tool to Player that identifies stars and magnitudes via a csv file created in the occultation video folder.
+
+
 Version 1.0.013:
 ================
 

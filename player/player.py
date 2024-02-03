@@ -2,6 +2,7 @@
 
 import os
 import sys
+import csv
 import json
 import argparse
 import numpy as np
@@ -23,6 +24,7 @@ from astcoord import AstCoord
 from datetime import timedelta, timezone
 from PlateSolver import PlateSolver
 from settings import Settings
+from starcatalog import StarLookup, Star
 
 
 # Export Fits Sequence on a separate thread
@@ -98,6 +100,19 @@ def drawTarget(img, centerGap, lineLength, lineThickness, pos, colors):
 		cv2.line(img, (x+centerGap, y), (x+lineLength, y), (color), thickness)
 
 
+def drawAnnotation(img, scaling):
+	global annotationStars
+
+	for i in range(len(annotationStars)):
+		star  = annotationStars[i]
+		x = int(star.xy[0] * scaling)
+		y = int(star.xy[1] * scaling)
+		#cv2.circle(img, (x, y), 7, (65535), 1, cv2.LINE_AA)
+
+		cv2.putText(img, '%d' % i, (x-2, y-10 if (scaling == 1.0) else y-4), cv2.FONT_HERSHEY_PLAIN, 1.0 if (scaling == 1.0) else 0.5, (65535), 1)
+		#cv2.putText(img, '%0.2f' % star.mag_g, (x-5, y-7), cv2.FONT_HERSHEY_PLAIN, 1.0, (65535), 1)
+
+
 def getRavfFrame(index):
 	global ravf_fp, ravf, window, width, height, autoStretch, autoStretchLower, autoStretchUpper, targetPosition, lastDisplayImage, lastImage, frameInfo, frameStatus
 
@@ -145,6 +160,9 @@ def getRavfFrame(index):
 		print('Scaled Target Position:', scaledTargetPosition)
 		drawTarget(lastDisplayImage, 10, 30, 1, scaledTargetPosition, [20000, 40000])
 
+	if annotationStars is not None:
+		drawAnnotation(lastDisplayImage, width/lastImage.shape[1])
+
 	window.panelFrame.widgetLastFrame.updateWithCVImage(lastDisplayImage)
 	window.panelFrame.widgetControls.lastFrameLineEdit.setText('%d' % (ravf.frame_count()-1))
 	window.panelFrame.widgetControls.timeLineEdit.setText(frameInfo['start_timestamp_date'] + ' ' + frameInfo['start_timestamp_time'])
@@ -158,33 +176,39 @@ def updateCurrentFrame():
 
 
 def frameFirst():
-	global ravf_fp, ravf, current_frame, targetPosition
+	global ravf_fp, ravf, current_frame, targetPosition, plateSolveFitsFile, annotationStars
 
 	if ravf_fp is None or ravf is None:
 		return
 
+	plateSolveFitsFile = None
+	annotationStars = None
 	targetPosition = None
 	current_frame = 0
 	getRavfFrame(current_frame)
 
 
 def frameLast():
-	global ravf_fp, ravf, current_frame, targetPosition
+	global ravf_fp, ravf, current_frame, targetPosition, plateSolveFitsFile, annotationStars
 
 	if ravf_fp is None or ravf is None:
 		return
-
+ 
+	plateSolveFitsFile = None
+	annotationStars = None
 	targetPosition = None
 	current_frame = ravf.frame_count() - 1
 	getRavfFrame(current_frame)
 
 
 def framePrev():
-	global ravf_fp, ravf, current_frame, targetPosition
+	global ravf_fp, ravf, current_frame, targetPosition, plateSolveFitsFile, annotationStars
 
 	if ravf_fp is None or ravf is None:
 		return
 
+	plateSolveFitsFile = None
+	annotationStars = None
 	targetPosition = None
 	current_frame -= 1
 	if current_frame < 0:
@@ -193,11 +217,13 @@ def framePrev():
 
 
 def frameNext():
-	global ravf_fp, ravf, current_frame, targetPosition
+	global ravf_fp, ravf, current_frame, targetPosition, plateSolveFitsFile, annotationStars
 
 	if ravf_fp is None or ravf is None:
 		return
 
+	plateSolveFitsFile = None
+	annotationStars = None
 	targetPosition = None
 	current_frame += 1
 	if current_frame >= ravf.frame_count():
@@ -214,10 +240,14 @@ def playTimerCallback():
 
 
 def togglePlay():
-	global ravf_fp, ravf, playing, window, playTimer
+	global ravf_fp, ravf, playing, window, playTimer, plateSolveFitsFile, annotationStars
+
 
 	if ravf_fp is None or ravf is None:
 		return
+
+	plateSolveFitsFile = None
+	annotationStars = None
 
 	if playing:
 		playing = False
@@ -237,12 +267,14 @@ def togglePlay():
 
 
 def setFrameNum(index):
-	global ravf_fp, ravf, current_frame, window, targetPosition
+	global ravf_fp, ravf, current_frame, window, targetPosition, plateSolveFitsFile, annotationStars
 
 	if ravf_fp is None or ravf is None:
 		window.panelFrame.widgetControls.currentFrameLineEdit.setText('')
 		return
 
+	plateSolveFitsFile = None
+	annotationStars = None
 	targetPosition = None
 	current_frame = index
 	if current_frame < 0:
@@ -284,9 +316,12 @@ def setStackFrames(value):
 
 
 def loadRavf(fname):
-	global ravf_fp, ravf, current_frame, targetPosition, ravf_filename
+	global ravf_fp, ravf, current_frame, targetPosition, ravf_filename, plateSolveFitsFile, annotationStars
+
 	closeRavf()
 		
+	plateSolveFitsFile = None
+	annotationStars = None
 	ravf_filename = fname
 	print('loading ravf filename:', ravf_filename)
 
@@ -345,11 +380,13 @@ def plateSolveFailed():
 
 
 def plateSolve():
-	global ravf_fp, ravf, window, width, height, plateSolveFitsFile, plateSolverThread, stackFrames
+	global ravf_fp, ravf, window, width, height, plateSolveFitsFile, plateSolverThread, stackFrames, annotationStars
 
 	if ravf_fp is None or ravf is None:
 		return
 
+	plateSolveFitsFile = None
+	annotationStars = None
 	stride = ravf.metadata_value('IMAGE-ROW-STRIDE')
 	ravf_height = ravf.metadata_value('IMAGE-HEIGHT')
 	ravf_width = ravf.metadata_value('IMAGE-WIDTH')	
@@ -422,6 +459,28 @@ def plateSolve():
 	plateSolverThread = PlateSolver(plateSolveFitsFile, search_full_sky, progress_callback=plateSolveStatusMsg, success_callback=plateSolveSuccess, failure_callback=plateSolveFailed, target_coord = target_coord)
 
 
+def annotate():
+	global plateSolveFitsFile, annotationStars, current_frame
+
+	if plateSolveFitsFile is None:
+		QMessageBox.warning(window, ' ', 'Please plate solve before attempting to annotate.', QMessageBox.Ok)
+		return
+
+	# Read WCS file
+	f_basename = os.path.splitext(os.path.basename(plateSolveFitsFile))[0]
+	f_dirname = os.path.dirname(plateSolveFitsFile)
+	wcsFile = f_dirname + '/astrometry_tmp/' + f_basename + '.wcs'
+
+	starLookup = StarLookup()
+	try:
+		annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = Settings.getInstance().general['annotation_mag'])
+	except FileNotFoundError:
+		QMessageBox.critical(self, ' ', 'Star Catalogs Not Found!', QMessageBox.Ok)
+		starLookup = None
+
+	getRavfFrame(current_frame)
+
+
 def savePng():
 	global ravf_fp, ravf, lastDisplayImage, ravf_filename, current_frame, window
 
@@ -460,8 +519,22 @@ def saveFits():
 	if targetPosition is not None:
 		print('Target Position:', targetPosition)
 		drawTarget(lastImage, 20, 60, 1, (int(targetPosition[0]), int(targetPosition[1])), [0, 65535])
+
+	if annotationStars is not None:
+		drawAnnotation(lastImage, 1.0)
 	
 	save_fits_frame(lastImage, img_filename, obsDateTime, expTime, current_frame)
+
+	if annotationStars:
+		csvFname = '%s_frame_finder_%d.csv' % (f_basename, current_frame)
+
+		with open(csvFname, 'w', newline='') as csvfile:
+			writer = csv.writer(csvfile, delimiter=',')
+			writer.writerow(['#', 'Source ID', 'MagV'])
+		
+			for i in range(len(annotationStars)):
+				star  = annotationStars[i]
+				writer.writerow(['%d' % i,'EDR3 %s' % star.source_id, '%0.2f' % star.mag_g])
 
 	window.showStatusMessage('Saved frame to: %s' % img_filename)
 
@@ -612,6 +685,7 @@ if __name__ == '__main__':
 	thread			= None
 	exportFitsSeqMsgBox	= None
 	stackFrames		= 1
+	annotationStars		= None
 
 	width		= int(1456/2)
 	height		= int(1088/2)
@@ -692,7 +766,7 @@ if __name__ == '__main__':
 
 	# Start the main window
 	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext, togglePlay, setFrameNum)
-	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, savePng, saveFits, exportFits, metadata, setStackFrames)
+	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, savePng, saveFits, exportFits, metadata, setStackFrames, annotate)
 
 	QMessageBox.warning(window, ' ', 'Astrid Player currently obtains the focal length and various settings from the currently chosen configuration in Astrid.\n\nPlease ensure the matching configuration that the video was taken with is selected in Astrid.\n\nIf plate solving fails, then this is the likely cause.', QMessageBox.Ok)
 
