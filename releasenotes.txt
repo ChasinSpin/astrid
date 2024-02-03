@@ -1,3 +1,9 @@
+Version 1.0.015:
+================
+
+	* Added MagRP and MagBP to last checkin to give some estimation of spectral type for comparison	
+
+	
 Version 1.0.014:
 ================
 

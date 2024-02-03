@@ -107,9 +107,9 @@ def drawAnnotation(img, scaling):
 		star  = annotationStars[i]
 		x = int(star.xy[0] * scaling)
 		y = int(star.xy[1] * scaling)
-		#cv2.circle(img, (x, y), 7, (65535), 1, cv2.LINE_AA)
+		cv2.circle(img, (x, y), 2, (0), -1, cv2.LINE_AA)
 
-		cv2.putText(img, '%d' % i, (x-2, y-10 if (scaling == 1.0) else y-4), cv2.FONT_HERSHEY_PLAIN, 1.0 if (scaling == 1.0) else 0.5, (65535), 1)
+		#cv2.putText(img, '%d' % i, (x-2, y-10 if (scaling == 1.0) else y-4), cv2.FONT_HERSHEY_PLAIN, 1.0 if (scaling == 1.0) else 0.5, (65535), 1)
 		#cv2.putText(img, '%0.2f' % star.mag_g, (x-5, y-7), cv2.FONT_HERSHEY_PLAIN, 1.0, (65535), 1)
 
 
@@ -473,7 +473,7 @@ def annotate():
 
 	starLookup = StarLookup()
 	try:
-		annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = Settings.getInstance().general['annotation_mag'])
+		annotationStars = starLookup.findStarsInFits(wcsFile = wcsFile, magLimit = 20.7)
 	except FileNotFoundError:
 		QMessageBox.critical(self, ' ', 'Star Catalogs Not Found!', QMessageBox.Ok)
 		starLookup = None
