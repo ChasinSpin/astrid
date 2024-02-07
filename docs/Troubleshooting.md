@@ -10,8 +10,8 @@
 * [Intermittent Power](#intermittent-power)
 * [Lines On Video](#lines-on-video)
 * [Mount or Prepoint Has Wrong Position](#mount-or-prepoint-has-wrong-position)
-* [Linking to OWCloud Events Fails](linking-to-owcloud-events-fails)
-* [Wrong Password Entered For WiFi, Unable To Connect](wrong-password-entered-for-wifi,-unable-to-connect)
+* [Linking to OWCloud Events Fails](#linking-to-owcloud-events-fails)
+* [Wrong Password Entered For WiFi, Unable To Connect](#wrong-password-entered-for-wifi,-unable-to-connect)
 
 
 ## Host Not Found
@@ -208,10 +208,10 @@ Some events may fail to link back to OWCloud.  Currently, OWCloud only supports 
 
 ## Wrong Password Entered For WiFi, Unable To Connect
 
-If you enter in the wrong password when setting up a WiFi network in Astrid (for example your Home WiFi), then when Astrid attempts to connect to that network, it won't be able to and it will cycle between its Hotspot mode and attempting to connect to your WiFi network, making it virtually impossible to connect to Astrid to fix the issue.
+If you enter the wrong password when setting up a WiFi network in Astrid (for example your Home WiFi), then when Astrid attempts to connect to that network, it won't be able to and it will cycle between its Hotspot mode and attempting to connect to your WiFi network, making it virtually impossible to connect to Astrid to fix the issue.
 
 To address this issue, the quickest option is to disconnect your Wifi router(s) so that Astrid is forced to advertise it's Hotspot and is unable to switch, or you can take your Astrid away from your WiFi (a mile away for example), so that it can't connect to your WiFi.  You can then connect via the Astrid Hotspot you set up previously and fix the issue.
 
 Once you have a stable connection to Astrid, choose "WiFi Setup" and option 8. (remove Wifi Network) to remove the wifi network, then when you have Astrid back in range, you can go back into Wifi Setup and choose option 5. (add a new WiFi network), being careful to enter the password correctly this time.
 
-Another option to delete all wifi networks from Astrid (apart from its Hotspot) so that you can reenter the network is to remove the SD Card from Astrid and insert it into a computer, you will see a "bootfs" drive appear on your computer. Download and put [wpa_supplicant.conf](other/wpa_supplicant.conf) in the bootfs drive, eject the drive on your computer, remove the SD Card and put the SD Card back in Astrid and power on.  You should then be able to connect via the Astrid Hotspot and select WiFi Setup and option 5. (add a new WiFi network), being careful to enter the password correctly this time.
+Another option to delete all wifi networks from Astrid (apart from its Hotspot) so that you can reenter the network is to remove the SD Card from Astrid and insert it into a computer, you will see a "bootfs" drive appear on your computer. Download and put [wpa_supplicant.conf](https://github.com/ChasinSpin/astrid/raw/main/docs/other/wpa_supplicant.conf) in the bootfs drive, eject the drive on your computer, remove the SD Card and put the SD Card back in Astrid and power on.  You should then be able to connect via the Astrid Hotspot and select WiFi Setup and option 5. (add a new WiFi network), being careful to enter the password correctly this time.
