@@ -1,5 +1,8 @@
 # TODO
 
+* Put software version in ravf header
+* When no shared memory slots are available, increment dropped frame counter
+* At 30fps, figure out why frames are dropped occasionally (framewriter seems to be too slow)
 * Ted swings file (negative altitude)
 * Any chance you could allow a dynamic (local) change of the limiting magnitude during Exposure Analysis, rather than forcing us to stop and restart Astrid to get to the settings for Simulator? - Ted
 * Magnitudes Cluttered on Display Analysis
