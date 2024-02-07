@@ -11,7 +11,7 @@
 * [Lines On Video](#lines-on-video)
 * [Mount or Prepoint Has Wrong Position](#mount-or-prepoint-has-wrong-position)
 * [Linking to OWCloud Events Fails](#linking-to-owcloud-events-fails)
-* [Wrong Password Entered For WiFi, Unable To Connect](#wrong-password-entered-for-wifi-and-unable-to-connect)
+* [Wrong Password Entered For WiFi and Unable To Connect](#wrong-password-entered-for-wifi-and-unable-to-connect)
 
 
 ## Host Not Found
@@ -214,4 +214,6 @@ To address this issue, the quickest option is to disconnect your Wifi router(s) 
 
 Once you have a stable connection to Astrid, choose "WiFi Setup" and option 8. (remove Wifi Network) to remove the wifi network, then when you have Astrid back in range, you can go back into Wifi Setup and choose option 5. (add a new WiFi network), being careful to enter the password correctly this time.
 
-Another option to delete all wifi networks from Astrid (apart from its Hotspot) so that you can reenter the network is to remove the SD Card from Astrid and insert it into a computer, you will see a "bootfs" drive appear on your computer. Download (by clicking on the following link) and put [wpa_supplicant.conf](https://github.com/ChasinSpin/astrid/raw/main/docs/other/wpa_supplicant.conf "download") in the bootfs drive, eject the drive on your computer, remove the SD Card and put the SD Card back in Astrid and power on.  You should then be able to connect via the Astrid Hotspot and select WiFi Setup and option 5. (add a new WiFi network), being careful to enter the password correctly this time.
+Another option to delete all wifi networks from Astrid (apart from its Hotspot) so that you can reenter the network is to remove the SD Card from Astrid and insert it into a computer, you will see a "bootfs" drive appear on your computer. Download (by clicking on the following link) and put 
+<a href="https://github.com/ChasinSpin/astrid/raw/main/docs/other/wpa_supplicant.conf" download>wpa_supplicant.conf</a> 
+[wpa_supplicant.conf](https://github.com/ChasinSpin/astrid/raw/main/docs/other/wpa_supplicant.conf "download") in the bootfs drive, eject the drive on your computer, remove the SD Card and put the SD Card back in Astrid and power on.  You should then be able to connect via the Astrid Hotspot and select WiFi Setup and option 5. (add a new WiFi network), being careful to enter the password correctly this time.
