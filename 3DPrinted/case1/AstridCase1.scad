@@ -46,7 +46,7 @@
 // Camera deformation
 
 // THESE MAY NEED CHANGING, IF THERE ARE CLEARANCE ISSUES, OR HADRDWARE DIFFERENCES
-partNum                     = 9;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56
+partNum                     = 10;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56, 10 = Logo
 logoNum                     = 3;            // 1 = Eclipse (short text), 2 = Eclipse (full text), 3 = Asteroid Occultation
 externalGps                 = true;         // Make a whole for an external GPS if true
 nutDiameter                 = 5.8 + 0.2;    // This is point to point
@@ -228,6 +228,8 @@ if ( partNum == 7 ) cameraGpsWashers();
 if ( partNum == 8 ) fanCover();
 
 if ( partNum == 9 ) cameraGpsWashersX56();
+
+if ( partNum == 10 )    logo3();
 
 
 //translate( [-piBoardDimensions[0]/2, -piBoardDimensions[1]/2, caseBottomTopThickness + caseBottomPiClearance] )
