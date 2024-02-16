@@ -1,6 +1,8 @@
 Version 1.0.016:
 ================
 
+	* Reduced maximum frame rate suggested to 25fps, as 30fps is very close to 100% cpu
+
 	* Added error reporting to acquisition for dropped shared memory frames due to all the frame buffers being used
 
 	* Fixed bug where errors during recording prevent recording being stopped
