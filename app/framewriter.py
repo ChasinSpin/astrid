@@ -149,6 +149,7 @@ class FrameWriter:
 		count = 0
 		while self.sharedMemoryLocks[self.sharedMemoryIndex]:
 			if count >= ProcessRavfWriter.SHM_FRAME_BUFFERS:
+				self.otestamper.statistics['dropped_shared_memory'] += 1
 				self.logger.error('no shared memory buffers available, dropping frame')
 				return
 

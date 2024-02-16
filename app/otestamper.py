@@ -215,7 +215,7 @@ class OteStamper:
 
 	def resetStatistics(self):
 		self.checkMainThreadProcess()
-		self.statistics = { 'dropped_camera': 0, 'dropped_otestamper': 0, 'otestamper_comms_failed': 0, 'badClockDrift': 0, 'badFrameDelta': 0, 'getFrameInfoNoData': 0, 'getFrameInfoNotReady': 0, 'finalFrameNotWritten': 0, 'sequence': 0, 'endDateTime': 0, 'clockStatus': 0}
+		self.statistics = { 'dropped_camera': 0, 'dropped_otestamper': 0, 'dropped_shared_memory': 0, 'otestamper_comms_failed': 0, 'badClockDrift': 0, 'badFrameDelta': 0, 'getFrameInfoNoData': 0, 'getFrameInfoNotReady': 0, 'finalFrameNotWritten': 0, 'sequence': 0, 'endDateTime': 0, 'clockStatus': 0}
 
 
 	def buzzerEnabled(self, enable):

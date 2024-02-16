@@ -30,6 +30,7 @@ class UiPanelAcquisition(UiPanel):
 
 
 		self.label3			= self.addLabel('RavfWriter:')
+		self.widgetDroopedSharedMemory	= self.addLineEdit('    Dropped SHM Full Frames', editable=False)
 		self.widgetFinalFrameNotWritten	= self.addLineEdit('    Final Frame Not Written', editable=False)
 
 		self.widgetReset		= self.addButton('Reset Counters')
@@ -76,6 +77,7 @@ class UiPanelAcquisition(UiPanel):
 		self.widgetBadFrameDelta.setText(str(statistics['badFrameDelta']))
 		self.widgetGetFrameInfoNoData.setText(str(statistics['getFrameInfoNoData']))
 		self.widgetGetFrameInfoNotReady.setText(str(statistics['getFrameInfoNotReady']))
+		self.widgetDroopedSharedMemory.setText(str(statistics['dropped_shared_memory']))
 		self.widgetFinalFrameNotWritten.setText(str(statistics['finalFrameNotWritten']))
 		self.widgetSequence.setText(str(statistics['sequence']))
 		self.widgetEndDateTime.setText(str(statistics['endDateTime']))

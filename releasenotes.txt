@@ -1,3 +1,11 @@
+Version 1.0.016:
+================
+
+	* Added error reporting to acquisition for dropped shared memory frames due to all the frame buffers being used
+
+	* Fixed bug where errors during recording prevent recording being stopped
+
+
 Version 1.0.015:
 ================
 
