@@ -18,6 +18,7 @@ class ProcessRavfWriter:
 	def __init__(self):
 		self.connected = False
 		self.recording = False
+		self.garbageCollected = False
 
 
 	def __stopRecording(self):
@@ -27,6 +28,7 @@ class ProcessRavfWriter:
 			self.fp.close()
 			self.fp = None
 			self.recording = False
+			self.logger.propagate = True
 
 
 	def __cleanup_handler(self, sig, frame):
@@ -79,16 +81,25 @@ class ProcessRavfWriter:
 		# Loop waiting and processing commands
 		while True:
 			queueItem = None
+			timedOut = False
+
 			try:
 				queueItem = self.queue_cmd.get(timeout=1)
 			except queue.Empty:
-				#self.logger.debug('queue get timed out after 1 second')
+				if self.recording:
+					self.logger.warning('queue get timed out after 1 second')
+				timedOut = True
 				pass
 
 			if queueItem is None:
-				continue;
+				if not timedOut:
+					self.logger.warning('queueItem is None')
+				continue
 
-			self.logger.debug('framewriter queue item recv: %s' % queueItem)
+			t3 =  time.process_time_ns()
+
+			self.logger.debug('framewriter queue item recv: %s @ %s' % (queueItem, datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')))
+
 
 			cmd = queueItem['cmd']
 
@@ -112,12 +123,17 @@ class ProcessRavfWriter:
 				self.queue_finished.put(sharedMemoryBufferIndex)
 
 				t2 =  time.process_time_ns()
-				self.logger.debug('writeFrame took: %0.6fs' % ((t2-t1)/1000000000.0))
+				self.logger.debug('writeFrame took: %0.6fs, completed @ %s, delta completed:%0.6fs' % (((t2-t1)/1000000000.0), datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f'), ((t2-t3)/1000000000.0)))
+	
+				if self.garbageCollected:
+					self.logger.debug('garbage collected on previous frame')
+					self.garbageCollected = False
 
 			elif cmd == 'startRecording':
 				self.fp			= open(queueItem['filename'], 'wb')	
 				self.ravf_writer 	= RavfWriter(file_handle = self.fp, required_metadata_entries = queueItem['required_metadata'], user_metadata_entries = queueItem['user_metadata'])
 				self.recording		= True
+				self.logger.propagate = False
 
 			elif cmd == 'stopRecording':
 				self.__stopRecording()

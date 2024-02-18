@@ -1,3 +1,9 @@
+Version 1.0.017:
+================
+
+	* Addded additional logging to framewriter for dropped frames diagnosis
+
+
 Version 1.0.016:
 ================
 
