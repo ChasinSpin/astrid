@@ -527,6 +527,11 @@ class UiPanelObject(UiPanel):
 		self.widgetSearch.setEnabled(enable)
 		self.widgetRA.setEnabled(enable)
 		self.widgetDEC.setEnabled(enable)
+		self.widgetEventTime.setEnabled(enable)
+		self.widgetChord.setEnabled(enable)
+		self.widgetPrepoint.setEnabled(enable)
+		self.widgetAutoRecord.setEnabled(enable)
+		self.widgetList.setEnabled(enable)
 		self.widgetAdd.setEnabled(enable)
 
 

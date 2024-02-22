@@ -405,6 +405,7 @@ class UiPanelTask(UiPanel):
 		self.widgetTask.setEnabled(enable)
 		self.widgetFrameRate.setEnabled(enable)
 		self.widgetExposure.setEnabled(enable)
+		self.widgetGain.setEnabled(enable)
 		self.widgetNumSubs.setEnabled(enable)
 		self.widgetJobName.setEnabled(enable)
 		if self.settings_mount['goto_capable']:

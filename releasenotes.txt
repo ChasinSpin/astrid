@@ -1,3 +1,9 @@
+Version 1.0.018:
+================
+
+	* Fixed ability to manually record and auto record concurrently, also disables fields in Task and Object during manual record.
+
+
 Version 1.0.017:
 ================
 

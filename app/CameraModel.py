@@ -544,6 +544,7 @@ class CameraModel:
 		self.ui.indeterminateProgressBar(True)
 
 		self.ui.panelTask.setEnabledUi(False)
+		self.ui.panelObject.setEnabledUi(False)
 
 		self.picam2.stop()
 		#GOOD encoder = AdvEncoder(bits_per_pixel=16, native_bits_per_pixel=16, data_layout=SimpleAdv2DataLayout.IMAGE_FULL_RAW, clock_frequency=1000000, clock_accuracy=1, timestamp_absolute_accuracy_ns=1000, compression=SimpleAdv2Compression.UNCOMPRESSED, regions_of_interest=None)
@@ -662,6 +663,7 @@ class CameraModel:
 		self.operatingSubMode = OperatingVideoMode.PREVIEW
 		self.ui.panelTask.widgetRecord.setChecked(False)
 		self.ui.panelTask.setEnabledUi(True)
+		self.ui.panelObject.setEnabledUi(True)
 		self.ui.indeterminateProgressBar(False)
 
 		self.updateFan()
@@ -718,6 +720,7 @@ class CameraModel:
 		try:
 			self.ui.panelTask.widgetRecord.setChecked(False)
 			self.ui.panelTask.setEnabledUi(True)
+			self.ui.panelObject.setEnabledUi(True)
 			self.polarAlignUpdateNextButton()
 		except Exception as e:
 			print("Failed:", e)
@@ -732,6 +735,7 @@ class CameraModel:
 				self.photoCountTotal = 1
 				self.ui.panelTask.widgetRecord.setChecked(True)
 				self.ui.panelTask.setEnabledUi(False)
+				self.ui.panelObject.setEnabledUi(False)
 				if self.dithering:
 					self.dither()
 				self.__startPhoto()
@@ -776,6 +780,7 @@ class CameraModel:
 		self.annotationStars = None
 
 		self.ui.panelTask.setEnabledUi(False)
+		self.ui.panelObject.setEnabledUi(False)
 		self.picam2.start()
 		job = self.__take_photo(self.picam2_still_config, file_output, name="raw", wait=False, signal_function=self.__photoFinishedUi)
 		print(job)
@@ -796,6 +801,7 @@ class CameraModel:
 		self.ui.panelTask.widgetNumSubs.setText("1")
 		self.operatingSubMode = OperatingPhotoMode.IDLE
 		self.ui.panelTask.setEnabledUi(True)
+		self.ui.panelObject.setEnabledUi(True)
 		self.ui.panelTask.widgetRecord.setChecked(False)
 		self.ui.indeterminateProgressBar(False)
 
