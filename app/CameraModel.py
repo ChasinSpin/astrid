@@ -381,10 +381,6 @@ class CameraModel:
 		self.scale = 1
 		self.thickness = 2
 
-		# Initialize sensor and frame timestamps
-		self.last_sensor_timestamp = 0
-		self.last_frame_timestamp = 0.0
-
 		# Setup a callback to called on every frame received (for overlay/timestamping)
 		self.picam2.pre_callback = self.__frame_pre_callback
 
@@ -473,20 +469,6 @@ class CameraModel:
 				stretch = (self.autoStretchLower, self.autoStretchUpper)
 
 			self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
-
-		sensor_timestamp_delta = (metadata['SensorTimestamp'] - self.last_sensor_timestamp) / 1000
-		self.last_sensor_timestamp = metadata['SensorTimestamp']
-
-		frame_timestamp_delta = now.timestamp() - self.last_frame_timestamp
-		self.last_frame_timestamp = now.timestamp()
-
-		#print("SensorTimestampDelta: %d  ExposureTime: %d  FrameDuration: %d  FPS:%0.3f Time:%s TimeDelta:%f" % (sensor_timestamp_delta, metadata['ExposureTime'], metadata['FrameDuration'], 1000000 / sensor_timestamp_delta, timestamp, frame_timestamp_delta ))
-		#print(metadata)
-		#print(frame_timestamp_delta)
-
-		#with MappedArray(request, "raw") as raw:
-		#	print(raw.array.shape)	
-		#	raw.array.tofile('test.raw')
 
 
 	# Some of the sensor modes do binning, this returns the bin size
