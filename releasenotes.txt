@@ -1,3 +1,10 @@
+Version 1.0.019:
+================
+
+	* Removed some redundant code in CameraModel
+
+	* Reduced suggested maximum frame rate to 20fps for now because of Sandisk USB Drive Non Compliance
+
 Version 1.0.018:
 ================
 
