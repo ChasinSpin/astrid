@@ -100,3 +100,75 @@ https://forums.raspberrypi.com/viewtopic.php?t=331808
 * Merging:  git checkout main;  git merge mybranch; git push    # then:
 * Delete mybranch:  On Github, click branches and Delete the Branch 
 * git pull
+
+# Accelerated Graphics
+
+Currently, camera doesn't work when doing accelerated graphics, try out V4L2 instead: [https://www.arducam.com/faq/opencv-v4l2-python-rpi/](https://www.arducam.com/faq/opencv-v4l2-python-rpi/)
+
+Enable Acceleration:
+
+	pi@astrid5:/boot $ diff config.txt config.txt~
+	62,63c62
+	< #dtoverlay=vc4-kms-v3d
+	< dtoverlay=vc4-fkms-v3d-pi4
+	---
+	> dtoverlay=vc4-kms-v3d
+	89,95d87
+	< hdmi_force_hotplug=1
+	< #hdmi_ignore_edid=0xa5000080
+	< hdmi_group=2
+	< hdmi_mode=23
+	< #framebuffer_width=1280
+	< #framebuffer_height=720
+	< #gpu_mem=256
+	
+	root@astrid5:~/.vnc/config.d# pwd
+	/root/.vnc/config.d
+	root@astrid5:~/.vnc/config.d# diff vncserver-x11 vncserver-x11~
+	4,6d3
+	< CaptureTech=raspi
+	< ExperimentalRaspiCapture=1
+	< ServerPreferredEncoding=JPEG
+	
+	pi@astrid5:~/astrid/app $ git diff
+	diff --git a/app/CameraModel.py b/app/CameraModel.py
+	index 4d528a0..cedf6e5 100644
+	--- a/app/CameraModel.py
+	+++ b/app/CameraModel.py
+	@@ -242,7 +242,8 @@ class CameraModel:
+                vflip     = self.settings['vflip']
+                transform = Transform(hflip=hflip, vflip=vflip)
+ 
+	-               if self.settings['accelerated_preview']:
+	+               #if self.settings['accelerated_preview']:
+	+               if True:
+                        print("Configuring Accelerated Preview")
+                        self.qt_picamera = QGlPicamera2(self.picam2, width=self.previewWidth, height=self.previewHeight, keep_ar=True, transform=transform)
+                else:
+
+	
+	sudo reboot
+	
+	
+# Next Gen Camera
+
+	pi@astrid5:~ $ libcamera-vid --list-cameras
+	Available cameras
+	-----------------
+	0 : imx296 [1456x1088] (/base/soc/i2c0mux/i2c@1/imx296@1a)
+   		 Modes: 'R10_CSI2P' : 728x544 [117.61 fps - (0, 0)/1456x1088 crop]
+                		      1456x1088 [60.38 fps - (0, 0)/1456x1088 crop]
+
+[https://www.waveshare.com/wiki/Template:RPi_Camera_Libcamera_Guide](https://www.waveshare.com/wiki/Template:RPi_Camera_Libcamera_Guide)
+
+	libcamera-vid -t 10000 --framerate 117.61 -o test.h264
+	ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 test.h264 
+	1167   (number of frames)
+	
+[https://forum.arducam.com/t/64mp-what-is-the-quickest-way-to-grab-an-image-in-python/3486](https://forum.arducam.com/t/64mp-what-is-the-quickest-way-to-grab-an-image-in-python/3486)
+
+[https://pypi.org/project/rpi-libcamera/#description](https://pypi.org/project/rpi-libcamera/#description)
+
+[https://libcamera.org/docs.html](https://libcamera.org/docs.html)
+
+[https://github.com/raspberrypi/picamera2/blob/main/picamera2/picamera2.py](https://github.com/raspberrypi/picamera2/blob/main/picamera2/picamera2.py)
