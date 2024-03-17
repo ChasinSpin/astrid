@@ -396,15 +396,14 @@ module logo3()
                 logo3Line(14.1, 1.5);
                 logo3Line(17.0, 1.5);
 
-                translate( [0, 0, -0.5] )
-                    rotate( [0, 0, 15] )
-                        scale( [1.8, 1.0, 1.0] )
-                            cylinder(d=15, h=logoDepth + 0.5 + manifoldCorrection);
+                rotate( [0, 0, 15] )
+                    scale( [1.8, 1.0, 1.0] )
+                        cylinder(d=15, h=logoDepth + manifoldCorrection);
             }
                
-            translate( [0, 0, (logoDepth + 0.5) / 2] )
-                rotate( [0, 0, 15] )
-                    cube( [20, 0.75, logoDepth + 0.5 + manifoldCorrection], center = true );
+            translate( [0.5, 0, 0] )
+                linear_extrude(logoDepth + manifoldCorrection)
+                    text("ASTRID", size=4.0, font="PoetsenOne", spacing=1.3, halign="center", valign="center");
         }
     }
 }
