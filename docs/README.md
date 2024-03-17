@@ -34,6 +34,7 @@ Please remember to Thumbs Up and Subscribe.
 * [Camera Specifications](Camera.md)
 * [Raspberry Pi Complete Installation Instructions](InstallComplete.md)
 * [OTEStamper Timing Board](OTEStamper.md)
+* [USB Drive Requirements](USBDriveRequirements.md)
 * [Troubleshooting](Troubleshooting.md)
 * [FAQ](FAQ.md)
 * [TODO](TODO.md)
