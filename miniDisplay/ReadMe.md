@@ -14,3 +14,15 @@ To reset, power with USB cable connected to a computer and fast double tap reset
 
 Drag and drop adafruit_feather_esp32s2_reversetft_factory_reset.uf2 onto FTHRS2BOOT drive and wait for reboot (may get an -36 error on Mac's)
 
+### Bitmap
+
+* Export to png and open in Photoshop
+* Resize to 240x135
+* Image / Mode / Indexed Color
+	* Palette: Local (Selective)
+	* Colors: 256
+	* Forced: None
+* File / Save As Copy / BMP
+	* Windows
+	* 8 bit
+	* (nothing checked)
