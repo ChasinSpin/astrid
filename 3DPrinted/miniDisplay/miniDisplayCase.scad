@@ -1,12 +1,16 @@
 // Needs:   3 x M2.5x14mm bolt
 //          3 x M2.5 nuts
+//
+// Resin: No support, anti aliasing=smooth surfaces, high definition ant-aliasing
+
+partNum                 = 0;    // 0 = All, 1 = Case, 2 = Buttons, 3 = Bottom Case, 4 = Top Case
 
 splitCase               = true;
 caseSideBorder          = 2.0;
 caseBottomBorder        = 3.0;
 caseTopBorder           = 1.0;
 caseRadius              = 2.5;
-caseInnerDimensions     = [52, 23.5, 10.0];
+caseInnerDimensions     = [52, 23.5, 10.5];
 caseOuterDimensions     = caseInnerDimensions + [caseSideBorder * 2, caseSideBorder * 2, caseBottomBorder + caseTopBorder];
 
 pcbBaseHeight           = 6.0;
@@ -18,7 +22,8 @@ manifoldCorrection      = 0.01;
 holeUsbCDimensions      = [caseSideBorder + manifoldCorrection * 2, 9.4, 3.6];
 holeUsbCPos             = [-caseInnerDimensions[0]/2 + manifoldCorrection, 0, caseSplitHeight];
 
-boltPostDiameter        = 4.0;
+boltPostBottomDiameter  = 4.0;
+boltPostTopDiameter     = 5.0;
 boltPostXY              = [-caseInnerDimensions[0]/2 + 3.0, 17.8/2];
 
 boardPostDiameter       = 3.0;
@@ -42,8 +47,8 @@ buttonD2HolePosXY       = [-caseInnerDimensions[0]/2 + 8.0, 7.0];
 buttonResetHolePosXY    = [-caseInnerDimensions[0]/2 + 45.0, 0.0];
 
 boltDiameter            = 2.7;
-boltHeadDiameter        = 4.5;
-boltHeadHeight          = 1.5;
+boltHeadDiameter        = 4.9;
+boltHeadHeight          = 1.7;
 boltLength              = 14.0;
 nutDiameter             = 5.9;
 nutThickness            = 2.0;
@@ -60,46 +65,132 @@ ventsXYRange            = [19, 10];
 ventsDistance           = 2.5;
 ventsDiameter           = 1.5;
 
-$fn                     = 80;
+buttonMainDimensions    = [buttonHoleDimensions[0] - 0.5, buttonHoleDimensions[1] - 0.5];
+buttonMainHeight        = 2.8;
+legLongWidth            = 0.8;
+legLongLength           = buttonMainDimensions[0] + 0.3 + 2.0;
+legShortWidth           = 1.5;
+legShortLength          = buttonMainDimensions[1] + 0.3 + 2.0;
+legThickness            = 0.5;
+buttonLozenge           = [3.8, 3.0, 0.5];
+buttonCornerDimensions  = [2.0, 2.0, 0.8];
+    
 
 
+$fn                     = 40;
 
-if ( splitCase )
+
+if ( partNum == 0 || partNum == 1 )
 {
-    splitCase();
-    postsBottom();
-    translate( [0, cubeDimXY[1]/2 + 3, caseSplitHeight + caseOuterDimensions[2] - caseSplitHeight] )
-        rotate( [ 180, 0, 0] )
-            postsTop();    
+    if ( splitCase )
+    {
+        splitCase(0);
+        postsBottom();
+        translate( [0, cubeDimXY[1]/2 + 3, caseSplitHeight + caseOuterDimensions[2] - caseSplitHeight] )
+            rotate( [ 180, 0, 0] )
+                postsTop();    
+    }
+    else
+    {
+        case();
+        postsBottom();
+        postsTop();
+    }
 }
-else
+
+if ( partNum == 0 || partNum == 2 )
 {
-    case();
-    postsBottom();
-    postsTop();
+    translate( [-35, 0, 0] )
+        buttons();
+    translate( [-45, 0, 0] )
+        buttons();
+}
+
+if ( partNum == 0 || partNum == 3 )
+{
+    if ( splitCase )
+    {
+        splitCase(-1);
+        postsBottom();  
+    }
+}
+
+if ( partNum == 0 || partNum == 4 )
+{
+    if ( splitCase )
+    {
+        splitCase(1);
+        translate( [0, cubeDimXY[1]/2 + 3, caseSplitHeight + caseOuterDimensions[2] - caseSplitHeight] )
+            rotate( [ 180, 0, 0] )
+                postsTop();    
+    }
 }
 
 
 
-module splitCase()
+module buttons()
+{
+    button();
+    translate( [0, 8, 0] )
+        button();
+    translate( [0, 16, 0] )
+        button();
+    translate( [0, 24, 0] )
+        button();     
+}
+
+
+
+module button()
+{
+    difference()
+    {
+        union()
+        {
+            translate( [0, 0, legThickness/2] )
+            {
+                cube( [legLongLength, legLongWidth, legThickness], center = true );
+                cube( [legShortWidth, legShortLength, legThickness], center = true );
+                cube( [1.2, 9, legThickness], center = true);
+            }
+   
+            translate( [0, 0, buttonMainHeight/2] )
+                cube( [buttonMainDimensions[0], buttonMainDimensions[1], buttonMainHeight], center = true);
+        }
+        
+        translate( [0, 0, -manifoldCorrection] )
+            lozenge( buttonLozenge[0], buttonLozenge[1], buttonLozenge[2] + manifoldCorrection );
+            
+        for ( posXY = [[buttonMainDimensions[0]/2, buttonMainDimensions[1]/2, 0, -45], [-buttonMainDimensions[0]/2, buttonMainDimensions[1]/2, 45, 0], [buttonMainDimensions[0]/2, -buttonMainDimensions[1]/2, -45, 0], [-buttonMainDimensions[0]/2, -buttonMainDimensions[1]/2, 0, 45]] )
+            translate( [posXY[0], posXY[1], buttonCornerDimensions[2]/2 - manifoldCorrection] )
+                rotate( [posXY[2], posXY[3], 45] )
+                    cube( buttonCornerDimensions, center = true);
+    }
+}
+
+
+
+module splitCase(parts)
 {
     cubeOriginXY = [-cubeDimXY[0] / 2, -cubeDimXY[1]/2];
     
-    translate( [0, cubeDimXY[1]/2 + 3, caseSplitHeight + caseOuterDimensions[2] - caseSplitHeight] )
-        rotate( [ 180, 0, 0] )
-            difference()
-            {
-                case();
-                translate( [cubeOriginXY[0], cubeOriginXY[1], -manifoldCorrection] )
-                    cube([cubeDimXY[0] * 2, cubeDimXY[1], caseSplitHeight + manifoldCorrection]);
-            }
+    if ( parts == 0 || parts == 1 )
+        translate( [0, cubeDimXY[1]/2 + 3, caseSplitHeight + caseOuterDimensions[2] - caseSplitHeight] )
+            rotate( [ 180, 0, 0] )
+                difference()
+                {
+                    case();
+                    translate( [cubeOriginXY[0], cubeOriginXY[1], -manifoldCorrection] )
+                        cube([cubeDimXY[0] * 2, cubeDimXY[1], caseSplitHeight + manifoldCorrection]);
+                }
     
-    difference()
-    {
-        case();
-        translate( [cubeOriginXY[0], cubeOriginXY[1], caseSplitHeight] )
-            cube([cubeDimXY[0] * 2, cubeDimXY[1], caseOuterDimensions[2] - caseSplitHeight + manifoldCorrection]);
-    }
+    if ( parts == 0 || parts == -1 )
+        difference()
+        {
+            case();
+            translate( [cubeOriginXY[0], cubeOriginXY[1], caseSplitHeight] )
+                cube([cubeDimXY[0] * 2, cubeDimXY[1], caseOuterDimensions[2] - caseSplitHeight + manifoldCorrection]);
+        }
 }
 
 
@@ -165,7 +256,7 @@ module case()
             for ( x = [-ventsXYRange[0]:ventsDistance:ventsXYRange[0]] )
                 for ( y = [-ventsXYRange[1]:ventsDistance:ventsXYRange[1]] )
                     translate( [x, y, 0] )
-                        cylinder(d=ventsDiameter, h = caseBottomBorder + manifoldCorrection * 2);
+                        cylinder(d=ventsDiameter, h = caseBottomBorder + manifoldCorrection * 2, $fn=6);
     }
 }
 
@@ -199,7 +290,7 @@ module postsBottom()
             translate( [boltPostXY[0], posY, 0] )
             {
                 donut(boltReinforceDiameter, boltDiameter, boltReinforceHeight);
-                donut(boltPostDiameter, boltDiameter, pcbBaseHeight);
+                donut(boltPostBottomDiameter, boltDiameter, pcbBaseHeight);
             }
         
         // Board Posts
@@ -229,7 +320,7 @@ module postsTop()
                 {
                     difference()
                     {
-                        donut(boltPostDiameter, boltDiameter, topPostHeight); 
+                        donut(boltPostTopDiameter, boltDiameter, topPostHeight); 
                         translate( [0, 0, topPostHeight + caseTopBorder - boltHeadHeight] )
                             cylinder(d2 = boltHeadDiameter, d1 = boltDiameter, h = boltHeadHeight);
                     }   

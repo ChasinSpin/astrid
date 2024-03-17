@@ -46,7 +46,7 @@
 // Camera deformation
 
 // THESE MAY NEED CHANGING, IF THERE ARE CLEARANCE ISSUES, OR HADRDWARE DIFFERENCES
-partNum                     = 10;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56, 10 = Logo
+partNum                     = 6;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56, 10 = Logo, 11 = Logo Insert
 logoNum                     = 3;            // 1 = Eclipse (short text), 2 = Eclipse (full text), 3 = Asteroid Occultation
 externalGps                 = true;         // Make a whole for an external GPS if true
 nutDiameter                 = 5.8 + 0.2;    // This is point to point
@@ -211,8 +211,11 @@ if ( partNum == 6 )
         rotate( [0, 180, 0] )
             cameraPostsLine();
     
-    translate( [-15, -43, 0] )
+    translate( [-20, -48, 0] )
         cameraGpsWashers();
+    
+    translate( [-12, -43, 0] )
+        logo3_insert();
     
     translate( [0, caseOuterBorder[1] - 15, caseHeight - caseSplitHeight] ) 
         rotate( [180, 0, 0] )
@@ -231,6 +234,7 @@ if ( partNum == 9 ) cameraGpsWashersX56();
 
 if ( partNum == 10 )    logo3();
 
+if ( partNum == 11 )    logo3_insert();
 
 //translate( [-piBoardDimensions[0]/2, -piBoardDimensions[1]/2, caseBottomTopThickness + caseBottomPiClearance] )
 //    raspberryPi4BModel();
@@ -392,17 +396,30 @@ module logo3()
                 logo3Line(14.1, 1.5);
                 logo3Line(17.0, 1.5);
 
-                rotate( [0, 0, 15] )
-                    scale( [1.8, 1.0, 1.0] )
-                        cylinder(d=15, h=logoDepth + manifoldCorrection);
+                translate( [0, 0, -0.5] )
+                    rotate( [0, 0, 15] )
+                        scale( [1.8, 1.0, 1.0] )
+                            cylinder(d=15, h=logoDepth + 0.5 + manifoldCorrection);
             }
-            
-            translate( [0.5, 0, 0] )
-                linear_extrude(logoDepth + manifoldCorrection)
-                    text("ASTRID", size=4.0, font="PoetsenOne", spacing=1.3, halign="center", valign="center");
+               
+            translate( [0, 0, (logoDepth + 0.5) / 2] )
+                rotate( [0, 0, 15] )
+                    cube( [20, 0.75, logoDepth + 0.5 + manifoldCorrection], center = true );
         }
-
     }
+}
+
+
+
+module logo3_insert()
+{
+    rotate( [0, 0, 15] )
+        scale( [1.8, 1.0, 1.0] )
+            cylinder(d=14.8, h=0.5);
+            
+    translate( [0.5, 0, 0.5] )
+        linear_extrude(logoDepth + manifoldCorrection)
+            text("ASTRID", size=4.0, font="PoetsenOne", spacing=1.3, halign="center", valign="center");
 }
 
 
