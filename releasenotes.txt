@@ -1,7 +1,7 @@
 Version 1.0.020:
 ================
 
-	* Added diagnostics primrary to test USB Drives
+	* Added diagnostics primarily to test USB Drives
 
 Version 1.0.019:
 ================

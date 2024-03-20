@@ -2,6 +2,6 @@
 Name=Diagnostics
 Comment=Run Diagnostics
 Path=/home/pi/astrid/scripts
-Exec=/home/pi/astrid/scripts/diagnostics.py
+Exec=/home/pi/astrid/scripts/diagnostics.sh
 Terminal=true
 Type=Application
