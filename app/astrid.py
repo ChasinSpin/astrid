@@ -100,6 +100,26 @@ if __name__ == '__main__':
 			return False
 		return True
 
+	def checkSlowUSBDrive() -> bool:
+		cmd = "/home/pi/astrid/scripts/astrid-drive-good.sh"
+		output = subprocess.check_output(cmd, shell=True)
+		output = output.decode("utf-8")
+		output = output.split("\n")
+
+		extra_text = ''
+		if output[0] != 'DRIVER=UASP':
+			extra_text += '\n        - USB thumb drive is not UASP Compatible'
+		if output[1] != 'SPEED=USB3':
+			extra_text += '\n        - USB thumb drive is not running at USB 3 speed'
+
+		hidden = Settings.getInstance().hidden
+		if extra_text == '':
+			hidden['slow_usb_drive'] = False
+		else:
+			hidden['slow_usb_drive'] = True
+			QMessageBox.warning(None, ' ', 'The USB thumb drive is slow.  Use frame rates <= 10fps for video to avoid dropped frames or use a faster drive.\n' + extra_text, QMessageBox.Ok)
+		Settings.getInstance().writeSubsetting('hidden')
+
 
 	def fixAstridMultipleDrives():
 		# If we have multiple drives (ASTRID and ASTRID1), then highly likely ASTRID is a folder accidentally created
@@ -278,6 +298,8 @@ if __name__ == '__main__':
 		logger.warning('user cancelled config, aborting...')
 		shutdown_subprocesses()
 		sys.exit(0)
+
+	checkSlowUSBDrive()
 
 	# Load the camera
 	try:

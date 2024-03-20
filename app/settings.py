@@ -114,6 +114,7 @@ class Settings:
 
 		{'group': 'hidden', 'settings': [
 			{'name': 'privacy_notice',			'type': 'int',		'range': None,					'default': 3,				'decimalPlaces': None,	'editable': False,	'displayName': 'Privacy Notice Counter',		'description': ''},
+			{'name': 'slow_usb_drive',			'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': False,	'displayName': 'Slow USB Drive',		'description': ''},
 		]},
 	]
 

@@ -65,7 +65,7 @@ astridUsbSummary()
 	fi
 
 	echo
-	if [ "$DRIVER" != "USAP" -o "$SPEED" != "USB3" ];then
+	if [ "$DRIVER" != "UASP" -o "$SPEED" != "USB3" ];then
 		echo "**** WARNING: NOT UASP OR USB3: THE ASTRID USB DRIVE MAY NOT BE CAPABLE OF FRAME RATES ABOVE 10 FRAMES PER SECOND ****"
 	fi
 }

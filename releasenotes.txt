@@ -1,6 +1,8 @@
 Version 1.0.020:
 ================
 
+	* Added checks and warnings for USB drives that are not UASP and/or USB3 compliant on Astrid Startup and also when using manual recording
+
 	* Added diagnostics primarily to test USB Drives
 
 Version 1.0.019:
