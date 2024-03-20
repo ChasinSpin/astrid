@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Diagnostics
+Comment=Run Diagnostics
+Path=/home/pi/astrid/scripts
+Exec=/home/pi/astrid/scripts/diagnostics.py
+Terminal=true
+Type=Application

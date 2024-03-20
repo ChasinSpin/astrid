@@ -101,6 +101,20 @@ installQCharts()
 }
 
 
+
+# Install lsscsi
+
+installLsScsi()
+{
+	TMP=`/usr/bin/apt list --installed | grep lsscsi`
+	if [ -z "$TMP" ];then
+		echo "Installing lsscsi"
+		/usr/bin/sudo /usr/bin/apt-get install -y lsscsi
+	fi
+}
+
+
+
 # Install mdio-tool
 
 installMdioTool()
@@ -154,6 +168,7 @@ echo "Creating desktop icons..."
 /usr/bin/rm -f /home/pi/Desktop/KillAstrid.desktop
 /usr/bin/rm -f /home/pi/Desktop/FormatUSBFlashDrive.desktop
 /usr/bin/rm -f /home/pi/Desktop/Player.desktop
+/usr/bin/rm -f /home/pi/Desktop/Diagnostics.desktop
 
 /usr/bin/ln -s /home/pi/astrid/desktop/AstridApp.desktop /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/WifiSetup.desktop /home/pi/Desktop
@@ -161,6 +176,7 @@ echo "Creating desktop icons..."
 /usr/bin/ln -s /home/pi/astrid/desktop/KillAstrid.desktop /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/FormatUSBFlashDrive.desktop /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/Player.desktop /home/pi/Desktop
+/usr/bin/ln -s /home/pi/astrid/desktop/Diagnostics.desktop /home/pi/Desktop
 
 echo "Installing ravf..."
 pip install --no-deps ravf
@@ -183,6 +199,7 @@ installOpenpyxl
 installMdioTool
 installAutoHotspotMdio
 installAutoHotspotSetup
+installLsScsi
 
 echo "Installing firmware..."
 cd "$OTESTAMPER_FOLDER/firmware"
