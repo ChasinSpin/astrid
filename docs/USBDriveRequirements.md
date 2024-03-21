@@ -10,55 +10,48 @@ Astrid contains a cache that is 160 frames in size, but if the USB Drive is poor
 
 To keep up with the large raw video files and high frame rates Astrid uses, an appropriate USB Drive must be selected.  The requirements are as follows:
 
-* USB 3.0, ideally 3.2
-* More than 120MB/s write speed continuously (random and sequential).  These need to be in real-life situations, not just advertised
-* UASP support
+* USB 3.0, ideally 3.1 or 3.2
+* More than 120MB/s write speed continuously (random and sequential).  These need to be in real-life situations, not just advertised, they must also persist when there's no more caching available.
+* UASP support (up to 50% speed increase)
 * Sufficient size to store the files
 * Plugged into the Blue USB ports on the Raspberry Pi
-* Always format in Astrid
+* Always formatted in Astrid
 
-## Corsair Flash Voyager GTX 128GB USB 3.1
+## pSLC Cache
 
-This works well at 30fps and supports UASP mode.
+Most drives have pSLC cache. This can exhibit some unusual effects. For example, a drive can be writing at, say, 100-1000MB/s and then, after a certain amount has been transferred, drop down to 10-40MB/s (which no longer meets Astrid's requirements). The drive may not be back up to full speed for even as long as 30 minutes or write a smaller amount faster and then slow down again.
 
-Testing:
+References:
 
-| Write Type | Test Examples |
-| ---------- | ------------- |
-| Sequential | 133MB/s, 124MB/s,  111MB/s, 125MB/s, 128MB/s, 127MB/s |
-| Random | 310MB/s, 310MB/s, 312MB/s, 243MB/s, 311MB/s, 310MB/s |
+[pSLC Cache Design for Enhanced Performance and Lifetime](https://www.flashmemorysummit.com/Proceedings2019/08-06-Tuesday/20190806_EMBD-101A-1_McCormick.pdf)
+[Fastest USB flash drive benchmark test 2024](https://ssd-tester.com/usb_flash_drive_test.php)
 
-## Sandisk Extreme Pro 3.2
+## USB Thumb Drive Testing
 
-This drive has been demonstrated to run no faster than 20fps; it does not meet its advertised speeds for sequential or random writes.  It does not negotiate UASP mode.
+| Drive | Min Sequential Write 2MB | Min Random Write 2MB | pSLC | UASP | Recommended |
+| ----- | ------------------------ | -------------------- | ---- | ---- | ----------- |
+| Corsair Flash Voyager GTX 128GB USB 3.1 | 113.4MB/s | 172.8MB/s | Assumed 0GB | Yes | Yes |
+| Lexar 128GB JumpDrive P30 USB 3.2 Gen 1 Flash Drive (LJDP030128G-RNQNG) | TBD | TBD | ~12GB | TDB | TBD |
+| TOPESEL 128GB USB 3.1 Flash Drive | TBD | TBD | TBD | TBD | TBD |
+| Sandisk Extreme Pro 3.2 | 21.5MB/s | 8.9MB/s | ~ >100GB | No | Avoid (unpredictable speed/features) |
+| Arcanite 256GB USB 3.1 Flash Drive AK58256G | 24MB/s | 30MB/s | ~3GB | Yes | Avoid (slow, cache burnt through fast) |
 
-Testing:
+Reference: [Fastest USB flash drive benchmark test 2024](https://ssd-tester.com/usb_flash_drive_test.php)
 
-| Write Type | Test Examples |
-| ---------- | ------------- |
-| Sequential | 78.5MB/s, 27MB/s, 50MB/s, 65MB/s, 34MB/s, 40MB/s |
-| Random | 12.6MB/s, 18MB/s, 15MB/s, 14MB/s, 40MB/s, 22MB/s |
-
-It's possible it may work if files are not deleted from it, and it's reformatted often.  Your mileage may vary.
 
 ## Fragmentation
 
-Deleting files from a USB Drive may fragment the drive and, depending on its quality, slow down the speed at which data can be written.
+Deleting files from a USB Drive may fragment the drive and, depending on its quality, slow down the speed at which data can be written.  This effect can vary depending on the drive and how it's designed.
 
 ## Speed Testing 
 
-### Install iozone
-	cd
-	wget https://www.iozone.org/src/current/iozone3_506.tar
-	tar -xvf iozone3_506.tar
-	rm iozone3_506.tar
-	cd iozone3_506/src/current
-	make linux-arm
-	./iozone -e -I -a -s 100M -r 4k -r 512k -r 2M -r 16M -i 0 -i 1 -i 2 -f /media/pi/ASTRID/iozone.test
-	
-Look at the 2MB size line and write (sequential) and random write (values are in KB/s).  Run a number of times as speeds can vary.
+Use the Diagnostics icon on the desktop to run a speed test.  The results are placed in diagnostics.txt on the Astrid drive.
 
 ## UASP mode and USB 3.0
+
+See "Speed Testing" above.
+
+More information:
 
 Reference: [UASP v. BOT](https://www.jeffgeerling.com/blog/2020/uasp-makes-raspberry-pi-4-disk-io-50-faster)
 

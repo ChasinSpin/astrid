@@ -16,7 +16,7 @@
 | 1 | [0.1" Header Lead for Frame Trigger - Mark]() |
 | 1 | [Raspberry Pi 4B - 8GB](https://www.digikey.com/en/products/detail/raspberry-pi/SC0195-9/12159401) |
 | 1 | [Sandisk 64GB Extreme Pro SD Card SDSQXCU-064G-GN6MA](https://www.amazon.com/Sandisk-Extreme-Pro-MicroSD-V30/dp/B09X7BYSFG) |
-| 1 | [Sandisk 128GB Extreme Pro USB 3.2 SDCZ880-128G-GAM46](https://www.amazon.com/SanDisk-128GB-Extreme-Solid-State/dp/B08GYM5F8G/ref=sr_1_1?crid=S1YC7O8CF1G9&keywords=SDCZ880-128G-GAM46&qid=1704850948&sprefix=%2Caps%2C265&sr=8-1&th=1) - LIMITED TO 20FPS MAX |
+| 1 | [Recommended USB Thumb Drive](USBDriveRequirements.md) |
 | 1 | [Consider adding power lead and 5A fuse]() |
 | 1 | [Consider adding battery (shipping concerns though)]() |
 | 1 | [0.5X IOTA 1.25" Focal Reducer (CS Mount), 3 Extension Rings and Yellow Cap]()| 
