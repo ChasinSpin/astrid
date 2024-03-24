@@ -309,7 +309,7 @@ module postsBottom()
 module postsTop()
 {   
     topPostHeight = caseInnerDimensions[2] - (pcbBaseHeight + pcbBoardThickness + pcbBoardClearance);
-    
+        
     translate( [0, 0, caseBottomBorder] )
     {
         // Bolt Posts

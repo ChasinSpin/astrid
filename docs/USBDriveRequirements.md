@@ -28,13 +28,13 @@ References:
 
 ## USB Thumb Drive Testing
 
-| Drive | Min Sequential Write 2MB | Min Random Write 2MB | pSLC | UASP | Recommended |
-| ----- | ------------------------ | -------------------- | ---- | ---- | ----------- |
-| Corsair Flash Voyager GTX 128GB USB 3.1 | 113.4MB/s | 172.8MB/s | Assumed 0GB | Yes | Yes |
-| Lexar 128GB JumpDrive P30 USB 3.2 Gen 1 Flash Drive (LJDP030128G-RNQNG) | TBD | TBD | ~12GB | TDB | TBD |
-| TOPESEL 128GB USB 3.1 Flash Drive | TBD | TBD | TBD | TBD | TBD |
-| Sandisk Extreme Pro 3.2 | 21.5MB/s | 8.9MB/s | ~ >100GB | No | Avoid (unpredictable speed/features) |
-| Arcanite 256GB USB 3.1 Flash Drive AK58256G | 24MB/s | 30MB/s | ~3GB | Yes | Avoid (slow, cache burnt through fast) |
+| Drive | Min Sequential Write 2MB | Min Random Write 2MB | WT pSLC | WT No pSLC | pSLC | UASP | Recommended |
+| ----- | ------------------------ | -------------------- | ------- | ---------- | ---- | ---- | ----------- |
+| Corsair Flash Voyager GTX 128GB USB 3.1 | 113.4MB/s | 172.8MB/s | ~100MB/s | ~46MB/s | ~4.2GB | Yes | Yes (but only upto 4GB videos) |
+| Lexar 128GB JumpDrive P30 USB 3.2 Gen 1 Flash Drive (LJDP030128G-RNQNG) | 57.7MB/s | 91.6MB/s | ~90MB/s | ~50MB/s | ~12GB | Yes | Avoid (unpredictable speeds, start off around 8MB/s) |
+| TOPESEL 128GB USB 3.1 Flash Drive | 107.8 | 240.4 | ~98MB/s | ~70MB/s | ~3GB | No | Meets 30fps just, but is consistant |
+| Sandisk Extreme Pro 3.2 | 21.5MB/s | 8.9MB/s | - | - | ~ >100GB | No | Avoid (unpredictable speed/features/fault drives) |
+| Arcanite 256GB USB 3.1 Flash Drive AK58256G | 24MB/s | 30MB/s | - | - | ~3GB | Yes | Avoid (slow, cache burnt through fast) |
 
 Reference: [Fastest USB flash drive benchmark test 2024](https://ssd-tester.com/usb_flash_drive_test.php)
 
