@@ -204,6 +204,8 @@ cd "$OTESTAMPER_FOLDER/firmware"
 /usr/bin/make install
 /usr/bin/make clean
 
-echo "Updated Astrid to version: "`/usr/bin/cat ~/astrid/version.txt`
+echo
+echo "** Updated Astrid to version: "`/usr/bin/cat ~/astrid/version.txt`" **"
+echo
 
 exit 0
