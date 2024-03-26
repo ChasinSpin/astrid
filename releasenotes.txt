@@ -4,6 +4,10 @@ Version 1.0.023:
 	* Reorganized lesser used icons on the Desktop into "Astrid Tools"
 
 	* Added "Upgraded to" version notice in the install script.
+	
+	* Improved Player icon
+
+	(no changes to Astrid App)
 
 Version 1.0.022:
 ================

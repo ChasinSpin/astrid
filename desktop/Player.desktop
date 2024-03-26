@@ -5,3 +5,4 @@ Path=/home/pi/astrid/player
 Exec=/home/pi/astrid/player/player.py -d /media/pi/ASTRID
 Terminal=true
 Type=Application
+Icon=/home/pi/astrid/desktop/PlayerIcon.png
