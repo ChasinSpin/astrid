@@ -70,11 +70,15 @@ user_metadata_entries = [
 	('FOCAL-LENGTH',                        RavfMetadataType.FLOAT32,       getMetadata(metadata, 'FOCAL-LENGTH')[1]),
 	('STATION-NUMBER',                      RavfMetadataType.UINT16,        getMetadata(metadata, 'STATION-NUMBER')[1]),
 	('STATION-HOSTNAME',                    RavfMetadataType.UTF8STRING,    getMetadata(metadata, 'STATION-HOSTNAME')[1]),
-	('INSTRUMENT-FRAMES-PER-SECOND',        RavfMetadataType.FLOAT32,       getMetadata(metadata, 'INSTRUMENT-FRAMES-PER-SECOND')[1] / float(integration_frames)),
 	('INSTRUMENT-APERTURE',			RavfMetadataType.UINT16, 	getMetadata(metadata, 'INSTRUMENT-APERTURE')[1]),
 	('INSTRUMENT-OPTICAL-TYPE',		RavfMetadataType.UTF8STRING, 	getMetadata(metadata, 'INSTRUMENT-OPTICAL-TYPE')[1]),
 	('MY-USER-COMMENT',			RavfMetadataType.UTF8STRING,	'This ravf file has been integrated by: %dX' % integration_frames),
 ]
+
+try:
+	user_metadata_entries.append(('INSTRUMENT-FRAMES-PER-SECOND',		RavfMetadataType.FLOAT32,	getMetadata(metadata, 'INSTRUMENT-FRAMES-PER-SECOND')[1] / float(integration_frames)))
+except:
+	pass
 
 try:
 	user_metadata_entries.append(('OCCULTATION-PREDICTED-CENTER-TIME',	RavfMetadataType.UTF8STRING, 	getMetadata(metadata, 'OCCULTATION-PREDICTED-CENTER-TIME')[1]))
