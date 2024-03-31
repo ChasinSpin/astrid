@@ -56,9 +56,10 @@ class UiPanelPlayerOperations(UiPanel):
 		folder	= self.astrid_drive + '/OTEVideo'
 		fname	= QFileDialog.getOpenFileName(self, 'Open file', folder, 'RAVF files (*.ravf)')[0]
 		if len(fname) != 0:
-			self.__setEnabledButtons(True)
-			self.loadRavf_callback(fname)
-
+			if self.loadRavf_callback(fname):
+				self.__setEnabledButtons(True)
+			else:
+				self.__setEnabledButtons(False)
 
 	def buttonPlateSolvePressed(self):
 		if self.widgetPlateSolve.text() == 'Plate Solve':

@@ -338,6 +338,8 @@ def loadRavf(fname):
 
 	window.setWindowTitle('Player: %s' % os.path.basename(ravf_filename))
 	getRavfFrame(current_frame)
+	
+	return True
 
 
 def plateSolveStatusMsg(text):

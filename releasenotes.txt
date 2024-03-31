@@ -1,3 +1,10 @@
+Version 1.0.024:
+================
+
+	* Added autorepair to corrupt .ravf's in Player
+
+	(no changes to Astrid App)
+
 Version 1.0.023:
 ================
 	

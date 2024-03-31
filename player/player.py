@@ -18,7 +18,9 @@ from UiDialogPanel import UiDialogPanel
 from UiPanelMessage import UiPanelMessage
 from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QThread, pyqtSignal
-from ravf import RavfReader, RavfMetadataType, RavfFrameType, RavfColorType, RavfImageEndianess, RavfImageFormat, RavfEquinox, RavfImageUtils
+from ravf import RavfReader, RavfWriter, RavfMetadataType, RavfFrameType, RavfColorType, RavfImageEndianess, RavfImageFormat, RavfEquinox, RavfImageUtils
+from ravf.ravf_header import RavfHeader
+from ravf.ravf_frame import RavfFrame
 from FileHandling import *
 from astcoord import AstCoord
 from datetime import timedelta, timezone
@@ -325,19 +327,122 @@ def loadRavf(fname):
 	ravf_filename = fname
 	print('loading ravf filename:', ravf_filename)
 
-	ravf_fp = open(ravf_filename, 'rb')
-	ravf = RavfReader(file_handle = ravf_fp)
+	try:
+		ravf_fp = open(ravf_filename, 'rb')
+		ravf = RavfReader(file_handle = ravf_fp)
 
-	print('RAVF Version:', ravf.version())
-	#print('Metadata:', ravf.metadata())
-	#print('Timestamps:', ravf.timestamps())
-	print('Frame Count:', ravf.frame_count())
+		print('RAVF Version:', ravf.version())
+		#print('Metadata:', ravf.metadata())
+		#print('Timestamps:', ravf.timestamps())
+		print('Frame Count:', ravf.frame_count())
 
-	current_frame = 0
-	targetPosition = None
+		current_frame = 0
+		targetPosition = None
 
-	window.setWindowTitle('Player: %s' % os.path.basename(ravf_filename))
-	getRavfFrame(current_frame)
+		window.setWindowTitle('Player: %s' % os.path.basename(ravf_filename))
+		getRavfFrame(current_frame)
+		
+		return True
+	except Exception as error:
+		ravf_fp.close()
+		ravf_fp = None
+		ravf = None
+		ret = QMessageBox.warning(window, ' ', 'Unable to load %s, ravf file is truncated / corrupt due to power loss, running out of space or crash. Do you wish to repair it?\n\n%s' % (fname, error), QMessageBox.Yes | QMessageBox.No)
+		if ret == QMessageBox.Yes:
+			fixed_fname = os.path.splitext(ravf_filename)[0] + '_fixed.ravf'
+			repairRavf(ravf_filename, fixed_fname)
+			QMessageBox.information(window, ' ', 'Now load %s' % fixed_fname, QMessageBox.Ok)
+
+		return False
+
+
+def repairRavf(fname_in, fname_out):
+	fp_in	= open(fname_in, 'rb')
+	fp_out	= open(fname_out, 'wb')
+
+	header = RavfHeader.deserialize(fp_in)
+	metadata = header.metadata()
+
+	all_required_tags = ['OFFSET-FRAMES', 'OFFSET-INDEX', 'FRAMES-COUNT', 'COLOR-TYPE', 'IMAGE-ENDIANESS', 'IMAGE-WIDTH', 'IMAGE-HEIGHT', 'IMAGE-ROW-STRIDE', 'IMAGE-FORMAT', 'IMAGE-BINNING-X', 'IMAGE-BINNING-Y', 'RECORDER-SOFTWARE', 'RECORDER-SOFTWARE-VERSION', 'RECORDER-HARDWARE', 'RECORDER-HARDWARE-VERSION', 'INSTRUMENT', 'INSTRUMENT-VENDOR', 'INSTRUMENT-VERSION', 'INSTRUMENT-SERIAL', 'INSTRUMENT-FIRMWARE-VERSION', 'INSTRUMENT-SENSOR', 'INSTRUMENT-GAIN', 'INSTRUMENT-GAMMA', 'INSTRUMENT-SHUTTER', 'INSTRUMENT-OFFSET', 'TELESCOPE', 'OBSERVER', 'OBSERVER-ID', 'LATITUDE', 'LONGITUDE', 'ALTITUDE', 'OBJNAME', 'RA', 'DEC', 'EQUINOX', 'RECORDING-START-UTC', 'COMMENT', 'FRAME-TIMING-ACCURACY']
+
+	required_metadata = []
+	user_metadata = []
+
+	for entry in header._RavfHeader__metadata_entries:
+		if entry.entry_type == RavfMetadataType.UTF8STRING:
+			value = entry.value.txt
+		else:
+			value = entry.value
+
+		if entry.name.txt in ['OFFSET-FRAMES', 'OFFSET-INDEX', 'FRAMES-COUNT']:
+			continue
+
+		entry_type = entry.entry_type
+		name = entry.name.txt
+
+		#print('Value: %s type(value) %s %d' % (value, type(value), entry_type.value))
+		if   entry_type == RavfMetadataType.INT8:
+			value = int(value)
+		elif entry_type == RavfMetadataType.UINT8:
+			value = int(value)
+		elif entry_type == RavfMetadataType.INT16:
+			value = int(value)
+		elif entry_type == RavfMetadataType.UINT16:
+			value = int(value)
+		elif entry_type == RavfMetadataType.INT32:
+			value = int(value)
+		elif entry_type == RavfMetadataType.UINT32:
+			value = int(value)
+		elif entry_type == RavfMetadataType.INT64:
+			value = int(value)
+		elif entry_type == RavfMetadataType.UINT64:
+			value = int(value)
+		elif entry_type == RavfMetadataType.TIMESTAMP:
+			value = int(value)
+		elif entry_type == RavfMetadataType.FLOAT32:
+			value = float(value)
+		elif entry_type == RavfMetadataType.FLOAT64:
+			value = float(value)
+		elif entry_type == RavfMetadataType.UTF8STRING:
+			value = value
+		else:
+			raise ValueError('Unrecognized type')
+
+		if entry.name.txt in all_required_tags:
+			required_metadata.append((name, value))
+		else:
+			user_metadata.append((name, entry_type, value))
+
+	print('Required Metadata:', required_metadata)
+	print('User Metadata:', user_metadata)
+
+	ravf_writer = RavfWriter(file_handle = fp_out, required_metadata_entries = required_metadata, user_metadata_entries = user_metadata)
+
+	while True:
+		try:
+			frame = RavfFrame.deserialize(fp_in)
+		except:
+			break
+
+		print(frame)
+
+		ravf_writer.write_frame( fp_out,
+			frame_type              = RavfFrameType.LIGHT,
+			data			= frame.data,
+			start_timestamp         = frame.start_timestamp,
+			exposure_duration       = frame.exposure_duration,
+			satellites              = frame.satellites,
+			almanac_status          = frame.almanac_status,
+			almanac_offset          = frame.almanac_offset,
+			satellite_fix_status    = frame.satellite_fix_status,
+			sequence                = frame.sequence)
+		fp_out.flush()                                
+
+	ravf_writer.finish(fp_out)
+	fp_out.flush()
+	fp_out.close()
+
+	fp_in.close()
 
 
 def plateSolveStatusMsg(text):
