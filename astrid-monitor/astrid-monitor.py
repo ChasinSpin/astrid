@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-# SWITCH WIFI POWER MANAGEMENT OFF
 # Deal with Serial port clash in Indi
 
 import json

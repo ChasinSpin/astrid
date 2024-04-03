@@ -234,6 +234,7 @@ cd "$OTESTAMPER_FOLDER/firmware"
 
 echo "Installing services..."
 installService /home/pi/astrid/services/astrid-monitor.service astrid-monitor
+installService /home/pi/astrid/services/wlan0-powermgmt-off.service wlan0-powermgmt-off
 
 echo
 echo "** Updated Astrid to version: "`/usr/bin/cat ~/astrid/version.txt`" **"
