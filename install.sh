@@ -179,7 +179,7 @@ installService()
 	sudo systemctl daemon-reload
 	sudo systemctl enable $2
 	sudo systemctl start $2
-	sudo systemctl status $2
+	# sudo systemctl status $2	# This launches journal which uses standard input and works like "more" requiring keyboard entry... Don't use
 }
 
 
