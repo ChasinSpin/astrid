@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Player
-Comment=Start Player
+Name=Install Mini Display
+Comment=Install Mini Display
 Path=/home/pi/astrid
-Exec=/home/pi/astrid/scripts/install_minidisplay.py
+Exec=/home/pi/astrid/scripts/install_minidisplay.sh
 Terminal=true
 Type=Application
