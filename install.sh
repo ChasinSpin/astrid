@@ -175,11 +175,11 @@ installAutoHotspotSetup()
 
 installService()
 {
-	sudo /usr/bin/cp $0 /etc/systemd/system
+	sudo /usr/bin/cp $1 /etc/systemd/system
 	sudo systemctl daemon-reload
-	sudo systemctl enable $1
-	sudo systemctl start $1
-	sudo systemctl status $1
+	sudo systemctl enable $2
+	sudo systemctl start $2
+	sudo systemctl status $2
 }
 
 
