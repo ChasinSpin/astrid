@@ -1,0 +1,14 @@
+[Unit]
+Description=Astrid Monitor
+Wants=dbus.socket
+After=dbus.socket
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi
+Restart=always
+ExecStart=/home/pi/astrid/astrid-monitor/astrid-monitor.py
+
+[Install]
+WantedBy=multi-user.target

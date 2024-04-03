@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # SWITCH WIFI POWER MANAGEMENT OFF
+# Deal with Serial port clash in Indi
 
 import json
 import psutil
@@ -154,16 +155,21 @@ while True:
 		serialPort = None
 		#print(status)
 
+	d0Pressed = False
+	d1Pressed = False
+	d2Pressed = False
+
 	if serialPort is not None:
 		jstr = 'ASTRIDMONITOR:' + json.dumps(status, indent=4) + '\r'
 		serialPort.write(bytes(jstr, 'ascii'))
 		#print(jstr)
 
 		# Read button presses
-		lines = serialPort.readlines()
-		d0Pressed = False
-		d1Pressed = False
-		d2Pressed = False
+		try:
+			lines = serialPort.readlines()
+		except:
+			pass
+
 		for line in lines:
 			if line == b'MINIDISPLAY:ButtonD0\r\n':
 				d0Pressed = True

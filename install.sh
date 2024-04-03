@@ -171,6 +171,18 @@ installAutoHotspotSetup()
 
 
 
+# Install a service, arguments = serviceFile    serviceName
+
+installService()
+{
+	sudo /usr/bin/cp $0 /etc/systemd/system
+	sudo systemctl daemon-reload
+	sudo systemctl enable $1
+	sudo systemctl start $1
+	sudo systemctl status $1
+}
+
+
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
 OTESTAMPER_FOLDER="$ASTRID_FOLDER/OTEStamper"
@@ -219,6 +231,9 @@ cd "$OTESTAMPER_FOLDER/firmware"
 /usr/bin/make writefuses
 /usr/bin/make install
 /usr/bin/make clean
+
+echo "Installing services..."
+installService /home/pi/astrid/services/astrid-monitor.service astrid-monitor
 
 echo
 echo "** Updated Astrid to version: "`/usr/bin/cat ~/astrid/version.txt`" **"
