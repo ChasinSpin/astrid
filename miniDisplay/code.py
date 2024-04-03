@@ -1,45 +1,63 @@
+import time
 import board
+import digitalio
+import supervisor
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
-from displayio import OnDiskBitmap, TileGrid, Group
+from adafruit_debouncer import Debouncer
+from display import Display
 
-main_group = Group()
-img = OnDiskBitmap("images/logo.bmp")
 
-tile_grid = TileGrid(bitmap=img, pixel_shader=img.pixel_shader)
-main_group.append(tile_grid)
 
-display = board.DISPLAY
-display.root_group = main_group
+version = '1.0.0'
 
-tile_grid.x = 0
-# display.width // 2 - width // 2
 
-font = bitmap_font.load_font("fonts/Helvetica-Bold-16.bdf")
+PREFIX		='ASTRIDMONITOR:'
+MONITOR_TIMEOUT	= 12			# Seconds
 
-text_area = label.Label(font, text='SSID: myWifiNetwork', color=0x00FF00)
-text_area.x = 20
-text_area.y = 20
+d0Pin = digitalio.DigitalInOut(board.D0)
+d1Pin = digitalio.DigitalInOut(board.D1)
+d2Pin = digitalio.DigitalInOut(board.D2)
 
-text_area2 = label.Label(font, text='IP: 192.168.30.89', color=0xFF0000)
-text_area2.x = 20
-text_area2.y = 50
+d0Pin.pull = digitalio.Pull.UP
 
-text_area3 = label.Label(font, text='Press button <D1>', color=0x00FFFF)
-text_area3.x = 20
-text_area3.y = 105
+d0Button = Debouncer(d0Pin)
+d1Button = Debouncer(d1Pin)
+d2Button = Debouncer(d2Pin)
 
-text_area4 = label.Label(font, text='for Astrid Hotspot', color=0x00FFFF)
-text_area4.x = 20
-text_area4.y = 125
-
-group = Group()
-group.append(text_area)
-group.append(text_area2)
-group.append(text_area3)
-group.append(text_area4)
-
-display.root_group = group
+display = Display(version)
+lastUpdate = None
 
 while True:
-    pass
+	d0Button.update()
+	d1Button.update()
+	d2Button.update()
+
+	now = time.time()
+
+	if d0Button.fell:
+		print('MINIDISPLAY:ButtonD0')
+	if d1Button.rose:
+		print('MINIDISPLAY:ButtonD1')
+	if d2Button.rose:
+		print('MINIDISPLAY:ButtonD2')
+
+	if lastUpdate is not None and (lastUpdate + MONITOR_TIMEOUT) < now:
+		timed_out = True
+	else:
+		timed_out = False
+	
+	count = supervisor.runtime.serial_bytes_available
+
+	if count > 0:
+		jstr = input()
+
+		if jstr.startswith(PREFIX):
+			lastUpdate = now
+			jstr = jstr.replace(PREFIX, '')
+			display.updateDisplayJson(jstr)
+			#print(jstr)
+
+	if timed_out:
+		display.updateDisplayTimedOut()
+		time.sleep(1)
