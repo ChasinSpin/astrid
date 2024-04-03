@@ -51,9 +51,11 @@ class Display():
 
 		group = Group()
 
-		if   status['version'].split('.')[0] != self.version.split('.')[0]:
+		if   status['version'].split('.')[0:2] != self.version.split('.')[0:2]:
 			group.append(self.__makeTextArea('VERSION MISMATCH !', 0xFF0000, 0, self.LINES_Y[0]))
-			group.append(self.__makeTextArea('%s != %s' % (status['version'], self.version), 0xFFFF00, 0, self.LINES_Y[1]))
+			group.append(self.__makeTextArea('%s != %s' % (status['version'], self.version), 0xFF0000, 0, self.LINES_Y[1]))
+			group.append(self.__makeTextArea('Run Install Mini Display', 0xFF0000, 0, self.LINES_Y[2]))
+			group.append(self.__makeTextArea('in Astrid Tools', 0xFF0000, 0, self.LINES_Y[3]))
 		elif status['network']['mode'] == 'wifi hotspot':
 			group.append(self.__makeTextArea('WIFI: %s' % status['network']['ssid'], 0xFFFF00, 0, self.LINES_Y[0]))
 			group.append(self.__makeTextArea('IP: %s' % status['network']['ip'], 0x00FFFF, 0, self.LINES_Y[1]))

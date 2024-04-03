@@ -9,9 +9,6 @@ from display import Display
 
 
 
-version = '1.0.0'
-
-
 PREFIX		='ASTRIDMONITOR:'
 MONITOR_TIMEOUT	= 12			# Seconds
 
@@ -24,6 +21,11 @@ d0Pin.pull = digitalio.Pull.UP
 d0Button = Debouncer(d0Pin)
 d1Button = Debouncer(d1Pin)
 d2Button = Debouncer(d2Pin)
+
+with open('/version.txt') as fp:
+	version = fp.readline()
+version = version.rstrip()
+#print('Version:<%s>' % version)
 
 display = Display(version)
 lastUpdate = None
