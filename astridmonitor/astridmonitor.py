@@ -149,14 +149,15 @@ while True:
 			serial_device = comports[0].device
 			serialPort = serial.Serial(port = serial_device, baudrate = 115200, bytesize = 8, timeout = MONITOR_REPEAT, stopbits = serial.STOPBITS_ONE)
 	else:
-		serialPort.close()
+		if serialPort is not None:
+			serialPort.close()
 		serialPort = None
-		print(status)
+		#print(status)
 
 	if serialPort is not None:
 		jstr = 'ASTRIDMONITOR:' + json.dumps(status, indent=4) + '\r'
 		serialPort.write(bytes(jstr, 'ascii'))
-		print(jstr)
+		#print(jstr)
 
 		# Read button presses
 		lines = serialPort.readlines()

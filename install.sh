@@ -55,7 +55,7 @@ fileManagerAutoLaunchOff()
 
 installHealpix()
 {
-	TMP=`/usr/bin/pip3 list | grep cdshealpix`
+	TMP=`/usr/bin/pip3 list | /usr/bin/grep cdshealpix`
 	if [ -z "$TMP" ];then
 		echo "Installing cdshealpix"
 		/usr/bin/pip3 install cdshealpix==0.6.4
@@ -63,11 +63,12 @@ installHealpix()
 }
 
 
+
 # Install pyqtree
 
 installPyqtree()
 {
-	TMP=`/usr/bin/pip3 list | grep Pyqtree`
+	TMP=`/usr/bin/pip3 list | /usr/bin/grep Pyqtree`
 	if [ -z "$TMP" ];then
 		echo "Installing pyqtree"
 		/usr/bin/pip3 install pyqtree==1.0.0
@@ -80,10 +81,23 @@ installPyqtree()
 
 installOpenpyxl()
 {
-	TMP=`/usr/bin/pip3 list | grep openpyxl`
+	TMP=`/usr/bin/pip3 list | /usr/bin/grep openpyxl`
 	if [ -z "$TMP" ];then
 		echo "Installing openpyxl"
 		/usr/bin/pip3 install openpyxl==3.1.2
+	fi
+}
+
+
+
+# Install adafruit-board-toolkit
+
+installAdafruitBoardToolkit()
+{
+	TMP=`/usr/bin/pip3 list | /usr/bin/grep adafruit-board-toolkit`
+	if [ -z "$TMP" ];then
+		echo "Installing adafruit-board-toolkit"
+		/usr/bin/pip3 install adafruit-board-toolkit==1.1.1
 	fi
 }
 
@@ -93,7 +107,7 @@ installOpenpyxl()
 
 installQCharts()
 {
-	TMP=`/usr/bin/apt list --installed | grep python3-pyqt5.qtchart`
+	TMP=`/usr/bin/apt list --installed | /usr/bin/grep python3-pyqt5.qtchart`
 	if [ -z "$TMP" ];then
 		echo "Installing QCharts"
 		/usr/bin/sudo /usr/bin/apt-get install -y python3-pyqt5.qtchart
@@ -106,7 +120,7 @@ installQCharts()
 
 installLsScsi()
 {
-	TMP=`/usr/bin/apt list --installed | grep lsscsi`
+	TMP=`/usr/bin/apt list --installed | /usr/bin/grep lsscsi`
 	if [ -z "$TMP" ];then
 		echo "Installing lsscsi"
 		/usr/bin/sudo /usr/bin/apt-get install -y lsscsi
@@ -193,6 +207,7 @@ installHealpix
 installPyqtree
 installQCharts
 installOpenpyxl
+installAdafruitBoardToolkit
 installMdioTool
 installAutoHotspotMdio
 installAutoHotspotSetup
