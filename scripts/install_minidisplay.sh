@@ -108,6 +108,8 @@ installUpgrade()
 		echo "Copying Mini Display python files to drive..."
 		/usr/bin/cp -r /home/pi/astrid/miniDisplay/circuitpy/* /media/pi/CIRCUITPY
 		echo "Mini Display Installation/Upgrade Completed !"
+		echo
+		echo "** Now press the reset button to start the Mini Display if it's not already running **"
 	else
 		echo "ERROR: CIRCUITPY drive not found"
 		slowExit
