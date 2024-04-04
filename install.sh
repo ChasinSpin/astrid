@@ -194,9 +194,10 @@ echo "Updating desktop icons..."
 
 /usr/bin/ln -s /home/pi/astrid/desktop/AstridApp.desktop		 /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/Player.desktop			 /home/pi/Desktop
+/usr/bin/ln -s /home/pi/astrid/desktop/Shutdown.desktop			 /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/WifiSetup.desktop		"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/AstridUpgrade.desktop		"/home/pi/Desktop/Astrid Tools"
-/usr/bin/ln -s /home/pi/astrid/desktop/KillAstrid.desktop		"/home/pi/Desktop/Astrid Tools"
+/usr/bin/ln -s /home/pi/astrid/desktop/TerminateAstridThreads.desktop	"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/FormatUSBFlashDrive.desktop	"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/Diagnostics.desktop		"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/InstallMiniDisplay.desktop	"/home/pi/Desktop/Astrid Tools"

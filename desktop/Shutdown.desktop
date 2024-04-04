@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Shutdown
+Comment=Shutdown
+Path=/
+Exec=/home/pi/astrid/scripts/shutdown.sh
+Terminal=true
+Type=Application
+Icon=/home/pi/astrid/desktop/ShutdownIcon.png

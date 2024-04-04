@@ -1,3 +1,16 @@
+Version 1.0.025:
+================
+
+	(NOT RELEASED YET)
+
+	* Renamed Kill Astrid to Terminate Astrid Threads on desktop
+
+	* Added Shutdown icon on desktop
+	
+	* Adding astrid-monitor service and Mini Display support/installation
+
+	* WiFi Power Management Disabled
+	
 Version 1.0.024:
 ================
 
