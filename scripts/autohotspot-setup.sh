@@ -738,29 +738,31 @@ until [ "$select" = "8" ]; do
 	echo "Permanent Access Point = permanent access point with network/internet access from eth0 for"
 	echo "connected devices"
 	echo ""
-	echo " 1 = Install Autohotspot with eth0 access for Connected Devices"
-	echo " 2 = Install Autohotspot with No eth0 for connected devices"
-	echo " 3 = Install a Permanent Access Point with eth0 access for connected devices"
-	echo " 4 = Uninstall Autohotspot or permanent access point"
-	echo " 5 = Add a new wifi network to the Pi (SSID) or update the password for an existing one."
-	echo " 6 = Autohotspot: Force to an access point or connect to WiFi network if a known SSID is in range"
-	echo " 7 = Change the access points SSID and password"
-	echo " 8 = Remove wifi network"
-	echo " 9 = Disable Local DNS (when on ethernet only)"
+	#echo " 1  = Install Autohotspot with eth0 access for Connected Devices"
+	#echo " 3  = Install a Permanent Access Point with eth0 access for connected devices"
+	#echo " 4  = Uninstall Autohotspot or permanent access point"
+	echo " 5  = Add a new wifi network to the Pi (SSID) or update the password for an existing one."
+	#echo " 6  = Autohotspot: Force to an access point or connect to WiFi network if a known SSID is in range"
+	echo " 7  = Change the access point's SSID and password"
+	echo " 8  = Remove wifi network"
+	#echo " 9  = Disable Local DNS (when on ethernet only)"
 	echo " 10 = Exit"
+	echo
+	echo
+	echo " ** DO NOT USE AFTER INITIAL INSTALLATION **  2 = Install Autohotspot with No eth0 for connected devices"
 	echo ""
 	echo -n "Select an Option:"
 	read select
 	case $select in
-	1) clear ; go "AHN" ;; #Autohospot Internet
+	#1) clear ; go "AHN" ;; #Autohospot Internet
 	2) clear ; go "AHD" ;; #Autohotspot Direct
-	3) clear ; go "SHS" ;; #Static Hotspot
-	4) clear ; go "REM" ;; #Remove Autohotspot or Static Hotspot
+	#3) clear ; go "SHS" ;; #Static Hotspot
+	#4) clear ; go "REM" ;; #Remove Autohotspot or Static Hotspot
 	5) clear ; go "SSI" ;; #Change/Add Wifi Network
-	6) clear ; go "FOR" ;; #Force Hotspot <> Force Network
+	#6) clear ; go "FOR" ;; #Force Hotspot <> Force Network
 	7) clear ; go "HSS" ;; #Change Hotspot SSID and Password
 	8) clear ; go "DWI" ;; #Remove Wifi Network
-	9) clear ; go "MAS" ;; #Remove Wifi Network
+	#9) clear ; go "MAS" ;; #Disable Local DNA (when on ethernet only)
 	10) clear ; exit ;;
 	*) clear; echo "Please select again";;
 	esac

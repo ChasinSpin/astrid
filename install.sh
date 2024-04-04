@@ -150,23 +150,18 @@ installMdioTool()
 }
 
 
-# Install Mdio Autohotspot
-
-installAutoHotspotMdio()
-{
-	TMP=`/usr/bin/grep "mdio-tool" /usr/bin/autohotspot`
-	if [ -z "$TMP" ];then
-		echo "Installing mdio autohotspot"
-		sudo /usr/bin/cp /home/pi/astrid/scripts/autohotspot /usr/bin/autohotspot
-	fi
-}
-
 
 # Install Autohotspot Setup
 
-installAutoHotspotSetup()
+installAutoHotspot()
 {
+	echo "Installing autohotspot changes"
 	/usr/bin/cp /home/pi/astrid/scripts/autohotspot-setup.sh /home/pi/Autohotspot/autohotspot-setup.sh
+	/usr/bin/cp /home/pi/astrid/scripts/autohotspot-direct.service /home/pi/Autohotspot/config/autohotspot-direct.service
+	/usr/bin/cp /home/pi/astrid/scripts/Checklist.md5 /home/pi/Autohotspot/config/Checklist.md5
+	sudo /usr/bin/cp /home/pi/astrid/scripts/autohotspot /usr/bin/autohotspot
+	sudo /usr/bin/cp /home/pi/Autohotspot/config/autohotspot-direct.service /etc/systemd/system/autohotspot.service
+	sudo systemctl daemon-reload
 }
 
 
@@ -183,6 +178,15 @@ installService()
 }
 
 
+
+# Remove AutoHotspot Crontab
+
+autoHotspotCrontabRemove()
+{
+	/usr/bin/crontab -l | /usr/bin/sed '/autohotspot/d' | /usr/bin/crontab -
+}
+
+
 ASTRID_FOLDER="/home/pi/astrid"
 APP_FOLDER="$ASTRID_FOLDER/app"
 OTESTAMPER_FOLDER="$ASTRID_FOLDER/OTEStamper"
@@ -194,6 +198,7 @@ echo "Updating desktop icons..."
 
 /usr/bin/ln -s /home/pi/astrid/desktop/AstridApp.desktop		 /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/Player.desktop			 /home/pi/Desktop
+/usr/bin/ln -s /home/pi/astrid/desktop/WifiConnect.desktop		 /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/Shutdown.desktop			 /home/pi/Desktop
 /usr/bin/ln -s /home/pi/astrid/desktop/WifiSetup.desktop		"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/AstridUpgrade.desktop		"/home/pi/Desktop/Astrid Tools"
@@ -222,8 +227,7 @@ installQCharts
 installOpenpyxl
 installAdafruitBoardToolkit
 installMdioTool
-installAutoHotspotMdio
-installAutoHotspotSetup
+installAutoHotspot
 installLsScsi
 
 echo "Installing firmware..."
@@ -236,6 +240,8 @@ cd "$OTESTAMPER_FOLDER/firmware"
 echo "Installing services..."
 installService /home/pi/astrid/services/astrid-monitor.service astrid-monitor
 installService /home/pi/astrid/services/wlan0-powermgmt-off.service wlan0-powermgmt-off
+
+autoHotspotCrontabRemove
 
 echo
 echo "** Updated Astrid to version: "`/usr/bin/cat ~/astrid/version.txt`" **"

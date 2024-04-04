@@ -1,3 +1,13 @@
+Version 1.0.026:
+================
+
+	NOT RELEASED YET
+
+	* Auto Network Switching Removed
+		- Astrid now boots up in Hotspot Mode
+		- Use Mini Display to change to Wifi Mode OR
+		- Login via VNC to Hotspot and click "WiFi Connect"
+
 Version 1.0.025:
 ================
 

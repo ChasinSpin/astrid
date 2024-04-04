@@ -75,7 +75,7 @@ KillHotspot()
 ChkWifiUp()
 {
 	echo "Checking WiFi connection ok"
-        sleep 20 #give time for connection to be completed to router
+        sleep 40 #give time for connection to be completed to router
 	if ! wpa_cli -i "$wifidev" status | grep 'ip_address' >/dev/null 2>&1
         then #Failed to connect to wifi (check your wifi settings, password etc)
 	       echo 'Wifi failed to connect, falling back to Hotspot.'
@@ -173,8 +173,29 @@ NoDevice()
 	exit 1
 }
 
+
+
+#
+# MAIN
+#
+
+FORCE_HOTSPOT=0
+
+if [ $# -eq 1 ];then
+	if [ "$1" = "--force_hotspot" ];then
+		FORCE_HOTSPOT=1
+	else
+		echo "Usage: $0 [--force_hotspot]"
+		exit 0
+	fi
+fi
+
 chksys
-FindSSID
+
+ssidChk=('NoSSid')
+if [ $FORCE_HOTSPOT = 0 ];then 
+	FindSSID
+fi
 
 #Create Hotspot or connect to valid wifi networks
 if [ "$ssidChk" != "NoSSid" ] 

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=WiFi Connect
+Comment=WiFi Connect
+Path=/
+Exec=/home/pi/astrid/scripts/wifi_connect.sh
+Terminal=true
+Type=Application
+Icon=/home/pi/astrid/desktop/WifiIcon.png
