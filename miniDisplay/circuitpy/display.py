@@ -46,6 +46,14 @@ class Display():
 		self.systemDisplay.root_group = group
 
 
+	def updateDisplayButtonPressed(self):
+		group = Group()
+		group.append(self.__makeTextArea('SWITCHING NETWORK', 0x666666, 0, self.LINES_Y[0]))
+		group.append(self.__makeTextArea('MODES, PLEASE WAIT', 0x666666, 0, self.LINES_Y[1]))
+		group.append(self.__makeTextArea('FOR COMPLETION...', 0x666666, 0, self.LINES_Y[2]))
+		self.systemDisplay.root_group = group
+
+
 	def updateDisplayJson(self, jstr):
 		status = json.loads(jstr)
 

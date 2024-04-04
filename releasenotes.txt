@@ -1,7 +1,7 @@
 Version 1.0.026:
 ================
 
-	NOT RELEASED YET
+	* Updated Mini Display to display switching on button press
 
 	* Auto Network Switching Removed
 		- Astrid now boots up in Hotspot Mode

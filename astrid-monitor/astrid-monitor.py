@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import os
+import sys
 import json
 import psutil
 import socket
@@ -10,7 +12,7 @@ import adafruit_board_toolkit.circuitpython_serial
 from datetime import datetime
 
 
-version = '1.0.0'
+version = '1.1.0'
 
 minidisplay_present	= True
 MONITOR_REPEAT		= 5		# Seconds
@@ -159,7 +161,7 @@ while True:
 	if serialPort is not None:
 		jstr = 'ASTRIDMONITOR:' + json.dumps(status, indent=4) + '\r'
 		serialPort.write(bytes(jstr, 'ascii'))
-		#print(jstr)
+		#print(jstr, file=sys.stderr)
 
 		# Read button presses
 		try:
@@ -183,3 +185,11 @@ while True:
 		print('Button D1 Pressed')
 	if d2Pressed:
 		print('Button D2 Pressed')
+
+	if d0Pressed or d1Pressed or d2Pressed:
+		if status['network']['mode'] == 'wifi managed':
+			# Switch to Hotspot
+			os.system('/usr/bin/sudo -b /usr/bin/autohotspot --force_hotspot' )
+		elif status['network']['mode'] == 'wifi hotspot':
+			# Switch to Managed
+			os.system('/usr/bin/sudo -b /usr/bin/autohotspot' )
