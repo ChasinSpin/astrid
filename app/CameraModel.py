@@ -40,6 +40,8 @@ from DisplayOps import DisplayOps
 from otestamper import OteStamper
 import logging
 from astutils import AstUtils
+import serial.tools.list_ports
+import adafruit_board_toolkit.circuitpython_serial
 #import gc
 
 
@@ -282,6 +284,32 @@ class CameraModel:
 	def garbageCollectionNotification(self, phase, info):
 		print('**** Garbage Collection:', phase)
 
+
+	def excludeMiniDisplayTty(self, tty):
+		# The tty the Mini Display connects to can interfere with mounts that use /dev/ttyACM0, this excludes the adafruit port so the search starts on the mount port
+		# if ACM0 is being used
+		if tty.startswith('/dev/ttyACM'):
+			# Obtain all serial ports
+			ports = serial.tools.list_ports.comports()
+			acm_ports = []
+			for port in ports:
+				if port.device.startswith('/dev/ttyACM'):
+					acm_ports.append(port.device)
+
+			# Sort as the ports are returned out of order
+			acm_ports.sort()
+
+			# Obtain adafruit ports and remove that port from the above list
+			ports = adafruit_board_toolkit.circuitpython_serial.repl_comports()
+			if ports is not None and len(ports) > 0:
+				acm_ports.remove(ports[0].device)
+
+			# Return our first non adafruit serial port
+			return acm_ports[0]
+		else:
+			return tty
+
+
 	def __init__(self, previewWidth, previewHeight, splashScreen):
 		self.processLogger = ProcessLogger.getInstance()
 		self.logger = self.processLogger.getLogger()
@@ -339,6 +367,7 @@ class CameraModel:
 		splashScreen.setMessage('Please wait: Setting up mount...')
 		self.indi		= IndiDevices.IndiDevices()
 		self.indi_usb_tty	= Settings.getInstance().mount['indi_usb_tty']
+		self.indi_usb_tty	= self.excludeMiniDisplayTty(self.indi_usb_tty)
 		self.simulate		= False
 		while not self.indi.connect(self.indi_usb_tty, self.simulate):
 			dialog = UiDialogPanel('Failed to connect to mount', UiPanelConnectFailedIndi, args = self)

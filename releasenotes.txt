@@ -1,7 +1,7 @@
 Version 1.0.025:
 ================
 
-	(NOT RELEASED YET)
+	* Amended CameraModel for /dev/tty/ACM* mounts to exclude Mini Display
 
 	* Renamed Kill Astrid to Terminate Astrid Threads on desktop
 
