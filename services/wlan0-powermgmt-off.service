@@ -6,7 +6,7 @@ After=dbus.socket
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/sbin/iwconfig wlan0 power off
+ExecStart=/usr/sbin/iw wlan0 set power_save off
 
 [Install]
 WantedBy=multi-user.target

@@ -1,3 +1,14 @@
+Version 1.0.027:
+================
+
+	* Updating Mini Display to implement Link Quality as a percentage and adding Signal dBm
+	
+	* Mini Display top line turns Red if WiFi signal is not adequate
+
+	* WiFi Power Management REALLY disabled
+	
+	* WiFi connect maintained if astrid-monitor dies or is killed 
+
 Version 1.0.026:
 ================
 

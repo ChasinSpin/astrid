@@ -204,7 +204,9 @@ then
        then #hotspot running and ssid in range
               KillHotspot
               echo "Hotspot Deactivated, Bringing Wifi Up"
-              wpa_supplicant -B -i "$wifidev" -c /etc/wpa_supplicant/wpa_supplicant.conf >/dev/null 2>&1
+	      # Run with systemd-run as a once off to assign to a different control group, so killing astrid-monitor or stopping the service, doesn't kill wpa_supplicant and hence the network connection
+	      systemd-run --unit=autohotspot_wpa --scope --slice=autohotspot_wpa_slice -E setsid nohup wpa_supplicant -B -i "$wifidev" -c /etc/wpa_supplicant/wpa_supplicant.conf >/dev/null 2>&1 &> /dev/null
+              #wpa_supplicant -B -i "$wifidev" -c /etc/wpa_supplicant/wpa_supplicant.conf >/dev/null 2>&1
 	      ledsWifi
               ChkWifiUp
        elif { wpa_cli -i "$wifidev" status | grep 'ip_address'; } >/dev/null 2>&1
@@ -212,7 +214,9 @@ then
               echo "Wifi already connected to a network"
        else #ssid exists and no hotspot running connect to wifi network
               echo "Connecting to the WiFi Network"
-              wpa_supplicant -B -i "$wifidev" -c /etc/wpa_supplicant/wpa_supplicant.conf >/dev/null 2>&1
+	      # Run with systemd-run as a once off to assign to a different control group, so killing astrid-monitor or stopping the service, doesn't kill wpa_supplicant and hence the network connection
+	      systemd-run --unit=autohotspot_wpa --scope --slice=autohotspot_wpa_slice -E setsid nohup wpa_supplicant -B -i "$wifidev" -c /etc/wpa_supplicant/wpa_supplicant.conf >/dev/null 2>&1 &> /dev/null
+              #wpa_supplicant -B -i "$wifidev" -c /etc/wpa_supplicant/wpa_supplicant.conf >/dev/null 2>&1
 	      ledsWifi
               ChkWifiUp
        fi

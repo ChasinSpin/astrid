@@ -69,10 +69,30 @@ class Display():
 			group.append(self.__makeTextArea('IP: %s' % status['network']['ip'], 0x00FFFF, 0, self.LINES_Y[1]))
 			group.append(self.__makeTextArea('Host: %s' % status['network']['hostname'], 0x00FFFF, 0, self.LINES_Y[2]))
 		elif status['network']['mode'] == 'wifi managed':
-			group.append(self.__makeTextArea('WIFI: %s' % status['network']['ssid'], 0x00FF00, 0, self.LINES_Y[0]))
+			sigLevel = status['network']['signallevel']
+
+			# Below -67 dBm we don't have enough signal for reliable/fast packet delivery
+			ssid = status['network']['ssid']
+			if sigLevel == '' or ssid == '':
+				wifiLineColor = 0x666666
+			elif int(sigLevel) >= -67:
+				wifiLineColor = 0x00FF00
+			else:
+				wifiLineColor = 0xFF0000
+
+			# Add dBm to signal level
+			if sigLevel != '':
+				sigLevel += 'dBm'
+
+			# Add GHz to frequency
+			freq = status['network']['frequency']
+			if freq != '':
+				freq += 'GHz'
+
+			group.append(self.__makeTextArea('WIFI: %s  %s' % (status['network']['ssid'], sigLevel), wifiLineColor, 0, self.LINES_Y[0]))
 			group.append(self.__makeTextArea('IP: %s' % status['network']['ip'], 0x00FFFF, 0, self.LINES_Y[1]))
 			group.append(self.__makeTextArea('Host: %s' % status['network']['hostname'], 0x00FFFF, 0, self.LINES_Y[2]))
-			group.append(self.__makeTextArea('Freq: %sGHz  Signal: %s' % (status['network']['frequency'], status['network']['linkquality']), 0x00FFFF, 0, self.LINES_Y[3]))
+			group.append(self.__makeTextArea('Freq: %s  LinkQ: %s' % (freq, status['network']['linkquality']), 0x00FFFF, 0, self.LINES_Y[3]))
 		elif status['network']['mode'] == 'ethernet':
 			group.append(self.__makeTextArea('ETHERNET', 0x00FF00, 0, self.LINES_Y[0]))
 			group.append(self.__makeTextArea('IP: %s' % status['network']['ip'], 0x00FFFF, 0, self.LINES_Y[1]))

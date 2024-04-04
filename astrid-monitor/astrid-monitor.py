@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import os
 import sys
+sys.path.append('/home/pi/.local/lib/python3.9/site-packages')
+
 import json
 import psutil
 import socket
@@ -12,7 +13,8 @@ import adafruit_board_toolkit.circuitpython_serial
 from datetime import datetime
 
 
-version = '1.1.0'
+
+version = '1.2.0'
 
 minidisplay_present	= True
 MONITOR_REPEAT		= 5		# Seconds
@@ -61,10 +63,13 @@ def getNetworkStatus():
 	if eth0_ip is None:
 		iwconfig_result = runCommand( ['/usr/sbin/iwconfig', 'wlan0'] )
 
-		essid = None
-		freq = None
-		link_quality = None
-		ip_addr = wlan0_ip
+		essid = ''
+		freq = ''
+		link_quality = ''
+		signal_level = ''
+		ip_addr = ''
+		if wlan0_ip is not None:
+			ip_addr = wlan0_ip
 
 		# Scan the iwconfig output and parse what we need
 		for line in iwconfig_result.split('\n'):
@@ -77,6 +82,14 @@ def getNetworkStatus():
 				freq = (line.split('Frequency:')[1]).split(' ')[0]
 			if 'Link Quality=' in line:
 				link_quality = (line.split('Link Quality=')[1]).split(' ')[0]
+			if 'Signal level=' in line:
+				signal_level = (line.split('Signal level=')[1]).split(' ')[0]
+
+		if link_quality != '':
+			percent = link_quality.split('/')
+			percent = (float(percent[0]) / float(percent[1])) * 100.0
+			percent = '%0.0f%%' % percent
+			link_quality = percent
 
 		# If we're running Ad-hoc, then get the ESSID from the hostapd.conf file
 		if mode == 'Master':
@@ -91,6 +104,7 @@ def getNetworkStatus():
 		#print('mode:<%s>' % mode)
 		#print('freq:<%s>' % freq)
 		#print('link_quality:<%s>' % link_quality)
+		#print('signal_level:<%s>' % signal_level)
 	
 		if mode == 'Managed':
 			status['mode'] = 'wifi managed'
@@ -99,6 +113,7 @@ def getNetworkStatus():
 			status['hostname'] = hostname
 			status['frequency'] = freq
 			status['linkquality'] = link_quality
+			status['signallevel'] = signal_level
 		elif mode == 'Master':
 			status['mode'] = 'wifi hotspot'
 			status['ssid'] = essid
@@ -189,7 +204,7 @@ while True:
 	if d0Pressed or d1Pressed or d2Pressed:
 		if status['network']['mode'] == 'wifi managed':
 			# Switch to Hotspot
-			os.system('/usr/bin/sudo -b /usr/bin/autohotspot --force_hotspot' )
+			proc = subprocess.Popen( ['/usr/bin/autohotspot', '--force_hotspot'] )
 		elif status['network']['mode'] == 'wifi hotspot':
 			# Switch to Managed
-			os.system('/usr/bin/sudo -b /usr/bin/autohotspot' )
+			proc = subprocess.Popen( ['/usr/bin/autohotspot'] )
