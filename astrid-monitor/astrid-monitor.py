@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# Deal with Serial port clash in Indi
-
 import json
 import psutil
 import socket
