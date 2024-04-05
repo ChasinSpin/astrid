@@ -2,7 +2,7 @@
 
 astridUsbSummary()
 {
-	DEVICE=`/usr/bin/lsusb -t | /usr/bin/grep 'Class=Mass Storage'`
+	DEVICE=`/usr/bin/lsusb -t | /usr/bin/grep -v 'Class=Mass Storage, Driver=usb-storage, 12M' | /usr/bin/grep 'Class=Mass Storage'`
 	LC=`echo "$DEVICE" | /usr/bin/head -1`
 
 	DRIVER='UNKNOWN'
