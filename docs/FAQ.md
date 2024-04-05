@@ -7,6 +7,10 @@
 * **I have multiple Astrids, do I need a computer for each one?**
 
 	Only one computer/tablet or phone is needed to control all Astrids
+
+* **Do I need an Astrid Mini Display for every Astrid?**
+
+	No, you only need one for all the Astrids you own, it can be unplugged and moved to another Astrid
 	
 * **Whats the best device to control Astrid?**
 	
@@ -22,7 +26,7 @@
 	
 * **Which video analysis software is supported?**
 	
-	Currently, only Bob Anderson's PyMovie has support to read the RAVF video files that Astrid generates. Astrid does not generate ADV format files due to the lack of 10-bit RAW support. Astrid also does not convert to FITs files, because there would be a loss of audit information that Astrid generates and that conversion would take a long time. Limovie and Tangra do not support RAVF at this time. Once the light curve has been extracted by PyMovie, it can be read in PyOTE, AOTA, ROTE or Occular.
+	Currently, only Bob Anderson's PyMovie has support to read the RAVF video files that Astrid generates. Astrid does not generate ADV format files due to the lack of 10-bit RAW support. Astrid player can convert to FITs files, but you will lose audit information that Astrid generates and that conversion would take a long time. Limovie and Tangra do not support RAVF at this time. Once the light curve has been extracted by PyMovie, it can be read in PyOTE, AOTA, ROTE or Occular.
 	
 * **Which light curve analysis software is supported?**
 
@@ -32,11 +36,11 @@
 
 	Astrid normally runs above ambient temperature, so generally inside the case little moisture or ice will accumulate.  However if the temperature outside is substantially below freezing, to the point that condensation would form on the case when brought inside, then it is advisable to place in a container until warmed to room temperature and then open the container to remove any remaining moisture.  This would be the same treatment you would apply to a telescope.
 
-	Astrid is not waterproof and shouldn't be subjected to rain. Also it's not weatherproof, so don't leave outside permanently, as is the same with most astromonical equipment.
+	Astrid is not waterproof and shouldn't be subjected to rain or snow. Also, it's not weatherproof, so don't leave it outside permanently, as is the same with most astronomical equipment.
 
-	One user loosely covers Astrid on top with a plastic bag leaving space for venting if they have concerns about rain overnight.  Astrid does generate heat, and it's advisable to not completely enclose to avoid overheating.
+	One user loosely covers Astrid on top with a plastic bag leaving space for venting if they have concerns about rain overnight.  Astrid does generate heat, and it's advisable not to completely enclose it to avoid overheating.
 
-	Also, Astrid is subjected to Canadian weather and so far has been tested to -16C with no issues encountered to date.
+	Also, Astrid is subjected to Canadian weather and so far has been tested to -30C with no issues encountered to date.
 	
 	In hot climates, make sure you have adequate venting around Astrid.
 	

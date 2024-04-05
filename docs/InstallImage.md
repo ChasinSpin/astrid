@@ -44,7 +44,7 @@ If you have multiple Astrids, or someone else has an Astrid near you, confusion 
 
 ##### Wifi Hotspot Change	
 
-1. Run WifiSetup on the desktop, and change the access points SSID and password (option 7) to:
+1. Run WifiSetup on the desktop (under Astrid Tools), and change the access points SSID and password (option 7) to:
 
 		SSID: AstridXHotspot  (where X is a unique number for your astrid)
 		Password: iotaiota

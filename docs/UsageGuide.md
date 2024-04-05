@@ -1,92 +1,90 @@
 # Usage Guide
 
+* [Power](#power)
 * [Startup](#startup)
 * [Windows Zeroconf](#windows-zeroconf)
-* [Wi-Fi](#wi-fi)
+* [Connectivity WiFi and Hotspot](#connectivity-wifi-and-hotspot)
 * [First Light](#first-light)
 * [Connect Via VNC](#connect-via-vnc)
-* [Internet Access Optional](#internet-access-optional)
+* [Internet Access](#internet-access)
+* [Upgrade](#upgrades)
 * [Focal Reducers And Length](#focal-reducers-and-length)
 * [Multiple Astrids](#multiple-astrids)
 * [Our Setup](#our-setup)
 * [SSH And SFTP](#ssh-and-sftp)
 * [Prepointing](#prepointing)
+* [Auto Record and OWCloud](auto-record-and-owcloud)
+* [Player](player)
+* [Light Curve Analysis](light-curve-analysis)
 * [Occult4 Searches](#occult4-searches)
+
+## Power
+
+Good power is critical to Astrid. Please see [Power Supply](PowerSupply.md) for more information.
 
 ## Startup
 
 * Insert microSD Card into ASTRID.  Note the contacts on the card face towards the logo on ASTRID.  Be careful to insert it into the socket (*not beside it*).
-* Insert USB Flash drive **in BLUE USB port (USB 3.1)** on ASTRID.  Note the black USB ports are slower than USB 2.0.
-* Connect GPS Antenna (ensure it has a clear view of the sky, see [Troubleshooting](Troubleshooting.md)
+* Insert USB Flash drive **in BLUE USB port (USB 3.1)** on ASTRID.  Note the black USB ports are slower USB 2.0.
+* Connect GPS Antenna (ensure it has a clear view of the sky, see [Troubleshooting](Troubleshooting.md) for GPS Poor Reception for more information.
 * Connect mount if using to any remaining USB port.
-* Connect the focuser if used to any remaining USB port.
+* Connect [Astrid Mini Display](MiniDisplay.md) to any remaining USB port.
 * Power mount on.
 * Power ASTRID on.
 * **ALWAYS REMEMBER TO SHUTDOWN ASTRID AND WAIT 15 SECONDS AFTER GREEN LIGHT STOPS FLASHING ON THE SIDE BEFORE REMOVING POWER TO AVOID SD CARD AND USB FLASH DRIVE CORRUPTION.**
 * Keep sensor clean.  The best way to do this is to use a camera puffer and keep the sensor covered at all times, either with a cap or a focal reducer.  If you need to clean the sensor, use a regular sensor cleaning kit.  As with regular astrophotography, a dirty sensor is indicated by sharply focused defects on the image (*less defined defects are dirt on the lens or telescope*).
 * [Connect via VNC](#connect-via-vnc)
 
-## Windows Zeroconf
+## mDns/Bonjour/Windows Zeroconf
+
+**Note: This is important for older versions of Android/Windows Tablets and Windows Computers**
 
 Zeroconf (also known as mDNS and Bonjour) is a way to save users from entering IP addresses (e.g. 10.0.0.5) and being able to use name.local instead: [https://en.wikipedia.org/wiki/Zero-configuration_networking
 ](https://en.wikipedia.org/wiki/Zero-configuration_networking)
 
-Ordinarily, this means you can use one address to connect to Astrid despite being on different networks.  On Mac and iOS, this works fine; however, on some Windows and Android devices, zeroconf is broken, and Astrid will require an IP address and a different hostname depending on the network it's connected to.
+Ordinarily, this means you can use one address to connect to Astrid despite being on different networks.  On Mac and iOS, this works fine; however, on some Windows and Android devices, zeroconf is broken, and Astrid will require an IP address.
 
-When Astrid is advertising its own AdHoc Network (typically on mobile deployments), the IP address is likely to be 10.0.0.5 as Astrid is generating that network. When connected to your home network, it will be whatever DHCP address your home network assigned.
-
-As you need to know the IP address your Astrid is on when connected to your home network so you can connect to it, it's suggested to set up Astrid on your home network in your WiFi router as a Permanent (or Static) DHCP address.  You will likely need the MAC address for that permanent assignment, which can be determined with the following command in Terminal (Black square icon with >_) in Astrid:
-
-	ifconfig wlan0
-	
-The output will look like this:
-
-	pi@astrid1:~ $ ifconfig wlan0
-	wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 192.168.20.32  netmask 255.255.255.0  broadcast 192.168.20.255
-        inet6 fe80::9033:3538:7601:78fd  prefixlen 64  scopeid 0x20<link>
-        ether dc:a6:32:b2:eb:72  txqueuelen 1000  (Ethernet)
-        RX packets 760  bytes 66334 (64.7 KiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 1592  bytes 1806203 (1.7 MiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-you should look for the hexadecimal number after "ether", in this case the MAC address is:
-
-	dc:a6:32:b2:eb:72
-
-You need to enter that hexadecimal number into your router and assign an IP address, you then use that same IP address for the respective VNC connection.
+When Astrid is advertising its own Hotspot Network (typically on mobile deployments), the IP address is likely to be 10.0.0.5 as Astrid is generating that network. When connected to your home network, it will be whatever DHCP address your home network assigned.  This information is displayed on the [Astrid Mini Display](MiniDisplay.md).
 
 
-## Wi-Fi
+## Connectivity WiFi and Hotspot
 
-Astrid uses [AutoHotspot](https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/157-raspberry-pi-auto-wifi-hotspot-switch-internet#:~:text=AutoHotspot%20Script,-This%20is%20the&text=Allowing%20all%20connected%20devices%20to,be%20used%20with%20hidden%20SSID%27s.) to manage Wi-Fi connections, these can be configured via the "Wifi Setup" icon on Astrid's desktop.
+Astrid can run as it's own Access Point WiFi Hotspot or connect to a WiFi Router (e.g. a Home WiFi Network), these are called Hotspot and WiFi respectively.
 
-Astrid looks for a Wi-Fi connection it knows first and will connect to it when found, if no network is found, then it will create its own Access Point that can be connected to.  If you are ever having problems finding Astrid, then look on your list of networks to see if AstridHotspot is visible and connect with:
+When Astrid starts up, it is always in Hotspot mode and can be accessed as:
 
-|           |                |
+| Setting | Value |
 | --------- | -------------- |
 | Wi-Fi SSID | AstridHotspot |
 | Wi-Fi Password | iotaiota |
 | Hostname | astrid.local (or 10.0.0.5) |
 
-If Astrid can see multiple networks it knows, then it may connect or change between them randomly.
+In Hotspot mode, Astrid does not have access to the internet so is unable to be upgraded or download plate solve files, astronomy tables or search for astronomical objects that require online access.
 
-Once every minute, networks are checked, and Astrid may switch to a new network if visible.  So for example, if you are connected to "my\_ssid" and "my\_ssid" goes down, Astrid will after upto 1 minute, look for another network it knows and switch to that, or if one is not available, it will switch to creating it's own access point, e.g. "AstridHotspot"
+This would be the typical scenario when observing in the field where internet access wasn't available.
 
-So, if you can't connect, then look for the possibility of Astrid being on another network. 
+Sometimes (near hotels, houses etc.), there can be many wifi networks and the AstridHotspot may not be listed as your WiFi network list maybe short, just enter the Hotspot name as "Other" etc.
 
-The ethernet port flashes alternate Green/Yellow when connected to a known WiFi Network and is solid Green/Yellow when Astrid is generating it's own Wifi Hotspot (Adhoc Network).
+To connect to the internet, you need to connect to a Wifi Router (for example a home router).  There are 2 ways to do this:
+
+* [Astrid Mini Display](MiniDisplay.md) (connect over USB and press one of the 3 buttons)
+* Connect your device to the Hotspot network, VNC in, and double tap/click "WiFi Connect" on the desktop. 
+
+To manage Wi-Fi connections (network names/passwords), these can be configured via the "Wifi Setup" icon on Astrid's desktop under "Astrid Tools".
+
+If you are ever having problems finding Astrid, then look on your list of networks to see if AstridHotspot is visible and connect to it.  Otherwise you'll find it on your WiFi Network if you switched to that.  Use the [Mini Display](MiniDisplay.md) to determine where your network is and the status it has.
+
+Astrid can also handle multiple networks, however multiple networks at the same location should be avoided to prevent confusion as to which network you are connecting too.  But if you have 2 places (say your home and an astronomy club), then there's a case for entering multiple networks.
+
+The ethernet port flashes alternate Green/Yellow when connected to a known WiFi Network and is solid Green/Yellow when Astrid is generating it's own Wifi Hotspot.
 
 ##### If you are hot-spotting through a phone to connect to Astrid, be aware that some cellular plans limit throughput through the phones hotspot and may result in very slow VNC response.
 
 ### Ethernet (wired connection)
 
-Astrid also has an ethernet port that can be used.  If you're having problems with your WiFi at home due to poor signal where Astrid is switching between Wifi and Hotspot, you can also remove your Home Wifi from Astrid and use an ethernet connection instead.
+Astrid also has an ethernet port that can be used. Plug in your ethernet connection and [Mini Display](MiniDisplay.md) will indiciate the IP address and hostname to VNC too.
 
-Plug in your ethernet connection, connect to Astrid via the Hotspot and start Wifi Setup on the desktop.  Select "9 = Disable Local DNS (when on ethernet only)" to disable the local dns server and use your ethernets network source so it can connect to the internet.
-
-However, after this point, connecting to the Astrid Hotspot over Wifi will no longer work and despite sometimes still seeing the Hotspot advertised, it won't work reliably if connected to.  To set back to the normal behaviour where the Hotspot works as normal, shutdown Astrid and remove the ethernet connection and power back on again.
+To set back to the normal behaviour remove the ethernet cable.
 
 ## First Light
 
@@ -98,7 +96,7 @@ When Astrid is started for the first time, no Wi-Fi networks are configured and 
 | Wi-Fi Password | iotaiota |
 | Hostname | astrid.local (or 10.0.0.5) |
 
-To connect, you will need to connect to this Wi-Fi network you will need to use VNC, see [Connect Via VNC](#connect-via-vnc).  Once connected, you can use the "Wi-Fi Setup" icon on your desktop to add Wi-Fi networks you require.
+To connect, you will need to connect to this Wi-Fi network and you will need to use VNC, see [Connect Via VNC](#connect-via-vnc).  Once connected, you can use the "Wi-Fi Setup" icon on your desktop to add Wi-Fi networks you require.
 
 When using Astrid for the first time, or with a new telescope / focal reducer configuration, it's important to determine the focal length and configure the [platesolver](Platesolver.md).  See [Platesolver](Platesolver.md) for more information.  Once plate solving is working, then you can Polar Align (if an equatorial mount) and then goto a bright star and focus precisely with a Bahtinov mask.
 
@@ -115,7 +113,7 @@ For convenience in mobility and user experience, whilst moving around the telesc
 
 The VNC Client we recommend is the free [RealVNC VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/) (note you may be prompted for a free trial, but it's not necessary).  Other clients may or may not work.
 
-When setting up the client, we suggest you use "astrid.local" for the hostname instead of an IP address.  As you may access Astrid on different networks or its Access Point, using "astrid.local" instead of an IP address removes the need to have a different connection for each network.  
+When setting up the client, we suggest you use "astrid.local" for the hostname instead of an IP address.  As you may access Astrid on different networks or its Access Point, using "astrid.local" instead of an IP address removes the need to have a different connection for each network. However if you have mDNS/Bonjour issues, then you may need to use the IP address.  [Astrid Mini Display](MiniDisplay.md) lists both options.
 
 ##### Please note that it may take 1-2 mins after connection for "astrid.local" to be visible on the network.
 	
@@ -147,23 +145,27 @@ Quitting or closing the VNC connection, does not shut down Astrid.
 
 
 	
-## Internet Access Optional
+## Internet Access
 
 Astrid is designed for both offline and online use.  Astrid currently does not contain star catalogs, therefore to find a target that is not already saved, it uses Simbad which requires internet access.
 
 Target objects can either be entered via Astrid for offline use (*custom Objects or Save from Simbad*) or copied onto the corresponding objects.json(*custom objects*) or occultations.json on the USB Drive.
 
+## Upgrades
+
+Astrid uses the Rapid Development model and should be connected to the internet and upgraded frequently.
+
 ## Focal Reducers And Length
 
 Focal length will depend on the focal reducers used and the distance the camera sensor is from a lens or the telescope.  The typical requirement of an accurate back focus may not be necessary with ASTRID due to the smaller field of view.
  	
-If using the IOTA 0.5X Focal Reducer, be aware that you may need to insert spacer rings to get the maximum focal reduction.
+If using the IOTA 0.5X Focal Reducer, be aware that you may need to insert spacer rings to get the maximum focal reduction.  Most setups you 2 or 1 5mm rings.
  	
 [IOTA Focal Reducer](https://occultations.org/night-eagle-2-pro-astro-edition-ordering-page/)
 
 ## Multiple Astrids
 
-Each Astrid should have a unique hostname to avoid confusion in which one you are connecting to.
+Each Astrid should have a unique hostname to avoid confusion about which one you are connecting to.
 
 You can change the hostname as follows:
 
@@ -199,6 +201,8 @@ For telescope/mount (focal length 732mm):
 * ZWO AM5 Mount
 	* Dakota 12V Lithium Battery (54Ah, but overkill, 10Ah-23Ah is sufficient)
 
+We also have some Astrids configured for standalone in the field (Hotspot and no Router).
+
 ## SSH And SFTP
 
 To ssh or sftp to Astrid:
@@ -221,10 +225,10 @@ Prepointing is useful in certain situations, for example:
 
 For the best success with prepointing:
 
-* Short focal lengths ( <400mm )
+* Short focal lengths ( <500mm )
 * Short occultations
 
-To prepoint, click the Prepoint button when Occultations is selected in Object.  The process is iterative, so click Photo, Solve, Sync and then adjust the mount and repeat until the error is minimal, the follow metrics reported are useful:
+To prepoint, click the Prepoint button when Occultations is selected in Object.  The process is iterative, so click Photo, Solve, Sync and then adjust the mount and repeat until the error is minimal, the following metrics reported are useful:
 
 Pos Error(%FOV) = The positional error in percentage of the height of the FOV for the sensor.  This is another way of quantifying the position error displayed in the arrows.  I.E. I have this much error, am I close enough to the center?  It's suggested to adjust the mount until 10% or better is reached.  At 50%, it is half the field of view, and that will mean that the star is at the edge of the frame.
 
@@ -234,13 +238,22 @@ Drift Time 75% FOV: This is the number of minutes it takes to drift across 75% o
 
 When prepointing is adjusted, then the Auto Record button can be pushed to auto record when the event begins.
 
+## Auto Record and OWCloud
+
+Enter your events into OWCloud, sync to Astrid and use Auto Record.  If you do this, it removes the chances for error and will setup the ideal recording time for binary asteroid and binary star discovery without wasting space on your USB drive.
+
+
+## Player
+
+Astrid Player (available on the desktop) can be used to load an Astrid Recording, view the occultation, and also Plate Solve and mark the target.  The plate solved image can then be saved as a Fits Finder and loaded into PyOTE to assist with locating the target in PyOTE.
+
 ## Light Curve Analysis
 
 The recommended tool for analyzing light curves from Astrid is Bob Andersons awesome [PyMovie](https://pypi.org/project/pymovie/) and [PyOTE](https://pypi.org/project/pyote/)
 
 Starting from version 3.9.4 of PyMovie, the RAVF Video format used by Astrid is natively supported.
 
-Other light curve analyzers currently do not support the RAVF video format. A conversion utility to fits is on the todo list.
+Other light curve analyzers currently do not support the RAVF video format.  Astrid Player can be used to convert to fits format for other analyzers.
 
 ## Occult4 Searches
 
@@ -268,8 +281,6 @@ Astrid supports the ability to fast search through Occult Element files generate
   		</Event>
   		...
 	</Occultations>
-
-Unfortunately, Occult4 crashes for the author on VM on the Mac, so the process to generate these is left up to the user to determine.
 
 To integrate one of these files into Astrid, please do the following:
 

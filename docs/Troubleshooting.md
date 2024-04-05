@@ -1,6 +1,39 @@
 # Troubleshooting
 
+## Support
+
+Astrid is supported on a **best-effort** basis as time permits, you should not expect support for Astrid. It is an open-source project and the code is available for you to add new features or fix issues.
+
+**Please check the documentation first.**
+
+**The aim is to document everything to reduce support requirements from a real person. The scope of this project is large and we ask for your assistance, by adhering to the following:**
+
+Any request for support assistance has the following requirements:
+
+* You are running the latest version of Astrid
+* Astrid is being used within it's specifications
+* Design/new feature requests are suggestions only
+* No support for WiFi routers
+
+### That is:
+
+* Requests for help or bug fixes on older versions will be asked to upgrade first and try again
+* Problems with videos frame rates > 30fps, will be referred back to the specifications and the alert that was received when you recorded
+* If you purchased a battery power pack and are having power issues, then you'll be pointed to the documentation for Power Supplies
+* Problems with GPS reception will be pointed to the documentation
+* If you can't connect to WiFi, then find someone local for help
+
+### You can help:
+
+You can help reduce the support load by taking the time to check the documentation first and keeping the software up to date.
+
+Astrid follows a Rapid Development model, and all bug fixes are by new versions, not by going backwards.  There is no regression path or change control, GitHub stores the code changes, and the path is always forging forward.
+
+
+## Common Issues and Solutions
+
 * [Host Not Found](#host-not-found)
+* [Site Button Is Orange Or Red](#site-button-is-orange-or-red])
 * [GPS Poor Reception](#gps-poor-reception)
 * [Mouse Problems On Tablet](#mouse-problems-on-table)
 * [Android Host Not Found](#android-host-not-found)
@@ -21,11 +54,33 @@ connecting from's DNS.
 
 Make sure you are on the correct WiFi network, the ethernet port flashes alternate Green/Yellow when connected to a known WiFi Network and is solid Green/Yellow when Astrid is generating it's own Wifi Hotspot (Adhoc Network).
 
+The hostname astrid.local is mapped via a process called mDns/Bonjour which may not work on older computers or poorly designed Wifi Routers. Use the IP address instead to connect if this is an issue with your hardware
+
+Mini Display can be used to see your current network configuration and to switch to your Home WiFi.
+
+## Site Button Is Orange Or Red
+
+To change the Site Button from Orange/Red to Green, click on the button and click "Update Site and Mount".  The Orange/Red is due to a mismatch between the last time the "Update Site and Mount" button was clicked and position the GPS is reporting now.  
+
+It is natural for GPS to change position over time by a small amount, so Orange is not an issue for acquisitions that don't need super precision (like NEOs).  Everytime you move to a new site, you will need to click the "Update Site and Mount" button.
+
 ## GPS Poor Reception
 
-A good solid GPS signal is required for both timing and positioning.  If the Timing/GPS buttons are not constantly Green in Astrid, then you should look into the positioning of the GPS antenna. It is suggested to mount the antenna facing the sky and with a clear view of it.  Mounting the antenna on the telescope is not recommended because most tubes are metal or carbon fiber and the reception will be poor, the telescope also moves and that can cause the view of the sky to change for the GPS receiver.  Equally, mounting too close to the tripod or electronics may interfere with reception.
+A good solid GPS signal is required for both timing and positioning.  If the Timing/GPS buttons are not constantly Green in Astrid, then you should look into the positioning of the GPS antenna. It is suggested to mount the antenna facing the sky and with a clear view of it.  
 
-**It's not recommended to record an occultation unless Site, GPS, Timing and Acquisition buttons are Green.  A GPS/Timing button that changes to Red during a recording can produce incorrect timing.**
+Possible reasons for poor reception are:
+
+* Antenna upside down (black part not pointing to the sky)
+* Antenna substituted for another. Only the recommended antenna should be used, other antennas may look the same but are inferior
+* Usage inside (the top floor of a house may work depending on construction, but outside is better)
+* Obstructed view of the sky (trees, buildings, etc.), GPS requires a clear 360-degree view of the sky
+* Placed on metal. Although the antennas are magnetic, the metal often creates a ground plane and can make reception unpredictable; avoid metal other than a nail or a bolt
+* Placed on the ground. Ground is an unpredictable ground plane; often, grass/dirt interferes with the signal, and a concrete slab may not, experience varies, avoid
+* Attached to a telescope. Telescopes move and are often metal or carbon fiber, all of which will interfere with signal reception
+* Poor cable connection. Ensure the antenna cable is fully screwed in and the antenna hasn't disconnected from the GPS receiver
+* Broken antenna. GPS cables can be damaged, Antenna drops, and pins damaged/corroded.  There is also a Pigtail inside Astrid they may become loose or damaged.
+
+**It's not recommended to record an occultation unless Site, GPS, Timing and Acquisition buttons are Green (with the exception of an Orange Site Button).  A GPS/Timing button that changes to Red during a recording can produce incorrect timing.**
 	
 ## Mouse Problems On Tablet
 
@@ -37,13 +92,14 @@ Newer Androids support the mDNS/Bonjour protocol, such that hostnames with .loca
 
 ## Some spots on VNC are blurred
 
-This is due to the compression be used when automatic compression is set for the connection in VNC. You can choose to use less compression at the expense of a slower connection / responsiveness.
+This is due to the compression being used when automatic compression is set for the connection in VNC. You can choose to use less compression at the expense of a slower connection / responsiveness. Don't worry astrid always records the raw data from the camera.
 
 ## Brightness Of Image Changes when Selecting "Display" Options
 
-This is a limitation of the display pipeline and GPU.  This does not affect saved data in an yway.
+This is a limitation of the display pipeline and GPU.  This does not affect saved data in an way.
 	
 ## Indi Testing
+### (Developer use only)
 		#indiserver -v -m 100 indi_lx200am5     # All drivers are in /usr/bin
 		#indi_setprop "ZWO kjjAM5.CONNECTION_MODE.CONNECTION_SERIAL=On"
 		#indi_setprop "ZWO AM5.DEVICE_PORT.PORT=/dev/ttyACM0"
@@ -52,6 +108,8 @@ This is a limitation of the display pipeline and GPU.  This does not affect save
 		#indi_setprop "ZWO AM5.GO_HOME.GO=On"
 				
 ## Tuning GPS PPS Offset
+### (Developer use only)
+
 	Important: GPS and PPS signals must be within 200ms of each other (use offset to adjust), otherwise the PPS signal will be ignored, so we start with an offset of 0.1s
 	
 	Tuning GPS(NMEA) Offset:
@@ -82,7 +140,8 @@ This is a limitation of the display pipeline and GPU.  This does not affect save
 			sudo systemctl restart chrony
 			log file is stored in /var/log/chrony/tracking.log
 		
-### Chronyc stages in tracking		
+### Chronyc stages in tracking	
+### (Developer use only)	
 
 	pi@otestamper:~ $ chronyc tracking
 	Reference ID    : 00000000 ()
@@ -131,6 +190,8 @@ This is a limitation of the display pipeline and GPU.  This does not affect save
 	
 
 ## GPS Accuracy
+
+### (Developer use only)
 	
 ### PPS on GPS:
 	
@@ -208,11 +269,8 @@ Some events may fail to link back to OWCloud.  Currently, OWCloud only supports 
 
 ## Wrong Password Entered For WiFi and Unable To Connect
 
-If you enter the wrong password when setting up a WiFi network in Astrid (for example your Home WiFi), then when Astrid attempts to connect to that network, it won't be able to and it will cycle between its Hotspot mode and attempting to connect to your WiFi network, making it virtually impossible to connect to Astrid to fix the issue.
+If you enter the wrong password when setting up a WiFi network in Astrid (for example your Home WiFi), then when Astrid attempts to connect to that network, it won't be able to it.
 
-To address this issue, the quickest option is to disconnect your Wifi router(s) so that Astrid is forced to advertise it's Hotspot and is unable to switch, or you can take your Astrid away from your WiFi (a mile away for example), so that it can't connect to your WiFi.  You can then connect via the Astrid Hotspot you set up previously and fix the issue.
+Use the Mini Display to switch back to the Hotspot, and change your network password.
 
-Once you have a stable connection to Astrid, choose "WiFi Setup" and option 8. (remove Wifi Network) to remove the wifi network, then when you have Astrid back in range, you can go back into Wifi Setup and choose option 5. (add a new WiFi network), being careful to enter the password correctly this time.
-
-Another option to delete all wifi networks from Astrid (apart from its Hotspot) so that you can reenter the network is to remove the SD Card from Astrid and insert it into a computer, you will see a "bootfs" drive appear on your computer. Download (typically by right clicking on the following link and saving) and put 
-[wpa_supplicant.conf](https://github.com/ChasinSpin/astrid/raw/main/docs/other/wpa_supplicant.conf) in the bootfs drive, eject the drive on your computer, remove the SD Card and put the SD Card back in Astrid and power on.  You should then be able to connect via the Astrid Hotspot and select WiFi Setup and option 5. (add a new WiFi network), being careful to enter the password correctly this time.
+If you don't have the Mini Display, you will have to power cycle to gain access.

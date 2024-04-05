@@ -1,19 +1,15 @@
 # TODO
 
-* Put warning for non USB 3 and non UASP USB Drives and limit frame rate.
+* CIRCUITPY alters as 10fps drive, fix
 * Allow magnitude to be selected whilst in exposure analysis
 * Put software version in ravf header
-* Ted swings file (negative altitude)
 * Any chance you could allow a dynamic (local) change of the limiting magnitude during Exposure Analysis, rather than forcing us to stop and restart Astrid to get to the settings for Simulator? - Ted
 * Magnitudes Cluttered on Display Analysis
 * Significant red errors when recording with Software Leap Seconds
-* Continuous tracking
 * Add YYYYMMDD_ to folder name (check that's correct on IOTA Report format
 * Repeat prepoint when failed 
 * Mention heat sinks in the kit
-* Teds comment about shutdown
 * Astrid saves fits files as .fit, change to fits (maybe)
-* Identify target with circle after platesolve
 * GPS Antenna must be attached when recording video, no GPS popup msg or prevent recording as it currently hangs
 * Add mag drop calculator to Astrid
 * Multiple deletes on events
@@ -21,14 +17,11 @@
 * Order occultations by the next one first, can more be automated?  Can frame rate be pre entered?
 * Quotes in Wifi names = bad Ted's Wifi, update doc
 * astropy download
-* Remove unused options from Wifi Setup as it creates confusion
 * For Occultation Info Screen, calc Error In Time, Shadow Width, Path Uncertainty in km's
 * Any value to updating duration of event via path computation?
 * Experiment with AELocked (looks like a converence thing)
 * Check into FITs, is it really storing 0-255 or 0-1023?
 Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 'DigitalGain': 1.0002992153167725, 'SensorBlackLevels': (3840, 3840, 3840, 3840), 'AeLocked': False, 'Lux': 400.0, 'FrameDuration': 200014, 'AnalogueGain': 1.0, 'ExposureTime': 199940}
-* Disable notification about automatic updates from the OS:
-https://forums.raspberrypi.com/viewtopic.php?t=331808
 * Frame rates: At speeds above 25fps, one of the python processes pegs out at close to 95-100% cpu on "top".  Figure out cause to increase frame rate.  Also, look at modding picamera to be able to skip frames that are more than 10fps for display.  Accelerated Rendering is likely faster and won't drop frames?   * See /usr/lib/python3/dist-packages/picamera2/previews/q_picamera2.py for display rendering
 * Confusion over Object Panel.  Maybe change Object to Target.  But what happens if I say "no".  Is this object now selected as the object to use with Plate Solve comparisons?  How do I know what object is currently the "target"
 * Install PyMovie/PyOTE on the Pi

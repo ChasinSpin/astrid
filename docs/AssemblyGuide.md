@@ -1,6 +1,6 @@
 # Assembly Guide - Partial Kit (Skill Level Beginner)
 
-### Note: The partial kit is no longer being sold as it's replaced by the IOTA Assembled Astrid.  
+### Note: The partial kit is no longer being sold as it's replaced by the IOTA Fully Assembled Astrid.  
 
 ###This remains for reference purposes only.
 

@@ -28,13 +28,20 @@ References:
 
 ## USB Thumb Drive Testing
 
+### Recommended Drives:
+
 | Drive | Min Sequential Write 2MB | Min Random Write 2MB | WT pSLC | WT No pSLC | pSLC | UASP | Recommended |
 | ----- | ------------------------ | -------------------- | ------- | ---------- | ---- | ---- | ----------- |
-| Corsair Flash Voyager GTX 128GB USB 3.1 | 113.4MB/s | 172.8MB/s | ~100MB/s | ~46MB/s | ~4.2GB | Yes | Yes (but only upto 4GB videos) |
-| Lexar 128GB JumpDrive P30 USB 3.2 Gen 1 Flash Drive (LJDP030128G-RNQNG) | 57.7MB/s | 91.6MB/s | ~90MB/s | ~50MB/s | ~12GB | Yes | Avoid (unpredictable speeds, start off around 8MB/s) |
+| [Corsair Flash Voyager GTX 128GB USB 3.1 Flash Drive](https://www.amazon.com/Corsair-Flash-Voyager-128GB-Premium/dp/B079NVJPKV) (also 256GB version of this drive) | 113.4MB/s | 172.8MB/s | ~100MB/s | ~46MB/s | ~4.2GB | Yes | Yes (but only upto 4GB videos) |
 | TOPESEL 128GB USB 3.1 Flash Drive | 107.8 | 240.4 | ~98MB/s | ~70MB/s | ~3GB | No | Meets 30fps just, but is consistant |
-| Sandisk Extreme Pro 3.2 | 21.5MB/s | 8.9MB/s | - | - | ~ >100GB | No | Avoid (unpredictable speed/features/fault drives) |
+
+### Avoid:
+
+| Drive | Min Sequential Write 2MB | Min Random Write 2MB | WT pSLC | WT No pSLC | pSLC | UASP | Recommended |
+| ----- | ------------------------ | -------------------- | ------- | ---------- | ---- | ---- | ----------- |
+| Lexar 128GB JumpDrive P30 USB 3.2 Gen 1 Flash Drive (LJDP030128G-RNQNG) | 57.7MB/s | 91.6MB/s | ~90MB/s | ~50MB/s | ~12GB | Yes | Avoid (unpredictable) speeds, start off around 8MB/s) |
 | Arcanite 256GB USB 3.1 Flash Drive AK58256G | 24MB/s | 30MB/s | - | - | ~3GB | Yes | Avoid (slow, cache burnt through fast) |
+| Sandisk Extreme Pro 3.2 | 21.5MB/s | 8.9MB/s | - | - | ~ >100GB | No | Avoid (unpredictable speed/features/faulty drives) |
 
 Reference: [Fastest USB flash drive benchmark test 2024](https://ssd-tester.com/usb_flash_drive_test.php)
 
@@ -45,37 +52,4 @@ Deleting files from a USB Drive may fragment the drive and, depending on its qua
 
 ## Speed Testing 
 
-Use the Diagnostics icon on the desktop to run a speed test.  The results are placed in diagnostics.txt on the Astrid drive.
-
-## UASP mode and USB 3.0
-
-See "Speed Testing" above.
-
-More information:
-
-Reference: [UASP v. BOT](https://www.jeffgeerling.com/blog/2020/uasp-makes-raspberry-pi-4-disk-io-50-faster)
-
-USB 3 is faster than USB 2, and UASP mode provides a higher speed for both USB 2 and USB 3 than BOT mode.
-
-To determine if a USB Drive is connected via USB 3, type:
-
-	lsusb -t
-	
-and look for:
-
-	5000M = USB 3
-	480M  = USB 2
-
-To determine if a USB Drive is connected via USAP, type:
-
-	lsusb -t
-	
-and look for:
-
-	Driver=uas 				= UASP
-	Driver=usb-storage		= BOT
-
-
-
-
-
+Use the Diagnostics icon on the desktop in "Astrid Tools" to run a speed test.  The results are placed in diagnostics.txt on the Astrid drive.
