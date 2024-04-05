@@ -24,7 +24,7 @@ Please remember to Thumbs Up and Subscribe.
 
 1. [Usage Guide](UsageGuide.md)
 2. [Power Supply](PowerSupply.md)
-3. [Astrid Mini Display]((MiniDisplay.md))
+3. [Astrid Mini Display](MiniDisplay.md)
 4. [Troubleshooting](Troubleshooting.md)
 5. [FAQ](FAQ.md)
 6. [USB Drive Requirements](USBDriveRequirements.md)
