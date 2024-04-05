@@ -1,3 +1,8 @@
+Version 1.0.028:
+================
+
+	* Fixing bug with Mini Display drive being picked up on the drive speed check at start instead of the Astrid Drive
+
 Version 1.0.027:
 ================
 
