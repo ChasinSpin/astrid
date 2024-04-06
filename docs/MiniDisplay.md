@@ -14,11 +14,20 @@ Only 1 Astrid Mini Display is required for all your Astrids, it doesn't have to 
 
 USB-B to USB-C cable with both power **AND DATA** is required.
 
-Astrid Mini Display uses an Adafruit ESP32-S2 Reverse TFT Feather.
+Astrid Mini Display can use either:
+	
+* [Adafruit ESP32-S2 Reverse TFT Feather](https://www.adafruit.com/product/5345)
+* [Adafruit ESP32-S3 Reverse TFT Feather](https://www.adafruit.com/product/5691)
 
 ## Initial Installation / Upgrading
 
 Plug in the Astrid Mini Display to Astrid, and in "Astrid Tools", double click/tap on "Install Mini Display" and follow the instructions.
+
+## Troubleshooting
+
+Q. Display lights, but you can't install the software
+
+A. Be sure that the USB cable you are using provides both power AND DATA (try another cable)
 
 ## Bitmap (Developer only)
 
