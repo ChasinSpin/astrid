@@ -25,9 +25,39 @@ usage()
 
 getDrive()
 {
-	DRIVE=`/usr/bin/mount | egrep "FTHRS2BOOT|CIRCUITPY" | /usr/bin/cut -f3 -d" " | /usr/bin/cut -f4 -d"/"`
+	DRIVE=`/usr/bin/mount | /usr/bin/egrep "${FTDRIVE}|CIRCUITPY" | /usr/bin/cut -f3 -d" " | /usr/bin/cut -f4 -d"/"`
 }
 
+
+
+setImagesForModel()
+{
+	CIRCUIT_PYTHON_UF2=""
+	FACTORY_RESET_UF2=""
+	FTDRIVE=""
+
+	echo
+	TMP=`/usr/bin/lsusb | /usr/bin/grep "Adafruit Feather ESP32-S2 Reverse TFT"`
+	if [ ! -z "$TMP" ];then
+		CIRCUIT_PYTHON_UF2="adafruit-circuitpython-adafruit_feather_esp32s2_reverse_tft-en_US-8.2.9.uf2"
+		FACTORY_RESET_UF2="adafruit_feather_esp32s2_reversetft_factory_reset.uf2"
+		FTDRIVE="FTHRS2BOOT"
+		echo "Adafruit ESP32-S2 Reverse TFT Feather Detected"
+	fi
+
+	TMP=`/usr/bin/lsusb | /usr/bin/grep "Adafruit Feather ESP32-S3 Reverse TFT"`
+	if [ ! -z "$TMP" ];then
+		CIRCUIT_PYTHON_UF2="adafruit-circuitpython-adafruit_feather_esp32s3_reverse_tft-en_US-8.2.9.uf2"
+		FACTORY_RESET_UF2="adafruit_feather_esp32s3_reversetft_factory_reset.uf2"
+		FTDRIVE="FTHRS3BOOT"
+		echo "Adafruit ESP32-S3 Reverse TFT Feather Detected"
+	fi
+
+	if [ -z "$FTDRIVE" ];then
+		echo "ERROR: Recognized Adafruit Device Not Found"
+		slowExit
+	fi
+}
 
 
 enterBootloader()
@@ -47,7 +77,7 @@ enterBootloader()
 	while true
 	do
 		getDrive
-		if [ ! -z "$DRIVE" -a "$DRIVE" = "FTHRS2BOOT" ];then
+		if [ ! -z "$DRIVE" -a "$DRIVE" = "$FTDRIVE" ];then
 			echo
 			echo "Bootloader mode detected..."
 			break
@@ -75,7 +105,7 @@ factoryDefault()
 		enterBootloader
 		echo
 		echo "Copying factory reset image to drive..."
-		/usr/bin/cp /home/pi/astrid/miniDisplay/uf2/adafruit_feather_esp32s2_reversetft_factory_reset.uf2 /media/pi/FTHRS2BOOT
+		/usr/bin/cp /home/pi/astrid/miniDisplay/uf2/$FACTORY_RESET_UF2 /media/pi/$FTDRIVE
 		echo "Factory Reset Complete !"
 	fi
 }
@@ -92,10 +122,10 @@ installUpgrade()
 		getDrive
 	fi
 
- 	if [ "$DRIVE" = "FTHRS2BOOT" ];then
+ 	if [ "$DRIVE" = "$FTDRIVE" ];then
 		echo
 		echo "Copying Circuit Python image to drive..."
-		/usr/bin/cp /home/pi/astrid/miniDisplay/uf2/adafruit-circuitpython-adafruit_feather_esp32s2_reverse_tft-en_US-8.2.9.uf2 /media/pi/FTHRS2BOOT
+		/usr/bin/cp /home/pi/astrid/miniDisplay/uf2/$CIRCUIT_PYTHON_UF2 /media/pi/$FTDRIVE
 		echo "Circuit python installed..."
 		echo "Waiting $DELAY_CIRCUITPY_INSTALL seconds for CIRCUITPY drive to appear..."
 		sleep $DELAY_CIRCUITPY_INSTALL 
@@ -154,6 +184,8 @@ if [ $AUTO -eq 0 ];then
 else
 	echo "Updating Astrid Mini Display..."
 fi
+
+setImagesForModel
 
 if [ $FACTORY -eq 1 ];then
 	factoryDefault

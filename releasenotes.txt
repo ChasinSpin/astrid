@@ -1,3 +1,10 @@
+Version 1.0.029:
+================
+
+	(NOT RELEASED YET)
+
+	* Adding support for Adafruit ESP32-S3 Reverse TFT Feather for the Mini Display
+
 Version 1.0.028:
 ================
 
