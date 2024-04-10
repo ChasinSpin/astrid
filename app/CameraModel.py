@@ -361,6 +361,7 @@ class CameraModel:
 		self.plannedAutoShutdown= False
 		self.displayOps		= DisplayOps(self)
 		self.solvedTargetPixelPosition = None
+		self.disableVideoFrameRateWarning = False
 
 		#Picamera2.set_logging(Picamera2.DEBUG)
 
@@ -539,7 +540,7 @@ class CameraModel:
 
 		print("Start Video Recording")
 
-		if self.ui.videoFrameRateWarning():
+		if not self.disableVideoFrameRateWarning and self.ui.videoFrameRateWarning():
 			self.ui.panelTask.widgetRecord.setChecked(False)
 			return
 

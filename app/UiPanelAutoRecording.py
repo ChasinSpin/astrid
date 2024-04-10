@@ -135,7 +135,9 @@ class UiPanelAutoRecording(UiPanel):
 		self.camera.indi.telescope.tracking(True)
 
 		self.camera.ui.panelTask.widgetRecord.setChecked(True)
+		self.camera.disableVideoFrameRateWarning = True
 		self.camera.startRecording()
+		self.camera.disableVideoFrameRateWarning = False
 
 
 	def recordingFinish(self):

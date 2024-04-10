@@ -1,7 +1,12 @@
-Version 1.0.029:
+Version 1.0.030:
 ================
 
 	(NOT RELEASED YET)
+
+Version 1.0.029:
+================
+
+	* Preventing > 10fps warning happening in auto record when recording starts
 
 	* Adding support for Adafruit ESP32-S3 Reverse TFT Feather for the Mini Display
 
