@@ -178,54 +178,18 @@ def runCommand(cmd, line_starts_with = None):
 
 
 def getUsbDetails():
-	result = runCommand(['/usr/bin/lsblk', '-o', 'KNAME,MOUNTPOINT,SERIAL'])
+	result = runCommand(['/home/pi/astrid/scripts/astrid-drive-info.sh'])
 	result = result.split('\n')	
 
-	# Find the line with the mount point in, this will be sda1 (not the USB drive) for example
-	found = None
 	for line in result:
-		if DRIVE in line:
-			found = line
-			break
+		if line.startswith('USB_MANUFACTURER='):
+			manufacturer=line.replace('USB_MANUFACTURER=', '')
+		if line.startswith('USB_PRODUCT='):
+			product=line.replace('USB_PRODUCT=', '')
+		if line.startswith('USB_SERIAL='):
+			serialNumber=line.replace('USB_SERIAL=', '')
 
-	# Now extract the sda1 and remove the number to get sda
-	if found is not None:
-		deviceName = found.split(' ')[0]
-		deviceNameStripped = []
-		for i in deviceName:
-			if not i.isdigit():
-				deviceNameStripped.append(i)
-		deviceName = ''.join(deviceNameStripped)
-		#print('DeviceName:', deviceName)
-
-	# Now search the output for deviceName and extra the serial
-	serial = None
-	for line in result:
-		if line.startswith(deviceName + ' '):
-			serial = line[30:]
-			break
-
-	if serial is not None:
-		print('Serial:', serial)
-
-	result = runCommand(['/usr/bin/usb-devices'])
-	result = result.split('\n')	
-
-	found = False
-	for line in result:
-		if line.startswith('S:  Manufacturer='):
-			manufacturer=line.replace('S:  Manufacturer=', '')
-		if line.startswith('S:  Product='):
-			product=line.replace('S:  Product=', '')
-		if line.startswith('S:  SerialNumber='):
-			serialNumber=line.replace('S:  SerialNumber=', '')
-			if serialNumber == serial:
-				found = True
-				break
-
-	if found:
-		return (manufacturer, product, serialNumber)
-	return None
+	return (manufacturer, product, serialNumber)
 
 
 
