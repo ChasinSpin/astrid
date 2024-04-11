@@ -1,7 +1,12 @@
-Version 1.0.030:
+Version 1.0.031:
 ================
 
 	(NOT RELEASED YET)
+
+Version 1.0.030:
+================
+
+	* Improved usb drive indentification code
 
 Version 1.0.029:
 ================

@@ -101,16 +101,19 @@ if __name__ == '__main__':
 		return True
 
 	def checkSlowUSBDrive() -> bool:
-		cmd = "/home/pi/astrid/scripts/astrid-drive-good.sh"
+		cmd = "/home/pi/astrid/scripts/astrid-drive-info.sh"
 		output = subprocess.check_output(cmd, shell=True)
 		output = output.decode("utf-8")
 		output = output.split("\n")
 
 		extra_text = ''
-		if output[0] != 'DRIVER=UASP':
-			extra_text += '\n        - USB thumb drive is not UASP Compatible'
-		if output[1] != 'SPEED=USB3':
-			extra_text += '\n        - USB thumb drive is not running at USB 3 speed'
+		for line in output:
+			if line == 'DRIVER=BOT':
+				extra_text += '\n        - USB thumb drive is not UASP Compatible'
+			if line == 'SPEED=USB2':
+				extra_text += '\n        - USB thumb drive is not running at USB 3 speed'
+			if line == 'SANDISK=YES':
+				extra_text += '\n        - USB thumb drive is a SanDisk and not supported'
 
 		hidden = Settings.getInstance().hidden
 		if extra_text == '':
