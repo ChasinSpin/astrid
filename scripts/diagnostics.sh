@@ -31,38 +31,19 @@ authorize()
 
 astridUsbSummary()
 {
-	DEVICE=`/usr/bin/lsusb -t | /usr/bin/grep 'Class=Mass Storage'`
-	LC=`echo "$DEVICE" | /usr/bin/wc -l`
-	if [ "$LC" -lt 1 ];then
-		echo "No Mass Storage Devices Found"
-	elif [ "$LC" -gt 1 ];then
-		echo "Multiple Mass Storage Devices Found"
-	else
-		DRIVER='UNKNOWN'
-		TMP=`echo "$DEVICE" | /usr/bin/grep 'Driver=uas'`
-		if [ ! -z "$TMP" ];then
-			DRIVER="UASP"
-		fi
-		TMP=`echo "$DEVICE" | /usr/bin/grep 'Driver=usb-storage'`
-		if [ ! -z "$TMP" ];then
-			DRIVER="BOT"
-		fi
 
-		SPEED='UNKNOWN'
-		TMP=`echo "$DEVICE" | /usr/bin/grep '5000M'`
-		if [ ! -z "$TMP" ];then
-			SPEED="USB3"
-		fi
-
-		TMP=`echo "$DEVICE" | /usr/bin/grep '480M'`
-		if [ ! -z "$TMP" ];then
-			SPEED="USB2"
-		fi
+	DRIVE_INFO=`/home/pi/astrid/scripts/astrid-drive-info.sh`
+	echo
+	echo "Astrid Drive Info:"
+	echo "$DRIVE_INFO"
+	echo
 
 
-		echo "DRIVER: $DRIVER"
-		echo "SPEED: $SPEED"
-	fi
+	DRIVER=`echo "$DRIVE_INFO" | /usr/bin/grep "DRIVER=" | /usr/bin/cut -f2- -d"="`
+	SPEED=`echo "$DRIVE_INFO" | /usr/bin/grep "SPEED=" | /usr/bin/cut -f2- -d"="`
+
+	echo "DRIVER: $DRIVER"
+	echo "SPEED: $SPEED"
 
 	echo
 	if [ "$DRIVER" != "UASP" -o "$SPEED" != "USB3" ];then
@@ -155,7 +136,6 @@ report()
 	done
 
 	/usr/bin/rm "$IOZONE_TMP"
-
 
 	echo
 	astridUsbSummary
