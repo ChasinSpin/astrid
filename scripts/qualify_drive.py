@@ -3,6 +3,7 @@
 import os
 import csv
 import pickle
+import statistics
 import kmeans1d
 import subprocess
 from PyQt5.QtCore import Qt
@@ -12,18 +13,24 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QLa
 
 
 
-TEST_MODE		= False
-PICKLE_FILE		= 'qualify_drive_DELETEME.pickle'
+TEST_MODE		= True
+#PICKLE_FILE		= 'SANDISK_BAD.pickle'
+#PICKLE_FILE		= 'SANDISK_GOOD.pickle'
+#PICKLE_FILE		= 'CORSAIR.pickle'
+PICKLE_FILE		= 'TOPESEL.pickle'
+#PICKLE_FILE		= 'qualify_drive_DELETEME.pickle'
 
 THROUGHPUT_30FPS	= 60.0
 CHART_SIZE		= (800, 600)
+PSLC_CLUSTER_CUTOFF	= 0.05		# This is the change in cluster identification. < 0.05 indicates we have 2 clusters, >= 0.05 indicates we have 1
+TEST_SIZE_GB		= 10
 
 DRIVE			= "/media/pi/ASTRID"
 
 
 
 def runWriteTest():
-	proc = subprocess.Popen( ['/home/pi/astrid/writetest/writetest', '2000000', '10', DRIVE], stdout=subprocess.PIPE)
+	proc = subprocess.Popen( ['/home/pi/astrid/writetest/writetest', '2000000', '%d' % TEST_SIZE_GB, DRIVE], stdout=subprocess.PIPE)
 	
 	recording = False
 	terminated = False
@@ -64,8 +71,12 @@ def analyzeWriteTest(data):
 	minSpeed = None
 	maxSpeed = None
 	allSpeeds = []
+	allCounts = []
+	
 	for entry in data:
+		count = int(entry['Count'])
 		speed = float(entry['Speed(MB/s)'])
+		allCounts.append(count)
 		allSpeeds.append(speed)
 
 		if firstEntry:
@@ -77,13 +88,54 @@ def analyzeWriteTest(data):
 
 	# Reference: https://github.com/dstein64/kmeans1d
 	k = 2
-	clusters, centroids = kmeans1d.cluster(allSpeeds, 2)
+	clusters, centroids = kmeans1d.cluster(allSpeeds, k)
 	print('Clusters:', clusters)
 
-	return { 'minSpeed': minSpeed, 'maxSpeed': maxSpeed, 'centroids': centroids }
+	# Count how frequently the cluster membership switches
+	clusterChanges = 0
+	for i in range(1, len(clusters)):
+		if clusters[i] != clusters[i-1]:
+			clusterChanges += 1
+	clusterChanges = clusterChanges / len(clusters)
+
+	# Calculate the lower limits of each cluster
+	lowerLimits = []
+	pSLC = None
+	if clusterChanges < PSLC_CLUSTER_CUTOFF:
+		lowerLimits.append(centroids[0])
+		lowerLimits.append(centroids[1])
 
 
-def chartWriteTest(writeTest, maxSpeed, centroids, title):
+		# Figure out the size of the pSLC
+		pSLCCount = 0
+
+		while pSLCCount < len(clusters):
+			if clusters[pSLCCount] == 0:
+				pSLC = data[pSLCCount-1]['Total GB Transferred']
+				break
+			pSLCCount += 1
+	else:
+		lowerLimits.append(statistics.median(allSpeeds))
+	
+	# Figure out the standard deviation of the values in the cluster
+	for ll in range(len(lowerLimits)):
+		values = []
+		for i in range(len(allSpeeds)):
+			if clusters[i] == ll:
+				values.append(allSpeeds[i])
+		stddev = statistics.stdev(values)
+		lowerLimits[ll] -= stddev
+
+	# Flip lower limits so the highest is first
+	if len(lowerLimits) >= 2 and lowerLimits[0] < lowerLimits[1]:
+		tmp = lowerLimits[1]
+		lowerLimits[1] = lowerLimits[0]
+		lowerLimits[0] = tmp
+
+	return { 'minSpeed': minSpeed, 'maxSpeed': maxSpeed, 'lowerLimits': lowerLimits, 'clusterChanges': clusterChanges, 'pSLC': pSLC }
+
+
+def chartWriteTest(writeTest, maxSpeed, lowerLimits, title):
 	chart = QChart()
 	chartview = QChartView(chart)
 	chartview.setRenderHint(QPainter.Antialiasing)
@@ -98,43 +150,64 @@ def chartWriteTest(writeTest, maxSpeed, centroids, title):
 		series.append(float(entry['Total GB Transferred']), float(entry['Speed(MB/s)']))
 	series.setName('Throughput')
 
+	pen = QPen()
+	pen.setColor(QColor(0x00FF00))
+	pen.setWidth(2)
+	series.setPen(pen)
+
 	# Setup centroid 0 & 1
-	seriesCentroid0 = QLineSeries()
-	seriesCentroid1 = QLineSeries()
+	seriesCentroids = []
+	for limit in lowerLimits:
+		seriesCentroids.append(QLineSeries())
 	series30fps	= QLineSeries()
 	for entry in writeTest:
-		seriesCentroid0.append(float(entry['Total GB Transferred']), centroids[0])
-		seriesCentroid1.append(float(entry['Total GB Transferred']), centroids[1])
+		for i in range(len(lowerLimits)):
+			seriesCentroids[i].append(float(entry['Total GB Transferred']), lowerLimits[i])
 		series30fps.append(float(entry['Total GB Transferred']), THROUGHPUT_30FPS)
-	seriesCentroid0.setName('Centroid 0')
-	seriesCentroid1.setName('Centroid 1')
+	if len(lowerLimits) == 2:
+		seriesCentroids[0].setName('Cached Base Rate')
+		seriesCentroids[1].setName('Non-Cached Base Rate')
+	elif len(lowerLimits) == 1:
+		seriesCentroids[0].setName('Base Rate')
 	series30fps.setName('30fps Minimum')
 
-	# Set seriesControid0 and seriesCentroid1 to be dotted
+	# Set seriesControids to be dotted
+	if len(lowerLimits) == 2:
+		pen = QPen()
+		pen.setStyle(Qt.DashLine)
+		pen.setColor(QColor(0xFF00FF))
+		pen.setWidth(2)
+		seriesCentroids[1].setPen(pen)
+
 	pen = QPen()
 	pen.setStyle(Qt.DashLine)
-	pen.setColor(QColor(0xFF00FF))
-	seriesCentroid0.setPen(pen)
-	seriesCentroid1.setPen(pen)
+	pen.setColor(QColor(0x00FFFF))
+	pen.setWidth(2)
+	seriesCentroids[0].setPen(pen)
 
 	# Set series30fps to be dotted
 	pen = QPen()
 	pen.setStyle(Qt.DashLine)
-	pen.setColor(QColor(0x00FF00))
+	pen.setColor(QColor(0xFF0000))
+	pen.setWidth(2)
 	series30fps.setPen(pen)
 
 	# Setup axis
 	axisX = QValueAxis()
-	#axisX.setRange(0, 30)
+	axisX.setTickType(QValueAxis.TicksDynamic)
+	axisX.setRange(0, TEST_SIZE_GB)
 	axisX.setLabelFormat("%d")
-	#axisX.setTickCount(int(max_mag-min_mag) + 1)
-	axisX.setTickCount(5)
+	axisX.setTickAnchor(0)
+	axisX.setTickInterval(1.0)
 	axisX.setTitleText('Gigabytes Transferred (GB)')
 
 	axisY = QValueAxis()
-	axisY.setRange(0, maxSpeed)
+	axisY.setTickType(QValueAxis.TicksDynamic)
+	topRange = int(( maxSpeed + 25) / 25) * 25
+	axisY.setRange(0, topRange)
 	axisY.setLabelFormat("%d")
-	axisY.setTickCount(5)
+	axisX.setTickAnchor(0)
+	axisY.setTickInterval(25.0)
 	axisY.setTitleText('Transfer Rate (MB/s)')
 
 	# Add Axis
@@ -153,7 +226,13 @@ def chartWriteTest(writeTest, maxSpeed, centroids, title):
 	chart.setBackgroundRoundness(1)
 
 	# Add series to charts
-	for series in [series, seriesCentroid0, seriesCentroid1, series30fps]:
+	
+	for series in [series, series30fps]:
+		chart.addSeries(series)
+		series.attachAxis(axisX)
+		series.attachAxis(axisY)
+
+	for series in seriesCentroids:
 		chart.addSeries(series)
 		series.attachAxis(axisX)
 		series.attachAxis(axisY)
@@ -224,7 +303,7 @@ layout.addWidget(label)
 
 (manufacturer, product, serialNumber) = getUsbDetails()
 title = '%s : %s : %s' % (manufacturer, product, serialNumber)
-chartview = chartWriteTest(writeTest, results['maxSpeed'], results['centroids'], title)
+chartview = chartWriteTest(writeTest, results['maxSpeed'], results['lowerLimits'], title)
 layout.addWidget(chartview)
 
 window.setCentralWidget(mainWidget)
