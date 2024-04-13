@@ -90,6 +90,19 @@ installOpenpyxl()
 
 
 
+# Install kmeans1d
+
+installKmeans1d()
+{
+	TMP=`/usr/bin/pip3 list | /usr/bin/grep kmeans1d`
+	if [ -z "$TMP" ];then
+		echo "Installing kmeans1d"
+		/usr/bin/pip3 install kmeans1d==0.3.1
+	fi
+}
+
+
+
 # Install adafruit-board-toolkit
 
 installAdafruitBoardToolkit()
@@ -206,6 +219,7 @@ echo "Updating desktop icons..."
 /usr/bin/ln -s /home/pi/astrid/desktop/FormatUSBFlashDrive.desktop	"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/Diagnostics.desktop		"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/InstallMiniDisplay.desktop	"/home/pi/Desktop/Astrid Tools"
+/usr/bin/ln -s /home/pi/astrid/desktop/QualifyDrive.desktop		"/home/pi/Desktop/Astrid Tools"
 
 echo "Installing ravf..."
 pip install --no-deps ravf
@@ -225,6 +239,7 @@ installHealpix
 installPyqtree
 installQCharts
 installOpenpyxl
+installKmeans1d
 installAdafruitBoardToolkit
 installMdioTool
 installAutoHotspot

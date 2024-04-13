@@ -9,6 +9,8 @@ Version 1.0.031:
 
 	* Made instructions more visible for USB Drive reinsertion when formatting USB key
 
+	* Added Qualify Drive
+
 Version 1.0.030:
 ================
 
