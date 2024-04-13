@@ -52,7 +52,22 @@ authorize()
 
 
 
+#
+# MAIN
+#
+
+
 authorize
+
+# Exclude CIRCUITPY
+TMP=`/usr/bin/mount | /usr/bin/grep "CIRCUITPY"`
+if [ ! -z "$TMP" ];then
+	TMP=`echo "$TMP" | /usr/bin/grep "sda"`
+	if [ ! -z "$TMP" ];then
+		DEVICE_MAIN="/dev/sdb"
+		DEVICE_PART="/dev/sdb1"
+	fi
+fi
 
 if [ ! -b "$DEVICE_MAIN" ];then
 	echo "USB Flash Drive: $DEVICE_MAIN Not Found, drive has not been inserted, aborting..."
@@ -93,7 +108,7 @@ fi
 
 echo "Creating partition table..."
 
-echo 'type=7' | sudo /usr/sbin/sfdisk /dev/sda
+echo 'type=7' | sudo /usr/sbin/sfdisk "$DEVICE_MAIN"
 if [ $? != 0 ];then
 	echo "ERROR: sfdisk, try removing and inserting USB Flash Drive, aborting..."
 	slowExit
@@ -110,10 +125,13 @@ echo "Format complete"
 sudo /usr/bin/eject "$DEVICE_PART"
 sudo /usr/bin/eject "$DEVICE_MAIN"
 echo
-echo "**** Remove USB Flash Drive and Insert back into Blue USB Socket"
+echo "***************************************************************************"
+echo "VERY IMPORTANT: Remove USB Flash Drive and Insert back into Blue USB Socket"
+echo "***************************************************************************"
+echo
 echo "    Note 1: Window will popup when inserted, hit Cancel"
 echo "    Note 2: You can safely ignore message about not safely ejecting"
-echo "Press <Return> when ready"
+echo "Press <Return> when ready to confirm you have removed and reinserted the USB Flash Drive"
 read line
 
 echo
