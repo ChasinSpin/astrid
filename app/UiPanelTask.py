@@ -177,6 +177,8 @@ class UiPanelTask(UiPanel):
 		tState = False
 		if state == 2:
 			tState = True
+		if not tState:
+			QMessageBox.warning(self, ' ', 'Switching off Full Sky Solving may prevent plate solving if where the mount thinks it is and where the telescope is pointing differs by more than %0.1f degrees.\n\nThe first plate solve generally needs Full Sky Solving on, and if you are using prepoint (none Goto scopes), then you likely want to leave Full Sky Solve On.' % Settings.getInstance().platesolver['search_radius_deg'], QMessageBox.Ok)
 		self.camera.setFullSkySolve(tState)
 
 

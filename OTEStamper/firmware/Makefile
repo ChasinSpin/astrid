@@ -1,6 +1,6 @@
 MCU=atmega328pb
 AVRDUDEMCU=m328pb
-FUSES=-U lfuse:w:0xF7:m -U hfuse:w:0xDA:m -U efuse:w:0x06:m
+FUSES=-U lfuse:w:0xF7:m -U hfuse:w:0xD2:m -U efuse:w:0x06:m
 #FUSES=-U lfuse:w:0x62:m -U hfuse:w:0xD9:m -U efuse:w:0x07:m	# DEFAULT ATmega328p shipping fuses
 CC=/usr/bin/avr-gcc
 CFLAGS=-g -Os -Wall -mcall-prologues -mmcu=$(MCU)

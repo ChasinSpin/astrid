@@ -1,3 +1,10 @@
+Version 1.0.032:
+================
+
+	* Eeprom is now saved (Fuse EESAVE) across Astrid Upgrades, which speeds up time to record after upgrade if Leap Seconds is stored in eeprom
+
+	* Warning now appears when switching off Full Sky Solve to prevent accidental switching off
+
 Version 1.0.031:
 ================
 
