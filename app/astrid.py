@@ -21,6 +21,7 @@ from CameraModel import CameraModel, OperatingMode
 from processlogger import ProcessLogger
 from otestamper import OteStamper
 from framewriter import FrameWriter
+from datetime import datetime
 import time
 import urllib.request
 import multiprocessing
@@ -101,26 +102,57 @@ if __name__ == '__main__':
 		return True
 
 	def checkSlowUSBDrive() -> bool:
+		global astrid_drive
+
 		cmd = "/home/pi/astrid/scripts/astrid-drive-info.sh"
 		output = subprocess.check_output(cmd, shell=True)
 		output = output.decode("utf-8")
 		output = output.split("\n")
 
-		extra_text = ''
+		diVendorId = diProductId = diSerial = ''
 		for line in output:
-			if line == 'DRIVER=BOT':
-				extra_text += '\n        - USB thumb drive is not UASP Compatible'
-			if line == 'SPEED=USB2':
-				extra_text += '\n        - USB thumb drive is not running at USB 3 speed'
-			if line == 'SANDISK=YES':
-				extra_text += '\n        - USB thumb drive is a SanDisk and not supported'
+			if line.startswith('USB_VENDOR_ID='):
+				diVendorId = line.split('=')[1]
+			if line.startswith('USB_PRODUCT_ID='):
+				diProductId = line.split('=')[1]
+			if line.startswith('USB_SERIAL='):
+				diSerial = line.split('=')[1]
 
+		qualcheck_fname = astrid_drive + '/qualification/qualcheck.txt'
+		qcVendorId = qcProductId = qcSerial = qcStatus = qcNextVerification = ''
+		if os.path.exists(qualcheck_fname):
+			with open(qualcheck_fname, 'r') as fp:
+				lines = fp.readlines() 
+
+			for line in lines:
+				line = line.rstrip()
+				if line.startswith('VENDOR_ID='):
+					qcVendorId = line.split('=')[1]
+				if line.startswith('PRODUCT_ID='):
+					qcProductId = line.split('=')[1]
+				if line.startswith('SERIAL='):
+					qcSerial = line.split('=')[1]
+				if line.startswith('STATUS='):
+					qcStatus = line.split('=')[1]
+				if line.startswith('NEXT_VERIFICATION='):
+					qcNextVerification = line.split('=')[1]
+
+		expired = False
+		if qcNextVerification != '':
+			nextVerification = datetime.strptime(qcNextVerification, '%Y-%m-%dT%H:%M:%S')
+			if datetime.utcnow() >= nextVerification:
+				expired = True
+
+		slowSpeed = False
+		if diVendorId != qcVendorId or diProductId != qcProductId or diSerial != qcSerial or qcStatus != 'PASSED' or expired:
+			slowSpeed = True
+			
 		hidden = Settings.getInstance().hidden
-		if extra_text == '':
-			hidden['slow_usb_drive'] = False
-		else:
+		if slowSpeed:
 			hidden['slow_usb_drive'] = True
-			QMessageBox.warning(None, ' ', 'The USB thumb drive is slow.  Use frame rates <= 10fps for video to avoid dropped frames or use a faster drive.\n' + extra_text, QMessageBox.Ok)
+			QMessageBox.warning(None, ' ', 'The USB thumb drive is slow or unqualified.\n\nUse frame rates <= 10fps for video to avoid dropped frames or use a faster drive.\n\nYou can qualify this drive for faster speed by running Qualify Drive in Astrid Tools. Periodic qualification is required.', QMessageBox.Ok)
+		else:
+			hidden['slow_usb_drive'] = False
 		Settings.getInstance().writeSubsetting('hidden')
 
 

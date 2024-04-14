@@ -263,7 +263,7 @@ class Ui(QtWidgets.QMainWindow):
 		elif self.camera.videoFrameDuration < int((1.0/30.0) * 1000000.0):
 			QMessageBox.warning(self, ' ', 'Recording at frame rates above 30fps is not recommended!', QMessageBox.Ok)
 		elif self.camera.videoFrameDuration < int((1.0/10.0) * 1000000.0) and Settings.getInstance().hidden['slow_usb_drive']:
-			QMessageBox.warning(self, ' ', 'Recording at frame rates above 10fps is not recommended for slow USB drives!', QMessageBox.Ok)
+			QMessageBox.warning(self, ' ', 'Recording at frame rates above 10fps is not recommended for slow or unqualified USB drives!', QMessageBox.Ok)
 		return False
 
 

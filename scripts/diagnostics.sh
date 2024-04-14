@@ -4,6 +4,7 @@
 ASTRID_DRIVE="/media/pi/ASTRID"
 IOZONE_TMP="/tmp/iozone.$$"
 OUTPUT_FILE="$ASTRID_DRIVE/diagnostics.txt"
+QUALIFICATION_FILE="/media/pi/ASTRID/qualification/qualcheck.txt"
 
 
 slowExit()
@@ -137,6 +138,9 @@ report()
 
 	/usr/bin/rm "$IOZONE_TMP"
 
+	echo
+	echo "CMD: cat $QUALIFICATION_FILE"
+	/usr/bin/cat "$QUALIFICATION_FILE"
 	echo
 	astridUsbSummary
 

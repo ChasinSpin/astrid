@@ -1,8 +1,6 @@
 Version 1.0.031:
 ================
 
-	(NOT RELEASED YET)
-
 	* diagnostics.sh now no longer picks up the Mini Display
 	
 	* Format USB now no longer picks up the Mini Display
@@ -10,6 +8,8 @@ Version 1.0.031:
 	* Made instructions more visible for USB Drive reinsertion when formatting USB key
 
 	* Added Qualify Drive
+	
+	* Drive Qualification now required
 
 Version 1.0.030:
 ================
