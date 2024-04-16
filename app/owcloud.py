@@ -76,6 +76,8 @@ class OWCloud():
 		if error is not None or owevents is None:
 			return (owevents, error)
 
+		print(owevents)
+
 		occultations = []
 		for owevent in owevents:
 			name            = owevent['Object']
@@ -87,6 +89,10 @@ class OWCloud():
 					eventTime               = station['EventTimeUtc']
 					eventUncertainty        = station['ErrorInTimeSec']
 					stationName             = station['StationName']
+					latitude                = station['Latitude']
+					longitude               = station['Longitude']
+					starAz			= station['StarAz']
+					starAlt			= station['StarAlt']
 
 					extraSecs               = int(math.ceil(eventDuration * OWCloud.MOON_MULTIPLIER))
 					extraStartSecs          = extraSecs
@@ -127,7 +133,7 @@ class OWCloud():
 					ra		= (float(star[1]) / 24.0) * 360.0
 					dec		= float(star[2])
 
-					occultation = { 'name': name + ' - ' + stationName, 'ra': ra, 'dec': dec, 'event_time': eventCenterTime, 'start_time': startTime, 'end_time': endTime, 'event_duration': eventDuration, 'event_uncertainty': eventUncertainty, 'occelmnt': eventOccelmnt, 'source': 'OWCloud' }
+					occultation = { 'name': name + ' - ' + stationName, 'ra': ra, 'dec': dec, 'event_time': eventCenterTime, 'start_time': startTime, 'end_time': endTime, 'event_duration': eventDuration, 'event_uncertainty': eventUncertainty, 'occelmnt': eventOccelmnt, 'source': 'OWCloud', 'latitude': latitude, 'longitude': longitude, 'star_az': starAz, 'star_alt': starAlt }
 					if owcloudurl is not None:
 						occultation['owcloudurl'] = owcloudurl
 

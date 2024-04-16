@@ -1,7 +1,7 @@
 Version 1.0.033:
 ================
 
-	(NEXT VERSION, NOT RELEASED YET)
+	* Added "Export OWCloud Locations" to Occultations List to speed up multi-chord deployments
 
 	* Added check for the usb drive being inserted into the USB3 socket
 

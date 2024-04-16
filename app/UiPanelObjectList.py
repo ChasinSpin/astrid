@@ -1,3 +1,4 @@
+import os
 from processlogger import ProcessLogger
 from UiPanel import UiPanel
 from PyQt5.QtWidgets import QMessageBox
@@ -39,7 +40,7 @@ class UiPanelObjectList(UiPanel):
 		self.items.reverse()
 
 		self.widgetList		= self.addList(self.items)
-		self.widgetList.setFixedHeight(400)
+		self.widgetList.setFixedHeight(350)
 
 		self.widgetEdit		= self.addButton('Edit', True)
 		self.widgetDelete	= self.addButton('Delete', True)
@@ -56,7 +57,13 @@ class UiPanelObjectList(UiPanel):
 		if self.widgetInfo is not None:
 			self.widgetInfo.setEnabled(False)
 
-		self.widgetSpacer2	= self.addSpacer()
+		if self.database == 'Occultations':
+			self.widgetSpacer2		= self.addSpacer()
+			self.widgetExportLocations	= self.addButton('Export OWCloud Locations', True)
+		else:
+			self.widgetExportLocations	= None
+
+		self.widgetSpacer3	= self.addSpacer()
 		self.widgetCancel	= self.addButton('Cancel', True)
 
 		# If we have a least one item, select that one by default (this gets rid of the grayed out marker)
@@ -75,6 +82,8 @@ class UiPanelObjectList(UiPanel):
 			self.widgetInfo.clicked.connect(self.buttonInfoPressed)
 		self.widgetCancel.clicked.connect(self.buttonCancelPressed)
 		self.widgetSelect.clicked.connect(self.buttonSelectPressed)
+		if self.widgetExportLocations is not None:
+			self.widgetExportLocations.clicked.connect(self.buttonExportLocationsPressed)
 
 	
 	# CALLBACKS
@@ -129,6 +138,31 @@ class UiPanelObjectList(UiPanel):
 
 		if item is not None:
 			self.selectListCallback(item)
+
+
+	def buttonExportLocationsPressed(self):
+		planning_folder = Settings.getInstance().astrid_drive + '/planning'
+		if not os.path.isdir(planning_folder):
+			os.mkdir(planning_folder)
+		deployments_fname = planning_folder + '/deployments.txt'
+
+		with open(deployments_fname, 'w') as fp:	
+			for occultation in self.all_objects:
+				if 'latitude' in occultation.keys() and 'longitude' in occultation.keys():
+					star = occultation['occelmnt']['Occultations']['Event']['Star'].split(',')
+	
+					fp.write('Name: %s\r\n' % occultation['name'])
+					fp.write('\tEvent Time:         %s UTC\r\n' % occultation['event_time'])
+					fp.write('\tEvent Duration:     %s s\r\n'   % str(occultation['event_duration']))
+					fp.write('\tStar Altitude:      %s deg\r\n' % str(occultation['star_alt']))
+					fp.write('\tStar Azimuth:       %s deg\r\n' % str(occultation['star_az']))
+					fp.write('\tStar Mag. V:        %s\r\n'     % star[4])
+					fp.write('\tStar Mag. Drop V.:  %s\r\n'     % star[11])
+					fp.write('\tLocation (iPhone):  comgooglemapsurl://maps.google.com/?q=%s,%s\r\n' % (str(occultation['latitude']), str(occultation['longitude'])))
+					fp.write('\tLocation (URL):     https://maps.google.com/?q=%s,%s\r\n' % (str(occultation['latitude']), str(occultation['longitude'])))
+					fp.write('\r\n')
+
+		QMessageBox.information(self, ' ', 'Deployments written to "planning/deployments.txt" on the Astrid Drive', QMessageBox.Ok)
 	
 
 	# OPERATIONS
