@@ -109,14 +109,24 @@ if __name__ == '__main__':
 		output = output.decode("utf-8")
 		output = output.split("\n")
 
+		usb3 = False
 		diVendorId = diProductId = diSerial = ''
 		for line in output:
+			logger.info(line)
 			if line.startswith('USB_VENDOR_ID='):
 				diVendorId = line.split('=')[1]
 			if line.startswith('USB_PRODUCT_ID='):
 				diProductId = line.split('=')[1]
 			if line.startswith('USB_SERIAL='):
 				diSerial = line.split('=')[1]
+			if line == 'SPEED=USB3':
+				usb3 = True
+
+		if not usb3:
+			QMessageBox.critical(None, ' ', 'The USB thumb drive is not plugged into a USB 3 socket. Please Eject and plug into a BLUE usb socket. Astrid will terminate now', QMessageBox.Ok)
+			logger.warning('astrid drive not in USB3 socket, aborting...')
+			shutdown_subprocesses()
+			sys.exit(0)
 
 		qualcheck_fname = astrid_drive + '/qualification/qualcheck.txt'
 		qcVendorId = qcProductId = qcSerial = qcStatus = qcNextVerification = ''
@@ -125,6 +135,8 @@ if __name__ == '__main__':
 				lines = fp.readlines() 
 
 			for line in lines:
+				line = line.rstrip()
+				logger.info(line)
 				line = line.rstrip()
 				if line.startswith('VENDOR_ID='):
 					qcVendorId = line.split('=')[1]

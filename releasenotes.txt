@@ -1,3 +1,10 @@
+Version 1.0.033:
+================
+
+	(NEXT VERSION, NOT RELEASED YET)
+
+	* Added check for the usb drive being inserted into the USB3 socket
+
 Version 1.0.032:
 ================
 
