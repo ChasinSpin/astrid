@@ -1,6 +1,7 @@
 # TODO
 
-* CIRCUITPY alters as 10fps drive, fix
+* Double chord spacing and kml
+* 
 * Allow magnitude to be selected whilst in exposure analysis
 * Put software version in ravf header
 * Any chance you could allow a dynamic (local) change of the limiting magnitude during Exposure Analysis, rather than forcing us to stop and restart Astrid to get to the settings for Simulator? - Ted

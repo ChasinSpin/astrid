@@ -45,6 +45,7 @@ Astrid follows a Rapid Development model, and all bug fixes are by new versions,
 * [Mount or Prepoint Has Wrong Position](#mount-or-prepoint-has-wrong-position)
 * [Linking to OWCloud Events Fails](#linking-to-owcloud-events-fails)
 * [Wrong Password Entered For WiFi and Unable To Connect](#wrong-password-entered-for-wifi-and-unable-to-connect)
+* [RealVNC Wants A Subscription](#realvnc-wants-a-subscription)
 
 
 ## Host Not Found
@@ -274,3 +275,7 @@ If you enter the wrong password when setting up a WiFi network in Astrid (for ex
 Use the Mini Display to switch back to the Hotspot, and change your network password.
 
 If you don't have the Mini Display, you will have to power cycle to gain access.
+
+## RealVNC Wants A Subscription
+
+You have or are installing RealVNC Connect by mistake when you want RealVNC Viewer.  Please uninstall RealVNC Connect and follow the instructions here: [Usage Guide - Connect Via VNC](UsageGuide.md#connect-via-vnc)

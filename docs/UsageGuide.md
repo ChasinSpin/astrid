@@ -111,7 +111,11 @@ Connection to the Astrid app and desktop is through a VNC Client over Wi-Fi.  Yo
 
 For convenience in mobility and user experience, whilst moving around the telescope, we use an iPad with a larger screen size.
 
-The VNC Client we recommend is the free [RealVNC VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/) (note you may be prompted for a free trial, but it's not necessary).  Other clients may or may not work.
+The VNC Client we recommend is the free [RealVNC VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/) (note you may be prompted for a free trial, but it's not necessary).  Other VNC clients may or may not work.
+
+**IMPORTANT: There are 2 versions of RealVNC; RealVNC Viewer and RealVNC Connect. RealVNC Connect is a paid-for product, and the website and product itself are designed to pull you into purchasing the paid product by mistake. Be sure to download RealVNC Viewer using the link above.**
+
+**After installing you'll be presented with a screen asking you to sign in and send anonymous usage data. Uncheck the send anonymous usage data checkbox, and click "Use RealVNC Viewer without signing in".  Never click the "Sign In" button.**
 
 When setting up the client, we suggest you use "astrid.local" for the hostname instead of an IP address.  As you may access Astrid on different networks or its Access Point, using "astrid.local" instead of an IP address removes the need to have a different connection for each network. However if you have mDNS/Bonjour issues, then you may need to use the IP address.  [Astrid Mini Display](MiniDisplay.md) lists both options.
 
