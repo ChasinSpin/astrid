@@ -22,9 +22,6 @@
             }
         },
         {
-            "rpi.sdn": { }
-        },
-        {
             "rpi.agc":
             {
                 "metering_modes":
