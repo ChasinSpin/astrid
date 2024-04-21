@@ -15,6 +15,10 @@ Version 1.0.034:
 	
 	* Image flipping is now maintained when display options are changed
 
+	* Screen response to the camera is now linear (gamma removed) so that switching from photo/video maintains contrast/brightness
+	
+	* Lower end stretch set to 15 which is the dark offset of the camera
+
 Version 1.0.033:
 ================
 

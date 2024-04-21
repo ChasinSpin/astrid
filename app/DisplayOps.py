@@ -321,8 +321,6 @@ class DisplayOps():
 			stardetection	= False
 			zebras		= False		
 
-		#image_buffer = ProxyImageBuffer(image_buffer.array)
-		#image_buffer.array = image_buffer.array / 4
 		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, None, False)
 
 

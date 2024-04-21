@@ -357,7 +357,7 @@ class CameraModel:
 		self.search_full_sky	= False
 		self.trackingActivatedNotify = False
 		self.paSolver		= None
-		self.autoStretchLower	= 5.0
+		self.autoStretchLower	= 15.0	# This comes from the black level offset in the datasheet (60) divided by 4 (10 bit to 8 bit conversion)
 		self.autoStretchUpper	= 30.0
 		self.photoCallback	= None
 		self.platesolveCallback	= None
