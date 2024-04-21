@@ -9,6 +9,8 @@ Version 1.0.034:
 	
 	* Fixed a bug that caused astrid to stop when a configuration with a goto mount was being used, but no mount was connected
 
+	* Player now uses the focal length for plate solving stored in the video if it's available
+
 Version 1.0.033:
 ================
 

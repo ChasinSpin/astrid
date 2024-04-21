@@ -549,7 +549,10 @@ def plateSolve():
 	frame_seconds_since_epoch = timedelta(seconds = frame.start_timestamp / 1000000000)
 	obsDateTime = epoch + frame_seconds_since_epoch
 
-	focalLength = Settings.getInstance().platesolver['focal_length']
+	if ravf.metadata_value('FOCAL-LENGTH') is not None:
+		focalLength = ravf.metadata_value('FOCAL-LENGTH')
+	else:
+		focalLength = Settings.getInstance().platesolver['focal_length']
 	position =  AstCoord.from360Deg(ravf.metadata_value('RA'), ravf.metadata_value('DEC'), 'icrs')
 
 	imageData = image
@@ -873,7 +876,7 @@ if __name__ == '__main__':
 	window = UiPlayer('Player', astrid_drive, loadRavf, width, height, frameFirst, frameLast, framePrev, frameNext, togglePlay, setFrameNum)
 	window.panelOperations.setCallbacks(setAutoStretch, setAutoStretchLimits, plateSolve, plateSolveCancel, savePng, saveFits, exportFits, metadata, setStackFrames, annotate)
 
-	QMessageBox.warning(window, ' ', 'Astrid Player currently obtains the focal length and various settings from the currently chosen configuration in Astrid.\n\nPlease ensure the matching configuration that the video was taken with is selected in Astrid.\n\nIf plate solving fails, then this is the likely cause.', QMessageBox.Ok)
+	QMessageBox.warning(window, ' ', 'Astrid Player obtains the focal length from the .ravf file (newer recordings) or the Astrid Configuration Settings (older recordings).\n\nAll other plate solver settings are obtain from the Plate Solve settings in the active Astrid Configuration.\n\nPlease ensure the matching configuration that the video was taken with is selected in Astrid.\n\nIf plate solving fails, then this is the likely cause.', QMessageBox.Ok)
 
 	exit_code = app.exec()
 	closeRavf()
