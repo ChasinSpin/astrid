@@ -331,6 +331,7 @@ class CameraModel:
 		else:
 			self.logger.info('Internet is not available, using potentially old IERs data')
 			conf.auto_max_age = None
+		conf.iers_degraded_accuracy = "warn"
 
 		self.filePlateSolve	= False
 		self.plateSolverThread	= None	

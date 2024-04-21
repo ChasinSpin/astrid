@@ -191,7 +191,12 @@ class AstCoord:
 		# Calculate the Local Sidereal Time and then the Local Hour Angle of the object
 		observing_time = Time(datetime.utcnow(), scale='utc', location=AstSite.location())
 
-		local_sidereal_time = observing_time.sidereal_time('mean')
+		try:
+			local_sidereal_time = observing_time.sidereal_time('mean')
+		except:
+			conf.auto_max_age = None
+			return 0
+
 		(ra, dec) = self.raDec24Deg('icrs')
 		local_hour_angle = local_sidereal_time.hour - ra
 		#print("Observing Time:", observing_time)
