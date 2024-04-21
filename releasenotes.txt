@@ -5,7 +5,9 @@ Version 1.0.034:
 
 	* Changed camera tuning settings to uncalibrated, to result in more linear response and less gain changing (handled by PyOTE)
 	
-	* Fix a bug, where having internet and then not having internet when an IERS update is rerequired can cause astrid to stop
+	* Fixed a bug, where having internet and then not having internet when an IERS update is rerequired can cause astrid to stop
+	
+	* Fixed a bug that caused astrid to stop when a configuration with a goto mount was being used, but no mount was connected
 
 Version 1.0.033:
 ================

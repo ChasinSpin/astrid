@@ -305,7 +305,10 @@ class CameraModel:
 				acm_ports.remove(ports[0].device)
 
 			# Return our first non adafruit serial port
-			return acm_ports[0]
+			if len(acm_ports) == 0:
+				return None
+			else:
+				return acm_ports[0]
 		else:
 			return tty
 
@@ -370,6 +373,8 @@ class CameraModel:
 		self.indi		= IndiDevices.IndiDevices()
 		self.indi_usb_tty	= Settings.getInstance().mount['indi_usb_tty']
 		self.indi_usb_tty	= self.excludeMiniDisplayTty(self.indi_usb_tty)
+		if self.indi_usb_tty is None:
+			self.indi_usb_tty	= Settings.getInstance().mount['indi_usb_tty']
 		self.simulate		= False
 		while not self.indi.connect(self.indi_usb_tty, self.simulate):
 			dialog = UiDialogPanel('Failed to connect to mount', UiPanelConnectFailedIndi, args = self)
