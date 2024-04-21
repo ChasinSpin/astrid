@@ -342,7 +342,7 @@ class UiPanelTask(UiPanel):
 
 	def updatePlateSolveFailed(self):
 		if self.plateSolveDialog is not None:
-			self.plateSolveDialog.plateSolvePanel.msg.setText('Plate Solve FAILED!\n\nFailure can be due to the following reasons:\n   1. Poor focus (excellent focus is required)\n   2. Wrong astrometry index files for focal length\n   3. Scope pointing outside of search radius from expected RA/DEC (try Full Sky Solve)\n   4. Incorrect focal length\n   5. Partial or complete cloud cover\n   6. Exposure too short\n   7. Drift due to polar alignment and length of exposure')
+			self.plateSolveDialog.plateSolvePanel.msg.setText('Plate Solve FAILED!\n\nFailure can be due to the following reasons:\n   1. Poor focus (excellent focus is required)\n   2. Wrong astrometry index files for focal length\n   3. Scope pointing outside of search radius from expected RA/DEC (try Full Sky Solve)\n   4. Incorrect focal length\n   5. Partial or complete cloud cover\n   6. Exposure too short\n   7. Drift due to polar alignment and length of exposure\n   8. Incorrect plate solve settings')
 			self.plateSolveDialog.plateSolvePanel.hideWidget(self.plateSolveDialog.plateSolvePanel.cancel)
 			self.plateSolveDialog.plateSolvePanel.showWidget(self.plateSolveDialog.plateSolvePanel.ok)
 
