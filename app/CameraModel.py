@@ -508,7 +508,8 @@ class CameraModel:
 			if self.autostretch:
 				stretch = (self.autoStretchLower, self.autoStretchUpper)
 
-			self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
+			if self.operatingSubMode == OperatingVideoMode.RECORDING:
+				self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
 
 
 	# Some of the sensor modes do binning, this returns the bin size
@@ -705,7 +706,18 @@ class CameraModel:
 			arr = request.make_array(name)
 			mode = self.__cameraSelectedMode()
 			modeExtra = { 'bining': self.__modeBinSize(mode), 'pixelSize':(self.picam2.camera_properties['UnitCellSize'][0]/1000.0,self.picam2.camera_properties['UnitCellSize'][1]/1000.0), 'model': self.picam2.camera_properties['Model'] }
+			# NOTE: AT THIS POINT, ARRAY IS AN ARRAY OF BYTES, NOT THE UINT16 OF THE DATA, I.E. MIN MAX WILL ALWAYS PRODUCE 0-255, CHECK MIN/MAX AFTER CONVERSION TO UINT16
 			self.lastFitFile = self.fileHandling.save_photo_fit(arr, metadata, self.__cameraSelectedMode(), modeExtra, obsDateTime, Settings.getInstance().platesolver['focal_length'], self.lastMountCoords)
+
+			if self.operatingSubMode != OperatingVideoMode.RECORDING:
+				stretch = None
+				if self.autostretch:
+					stretch = (self.autoStretchLower, self.autoStretchUpper)
+				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars, self.solvedTargetPixelPosition if self.objectTarget else None)
+	
+				self.qt_picamera.set_overlay(overlay.array)
+				overlay.array = None
+				overlay = None
 		else:
 			print("Name:", name)
 			if name == "raw" and formats.is_raw(self.picam2.camera_config["raw"]["format"]):

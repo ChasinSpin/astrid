@@ -103,9 +103,9 @@ class FileHandling:
 
 		# Reshape to the correct width/height after converting from 8 to 16 bit values
 		arr = np.reshape(arr, (reshape_height, reshape_width))
-		print('Int16 Min:', np.min(arr))
-		print('Int16 Max:', np.max(arr))
-		print('Int16 Mean:', np.mean(arr))
+		print('UInt16 Min:', np.min(arr))
+		print('UInt16 Max:', np.max(arr))
+		print('UInt16 Mean:', np.mean(arr))
 
 		# Convert to float32 as fits doesn't support unsigned 16 bit
 		#arr = arr.astype('float32')

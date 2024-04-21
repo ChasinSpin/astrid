@@ -276,6 +276,10 @@ class DisplayOps():
 
 
 	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition, targetOutsideImage):
+		#print('***** ADIB MAX:', np.max(image_buffer.array))
+		#print('***** ADIB MIN:', np.min(image_buffer.array))
+		#print('***** ADIB DTYPE:', image_buffer.array.dtype)
+		#print('***** ADIB SHAPE:', image_buffer.array.shape)
 		if video_frame_rate is not None and video_frame_rate > 0.5:
 			stardetection = False
 	
@@ -316,9 +320,6 @@ class DisplayOps():
 		if video_frame_rate is not None and video_recording:	# Some operations are too slow for video, disable them
 			stardetection	= False
 			zebras		= False		
-
-		#print('Min:', np.min(image_buffer.array))
-		#print('Max:', np.max(image_buffer.array))
 
 		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, None, False)
 
@@ -375,6 +376,8 @@ class DisplayOps():
 
 		fits_data = fits.getdata(fits_filename, ext = 0)
 		fits_data = fits_data.astype(np.float32)
+		#print('***** FITS MAX:', np.max(fits_data))
+		#print('***** FITS MIN:', np.min(fits_data))
 		fits_data /= 4.0
 		fits_data = fits_data.astype(np.uint8)
 
@@ -391,6 +394,20 @@ class DisplayOps():
 			targetPixelPosition = (int(x * width/fits_data.shape[1]), int(y * height/fits_data.shape[0]))
 
 		fits_data = cv2.resize(fits_data, (width, height))
+
+		# Image in fits file is never corrected for flipping, but the image we display needs to be corrected for flipping, correct here
+		hflip     = Settings.getInstance().camera['hflip']
+		vflip     = Settings.getInstance().camera['vflip']
+
+		if hflip or vflip:
+			if hflip and vflip:
+				flipCode = -1
+			elif hflip:
+				flipCode = 1
+			elif vflip:
+				flipCode = 0
+
+			fits_data = cv2.flip(fits_data, flipCode)
 
 		image_buffer = ProxyImageBuffer(np.zeros((height, width, 3), dtype=np.uint8))
 		image_buffer.array[:, :, 0]	= fits_data

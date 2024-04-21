@@ -3,13 +3,17 @@ Version 1.0.034:
 
 	(NOT RELEASED YET)
 
-	* Changed camera tuning settings to uncalibrated, to result in more linear response and less gain changing (handled by PyOTE)
+	* Changed camera tuning settings to uncalibrated, to improve linear response (handled by PyOTE)
 	
 	* Fixed a bug, where having internet and then not having internet when an IERS update is rerequired can cause astrid to stop
 	
 	* Fixed a bug that caused astrid to stop when a configuration with a goto mount was being used, but no mount was connected
 
 	* Player now uses the focal length for plate solving stored in the video if it's available
+
+	* Photo acquisition now maintains contrast when display options are changed
+	
+	* Image flipping is now maintained when display options are changed
 
 Version 1.0.033:
 ================
