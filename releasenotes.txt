@@ -1,3 +1,10 @@
+Version 1.0.034:
+================
+
+	(NOT RELEASED YET)
+
+	* Changed camera tuning settings to uncalibrated, to result in more linear response and less gain changing (handled by PyOTE)
+
 Version 1.0.033:
 ================
 
