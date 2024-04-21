@@ -508,7 +508,7 @@ class CameraModel:
 			if self.autostretch:
 				stretch = (self.autoStretchLower, self.autoStretchUpper)
 
-			if self.operatingSubMode == OperatingVideoMode.RECORDING:
+			if self.operatingMode == OperatingMode.OTE_VIDEO or self.operatingMode == OperatingMode.VIDEO:
 				self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
 
 
@@ -709,7 +709,7 @@ class CameraModel:
 			# NOTE: AT THIS POINT, ARRAY IS AN ARRAY OF BYTES, NOT THE UINT16 OF THE DATA, I.E. MIN MAX WILL ALWAYS PRODUCE 0-255, CHECK MIN/MAX AFTER CONVERSION TO UINT16
 			self.lastFitFile = self.fileHandling.save_photo_fit(arr, metadata, self.__cameraSelectedMode(), modeExtra, obsDateTime, Settings.getInstance().platesolver['focal_length'], self.lastMountCoords)
 
-			if self.operatingSubMode != OperatingVideoMode.RECORDING:
+			if self.operatingMode != OperatingMode.OTE_VIDEO and self.operatingMode != OperatingMode.VIDEO:
 				stretch = None
 				if self.autostretch:
 					stretch = (self.autoStretchLower, self.autoStretchUpper)
@@ -1408,7 +1408,7 @@ class CameraModel:
 
 
 	def updateDisplayOptions(self):
-		if self.operatingMode != OperatingMode.OTE_VIDEO:
+		if self.operatingMode != OperatingMode.OTE_VIDEO and self.operatingMode != OperatingMode.VIDEO:
 			if self.lastFitFile != "dummy.fit":
 				stretch = None
 				if self.autostretch:
