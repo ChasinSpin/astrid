@@ -276,10 +276,10 @@ class DisplayOps():
 
 
 	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition, targetOutsideImage):
-		print('***** ADIB MAX:', np.max(image_buffer.array))
-		print('***** ADIB MIN:', np.min(image_buffer.array))
-		print('***** ADIB DTYPE:', image_buffer.array.dtype)
-		print('***** ADIB SHAPE:', image_buffer.array.shape)
+		#print('***** ADIB MAX:', np.max(image_buffer.array))
+		#print('***** ADIB MIN:', np.min(image_buffer.array))
+		#print('***** ADIB DTYPE:', image_buffer.array.dtype)
+		#print('***** ADIB SHAPE:', image_buffer.array.shape)
 		if video_frame_rate is not None and video_frame_rate > 0.5:
 			stardetection = False
 	
@@ -378,11 +378,11 @@ class DisplayOps():
 
 		fits_data = fits.getdata(fits_filename, ext = 0)
 		fits_data = fits_data.astype(np.float32)
-		print('***** FITS MAX:', np.max(fits_data))
-		print('***** FITS MIN:', np.min(fits_data))
+		#print('Fits MAX:', np.max(fits_data))
+		#print('Fits MIN:', np.min(fits_data))
 		fits_data /= 4.0
-		print('***** FITS MAX:', np.max(fits_data))
-		print('***** FITS MIN:', np.min(fits_data))
+		#print('Fits MAX (after scaling):', np.max(fits_data))
+		#print('Fits MIN (after scaling):', np.min(fits_data))
 		fits_data = fits_data.astype(np.uint8)
 
 		targetOutsideImage = False
