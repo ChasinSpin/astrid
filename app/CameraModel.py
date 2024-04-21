@@ -390,7 +390,11 @@ class CameraModel:
 		self.operatingSubMode	= OperatingPhotoMode.IDLE
 
 		# Load the camera
-		self.picam2		= Picamera2()
+		# Reference: https://forums.kinograph.cc/t/new-tuning-file-for-raspberry-pi-hq-camera/2423/5
+		# Reference: https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf
+		# Tuning profiles are in /usr/share/libcamera/ipa/raspberrypi
+		tuning = Picamera2.load_tuning_file('/home/pi/astrid/tuning_camera_profiles/imx296_mono_astrid.json')
+		self.picam2		= Picamera2(tuning = tuning)
 
 		# Setup information we need to know about
 		self.previewWidth	= previewWidth
