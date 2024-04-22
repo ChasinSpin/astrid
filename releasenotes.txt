@@ -1,3 +1,10 @@
+Version 1.0.035:
+================
+
+	(NOT RELEASED YET)
+
+	* Selecting an occultation is now disabled unless status buttons are green (so that site location/predicted time difference can be calculated)
+
 Version 1.0.034:
 ================
 

@@ -132,6 +132,11 @@ class UiPanelObjectList(UiPanel):
 
 
 	def buttonSelectPressed(self):
+		if self.database == 'Occultations' and not self.camera.ui.panelStatus.goForRecordingVideo():
+			QMessageBox.critical(self, ' ', 'Status buttons must be Green to select an occultation !  Check GPS connection, update site and/or wait until signal is acquired.\n\nThis is necessary because the occultation predicted time is checked against the current location and then adjusted if necessary.\n\nPlease try again when you have a good fix!', QMessageBox.Ok)
+			self.panel.cancelDialog()
+			return
+
 		item = self.selectedItem()
 
 		self.panel.acceptDialog()
