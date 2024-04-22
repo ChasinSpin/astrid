@@ -86,6 +86,11 @@ except:
 	pass
 
 try:
+	user_metadata_entries.append(('OCCULTATION-PREDICTED-CENTER-TIME-FULL',	RavfMetadataType.UTF8STRING, 	getMetadata(metadata, 'OCCULTATION-PREDICTED-CENTER-TIME-FULL')[1]))
+except:
+	pass
+
+try:
 	user_metadata_entries.append(('OCCULTATION-OBJECT-NUMBER',		RavfMetadataType.UTF8STRING, 	getMetadata(metadata, 'OCCULTATION-OBJECT-NUMBER')[1]))
 except:
 	pass
@@ -112,7 +117,7 @@ required_metadata = deleteMetadata(required_metadata, 'STATION-NUMBER')
 required_metadata = deleteMetadata(required_metadata, 'STATION-HOSTNAME')
 required_metadata = deleteMetadata(required_metadata, 'INSTRUMENT-FRAMES-PER-SECOND')
 required_metadata = deleteMetadata(required_metadata, 'OCCULTATION-PREDICTED-CENTER-TIME')
-required_metadata = deleteMetadata(required_metadata, 'OCCULTATION-PREDICTED-CENTER-TIME')
+required_metadata = deleteMetadata(required_metadata, 'OCCULTATION-PREDICTED-CENTER-TIME-FULL')
 required_metadata = deleteMetadata(required_metadata, 'OCCULTATION-OBJECT-NUMBER')
 required_metadata = deleteMetadata(required_metadata, 'OCCULTATION-OBJECT-NAME')
 required_metadata = deleteMetadata(required_metadata, 'OCCULTATION-STAR')

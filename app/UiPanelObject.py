@@ -450,13 +450,17 @@ class UiPanelObject(UiPanel):
 		for object in customObjects:
 			if object['name'].lower() == search.lower():
 				obj = AstCoord.from360Deg(object['ra'], object['dec'], 'icrs')
-				chordDist = self.verifyEventTime(object)
+				vet = self.verifyEventTime(object)
 				self.widgetEventTime.setText(object['event_time'])
 
-				if chordDist is None:
+				if vet is None:
 					self.widgetChord.setText('Not Found')
 				else:
+					fullEventTime = vet[0]
+					chordDist = vet[1]
 					self.widgetChord.setText('%0.3f km' % (chordDist/1000.0))
+					object['predicted_center_time_full'] = fullEventTime.strftime('%Y-%m-%dT%H:%M:%S.%f') 
+					Settings.getInstance().writeSubsetting('occultations')
 
 				self.occultationObject = object
 				break
@@ -611,7 +615,7 @@ class UiPanelObject(UiPanel):
 							self.logger.info('updated %s' % (o['name']))
 							break
 
-		return timeAndChordForLoc[1]
+		return timeAndChordForLoc
 
 
 	def __importFromOWCloudError(self, txt):

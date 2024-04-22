@@ -115,6 +115,9 @@ class RavfEncoder(Encoder):
 		if 'occultationPredictedCenterTime' in self.metadata.keys():
 			self.__user_metadata_entries.append( ('OCCULTATION-PREDICTED-CENTER-TIME',	RavfMetadataType.UTF8STRING,	self.metadata['occultationPredictedCenterTime']) )
 
+		if 'occultationPredictedCenterTimeFull' in self.metadata.keys():
+			self.__user_metadata_entries.append( ('OCCULTATION-PREDICTED-CENTER-TIME-FULL',	RavfMetadataType.UTF8STRING,	self.metadata['occultationPredictedCenterTimeFull']) )
+
 		if 'occultationObjectNumber' in self.metadata.keys():
 			self.__user_metadata_entries.append( ('OCCULTATION-OBJECT-NUMBER',		RavfMetadataType.UTF8STRING,	self.metadata['occultationObjectNumber']) )
 

@@ -623,6 +623,8 @@ class CameraModel:
 			for object in occultations:
 				if object['name'] == objName:
 					metadata['occultationPredictedCenterTime'] = object['event_time']
+					if 'predicted_center_time_full' in object.keys():
+						metadata['occultationPredictedCenterTimeFull']= object['predicted_center_time_full']
 					if object['occelmnt'] is not None:
 						occelmnt = object['occelmnt']
 						if len(occelmnt.keys()) > 0:
