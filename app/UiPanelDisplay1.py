@@ -1,4 +1,5 @@
 from UiPanel import UiPanel
+from settings import Settings
 
 
 
@@ -9,21 +10,36 @@ class UiPanelDisplay1(UiPanel):
 		super().__init__('Display 1')
 
 		self.camera = camera
-		self.widgetAutoStretch		= self.addCheckBox('Stretch')
+
+		self.stretchOptions		= [ 'None', 'Histogram Equalization', 'CLAHE ClipLimit=0.0', 'CLAHE ClipLimit=1.0', 'CLAHE ClipLimit=4.0', 'CLAHE ClipLimit=8.0', 'CLAHE ClipLimit=16.0', 'CLAHE ClipLimit=32.0', 'CLAHE ClipLimit=64.0', 'CLAHE ClipLimit=128.0', 'MinMax (15,30)',       'MinMax (15,100)',        'MinMax (5,30)',        'MinMax (Custom)'            ]
+		self.stretchSettings		= [  None,  ['histEq'],               ['clahe', 0.0],        ['clahe', 1.0],        ['clahe', 4.0],        ['clahe', 8.0],        ['clahe', 16.0],        ['clahe', 32.0],        ['clahe', 64.0],        ['clahe', 128.0],        ['minmax', 15.0, 30.0], ['minmax', 15.0, 100.0],  ['minmax', 5.0, 30.0],  ['minmaxcustom', 15.0, 30.0] ]
+		self.widgetStretch		= self.addComboBox('Stretch', self.stretchOptions)
+		self.widgetStretch.setObjectName('comboBoxStretch')
+
 		self.widgetAutoStretchLower	= self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
 		self.widgetAutoStretchUpper	= self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
+
+
+		stretch_method = Settings.getInstance().hidden['stretch_method']
+		if stretch_method >= len(self.stretchOptions):
+			stretch_method = 0
+
+		defaultStretchOption = self.stretchOptions[stretch_method]
+		self.widgetStretch.setCurrentText(defaultStretchOption)
+		self.comboBoxStretchChanged(defaultStretchOption)
+
 		self.widgetZebras		= self.addCheckBox('Zebras')
 		#self.widgetCrosshairs		= self.addCheckBox('Center Marker')
 		self.widgetObjectTarget		= self.addCheckBox('Object Target')
 		self.widgetStarDetection	= self.addCheckBox('Star Detect <=0.5fps')
 
 		self.widgetObjectTarget.setChecked(True)
-		self.widgetAutoStretchLower.setText('%0.1f' % self.camera.autoStretchLower)
-		self.widgetAutoStretchUpper.setText('%0.1f' % self.camera.autoStretchUpper)
+		self.widgetAutoStretchLower.setText('15.0')	# This comes from the black level offset in the datasheet (60) divided by 4 (10 bit to 8 bit conversion)
+		self.widgetAutoStretchUpper.setText('30.0')
 
 
 	def registerCallbacks(self):
-		self.widgetAutoStretch.stateChanged.connect(self.checkBoxAutoStretchChanged)
+		self.widgetStretch.currentTextChanged.connect(self.comboBoxStretchChanged)
 		self.widgetAutoStretchLower.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
 		self.widgetAutoStretchUpper.editingFinished.connect(self.lineEditAutoStretchLimitsChanged)
 		self.widgetZebras.stateChanged.connect(self.checkBoxZebrasChanged)
@@ -34,12 +50,16 @@ class UiPanelDisplay1(UiPanel):
 
 	# CALLBACKS
 
-	def checkBoxAutoStretchChanged(self):
-		state = self.widgetAutoStretch.checkState()
-		aState = False
-		if state == 2:
-			aState = True
-		self.camera.setAutoStretch(aState)
+	def comboBoxStretchChanged(self, text):
+		ind = self.stretchOptions.index(text)
+		self.updateMinMaxLimits(text)
+		if self.stretchSettings[ind] is not None and self.stretchSettings[ind][0] == 'minmaxcustom':
+			self.lineEditAutoStretchLimitsChanged()
+		else:
+		 	self.camera.setAutoStretch(self.stretchSettings[ind])
+
+		Settings.getInstance().hidden['stretch_method'] = ind
+		Settings.getInstance().writeSubsetting('hidden')
 
 
 	def checkBoxZebrasChanged(self):
@@ -77,7 +97,15 @@ class UiPanelDisplay1(UiPanel):
 	def lineEditAutoStretchLimitsChanged(self):
 		lower = float(self.widgetAutoStretchLower.text())
 		upper = float(self.widgetAutoStretchUpper.text())
-		self.camera.setAutoStretchLimits(lower, upper)
+		self.camera.setAutoStretch(['minmaxcustom', lower, upper])
 
 
 	# OPERATIONS
+
+	def updateMinMaxLimits(self, text):
+		if text == 'MinMax (Custom)':
+			self.showWidget(self.widgetAutoStretchLower)
+			self.showWidget(self.widgetAutoStretchUpper)
+		else:
+			self.hideWidget(self.widgetAutoStretchLower)
+			self.hideWidget(self.widgetAutoStretchUpper)

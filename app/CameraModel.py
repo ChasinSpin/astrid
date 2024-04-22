@@ -346,7 +346,7 @@ class CameraModel:
 		self.dithering		= False
 		self.objectCoords	= None
 		self.lastCoords		= None
-		self.autostretch	= False
+		self.autostretch	= None
 		self.zebras		= False
 		self.crosshairs		= False
 		self.objectTarget	= True
@@ -357,8 +357,6 @@ class CameraModel:
 		self.search_full_sky	= False
 		self.trackingActivatedNotify = False
 		self.paSolver		= None
-		self.autoStretchLower	= 15.0	# This comes from the black level offset in the datasheet (60) divided by 4 (10 bit to 8 bit conversion)
-		self.autoStretchUpper	= 30.0
 		self.photoCallback	= None
 		self.platesolveCallback	= None
 		self.videoBufferCount	= VIDEO_BUFFER_COUNT
@@ -504,12 +502,8 @@ class CameraModel:
 			if self.operatingMode == OperatingMode.OTE_VIDEO:
 				video_frame_rate = 1.0/(self.videoFrameDuration / 1000000.0)
 
-			stretch = None
-			if self.autostretch:
-				stretch = (self.autoStretchLower, self.autoStretchUpper)
-
 			if self.operatingMode == OperatingMode.OTE_VIDEO or self.operatingMode == OperatingMode.VIDEO:
-				self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
+				self.displayOps.overlayDisplayOnImageBuffer(m, True if (self.operatingSubMode == OperatingVideoMode.RECORDING) else False, video_frame_rate, self.autostretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars)
 
 
 	# Some of the sensor modes do binning, this returns the bin size
@@ -710,10 +704,7 @@ class CameraModel:
 			self.lastFitFile = self.fileHandling.save_photo_fit(arr, metadata, self.__cameraSelectedMode(), modeExtra, obsDateTime, Settings.getInstance().platesolver['focal_length'], self.lastMountCoords)
 
 			if self.operatingMode != OperatingMode.OTE_VIDEO and self.operatingMode != OperatingMode.VIDEO:
-				stretch = None
-				if self.autostretch:
-					stretch = (self.autoStretchLower, self.autoStretchUpper)
-				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars, self.solvedTargetPixelPosition if self.objectTarget else None)
+				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, self.autostretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars, self.solvedTargetPixelPosition if self.objectTarget else None)
 	
 				self.qt_picamera.set_overlay(overlay.array)
 				overlay.array = None
@@ -1245,8 +1236,8 @@ class CameraModel:
 			self.indi.telescope.tracking(True)
 
 
-	def setAutoStretch(self, enable):
-		self.autostretch = enable
+	def setAutoStretch(self, stretch):
+		self.autostretch = stretch
 		self.updateDisplayOptions()
 
 
@@ -1281,11 +1272,6 @@ class CameraModel:
 		lastNumber = int(self.indi_usb_tty[-1])
 		lastNumber += 1
 		self.indi_usb_tty = self.indi_usb_tty[:-1] + str(lastNumber)
-
-	def setAutoStretchLimits(self, lower: float, upper: float):
-		self.autoStretchLower = lower
-		self.autoStretchUpper = upper
-		self.updateDisplayOptions()
 
 
 	def setCrossHairs(self, enable):
@@ -1410,11 +1396,7 @@ class CameraModel:
 	def updateDisplayOptions(self):
 		if self.operatingMode != OperatingMode.OTE_VIDEO and self.operatingMode != OperatingMode.VIDEO:
 			if self.lastFitFile != "dummy.fit":
-				stretch = None
-				if self.autostretch:
-					stretch = (self.autoStretchLower, self.autoStretchUpper)
-
-				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, stretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars, self.solvedTargetPixelPosition if self.objectTarget else None)
+				overlay = self.displayOps.loadFitsPhotoWithOverlay(self.lastFitFile, self.previewWidth, self.previewHeight, self.autostretch, self.zebras, self.crosshairs, self.stardetection, self.annotationStars, self.solvedTargetPixelPosition if self.objectTarget else None)
 	
 				self.qt_picamera.set_overlay(overlay.array)
 				overlay.array = None

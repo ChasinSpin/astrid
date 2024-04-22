@@ -1,5 +1,6 @@
 import cv2
 import math
+#import time
 import numpy as np
 from astropy.io import fits
 from settings import Settings
@@ -126,32 +127,46 @@ class DisplayOps():
 		reducedStretchWindow = False
 		if video_frame_rate is not None and video_frame_rate > 10.0:
 			reducedStretchWindow = True
-		
+
+		method = stretch[0]
+		if method == 'minmax' or method == 'minmaxcustom':
+			data_type = np.float32
+		else:
+			data_type = np.uint8
+
 		if reducedStretchWindow:
 			(height, width, _)  = image_buffer.array.shape
 			centerHeight = int(height/2)
 			centerWidth = int(width/2)
 			pixelWidth = 100
 			regionDimensions = (centerHeight - pixelWidth, centerHeight + pixelWidth, centerWidth - pixelWidth, centerWidth + pixelWidth)	# Y1, Y2, X1, X2
-			mono = image_buffer.array[:, :, 0][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]].astype(np.float32)
+	
+			mono = image_buffer.array[:, :, 0][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]].astype(data_type)
 		else:
-			mono = image_buffer.array[:, :, 0].astype(np.float32)
+			mono = image_buffer.array[:, :, 0].astype(data_type)
 
-		if stretch[0] < stretch[1]:
-			mono -= stretch[0]
-		else:
-			mono -= stretch[1]
-		stretchDelta = stretch[1] - stretch[0]
-		if stretchDelta < 0:
-			stretchDelta = -stretchDelta
-		elif stretchDelta == 0:
-			stretchDelta = 1
-		scaling = 255.0 / stretchDelta
-		mono *= scaling
+		if   method == 'histEq':
+			mono = cv2.equalizeHist(mono)
+		elif method == 'clahe':
+			clahe = cv2.createCLAHE(clipLimit=stretch[1], tileGridSize=(8,8))
+			mono = clahe.apply(mono)
+			clahe = None
+		elif method == 'minmax' or method == 'minmaxcustom':
+			if stretch[1] < stretch[2]:
+				mono -= stretch[1]
+			else:
+				mono -= stretch[2]
+			stretchDelta = stretch[2] - stretch[1]
+			if stretchDelta < 0:
+				stretchDelta = -stretchDelta
+			elif stretchDelta == 0:
+				stretchDelta = 1
+			scaling = 255.0 / stretchDelta
+			mono *= scaling
 
-		# Clamp 0-255
-		mono = np.clip(mono, 0, 255)
-		mono.astype(np.uint8)
+			# Clamp 0-255
+			mono = np.clip(mono, 0, 255)
+			mono.astype(np.uint8)
 
 		if reducedStretchWindow:
 			image_buffer.array[:, :, 0][regionDimensions[0]:regionDimensions[1], regionDimensions[2]:regionDimensions[3]] = mono
@@ -310,7 +325,7 @@ class DisplayOps():
 	
 		image_buffer		= Picam2 Mapped Buffer	
 		video_frame_rate	= the frame rate, or None if it's not video
-		stretch			= (stretch_lower, stretch_upper) or None if there's no stretch required
+		stretch			= (type, settings) or None if there's no stretch required
 		zebras			= True or False
 		crosshairs		= True or False
 		stardetection		= True or False
@@ -366,7 +381,7 @@ class DisplayOps():
 	
 		image_buffer		= Picam2 Mapped Buffer	
 		video_frame_rate	= the frame rate, or None if it's not video
-		stretch			= (stretch_lower, stretch_upper) or None if there's no stretch required
+		stretch			= (type, settings) or None if there's no stretch required
 		zebras			= True or False
 		crosshairs		= True or False
 		stardetection		= True or False

@@ -19,6 +19,8 @@ Version 1.0.034:
 	
 	* Lower end stretch set to 15 which is the dark offset of the camera
 
+	* Added auto stretches (Histogram Equalization, CLAHE and MinMax Presets/Custom)
+
 Version 1.0.033:
 ================
 

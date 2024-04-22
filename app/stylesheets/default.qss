@@ -81,7 +81,7 @@ QFrame#cameraView {
 }
 
 
-QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QComboBox#comboBoxTrackingRate, QComboBox#comboBoxConfigSummary, QComboBox#comboBoxConfigSetting, QComboBox#comboBoxConfigColorScheme, QComboBox#comboBoxOccelmntXML {
+QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QComboBox#comboBoxTrackingRate, QComboBox#comboBoxConfigSummary, QComboBox#comboBoxConfigSetting, QComboBox#comboBoxConfigColorScheme, QComboBox#comboBoxOccelmntXML, QComboBox#comboBoxStretch {
 	border-radius: 5px;
 	border: none;
 	background-color: @colorFieldBg;
@@ -92,10 +92,10 @@ QComboBox#comboBoxTask, QComboBox#comboBoxDatabase, QComboBox#comboBoxSpeed, QCo
 	/*margin-right: 20px; */
 }
 
-QComboBox#comboBoxTask::drop-down, QComboBox#comboBoxDatabase::drop-down, QComboBox#comboBoxSpeed::drop-down, QComboBox#comboBoxTrackingRate::drop-down, QComboBox#comboBoxConfigSummary::drop-down, QComboBox#comboBoxConfigSetting::drop-down, QComboBox#comboBoxConfigColorScheme::drop-down, comboBoxOccelmntXML::drop-down {
+QComboBox#comboBoxTask::drop-down, QComboBox#comboBoxDatabase::drop-down, QComboBox#comboBoxSpeed::drop-down, QComboBox#comboBoxTrackingRate::drop-down, QComboBox#comboBoxConfigSummary::drop-down, QComboBox#comboBoxConfigSetting::drop-down, QComboBox#comboBoxConfigColorScheme::drop-down, comboBoxOccelmntXML::drop-down, QComboBox#comboBoxStretch::drop-down {
 }
 
-QComboBox#comboBoxTask QAbstractItemView, QComboBox#comboBoxDatabase QAbstractItemView, QComboBox#comboBoxSpeed QAbstractItemView, QComboBox#comboBoxTrackingRate QAbstractItemView, QComboBox#comboBoxConfigSummary QAbstractItemView, QComboBox#comboBoxConfigSetting QAbstractItemView, QComboBox#comboBoxConfigColorScheme QAbstractItemView, QComboBox#comboBoxOccelmntXML QAbstractItemView {
+QComboBox#comboBoxTask QAbstractItemView, QComboBox#comboBoxDatabase QAbstractItemView, QComboBox#comboBoxSpeed QAbstractItemView, QComboBox#comboBoxTrackingRate QAbstractItemView, QComboBox#comboBoxConfigSummary QAbstractItemView, QComboBox#comboBoxConfigSetting QAbstractItemView, QComboBox#comboBoxConfigColorScheme QAbstractItemView, QComboBox#comboBoxOccelmntXML QAbstractItemView, QComboBox#comboBoxStretch QAbstractItemView {
 	background-color: @colorBg;
 	border: 1px solid @colorBg;	/* Also requires sizeAdjustPolicy: AdjustToContents */
 }
