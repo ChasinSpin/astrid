@@ -18,6 +18,8 @@ class UiPanelDisplay1(UiPanel):
 
 		self.widgetAutoStretchLower	= self.addLineEditDouble('Stretch Lower', 0.0, 255.0, 1, editable=True)
 		self.widgetAutoStretchUpper	= self.addLineEditDouble('Stretch Upper', 0.0, 255.0, 1, editable=True)
+		self.widgetAutoStretchLower.setText('15.0')	# This comes from the black level offset in the datasheet (60) divided by 4 (10 bit to 8 bit conversion)
+		self.widgetAutoStretchUpper.setText('30.0')
 
 
 		stretch_method = Settings.getInstance().hidden['stretch_method']
@@ -34,8 +36,6 @@ class UiPanelDisplay1(UiPanel):
 		self.widgetStarDetection	= self.addCheckBox('Star Detect <=0.5fps')
 
 		self.widgetObjectTarget.setChecked(True)
-		self.widgetAutoStretchLower.setText('15.0')	# This comes from the black level offset in the datasheet (60) divided by 4 (10 bit to 8 bit conversion)
-		self.widgetAutoStretchUpper.setText('30.0')
 
 
 	def registerCallbacks(self):

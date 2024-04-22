@@ -80,7 +80,7 @@ class RavfEncoder(Encoder):
 			('OBSERVER-ID',                 Settings.getInstance().observer['observer_id']),
 			('INSTRUMENT',                  'Astrid'),
 			('INSTRUMENT-VENDOR',           'ChasinSpin'),
-			('INSTRUMENT-VERSION',          '0.9a'),
+			('INSTRUMENT-VERSION',          Settings.getInstance().hidden['version']),
 			('INSTRUMENT-SERIAL',           '00001'),
 			('INSTRUMENT-FIRMWARE-VERSION', '0.9a'),
 			('INSTRUMENT-GAIN',             Settings.getInstance().camera['gain']),

@@ -20,6 +20,10 @@ Version 1.0.034:
 	* Lower end stretch set to 15 which is the dark offset of the camera
 
 	* Added auto stretches (Histogram Equalization, CLAHE and MinMax Presets/Custom)
+	
+	* Fixed a bug where version was displayed as None when not connected to the internet
+	
+	* Added the software version number to the ravf metadata
 
 Version 1.0.033:
 ================

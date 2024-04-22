@@ -116,6 +116,7 @@ class Settings:
 			{'name': 'privacy_notice',			'type': 'int',		'range': None,					'default': 3,				'decimalPlaces': None,	'editable': False,	'displayName': 'Privacy Notice Counter',		'description': ''},
 			{'name': 'slow_usb_drive',			'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': False,	'displayName': 'Slow USB Drive',			'description': ''},
 			{'name': 'stretch_method',			'type': 'int',		'range': None,					'default': 5,				'decimalPlaces': None,	'editable': False,	'displayName': 'Stretch Method',			'description': ''},
+			{'name': 'version',				'type': 'str',		'range': None,					'default': '',				'decimalPlaces': None,	'editable': False,	'displayName': 'Astrid Version',			'description': ''},
 		]},
 	]
 

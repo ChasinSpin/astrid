@@ -246,6 +246,9 @@ if __name__ == '__main__':
 
 		""" Prompts to upgrade if needed.  Also returns False if no internet and True if internet is connected. """
 
+		with open('/home/pi/astrid/version.txt') as f:
+			current_version = f.read().strip()
+
 		try:
 			urllib.request.urlcleanup()
 			with urllib.request.urlopen('https://raw.githubusercontent.com/ChasinSpin/astrid/main/version.txt', timeout=5) as response:
@@ -253,9 +256,6 @@ if __name__ == '__main__':
 		except Exception as e:
 			logger.info('Astrid version check failed (no internet?): %s' % str(e))
 			return False
-
-		with open('/home/pi/astrid/version.txt') as f:
-			current_version = f.read().strip()
 
 		logger.info('Version Current Astrid: %s' % current_version)
 		logger.info('Version GitHub: %s' % github_version)
@@ -355,6 +355,10 @@ if __name__ == '__main__':
 		# This never gets called as exitNow is called after this object has been created
 		shutdown_subprocesses()
 		sys.exit(0)
+
+	# Save the current version to settings so we can recall it for the ravf later
+	Settings.getInstance().hidden['version'] = current_version
+	Settings.getInstance().writeSubsetting('hidden')
 
 	# Start the main window
 	windowTitle = 'Astrid: %s' % settings_summary
