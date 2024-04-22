@@ -1,8 +1,6 @@
 Version 1.0.034:
 ================
 
-	(NOT RELEASED YET)
-
 	* Changed camera tuning settings to uncalibrated, to improve linear response (handled by PyOTE)
 	
 	* Fixed a bug, where having internet and then not having internet when an IERS update is rerequired can cause astrid to stop
