@@ -1,9 +1,10 @@
 # TODO
 
 * Double chord spacing and kml
+* Vizier light curve submission
+* https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf - INFO for libcamera future upgrade
 * 
 * Allow magnitude to be selected whilst in exposure analysis
-* Put software version in ravf header
 * Any chance you could allow a dynamic (local) change of the limiting magnitude during Exposure Analysis, rather than forcing us to stop and restart Astrid to get to the settings for Simulator? - Ted
 * Magnitudes Cluttered on Display Analysis
 * Significant red errors when recording with Software Leap Seconds
@@ -29,7 +30,6 @@ Metadata: {'SensorTimestamp': 22567493602000, 'ScalerCrop': (3, 0, 1450, 1088), 
 
 * Complete:
 	* Focus Support
-	* Auto-Stretch lower/upper bound setting
 	* Histogram 
 * Bug: Test this again: If framewriter process raises an exception, it isn't logged, force the raising of exceptions on framewriter, processotestamper and processlogger both during recording video and in regular operation
 * Manual reset of OTEStamper

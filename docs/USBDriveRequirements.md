@@ -30,18 +30,21 @@ References:
 
 ### Recommended Drives:
 
-| Drive | Min Sequential Write 2MB | Min Random Write 2MB | WT pSLC | WT No pSLC | pSLC | UASP | Recommended |
-| ----- | ------------------------ | -------------------- | ------- | ---------- | ---- | ---- | ----------- |
-| [Corsair Flash Voyager GTX 128GB USB 3.1 Flash Drive](https://www.amazon.com/Corsair-Flash-Voyager-128GB-Premium/dp/B079NVJPKV) (also 256GB version of this drive) | 113.4MB/s | 172.8MB/s | ~100MB/s | ~46MB/s | ~4.2GB | Yes | Yes (but only upto 4GB videos) |
-| TOPESEL 128GB USB 3.1 Flash Drive | 107.8 | 240.4 | ~98MB/s | ~70MB/s | ~3GB | No | Meets 30fps just, but is consistant |
+| Drive |  WT pSLC | WT No pSLC | pSLC | UASP | Recommended |
+| ----- | ------- | ---------- | ---- | ---- | ----------- |
+| [Reletch Elite7 Pro USB 3.2 Solid State Drive Read 480MB/s 256GB](https://www.aliexpress.us/item/1005006081674212.html) | 87.78MB/s | 87.78MB/s | - | No | Likely best choice, only 1 sampled.
+| [Corsair Flash Voyager GTX 128GB USB 3.1 Flash Drive](https://www.amazon.com/Corsair-Flash-Voyager-128GB-Premium/dp/B079NVJPKV) (also 256GB version of this drive) | ~100MB/s | ~46MB/s | ~4.2GB | Yes | Yes (but only upto 4GB videos) |
+| [TOPESEL 256GB USB 3.1 Gen 2 Flash Drive Super Speed 400Mb/s](https://www.aliexpress.us/item/1005003422090205.html) | 83.9MB/s | 83.9MB/s | None | No | Some other TOPESEL drives have been inconsistent, and they don't give refunds, only one of this model has been sampled. |
 
 ### Avoid:
 
-| Drive | Min Sequential Write 2MB | Min Random Write 2MB | WT pSLC | WT No pSLC | pSLC | UASP | Recommended |
-| ----- | ------------------------ | -------------------- | ------- | ---------- | ---- | ---- | ----------- |
-| Lexar 128GB JumpDrive P30 USB 3.2 Gen 1 Flash Drive (LJDP030128G-RNQNG) | 57.7MB/s | 91.6MB/s | ~90MB/s | ~50MB/s | ~12GB | Yes | Avoid (unpredictable) speeds, start off around 8MB/s) |
-| Arcanite 256GB USB 3.1 Flash Drive AK58256G | 24MB/s | 30MB/s | - | - | ~3GB | Yes | Avoid (slow, cache burnt through fast) |
-| Sandisk Extreme Pro 3.2 | 21.5MB/s | 8.9MB/s | - | - | ~ >100GB | No | Avoid (unpredictable speed/features/faulty drives) |
+| Drive | WT pSLC | WT No pSLC | pSLC | UASP | Recommended |
+| ----- | ------- | ---------- | ---- | ---- | ----------- |
+| Lexar 128GB JumpDrive P30 USB 3.2 Gen 1 Flash Drive (LJDP030128G-RNQNG) | ~90MB/s | ~50MB/s | ~12GB | Yes | Avoid (unpredictable) speeds, start off around 8MB/s) |
+| Arcanite 256GB USB 3.1 Flash Drive AK58256G | - | - | ~3GB | Yes | Avoid (slow, cache burnt through fast) |
+| Sandisk Extreme Pro 3.2 | - | - | ~ >100GB | No | Avoid (unpredictable speed/features/faulty drives) |
+| [TOPESEL 256GB USB 3.1 Gen 2 High Speed Thumb Drive](https://www.aliexpress.us/item/1005005393760142.html) | 55MB/s | 55MB/s | - | No | Avoid, doesn't meet specs, TOPESEL won't refund |
+| [TOPESEL 128GB USB 3.1 Flash Drive, Up to 380MB/s](https://www.amazon.ca/dp/B08QTXBG9H) | ~98MB/s | ~70MB/s | ~3GB | No | Meets 30fps just on some sample, others fail dramatically.  Avoid. |
 
 Reference: [Fastest USB flash drive benchmark test 2024](https://ssd-tester.com/usb_flash_drive_test.php)
 
