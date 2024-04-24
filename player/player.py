@@ -531,6 +531,14 @@ def plateSolve():
 
 			print('Image Shape:', image.shape)
 			print('Image Dtype:', image.dtype)
+		elif ravf.metadata_value('IMAGE-FORMAT') == RavfImageFormat.FORMAT_16BIT.value:
+			image = RavfImageUtils.bytes_to_np_array_16bit(frame.data, stride, ravf_height)
+			if first:
+				first = False
+				imageAccum = image
+			else:
+				imageAccum = np.add(imageAccum, image)
+				image = imageAccum
 
 	#delta = upperFrame - lowerFrame
 	#if delta > 1:
