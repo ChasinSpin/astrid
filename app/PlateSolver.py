@@ -289,15 +289,18 @@ class PlateSolver:
 
 				cmd = ['/usr/bin/wcs-rd2xy', '-w', wcsFile, '-r',  '%0.9f' % ra, '-d', '%0.9f' % dec]
 				print(cmd)
-				output = subprocess.check_output(cmd)
-				print('Pixel conversion output:', output)
-				output = str(output)
-				output = output.split('-> pixel (')[1]
-				output = output.split(')')[0]
-				pixel_coord_target = output.split(', ')
-				targetPosition = (float(pixel_coord_target[0]), float(pixel_coord_target[1]))
+				try:
+					output = subprocess.check_output(cmd)
+					print('Pixel conversion output:', output)
+					output = str(output)
+					output = output.split('-> pixel (')[1]
+					output = output.split(')')[0]
+					pixel_coord_target = output.split(', ')
+					targetPosition = (float(pixel_coord_target[0]), float(pixel_coord_target[1]))
 
-				print('Pixel Coordindates of the Target:', pixel_coord_target)  # Note these are coorindates in the original image, NOT the image on screen
+					print('Pixel Coordindates of the Target:', pixel_coord_target)  # Note these are coorindates in the original image, NOT the image on screen
+				except:
+					targetPosition = None
 			else:
 				targetPosition = None
 

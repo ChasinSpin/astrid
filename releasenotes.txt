@@ -1,3 +1,11 @@
+Version 1.0.036:
+================
+
+	* Fixed bug where a Prepoint (or platesolve when a target is selected), if the telescope is pointing near the North Celestial Pole, caused
+	  Astrid to quit as it was unable to paint the target. This is due to the NCP being a singularity, so it's impossible for the Astrometry system
+	  to paint a bullseye indicating the position of the target. The target is no longer painted in this situation until the user has moved away
+	  from the NCP either via a Goto or Prepoint.
+
 Version 1.0.035:
 ================
 
