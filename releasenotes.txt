@@ -1,3 +1,9 @@
+Version 1.0.037:
+================
+
+	* Changed behavior where if an occultation is selected, and not "go-to'd" on a goto scope, the RA/DEC of the target are not recorded
+	  to the .ravf file.  They are now recorded to the .ravf file.
+
 Version 1.0.036:
 ================
 

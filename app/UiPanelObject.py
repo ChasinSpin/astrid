@@ -350,10 +350,7 @@ class UiPanelObject(UiPanel):
 		elif ret == QMessageBox.Ok:
 			return True
 		elif ret == QMessageBox.No:
-			if gotoCapable:
-				return False
-			else:
-				return True
+			return True
 		else:
 			return False
 
