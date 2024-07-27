@@ -1,3 +1,8 @@
+Version 1.0.038:
+================
+
+	* Fixed issue with qt5 where negative declinations between 0 and -1 degrees were made positive if manually entered (including via cut and pasted occultation elements) instead of events via OWCloud
+
 Version 1.0.037:
 ================
 

@@ -61,9 +61,9 @@ class AstCoord:
 
 
 	@classmethod
-	def fromHMS(cls, ra: (int, int, float), dec: (int, int, float), frame: str):
-		ra = '%dh%dm%0.5f' % (ra[0], ra[1], ra[2])
-		dec = '%dd%dm%0.5f' % (dec[0], dec[1], dec[2])
+	def fromHMS(cls, ra: (float, int, float), dec: (float, int, float), frame: str):
+		ra = '%0.0fh%dm%0.5f' % (ra[0], ra[1], ra[2])
+		dec = '%0.0fd%dm%0.5f' % (dec[0], dec[1], dec[2])
 		skyCoord = SkyCoord(ra, dec, frame=frame)
 		return cls(skyCoord.transform_to('icrs'))
 
@@ -140,8 +140,8 @@ class AstCoord:
 		decMin = abs(decMin)
 		decSec = abs(decSec)
 
-		raStr = '%dh%02dm%#08.5f' % (raDeg, raMin, raSec)
-		decStr = '%dd%02dm%#07.4f' % (decDeg, decMin, decSec)
+		raStr = '%0.0fh%02dm%#08.5f' % (raDeg, raMin, raSec)
+		decStr = '%0.0fd%02dm%#07.4f' % (decDeg, decMin, decSec)
 		if decDeg > 0:
 			decStr = '+' + decStr
 		return (raStr, decStr)

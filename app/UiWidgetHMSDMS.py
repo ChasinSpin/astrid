@@ -31,7 +31,7 @@ class UiWidgetHMSDMS(QWidget):
 			if hmsdms == 'hms':
 				self.hoursDegEdit.setValidator(IntValidator(0, 23, self.hoursDegEdit))
 			else:
-				self.hoursDegEdit.setValidator(IntValidator(-90, 90, self.hoursDegEdit))
+				self.hoursDegEdit.setValidator(DoubleValidator(-90, 90, 0, self.hoursDegEdit))
 			self.minsEdit.setValidator(IntValidator(0, 59, self.minsEdit))
 			self.secsEdit.setValidator(DoubleValidator(0, 59.99999, 5, self.secsEdit))
 
@@ -58,7 +58,7 @@ class UiWidgetHMSDMS(QWidget):
 
 
 	def hoursDegChanged(self):
-		value = int(self.hoursDegEdit.text())
+		value = float(self.hoursDegEdit.text())
 		self.__validateAll()
 
 
@@ -73,16 +73,16 @@ class UiWidgetHMSDMS(QWidget):
 
 
 	def __validateAll(self):
-		value = int(self.hoursDegEdit.text())
+		value = float(self.hoursDegEdit.text())
 		if self.hmsdms == 'dms' and (value == -90 or value == 90):
 			self.setValue(value, 0, 0.0)
 
 
-	def setValue(self, hoursDeg: int, mins: int, secs:float):
-		self.hoursDegEdit.setText('%02d' % hoursDeg)
+	def setValue(self, hoursDeg: float, mins: int, secs:float):
+		self.hoursDegEdit.setText('%02.0f' % hoursDeg)
 		self.minsEdit.setText('%02d' % mins)
 		self.secsEdit.setText('%#08.5f' % secs)
 
 
-	def getValue(self) -> (int, int, float):
-		return (int(self.hoursDegEdit.text()), int(self.minsEdit.text()), float(self.secsEdit.text()))
+	def getValue(self) -> (float, int, float):
+		return (float(self.hoursDegEdit.text()), int(self.minsEdit.text()), float(self.secsEdit.text()))
