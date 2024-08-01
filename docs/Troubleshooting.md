@@ -46,6 +46,7 @@ Astrid follows a Rapid Development model, and all bug fixes are by new versions,
 * [Linking to OWCloud Events Fails](#linking-to-owcloud-events-fails)
 * [Wrong Password Entered For WiFi and Unable To Connect](#wrong-password-entered-for-wifi-and-unable-to-connect)
 * [RealVNC Wants A Subscription](#realvnc-wants-a-subscription)
+* [Wifi Astrid Hotspot Not Listed](#wifi-astrid-hotspot-not-listed)
 
 
 ## Host Not Found
@@ -279,3 +280,7 @@ If you don't have the Mini Display, you will have to power cycle to gain access.
 ## RealVNC Wants A Subscription
 
 You have or are installing RealVNC Connect by mistake when you want RealVNC Viewer.  Please uninstall RealVNC Connect and follow the instructions here: [Usage Guide - Connect Via VNC](UsageGuide.md#connect-via-vnc)
+
+## Wifi Astrid Hotspot Not Listed
+
+Whenever astrid starts up, it's always in Hotspot mode, use the Mini Display to switch to your local network.  Sometimes you may not see the Astrid Hotspot, this is caused by so many networks in your local area that the Astrid Hotspot is past the bottom of the list of networks on your computer.  Often there is an option on your computer called "Other" where you can manually enter the network details for the Hotspot.

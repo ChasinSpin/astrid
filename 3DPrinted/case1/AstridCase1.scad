@@ -49,7 +49,7 @@
 partNum                     = 6;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Plate (without camera, may not work), 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56, 10 = Logo, 11 = Logo Insert
 logoNum                     = 3;            // 1 = Eclipse (short text), 2 = Eclipse (full text), 3 = Asteroid Occultation
 externalGps                 = true;         // Make a whole for an external GPS if true
-nutDiameter                 = 5.8 + 0.2;    // This is point to point
+nutDiameter                 = 5.8 + 0.4;    // This is point to point
 nutThickness                = 2.0;
 boltHeadDiameter            = 4.5;
 boltHeadHeight              = 1.6;
