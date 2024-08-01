@@ -1,3 +1,8 @@
+Version 1.0.039:
+================
+
+	* Added scripts to make installing image and cleaning for shipping easier for Ted
+
 Version 1.0.038:
 ================
 
