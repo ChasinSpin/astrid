@@ -49,7 +49,7 @@ echo "** with VNC to continue **"
 echo -n "Upgrade Now? (y/n) > "
 read line
 if [ "$line" = "y" -o "$line" = "Y" ]; then
-	/home/pi/astrid/upgrade.sh
+	/home/pi/astrid/upgrade.sh noreboot
 fi
 
 echo 
