@@ -43,6 +43,9 @@ fi
 
 echo
 echo "** ENSURE YOU ARE ON YOUR HOME WIFI NETWORK BEFORE UPGRADING **"
+echo "** NOTE: If you're on Hotspot and are just switching now, you will **"
+echo "** need to change your machine network connection and reconnect **"
+echo "** with VNC to continue **"
 echo -n "Upgrade Now? (y/n) > "
 read line
 if [ "$line" = "y" -o "$line" = "Y" ]; then
