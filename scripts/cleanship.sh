@@ -15,7 +15,7 @@ country=US
 
 EOF
 
-	sudo sh -c "/usr/bin/cat $TMP_FILE" > /etc/wpa_supplicant/wpa_supplicant.conf
+	sudo sh -c "/usr/bin/cat $TMP_FILE > /etc/wpa_supplicant/wpa_supplicant.conf"
 	/usr/bin/rm $TMP_FILE
 
 	echo Done
