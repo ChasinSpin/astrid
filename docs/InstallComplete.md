@@ -401,6 +401,14 @@ With simulator mount:
 			* https://datacenter.iers.org/data/9/finals2000A.all
 	* Do a prepoint to force AltAz conversion (this forces a download)
 
+## Run Chromium once
+
+Start and exit chromium (so we can change settings in the upgrade later)
+
+## Run Astrid Upgrade
+
+Run Astrid Upgrade
+
 ## Remove networks and history
 
 		cd

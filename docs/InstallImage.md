@@ -1,10 +1,12 @@
 # Install From Astrid Image
 	
 ## Restoring Image
-		
-Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to restore image (e.g. 2023-09-28-astrid.img.xz).
 
-* Operating System: Choose "Use Custom" and locate 2023-09-28-astrid.img.xz
+NOTE: These instructions have changed on August 1st 2024
+		
+Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to restore image (e.g. 2024-08-01-astrid.img.xz).
+
+* Operating System: Choose "Use Custom" and locate 2024-08-01-astrid.img.xz 
 
 * Storage: Choose the SD Card you are writing to **IMPORTANT:** Make sure you have selected the correct SD Card (i.e. don't overwrite other drives by mistake).
 
@@ -59,7 +61,6 @@ If you have multiple Astrids, or someone else has an Astrid near you, confusion 
 		astridX 	(where X is a unique number for your astrid)
 		
 * Click OK and Reboot
-	
 
 ### Upgrade Astrid To Latest
 
@@ -82,3 +83,18 @@ Connect to Astrid using the **NEW** network credentials and hostname:
 	
 6. Switch Task to OTE Video and press the record button for 5 seconds, and then press again to stop.  All status buttons should still be green.
 If not, click on the button to discover the issue.
+
+### IOTA Build Instructions
+
+* Create SD Card from image using the instructions above and image: 2024-08-01-astrid-ted.img.xz (DO NOT REDISTRIBUTE THIS IMAGE)
+* Plug in USB Drive, GPS Antenna and MiniDisplay into Pi
+* Insert the card into Raspberry Pi and startup (wait 5-10mins for card to be resized)
+* Use MiniDisplay to switch to home network
+* Connect via home network to astrid.local
+* Start terminal and type: ./astrid/scripts/iotaconfigure.sh  and follow instructions
+* After reboot, start astrid and choose Simulator
+* Check all status buttons are green, if not wait for GPS satellites to be found (can take 20min in less than ideal conditions)
+* Switch task to OTE Video and press record, then 5 seconds later, press stop.  All status buttons should still be green.
+* From terminal, type: ~/astrid/scripts/cleanship.sh
+* Remove power after 15 seconds
+* Ship Astrid
