@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ $# -eq 1 -a "$1" = "noreboot" ]; then
+	REBOOT=
+else
+	REBOOT=y
+fi
+
 echo "*************************************************************"
 echo "*                      Upgrading ASTRID                     *"
 echo "* ASTRID MUST BE ABLE TO CONNECT TO THE INTERNET TO UPGRADE *"
@@ -38,8 +44,11 @@ cd /home/pi/astrid
 
 /usr/bin/rm -rf /home/pi/astridOld
 echo "**** Upgrade complete ****"
-echo "Press <RETURN> to REBOOT"
-read line
-/usr/bin/sudo reboot
+
+if [ ! -z "$REBOOT" -a "$REBOOT" = "y" ];then
+	echo "Press <RETURN> to REBOOT"
+	read line
+	/usr/bin/sudo reboot
+fi
 
 exit 0
