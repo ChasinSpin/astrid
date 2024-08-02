@@ -2,7 +2,9 @@
 	
 ## Restoring Image
 
-NOTE: These instructions have changed on August 1st 2024
+NOTE: These instructions were updated on August 1st 2024, please use the new image.
+
+The image, althought available, due to costs involved in hosting, is only available to people who have Astrids.  It can be obtained by joining the IOTA forum: https://occultations.org/community/forums/ and asking, it will be sent to you privately.
 		
 Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to restore image (e.g. 2024-08-01-astrid.img.xz).
 
@@ -86,8 +88,17 @@ If not, click on the button to discover the issue.
 
 ### IOTA Build Instructions
 
+#### To save time:
+
+* Batch Build: MiniDisplays (install software too and test)
+* Batch Build: USB Drives (format in Astrid and copy files to drive)
+* Batch Test: GPS Antennas (get good signal with reference antenna, then swap in antennas to test, wait for at least 1 satellite and mark as tested... can likely be left coiled during test)
+* Batch Write: SD Cards
+
+#### Astrid build/testing:
+
 * Create SD Card from image using the instructions above and image: 2024-08-01-astrid-ted.img.xz (DO NOT REDISTRIBUTE THIS IMAGE)
-* Plug in USB Drive, GPS Antenna and MiniDisplay into Pi
+* Plug in USB Drive, GPS Antenna and MiniDisplay (ensure MiniDisplay has software installed) into Pi
 * Insert the card into Raspberry Pi and startup (wait 5-10mins for card to be resized)
 * Use MiniDisplay to switch to home network
 * Connect via home network to astrid.local

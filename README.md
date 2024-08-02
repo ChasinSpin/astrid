@@ -53,6 +53,16 @@ Astrid [Raw Astro Video Format (RAVF)](https://github.com/ChasinSpin/ravf) can b
 
 ![Astrid Front View](docs/images/astrid5.jpg)
 
+## Obtaining Astrid
+
+Astrid is now being supplied fully built and ready to go from IOTA.  Please see:
+[https://occultations.org/astrid-details-and-ordering-page/
+](https://occultations.org/astrid-details-and-ordering-page/)
+
+Please note that although Open Source software is free, it is also generally considered good practice to support the time / resources that are donated by authors by purchasing through approved channels like IOTA where available.  That way the software/hardware can continue to be developed. Limited support is also available if one of the approved boards is purchased. 
+
+If you build the board yourself, or it was obtained from another, we are unable to provide support. There has been instances of people making boards, selling them to others for profit and then expecting assistance for free.  We do not have the resources to support these types of ventures.
+
 ## Credits
 
 * Steve Preston of IOTA for his invaluable assistance
