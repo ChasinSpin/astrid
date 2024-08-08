@@ -32,19 +32,37 @@ mac=()
 
 ssidsmac=("${ssids[@]}" "${mac[@]}") #combines ssid and MAC for checking
 
+LIGHTSOUT_CONFIG="/home/pi/.astrid_lightsout"
+
+if [ -f "$LIGHTSOUT_CONFIG" ];then
+        . "$LIGHTSOUT_CONFIG"
+else
+        PILEDS=1
+        ETHLEDS=1
+fi
+
 
 ledsAdhoc()
 {
     # Switch ethernet activity and link speed leds to on
+
     /usr/local/bin/mdio-tool w eth0 0x17 0x0f04
-    /usr/local/bin/mdio-tool w eth0 0x15 0x0075
+    if [ "$ETHLEDS" = 1 ];then
+    	/usr/local/bin/mdio-tool w eth0 0x15 0x0075
+    else
+	/usr/local/bin/mdio-tool w eth0 0x15 0x044
+    fi
 }
 
 ledsWifi()
 {
     # Switch ethernet activity and link speed leds to alternate blinking
     /usr/local/bin/mdio-tool w eth0 0x17 0x0f04
-    /usr/local/bin/mdio-tool w eth0 0x15 0x0066
+    if [ "$ETHLEDS" = 1 ];then
+    	/usr/local/bin/mdio-tool w eth0 0x15 0x0066
+    else
+	/usr/local/bin/mdio-tool w eth0 0x15 0x044
+    fi
 }
 
 createAdHocNetwork()

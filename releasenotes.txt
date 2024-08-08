@@ -1,3 +1,8 @@
+Version 1.0.040:
+================
+
+	* Added Lights Out Capability to Astrid Tools
+
 Version 1.0.039:
 ================
 

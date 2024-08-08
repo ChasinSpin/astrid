@@ -305,6 +305,9 @@ if __name__ == '__main__':
 	logger.debug('command args: %s' % sys.argv)
 	logger.debug('astrid_drive: %s' % astrid_drive)
 
+	# Run lightsout.sh
+	subprocess.run(["/home/pi/astrid/scripts/lightsout.sh"])
+
 	# Delete old astrometry.cfg's, we now generate one in tmp now
 	deleteAstrometryCfg()
 

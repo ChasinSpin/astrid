@@ -220,6 +220,7 @@ echo "Updating desktop icons..."
 /usr/bin/ln -s /home/pi/astrid/desktop/Diagnostics.desktop		"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/InstallMiniDisplay.desktop	"/home/pi/Desktop/Astrid Tools"
 /usr/bin/ln -s /home/pi/astrid/desktop/QualifyDrive.desktop		"/home/pi/Desktop/Astrid Tools"
+/usr/bin/ln -s /home/pi/astrid/desktop/LightsOut.desktop		"/home/pi/Desktop/Astrid Tools"
 
 echo "Installing ravf..."
 pip install --no-deps ravf

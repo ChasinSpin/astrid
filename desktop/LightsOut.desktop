@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Lights Out
+Comment=Lights Out
+Path=/home/pi/astrid
+Exec=/home/pi/astrid/scripts/lightsout_configure.sh
+Terminal=true
+Type=Application
