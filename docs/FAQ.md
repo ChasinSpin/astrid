@@ -54,3 +54,22 @@
 
 	To use Astrid stealthily, just cover these LEDs with electrical tape on the case. (the GPS LED can be accessed by unbolting the case where the Astrid Logo is, and covering the LED on the GPS board with electrical tape).  Scotch Super 33+ is a suggested electrical tape.
 	
+	Additionally, the Raspberry Pi Red/Green LEDs and Network Status LEDs can be switched off from software via the "Light Out" tool in Astrid Tools on the desktop.
+	
+* **Stretching (display)**
+
+	Astrid has built-in stretching with 3 different methods. Astrid never stretches the data it saves, which is always saved in raw format.  Stretching is only to make stars easier to see on the display.
+
+	*CLAHE (Contrast Limited Adaptive Histogram Equalization* - This can be thought of as an auto-stretch and is Astrid's default. It will automatically adjust and can handle thin clouds, light pollution, smoke, different exposure settings, and glow due to the sun near sunrise and sunset. High values of CLAHE can look soft sometimes, so experiment with the varies settings provided.
+	
+	*Histogram Equalization* - This is a method that adjusts the contrast using histogram equalization so the image is more uniformly distributed across the entire range of values. We have found it to perform a little less well than CLAHE, but your mileage may vary.
+	
+	*Min Max* - This manual method evenly distributes the image between Min and Max.  Values below Min will be black, and values over Max with be White, with everything between distributed evenly as levels of gray.  Min and Max are between 0 and 255 with Min being less than Max.  Some Min/Max values are predefined for your convenience, but adjusting them using "Custom" is often required.  Although Min/Max gives you superior control over stretch, if conditions change (clouds, smoke, light pollution, sun, exposure), you will likely need to change your Min/Max values.
+	
+* **Plate Solving Arrows On Manual Equatorial Mounts**
+	
+	When Astrid Plate solves, it provides arrows telling the user where to move the telescope. If the scope has Goto, the scope can then move automatically to the location of the target, but if it's a manual scope, the user needs to slew the scope.  Depending on the users' preference, The plate solver can print 2 direction arrows (Altitude and Azimuth) or 1 arrow (overall direction).
+	
+	With Alt/Az mounts, it's simple: Move the mount in the direction of the arrows using the scope's Altitude and Azimuth adjustments.
+	
+	For Equatorial mounts, the user needs to still think in terms of where the scope is visually pointing and make RA/Dec adjustments to slew the scope to the desired location.  Another way to think about this is that it's the same process you would use with an Equatorial mount if you were star hopping from a chart.  You would look at the chart and say I need to go from this star to that star and I need to go up and right and make the RA/Dec adjustments and combine them were necessary to get ther.

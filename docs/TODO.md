@@ -1,5 +1,6 @@
 # TODO
 
+* David: "That's fine for the long events we used to record, with durations of 3s or more, but for shorter occultations, I agree with Bob Anderson, always record at least 30s before and after. The 10x rule is only for the highest chance of detecting satellites, but for MB objects, satellites out to 100x are possible, but in practice, they are rarely found more than 10x away."
 * Double chord spacing and kml
 * Vizier light curve submission
 * https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf - INFO for libcamera future upgrade
