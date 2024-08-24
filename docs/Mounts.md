@@ -1,21 +1,72 @@
 # Mounts
 
-## Mounts
+## Introduction
 
-##### Probably should link to mount.json configurations here
+Connecting your Goto Mount to Astrid may take some effort, especially if no one has set up the same or similar mount before. Many different mount manufacturers and mount models exist, and they lack consistency in operation, features, and requirements between them.
 
-| Model | Tested | Notes |
-| ----- | ------ | ----- |
-| ZWO AM5 | Yes | /dev/ttyACM0, 9600, parkmethod=home |
-| Skywatcher AZ EQ5 | Yes | /dev/ttyUSB0, 115200, parkmethod=park, Connect via USB to the mount directly (unplug SynScan) |
-| Skywatcher AZ EQM-35 Pro | Yes | /dev/ttyUSB0, 115200, parkmethod=park, Connect via USB to the mount directly (unplug SynScan) |
-| EQMOD Mounts | Most Should Work | /dev/ttyUSB0, 115200, parkmethod=park, Connect via USB to the mount directly (unplug SynScan) |
-| Losmandy Gemini 2 | Yes | /dev/ttyACM0, 9600, parkmethod=park, Indi Telescope Device Id=Losmandy Gemini, Indi Module=indi_lx200gemini |
-| Vixen Starbook Ten | Yes | Connect to ethernet port on the Pi. Point Dec West at start up (home position), accept warning about sun, then connect Astrid.  Note Park on Starbook Ten often means RA is rotated, it is okay to start a polar alignment from this position. |
-| LX200 Classic | Yes | /dev/ttyUSB0, 9600, parkmethod=park, Indi Telescope Device Id=LX200 Classic, Indi Module = indi_lx200classic   Tested in AltAz, should work in Equatorial.  Tracking is permanently on with this mount. Connect via USB to the mount directly with this: https://www.clearline-tech.com/repair-parts/lx200/lx200-usb-adapter.html |
-| Skywatcher AZ GTI | Yes | /dev/ttyUSB0, parkmethod=park, Indi Telescope Device Id = Skywatcher Alt-Az, Indi Module=indi_skywatcherAltAzMount   Alt Az mount, baud=9600, example Skywatcher Virtuoso GTI 150p.  Power mount on with tube horizontal and pointing north (the park position). Use EQMod Cable. Regularly on startup, says "Failed to connect to mount", just click Try Again |
-| Celestron Nexstar 6 SE (likely 8 SE too and other celestron mounts) | Yes |  /dev/ttyUSB0, parkmethod=park, Indi Telescope Device Id=Celestron AUX, Indi Module=indi_celestron_aux, baud=19200, Indi Custom Properties=Celestron AUX.PORT_TYPE.PORT\_HC\_USB=On;Celestron AUX.CORDWRAP.INDI\_ENABLED=On   (note "Celestron AUX" has a space in it. Note: USB connection via the handset (USB-A to USB-Mini B) is tested, also connection via the AUX port may work but will require settings changes.  IMPORTANT: Power to the mount must be on.  The handset will show text even when not powered as it can get power via the USB, but the mount won't connect. LCD will have red backlight when power to the mount is on.  Mount must be powered on horizontal pointing North. Occasionally when started, mount may need "Try Again" on startup. Nexstar tracking is terrible, it's suggested to use the SE6/SE8 for prepoint goto.  Do not do any star alignment prior to (or after) connecting the mount, it's not required as this bypasses the regular mount firmware. |
-| Fixed Mounts (Prepoint) | Yes | Use Simulator |
+Astrid also does not require a Goto Mount and works perfectly fine with a manual mount that does not have Goto, or even with a Goto Mount where you have other means to move the mount (e.g. handset, manual slewing).  If you have a mount that isn't listed below or are just starting with Astrid, it may be best to get familiar with Astrid slewing your mount manually prior to setting up Goto.
+
+Manual mounts in Astrid use a simulated mount to maintain the internal pointing model for Astrid.  Astrid installed example simulated mounts when it was built.
+
+## Mounts and Connections Supported
+
+Astrid includes [IndiLib](indilib.org) for mount support, and any mount that is supported by [IndiLib](indilib.org) will also likely work with Astrid when configured correctly. The mount must support a Serial connection over USB to work with Astrid.  Wifi/Bluetooth connections to mounts are not supported with Astrid due to the Wifi already being used for Astrid's Hotspot and connection to your Home network and then the general unreliability of connections to mounts over Wifi and Bluetooth.
+
+Often, there are multiple methods for connecting to a mount from USB to serial, and which is the best depends on your mount.  Generally, a direct serial connection is simpler and often doesn't require star alignment on a handset prior to use (as Astrid can tell the mount where it is in the sky).  A mount that has a handset (e.g. Synscan) often has the ability for a direct-to-mount connection (Synscan removed), and also a connection via a handset (pass-thru) and also a connection via a handset (synscan protocol).
+
+Often, you may need to purchase a cable for the serial connection. Information on which cable you need can often be found from the manufacturer (maybe in your mount manual), [Cloudy Nights](https://www.cloudynights.com) or the [IndiLib Forum](https://indilib.org/forum.html) typically.
+
+Check the list below and use it as a starting point for mount configuration.  The list contains mounts that have been tested by others and are known to work.  
+
+**If you've got your mount working and it's not listed below, please send the settings/configuration that you found to work so it can be added to the list and others can benefit.**
+
+If you have a common commercial mount, it's more likely to be supported than a unique or rare large observatory mount or a boutique expensive mount that few others have.  However, occasionally, you can be lucky and have unique mounts that support, say, the LX200 protocol or EQMOD/EQDIR and are likely to work.
+
+Most commercial mounts work in JNOW coordinates, and Astrid should be configured as such. Occasionally, though, a mount may be J2000.
+
+Alt-Az mounts, in particular, contain an internal pointing model that must be set up on mount startup. Often, handsets have a 1, 2, or 3-star alignment process to do this and require the time, date, and location to be entered before they will talk over serial. If you can connect directly to the mount without the handset, you can often skip this lengthy process, and Astrid will set up the mount alignment for you.
+
+You should make sure that your mount (and handset's) firmware is updated to the latest version.  Before configuring any new mount, it is advisable to ascertain the exact make and model of the mount and find out specific information about cables or configuration details you may need from [IndiLib - Telescopes](https://indilib.org/devices/mounts.html). Clicking on on the image for the mount will take you to a page with further details.  Information you will need, for example, are the Driver Executable, Connectivity, and Issues.
+
+Some mounts (and handsets) will look like they are working when they are powered over USB. Always make sure the main power is connected to the mount.
+
+Most of the mount functionality can be tested during daylight if you line up the mount with North and treat alignment stars as they would be in their correct locations for the time of day.  A final test can then be left till a clear night.
+
+## Support
+
+Limited support is available over Zoom if you have purchased an Astrid through approved channels, such as IOTA (North America), IOTA/ES, or directly from the Author.
+
+Prior to requesting support, please ensure:
+
+1. You have checked the list below for your mount, the documentation here, and tried setting it up
+2. On your desktop computer you have:
+	
+	* Zoom Installed
+	* RealVNC installed and talking to Astrid
+	* Mount connected to Astrid with the correct cable and powered on
+
+	It's then possible to setup a zoom session with screen sharing to assist you.
+	
+
+
+
+## Mount Settings
+
+Settings for mounts can be accessed via Astrid's settings "Mount" panel.  Display Name can be anything, but please keep it short so it fits on the display.  Local Timezone Offset should always be 0.00.
+
+| Mount/Model | Tested | Indi Module | Indi Telescope Id | Indi Custom Properties | Indi USB tty | Baud Rate | Mount Alignment Type | Goto Capability | Tracking Capability | Mount is J2000 | Parking Method | Cable | Notes |
+| ----------- | ------ | ----------- | ----------------- | ---------------------- | ------------ | --------- | -------------------- | --------------- | ------------------- | -------------- | -------------- | ----- | ----- |
+Fixed Manual Mounts or Incompatible Goto Mounts (uses Astrid Prepoint) | Yes | indi\_simulator\_telescope | <code>Telescope Simulator</code> | | /dev/ttyUSB0 | 9600 | altaz | unchecked | unchecked | unchecked | park | None | <code>This is a simulated mount and the default for prepoint, manual mounts, scopes without Goto or Goto mounts where communication isn't supported.</code> |
+| Celestron Nexstar 6SE/8SE | Yes | indi\_celestron\_aux | <code>Celestron AUX</code> | <code>Celestron AUX.PORT_TYPE.PORT\_HC\_USB=On;Celestron AUX.CORDWRAP.INDI\_ENABLED=On</code> | /dev/ttyUSB0 | 19200 | altaz | checked | checked | unchecked | park | | <code>IMPORTANT: Power to the mount must be on.  The handset will show text even when not powered as it can get power via the USB, but the mount won't connect. LCD will have red backlight when power to the mount is on.  Mount must be powered on horizontal pointing North. Occasionally when started, mount may need "Try Again" on startup. Nexstar tracking is terrible, it's suggested to use the SE6/SE8 for prepoint goto.  Do not do any star alignment prior to (or after) connecting the mount, it's not required as this bypasses the regular mount firmware.</code> |
+| EQMod Mounts (Other) | No | indi\_eqmod\_telescope | <code>EQMod Mount</code> | | /dev/ttyUSB0 | 115200 | eq | checked | checked | unchecked | park | USB Cable | <code>Unplug Synscan</code> |
+| Losmandy Gemini 2 | Yes | indi\_lx200gemini | <code>Losmady Gemini</code> | | /dev/ttyACM0 | 9600 | eq | checked | checked | unchecked | park | | <code>See Steve Preston</code> |
+| LX200 Classic | Yes | indi\_lx200classic | <code>LX200 Classic</code> | | /dev/ttyUSB0 | 9600 | altaz (should work in eq too) | checked | checked | unchecked | park | [Clearline](https://www.clearline-tech.com/repair-parts/lx200/lx200-usb-adapter.html) | <code>Tracking is permanently on with this mount.</code> |
+| Skywatcher AZ EQ5, Skywatcher AZ EQM-35 Pro| Yes | indi\_eqmod\_telescope | <code>EQMod Mount</code> | | /dev/ttyUSB0 | 115200 | eq | checked | checked | unchecked | park | USB Cable | <code>Unplug Synscan</code> |
+| Skywatcher AZ GTI (example: Skywatcher Virtuoso GTI 150p) | Yes | indi\_skywatcherAltAzMount | <code>Skywatcher Alt–Az</code> | | /dev/ttyUSB0 | 9600 | altaz | checked | checked | unchecked | park | | <code>Power mount on with tube horizontal and pointing north (the park position).  Use EqMod Cable.  On startup, Astrid may say "Failed to connect to mount", just click "Try Again" </code> |
+| Vixen Starbook Ten | Yes | indi\_starbook\_ten | <code>Starbook Ten</code> | | /dev/null | 9600 | eq | checked | checked | unchecked | park | ethernet | <code>Connect to ethernet port on Pi. Point Dec West at startup (home position), accept warning about sun, then connect Astrid. Note Park on Starbook Ten often means RA is rotated, it is okay to start a polar alignment from this position.</code> |
+| ZWO AM5 (likely AM3/AM5N too) | Yes | indi\_lx200am5 | <code>ZWO AM5</code> | | /dev/tty/ACM0 | 9600 | eq | checked | checked | unchecked | home | Regular A/B USB | |
+
+*Author only: OPTION-SPACE for non-breaking space above*
 
 ### Mount Onboarding/Testing/Verification
 
