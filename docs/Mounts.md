@@ -1,10 +1,10 @@
 # Mounts
 
 * [Introduction](#introduction)
-* [Mounts and Connections Supported](mounts-and-connections-supported)
-* [Support](support)
-* [Mount Settings](mount-settings)
-* [Mount Testing And Verification](mount-testing-and-verification)
+* [Mounts and Connections Supported](#mounts-and-connections-supported)
+* [Support](#support)
+* [Mount Settings](#mount-settings)
+* [Mount Testing And Verification](#mount-testing-and-verification)
 
 ## Introduction
 
