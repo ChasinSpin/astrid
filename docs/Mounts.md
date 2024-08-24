@@ -1,12 +1,18 @@
 # Mounts
 
+* [Introduction](#introduction)
+* [Mounts and Connections Supported](mounts-and-connections-supported)
+* [Support](support)
+* [Mount Settings](mount-settings)
+* [Mount Testing And Verification](mount-testing-and-verification)
+
 ## Introduction
 
 Connecting your Goto Mount to Astrid may take some effort, especially if no one has set up the same or similar mount before. Many different mount manufacturers and mount models exist, and they lack consistency in operation, features, and requirements between them.
 
 Astrid also does not require a Goto Mount and works perfectly fine with a manual mount that does not have Goto, or even with a Goto Mount where you have other means to move the mount (e.g. handset, manual slewing).  If you have a mount that isn't listed below or are just starting with Astrid, it may be best to get familiar with Astrid slewing your mount manually prior to setting up Goto.
 
-Manual mounts in Astrid use a simulated mount to maintain the internal pointing model for Astrid.  Astrid installed example simulated mounts when it was built.
+Manual mounts in Astrid use a simulated mount to maintain the internal pointing model for Astrid.  Astrid installed example simulated mounts when it was built and a few other common mounts.
 
 ## Mounts and Connections Supported
 
@@ -36,6 +42,8 @@ Most of the mount functionality can be tested during daylight if you line up the
 
 Limited support is available over Zoom if you have purchased an Astrid through approved channels, such as IOTA (North America), IOTA/ES, or directly from the Author.
 
+Any requests for support need to have the exact make, model and configuration (Alt/Az or Eq) of the mount and a link to the operation manual.
+
 Prior to requesting support, please ensure:
 
 1. You have checked the list below for your mount, the documentation here, and tried setting it up
@@ -44,6 +52,7 @@ Prior to requesting support, please ensure:
 	* Zoom Installed
 	* RealVNC installed and talking to Astrid
 	* Mount connected to Astrid with the correct cable and powered on
+3. 
 
 	It's then possible to setup a zoom session with screen sharing to assist you.
 	
@@ -68,19 +77,24 @@ Fixed Manual Mounts or Incompatible Goto Mounts (uses Astrid Prepoint) 
 
 *Author only: OPTION-SPACE for non-breaking space above*
 
-### Mount Onboarding/Testing/Verification
+## Mount Testing and Verification
 
-* Verify connection/communication (indi\_getprop / indi\_setprop)
-* CONNECT = On ?
-* UTC Set?
-* Lat/Lon set
-* Goto work?
-* Home/Park work?
-* Tracking Toggle working?
-* Tracking coming on automatically after Slew?
-* Sync working after plate solve?
-* Abort Motion working?
-* Check Tracking Rate changes are stored (sidereal, lunar etc.)
-* Check Manual Slew and Speeds work
-* Meridian flip working (find star close to meridian (South), goto, wait for Meridian timing to drop to -1m, goto again and check mount flips.
-* Check Polar Align routine works (GEM mounts only)
+Mounts that haven't been encountered before with Astrid (i.e., there are no settings listed above) need to be verified to work on Astrid.  This process details how to do that:
+
+* Indi Module must be set to the correct module.  A list of modules can be determined from the command line by <code>ls /usr/bin/indi*</code>  Also use [IndiLib - Telescopes](https://indilib.org/devices/mounts.html) to determine the correct module for your mount.  Save settings, quit astrid and restart Astrid
+* Type <code>indi\_getprop</code> in the command line to determine the value for <code>DRIVER\_INFO.DRIVER_NAME</code> and enter that into "Indi Telescope Id" and restart Astrid. Note if you see "connect: Connection refused", then you didn't start Astrid and didn't click on "Start Astrid"
+* If you have connection issues, use indi\_getprop to check that CONNECTION.CONNECT is On and indi\_setprop to set it, you may need to change some of the settings to get a connection.
+* Check UTC is set correctly on the mount (using indi\_getprop) to the time you started Astrid (note it generally doesn't update whilst it's running)
+* Check Latitude and Longitude for the site are correct (using indi\_getprop) after Update Site has been clicked in Astrid
+* Does Goto work?
+* Does Home/Park work?
+* Does Tracking stop and start when the Tracking button is toggled?
+* Does Tracking come back on automatically after a Goto?
+* Does the mount update it's position correctly after a Sync is done after a plate solve?
+* Does the STOP button (in the mount panel), stop the mount motion during Park/Homing and a Goto?
+* Does the Tracking Rate (sidereal, lunar etc.) remain after Gotos?
+* Do the Slew Joystick buttons and slew rate work?
+* Does Meridian Flip work? (find star close to meridian (South), goto, wait for Meridian timing to drop to -1m, goto again and check mount flips.
+* Does the Polar Align routine work (test this at night and german equatorial mounts only).
+
+**If you've got your mount working and it's not listed below, please send the settings/configuration that you found to work so it can be added to the list and others can benefit.**
