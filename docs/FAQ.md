@@ -2,7 +2,13 @@
 
 * **Cleaning the Astrid 3D printed case**
 
-	Use Acetone to remove marks the case, be careful to to touch anything with the acetone which is not the resin case as it will melt plastics.
+	There are 2 types of cases that ship with Astrid, the older Resin Case, and the newer FDM printed ASA case.
+	
+	For the Resin case ONLY, use Acetone to remove marks the case, be careful to to touch anything with the acetone which is not the resin case as it will melt plastics.
+	
+	For the FDM printed case, clean it damp cloth or a bit of Isopropyl Alcohol.
+	
+	The case should only be cleaned with power off, being careful not to use access solution that will get into the device.
 
 * **I have multiple Astrids, do I need a computer for each one?**
 
