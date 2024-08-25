@@ -1,15 +1,15 @@
 # FAQ
 
 * [Cleaning the Astrid 3D printed case](#cleaning-the-astrid-3D-printed-case)
-* [I have multiple Astrids, do I need a computer for each one](#i-have-multiple-astrids-do-i-need-a-computer-for-each-one)
-* [What's the best device to control Astrid](#what's-the-best-device-to-control-astrid)
-* [Unattended setups, do I need to leave my tablet/computer/phone](#unattended-setups,-do-i-need-to-leave-my-tablet/computer/phone)
-* [Is Astrid for Prepoint only](#is-astrid-for-prepoint-only)
-* [Which video analysis software is supported](#which-video-analysis-software-is-supported)
-* [Which light curve analysis software is supported](#which-light-curve-analysis-software-is-supported)
-* [Astrid, Hot Climates, Cold Weather, and moisture](#astrid,-hot-climates,-cold-weather,-and-moisture)
-* [Stealth Mode - removing lights for unattended operation](#stealth-mode---removing-lights-for-unattended-operation)
-* [Stretching (display)](#stretching-(display))
+* [I have multiple Astrids, do I need a computer for each one?](#i-have-multiple-astrids-do-i-need-a-computer-for-each-one)
+* [What's the best device to control Astrid?](#whats-the-best-device-to-control-astrid)
+* [Unattended setups, do I need to leave my tablet/computer/phone?](#unattended-setups-do-i-need-to-leave-my-tablet/computer/phone)
+* [Is Astrid for Prepoint only?](#is-astrid-for-prepoint-only)
+* [Which video analysis software is supported?](#which-video-analysis-software-is-supported)
+* [Which light curve analysis software is supported?](#which-light-curve-analysis-software-is-supported)
+* [Astrid, Hot Climates, Cold Weather, and moisture](#astrid-hot-climates-cold-weather-and-moisture)
+* [Stealth Mode - removing lights for unattended operation](#stealth-mode--removing-lights-for-unattended-operation)
+* [Stretching (display)](#stretching-display)
 * [Plate Solving Arrows On Manual Equatorial Mounts](#plate-solving-arrows-on-manual-equatorial-mounts)
 * [Star/Planet/Moon Saturates At Highest Video Frame Rate](#star/planet/moon-saturates-at-highest-video-frame-rate)
 
@@ -23,31 +23,31 @@ For the FDM printed case, clean it damp cloth or a bit of Isopropyl Alcohol.
 	
 The case should only be cleaned with power off, being careful not to use access solution that will get into the device.
 
-### I have multiple Astrids, do I need a computer for each one
+### I have multiple Astrids, do I need a computer for each one?
 
 Only one computer/tablet or phone is needed to control all Astrids
 
-### Do I need an Astrid Mini Display for every Astrid
+### Do I need an Astrid Mini Display for every Astrid?
 
 No, you only need one for all the Astrids you own, it can be unplugged and moved to another Astrid
 	
-### What's the best device to control Astrid
+### What's the best device to control Astrid?
 	
 A tablet that can run VNC (e.g. iPad) is the most convenient to control Astrid as it's very portable and a reasonably large screen.  However a phone could be used (smaller screen) or computer (larger screen but more bulky)
 	
-### Unattended setups, do I need to leave my tablet/computer/phone
+### Unattended setups, do I need to leave my tablet/computer/phone?
 
 No, Astrid will keep runing despite you not being connected to it, take your tablet/computer/phone with you.
 	
-### Is Astrid for Prepoint only
+### Is Astrid for Prepoint only?
 
 Astrid can be used with Goto scopes too, any scope supported by Indilib is supported by Astrid
 	
-### Which video analysis software is supported
+### Which video analysis software is supported?
 	
 Currently, only Bob Anderson's PyMovie has support to read the RAVF video files that Astrid generates. Astrid does not generate ADV format files due to the lack of 10-bit RAW support. Astrid player can convert to FITs files, but you will lose audit information that Astrid generates and that conversion would take a long time. Limovie and Tangra do not support RAVF at this time, if you wish to see Astrid run with these applications, please contact their authors to request. Once the light curve has been extracted by PyMovie, it can be read in PyOTE, AOTA, ROTE or Occular.
 	
-### Which light curve analysis software is supported
+### Which light curve analysis software is supported?
 
 Once the light curve has been generated in PyMovie, it can be analyzed in PyOTE, AOTA, ROTE or Occular.
 
