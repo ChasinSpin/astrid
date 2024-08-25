@@ -3,7 +3,7 @@
 * [Cleaning the Astrid 3D printed case](#cleaning-the-astrid-3D-printed-case)
 * [I have multiple Astrids, do I need a computer for each one?](#i-have-multiple-astrids-do-i-need-a-computer-for-each-one)
 * [What's the best device to control Astrid?](#whats-the-best-device-to-control-astrid)
-* [Unattended setups, do I need to leave my tablet/computer/phone?](#unattended-setups-do-i-need-to-leave-my-tablet/computer/phone)
+* [Unattended setups, do I need to leave my tablet/computer/phone?](#unattended-setups-do-i-need-to-leave-my-tabletcomputerphone)
 * [Is Astrid for Prepoint only?](#is-astrid-for-prepoint-only)
 * [Which video analysis software is supported?](#which-video-analysis-software-is-supported)
 * [Which light curve analysis software is supported?](#which-light-curve-analysis-software-is-supported)
@@ -11,7 +11,7 @@
 * [Stealth Mode - removing lights for unattended operation](#stealth-mode--removing-lights-for-unattended-operation)
 * [Stretching (display)](#stretching-display)
 * [Plate Solving Arrows On Manual Equatorial Mounts](#plate-solving-arrows-on-manual-equatorial-mounts)
-* [Star/Planet/Moon Saturates At Highest Video Frame Rate](#star/planet/moon-saturates-at-highest-video-frame-rate)
+* [Star/Planet/Moon Saturates At Highest Video Frame Rate](#starplanetmoon-saturates-at-highest-video-frame-rate)
 
 ### Cleaning the Astrid 3D printed case
 
