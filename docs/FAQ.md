@@ -1,7 +1,7 @@
 # FAQ
 
 * [Cleaning the Astrid 3D printed case](#cleaning-the-astrid-3D-printed-case)
-* [I have multiple Astrids, do I need a computer for each one](#i-have-multiple-astrids--do-i-need-a-computer-for-each-one)
+* [I have multiple Astrids, do I need a computer for each one](#i-have-multiple-astrids-do-i-need-a-computer-for-each-one)
 * [What's the best device to control Astrid](#what's-the-best-device-to-control-astrid)
 * [Unattended setups, do I need to leave my tablet/computer/phone](#unattended-setups,-do-i-need-to-leave-my-tablet/computer/phone)
 * [Is Astrid for Prepoint only](#is-astrid-for-prepoint-only)
