@@ -20,6 +20,10 @@ Please remember to Thumbs Up and Subscribe.
 * [Build SD Card, USB Drive, VNC and First Light](https://www.youtube.com/watch?v=FWFcrbeaBLk)
 * [Astrid Customer Camera Sensor Assembly Preparation](https://www.youtube.com/watch?v=KGnb8kZ5_lM&t=92s)
 
+Ted Blank has also created an excellent video demonstrating using Astrid to Prepoint and Record an Occultation:
+
+* [Ted Blank - Using Astrid to Prepoint and Record An Occultation](https://www.youtube.com/watch?v=A8jkwf8NDow)
+
 ## Getting Started
 
 1. [Usage Guide](UsageGuide.md)

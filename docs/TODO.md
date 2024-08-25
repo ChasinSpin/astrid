@@ -1,5 +1,8 @@
 # TODO
 
+* Cancel button on OWCloud Download when internet not connected
+* Ted: Player, Star Analysis Bomb
+* Ted: I know you don't have a lot of control over where the windows end up on the desktop, but in the video you might have noticed that the green crosshair ended up being hidden behind the prepoint menu window.  I had to cancel out of the prepoint window to find it.  Is there any way to ensure that during the iterative prepoint process, none of the display window is obscured by anything in front of it?
 * David: "That's fine for the long events we used to record, with durations of 3s or more, but for shorter occultations, I agree with Bob Anderson, always record at least 30s before and after. The 10x rule is only for the highest chance of detecting satellites, but for MB objects, satellites out to 100x are possible, but in practice, they are rarely found more than 10x away."
 * Double chord spacing and kml
 * Vizier light curve submission
