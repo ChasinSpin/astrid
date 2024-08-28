@@ -1,5 +1,6 @@
 # FAQ
 
+* [Power Jack Is Intermittent](#power-jack-is-intermittent)
 * [Cleaning the Astrid 3D printed case](#cleaning-the-astrid-3D-printed-case)
 * [I have multiple Astrids, do I need a computer for each one?](#i-have-multiple-astrids-do-i-need-a-computer-for-each-one)
 * [What's the best device to control Astrid?](#whats-the-best-device-to-control-astrid)
@@ -12,6 +13,10 @@
 * [Stretching (display)](#stretching-display)
 * [Plate Solving Arrows On Manual Equatorial Mounts](#plate-solving-arrows-on-manual-equatorial-mounts)
 * [Star/Planet/Moon Saturates At Highest Video Frame Rate](#starplanetmoon-saturates-at-highest-video-frame-rate)
+
+### Power Jack Is Intermittent
+
+If the power jack is intermittent, then please push the plug fully into the jack.  Astrid's power jacks are high-power, high-grade power jacks designed for long life (unlike many astro devices).  To enagage the jack fully, it needs to be fully pushed in which may take some pressure, especially when new.
 
 ### Cleaning the Astrid 3D printed case
 

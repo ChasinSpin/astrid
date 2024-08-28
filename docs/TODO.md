@@ -1,5 +1,6 @@
 # TODO
 
+* Ted: can you make the 'cleanship' shell script also reset the privacy notice counter back to 3?  That would require a new 'hidden' image, so no rush.
 * Cancel button on OWCloud Download when internet not connected
 * Ted: Player, Star Analysis Bomb
 * Ted: I know you don't have a lot of control over where the windows end up on the desktop, but in the video you might have noticed that the green crosshair ended up being hidden behind the prepoint menu window.  I had to cancel out of the prepoint window to find it.  Is there any way to ensure that during the iterative prepoint process, none of the display window is obscured by anything in front of it?
