@@ -13,6 +13,7 @@
 * [Stretching (display)](#stretching-display)
 * [Plate Solving Arrows On Manual Equatorial Mounts](#plate-solving-arrows-on-manual-equatorial-mounts)
 * [Star/Planet/Moon Saturates At Highest Video Frame Rate](#starplanetmoon-saturates-at-highest-video-frame-rate)
+* [### Optical Train Dimensions and BackFocus Distance](#optical-train-dimensions-and-backfocus-distance)
 
 ### Power Jack Is Intermittent
 
@@ -100,3 +101,11 @@ For Equatorial mounts, the user needs to think in terms of where the scope is vi
 ### Star/Planet/Moon Saturates At Highest Video Frame Rate
 
 Occasionally, if the telescope is very large, or stars are bright, the Astrid sensor may saturate at the highest frame rate.  The first method to reduce the brightness is to reduce the gain.  If it is still saturating after that and you need to reduce the brightness further, then use a Neutral Density (ND) filter. ND filters for 1.25" are cost-effective and screw into the barrel of the IOTA 0.5X reducer.
+
+### Optical Train Dimensions and BackFocus Distance
+
+For the optical train dimensions for calculating backfocus, or for ordering the correct adapter to work with a Hyperstar, see the following:
+
+![IOTA Astrid Back Focus and Adapter Dimensions 1.25" Barrel](images/BackFocus1.png)
+
+![Alternative Back Focus and Adapter Dimensions M48F or M42F/T2](images/BackFocus2.png)
