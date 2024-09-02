@@ -13,7 +13,7 @@
 * [Stretching (display)](#stretching-display)
 * [Plate Solving Arrows On Manual Equatorial Mounts](#plate-solving-arrows-on-manual-equatorial-mounts)
 * [Star/Planet/Moon Saturates At Highest Video Frame Rate](#starplanetmoon-saturates-at-highest-video-frame-rate)
-* [### Optical Train Dimensions and BackFocus Distance](#optical-train-dimensions-and-backfocus-distance)
+* [Optical Train Dimensions and BackFocus Distance](#optical-train-dimensions-and-backfocus-distance)
 
 ### Power Jack Is Intermittent
 
