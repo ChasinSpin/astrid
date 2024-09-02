@@ -108,4 +108,11 @@ For the optical train dimensions for calculating backfocus, or for ordering the 
 
 ![IOTA Astrid Back Focus and Adapter Dimensions 1.25" Barrel](images/BackFocus1.png)
 
+Note: To reduce the focal length further, spacer rings (e.g. 5mm) can be added between the focal reducer and the IOTA C/CS Mount to 1.25" F adapter. A typical SCT can benefit from 3 x 5mm spacer rings and still have focusing range.
+
+An alternative, if you don't require the focal reducer is a straight C/CS Mount to 1.25" Barrel Connector [SVBONY C Mount to 1.25" Video Camera Barrel Adapter](https://www.amazon.com/gp/product/B07R4SSBKC) 
+
 ![Alternative Back Focus and Adapter Dimensions M48F or M42F/T2](images/BackFocus2.png)
+
+* A: [Metal M42 to M48 Male to Female Step-Up Coupling Ring Adapter](www.amazon.com/dp/B081382KJV)
+* B: [C Mount(25mm 0.75mm Pitch) to T T2 (42mm 0.75mm Pitch) Coupling Ring Adapter](www.amazon.com/dp/B0813129HJ)
