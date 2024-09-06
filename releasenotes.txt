@@ -11,6 +11,8 @@ Version 1.0.041:
 
 	* On the Auto Record panel (and other panels where date/time editing is disabled), the up/down arrows have been removed for clarity
 
+	* Cleanship script (for Ted) now reactivates the privacy notice
+
 Version 1.0.040:
 ================
 
