@@ -7,6 +7,8 @@ Version 1.0.041:
 
 	* Prepoint window is now further to the left of the video window
 
+	* When syncing events from OWCloud, the default start/end times are "at least" 30 seconds prior to the start and 30 seconds after the end of the event.
+
 Version 1.0.040:
 ================
 

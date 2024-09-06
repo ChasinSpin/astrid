@@ -95,6 +95,8 @@ class OWCloud():
 					starAlt			= station['StarAlt']
 
 					extraSecs               = int(math.ceil(eventDuration * OWCloud.MOON_MULTIPLIER))
+					if extraSecs < 30:
+						extraSecs = 30
 					extraStartSecs          = extraSecs
 					extraEndSecs            = extraSecs
 
