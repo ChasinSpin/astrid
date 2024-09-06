@@ -259,7 +259,7 @@ class UiPanelObject(UiPanel):
 
 		if not self.camera.isPhotoMode():
 			self.camera.ui.panelTask.switchModeTo('Photo')
-		self.dialog = UiDialogPanel('Prepoint', UiPanelPrepoint, args = {'camera': self.camera, 'object': self.occultationObject}, parent = self.camera.ui)
+		self.dialog = UiDialogPanel('Prepoint', UiPanelPrepoint, args = {'camera': self.camera, 'object': self.occultationObject}, parent = self.camera.ui, position=(20,20))
 
 
 	def buttonAutoRecordPressed(self):

@@ -4,10 +4,10 @@ from UiQDialog import UiQDialog
 
 class UiDialogPanel():
 
-	def __init__(self, title, uiPanel, args = None, parent = None, modal = True):
+	def __init__(self, title, uiPanel, args = None, parent = None, modal = True, position = (260, 20)):
 		super().__init__()
 
-		self.dialog = UiQDialog(parent = parent, topLeft = (260, 20))
+		self.dialog = UiQDialog(parent = parent, topLeft = position)
 
 		self.dialog.setWindowFlags(Qt.CustomizeWindowHint | Qt.FramelessWindowHint | Qt.Tool)
 

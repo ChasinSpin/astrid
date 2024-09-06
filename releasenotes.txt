@@ -5,6 +5,8 @@ Version 1.0.041:
 
 	* Added frame rate and exposure duration to "Switch to OTE Video" prompt when Auto Recording
 
+	* Prepoint window is now further to the left of the video window
+
 Version 1.0.040:
 ================
 
