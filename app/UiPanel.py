@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QDateTime
-from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar, QTabWidget, QListWidget, QStatusBar
+from PyQt5.QtWidgets import QWidget, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QComboBox, QCheckBox, QPushButton, QLineEdit, QDateTimeEdit, QTextEdit, QGridLayout, QProgressBar, QTabWidget, QListWidget, QStatusBar, QAbstractSpinBox
 from PyQt5.QtGui import QValidator, QDoubleValidator, QIntValidator, QPalette, QColor, QPixmap
 from UiWidgetHMSDMS import UiWidgetHMSDMS
 from UiValidators import DoubleValidator, IntValidator
@@ -176,6 +176,8 @@ class UiPanel(QWidget):
 	def addDateTimeEdit(self, title: str, qdatetime: QDateTime = QDateTime.currentDateTime(), editable = True) -> QDateTimeEdit:
 		label = QLabel(title)
 		dateTimeEdit = QDateTimeEdit()
+		if not editable:
+			dateTimeEdit.setButtonSymbols(QAbstractSpinBox.NoButtons)
 		dateTimeEdit.setDateTime(qdatetime)
 		dateTimeEdit.setDisplayFormat('yyyy-MM-dd hh:mm:ss')
 

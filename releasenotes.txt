@@ -9,6 +9,8 @@ Version 1.0.041:
 
 	* When syncing events from OWCloud, the default start/end times are "at least" 30 seconds prior to the start and 30 seconds after the end of the event.
 
+	* On the Auto Record panel (and other panels where date/time editing is disabled), the up/down arrows have been removed for clarity
+
 Version 1.0.040:
 ================
 
