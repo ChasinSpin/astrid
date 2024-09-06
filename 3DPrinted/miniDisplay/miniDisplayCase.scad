@@ -1,9 +1,36 @@
 // Needs:   3 x M2.5x14mm bolt
 //          3 x M2.5 nuts
 //
-// Resin: No support, anti aliasing=smooth surfaces, high definition ant-aliasing
+// FDM:
+//      Print partNum 0
+//      
+//          Filament Color:  Main: ASA Green (closer to Turquoise)
+//          Drying:          ASA will need drying before use, it comes from Bambu Labs too wet to print well.  
+//                           12hrs should be enough at 70C (ASA setting on Creality)
+//          AMS Compatible:  Yes (need to make sure descicant is dry in AMS)
+//          Plate:           Smooth PEI Plate
+//          Bed Temperature: 110C (yes, 10C over)
+//          Bed Adhesion:    Bambu Liquid Glue
+//          Support:         Yes   (** USE Tree(auto))
+//          Infill:          15%
+//
+//      Print partNum 1
+//      
+//          Filament Color:  TPU 95A HF Yellow
+//          Drying:          Dry as appropriate
+//          AMS Compatible:  No
+//          Plate:           Smooth PEI Plate
+//          Bed Temperature: Regular
+//          Bed Adhesion:    Bambu Liquid Glue
+//          Support:         No
+//          Infill:          15%
+//
+// Post Processing:
+//      - Wash adhesive off parts
+//      - Dry parts
+//      - Remove white haze on cases where there was plate contact with heat gun
 
-partNum                 = 0;    // 0 = All, 1 = Case, 2 = Buttons, 3 = Bottom Case, 4 = Top Case
+partNum                 = 0;    // 0 = Case (both parts), 1 = Buttons, 2 = Bottom Case, 3 = Top Case
 
 splitCase               = true;
 caseSideBorder          = 2.0;
@@ -18,6 +45,7 @@ pcbBaseHeight           = 6.0;
 caseSplitHeight         = caseBottomBorder + 4.4;
 
 manifoldCorrection      = 0.01;
+manifoldCorrection2     = manifoldCorrection * 2;
 
 holeUsbCDimensions      = [caseSideBorder + manifoldCorrection * 2, 9.4, 3.6];
 holeUsbCPos             = [-caseInnerDimensions[0]/2 + manifoldCorrection, 0, caseSplitHeight];
@@ -40,17 +68,17 @@ ledHolePosXY2           = [-caseInnerDimensions[0]/2 + 2.3, 5.0];
 lcdHoleDimensions       = [28.0, 17.2];
 lcdHolePosXY            = [-caseInnerDimensions[0]/2 + 11.7, 0];
 
-buttonHoleDimensions    = [5.0, 4.0];
-buttonD0HolePosXY       = [-caseInnerDimensions[0]/2 + 8.0, -7.0];
-buttonD1HolePosXY       = [-caseInnerDimensions[0]/2 + 8.0, 0.0];
-buttonD2HolePosXY       = [-caseInnerDimensions[0]/2 + 8.0, 7.0];
+buttonHoleDimensions    = [5.0-0.8, 4.0];
+buttonD0HolePosXY       = [-caseInnerDimensions[0]/2 + 8.0 + 0.4, -7.0];
+buttonD1HolePosXY       = [-caseInnerDimensions[0]/2 + 8.0 + 0.4, 0.0];
+buttonD2HolePosXY       = [-caseInnerDimensions[0]/2 + 8.0 + 0.4, 7.0];
 buttonResetHolePosXY    = [-caseInnerDimensions[0]/2 + 45.0, 0.0];
 
-boltDiameter            = 2.7;
+boltDiameter            = 2.7 + 0.3;
 boltHeadDiameter        = 4.9;
 boltHeadHeight          = 1.7;
 boltLength              = 14.0;
-nutDiameter             = 5.9;
+nutDiameter             = 5.9 + 0.3;
 nutThickness            = 2.0;
 headToNutLength         = 12.5;
 boltReinforceDiameter   = 6.4;
@@ -80,7 +108,7 @@ buttonCornerDimensions  = [2.0, 2.0, 0.8];
 $fn                     = 40;
 
 
-if ( partNum == 0 || partNum == 1 )
+if ( partNum == 0 )
 {
     if ( splitCase )
     {
@@ -98,15 +126,13 @@ if ( partNum == 0 || partNum == 1 )
     }
 }
 
-if ( partNum == 0 || partNum == 2 )
+if ( partNum == 1)
 {
-    translate( [-35, 0, 0] )
-        buttons();
-    translate( [-45, 0, 0] )
+    translate( [0, cubeDimXY[1]/2 + 3, 0] )
         buttons();
 }
 
-if ( partNum == 0 || partNum == 3 )
+if ( partNum == 0 || partNum == 2 )
 {
     if ( splitCase )
     {
@@ -115,7 +141,7 @@ if ( partNum == 0 || partNum == 3 )
     }
 }
 
-if ( partNum == 0 || partNum == 4 )
+if ( partNum == 0 || partNum == 3 )
 {
     if ( splitCase )
     {
@@ -129,43 +155,45 @@ if ( partNum == 0 || partNum == 4 )
 
 
 module buttons()
-{
-    button();
-    translate( [0, 8, 0] )
-        button();
-    translate( [0, 16, 0] )
-        button();
-    translate( [0, 24, 0] )
-        button();     
+{    
+    caseTopBorderOffset = caseOuterDimensions[2] - caseTopBorder - manifoldCorrection;
+    
+    buttonsSurroundThickness    = 0.4;
+    buttonsSurroundExtra    = 5.5;
+    buttonsBorderDimensions = [buttonResetHolePosXY[0] - buttonD0HolePosXY[0] + buttonMainDimensions[0], buttonD2HolePosXY[1] - buttonD0HolePosXY[1] + buttonMainDimensions[1] + buttonsSurroundExtra, buttonsSurroundThickness];
+    borderInsetAmount   = 4.0;
+    buttonBorderInsetDimensions = [buttonsBorderDimensions[0] - buttonMainDimensions[0] * 2, buttonsBorderDimensions[1] - borderInsetAmount, buttonsBorderDimensions[2] + manifoldCorrection2];
+
+    difference()
+    {
+        union()
+        {
+            // button holes D0/D1/D2
+            for ( posXY = [buttonD0HolePosXY, buttonD1HolePosXY, buttonD2HolePosXY] )
+                translate( [posXY[0], posXY[1], 0] )
+                    button();
+        
+            // button holes reset
+            translate( [buttonResetHolePosXY[0], buttonResetHolePosXY[1], 0] )
+                    rotate( [0, 0, 90] )
+                        button();
+                     
+            translate( [buttonD0HolePosXY[0] - buttonMainDimensions[0]/2, -(buttonD2HolePosXY[1] - buttonD0HolePosXY[1])/2 - buttonMainDimensions[1]/2 - buttonsSurroundExtra/2, 0 ] )
+                cube( [buttonsBorderDimensions[0], buttonsBorderDimensions[1], buttonsBorderDimensions[2]], center = false);
+        }
+        
+        translate( [buttonD0HolePosXY[0] - buttonMainDimensions[0]/2, -(buttonD2HolePosXY[1] - buttonD0HolePosXY[1])/2 - buttonMainDimensions[1]/2 - buttonsSurroundExtra/2, -manifoldCorrection ] )
+            translate( [buttonMainDimensions[0], borderInsetAmount/2, 0] )
+                cube( buttonBorderInsetDimensions, center = false);
+    }
 }
 
 
 
 module button()
 {
-    difference()
-    {
-        union()
-        {
-            translate( [0, 0, legThickness/2] )
-            {
-                cube( [legLongLength, legLongWidth, legThickness], center = true );
-                cube( [legShortWidth, legShortLength, legThickness], center = true );
-                cube( [1.2, 9, legThickness], center = true);
-            }
-   
-            translate( [0, 0, buttonMainHeight/2] )
-                cube( [buttonMainDimensions[0], buttonMainDimensions[1], buttonMainHeight], center = true);
-        }
-        
-        translate( [0, 0, -manifoldCorrection] )
-            lozenge( buttonLozenge[0], buttonLozenge[1], buttonLozenge[2] + manifoldCorrection );
-            
-        for ( posXY = [[buttonMainDimensions[0]/2, buttonMainDimensions[1]/2, 0, -45], [-buttonMainDimensions[0]/2, buttonMainDimensions[1]/2, 45, 0], [buttonMainDimensions[0]/2, -buttonMainDimensions[1]/2, -45, 0], [-buttonMainDimensions[0]/2, -buttonMainDimensions[1]/2, 0, 45]] )
-            translate( [posXY[0], posXY[1], buttonCornerDimensions[2]/2 - manifoldCorrection] )
-                rotate( [posXY[2], posXY[3], 45] )
-                    cube( buttonCornerDimensions, center = true);
-    }
+    translate( [0, 0, buttonMainHeight/2] )
+        cube( [buttonMainDimensions[0], buttonMainDimensions[1], buttonMainHeight], center = true);        
 }
 
 

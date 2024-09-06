@@ -1,5 +1,6 @@
 # TODO
 
+* On Change to OTE Video mode for auto record popup, add "Remember to check frame rate matches your desired rate"
 * Script to remove the mountpoint, or automatically look for it on boot and remove:  sudo rm -rf /medi/pi/ASTRID   May need to use permissions to identify: pi@astrid-0121:~ $ ls -la /media/pi
 total 28
 drwxr-x---+ 4 root root  4096 Aug 28 15:41 .
