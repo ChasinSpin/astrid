@@ -268,7 +268,7 @@ class UiPanelObject(UiPanel):
 			return
 
 		if not self.camera.isOTEVideoMode():
-			ret = QMessageBox.question(self, ' ', 'Auto Recording is only available when camera is in OTE Video Mode. Switch Mode To OTE Video?\n\nFrame rate is currently set to: %0.2f fps (%0.6fs exposures)\n\nVerify that this frame rate is what you want for OTE Video Mode, otherwise cancel, switch to OTE Video and change frame rate.' % (1.0/(self.camera.videoFrameDuration / 1000000.0), self.camera.picam2_still_config['controls']['ExposureTime'] / 1000000.0), QMessageBox.Yes | QMessageBox.Cancel)
+			ret = QMessageBox.question(self, ' ', 'Auto Recording is only available when camera is in OTE Video Mode. Switch Mode To OTE Video?\n\nFrame rate is currently set to: %0.2f fps (%0.6fs exposures)\n\nVerify that this frame rate is what you want for OTE Video Mode, otherwise cancel, switch to OTE Video and change frame rate.' % (1.0/(self.camera.videoFrameDuration / 1000000.0), self.camera.videoFrameDuration / 1000000.0), QMessageBox.Yes | QMessageBox.Cancel)
 			if ret == QMessageBox.Yes:
 				self.camera.ui.panelTask.switchModeTo('OTE Video')
 			else:
