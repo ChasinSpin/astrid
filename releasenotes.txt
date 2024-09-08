@@ -1,3 +1,8 @@
+Version 1.0.043:
+================
+
+	* Fixed bug that was reintroduced by change in 1.0.042, where if the occultation target wasn't goto'd, the RA/DEC of the target were not recorded in the .ravf metadata, preventing the target identification crosshairs in Player.
+
 Version 1.0.042:
 ================
 

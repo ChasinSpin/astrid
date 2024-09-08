@@ -1160,8 +1160,8 @@ class CameraModel:
 			self.ui.panelObject.setRaDec(obj)
 			self.setJobNameUi(search.replace(' ', '_').replace('(','').replace(')',''))
 
+			self.objectCoords = obj
 			if self.ui.panelObject.messageBoxSearchObjectSuccess(search, obj):
-				self.objectCoords = obj
 				self.lastCoords	= self.objectCoords
 				self.lastSolvedPosition = None
 				self.ui.panelMount.resetUpcomingMeridianFlasher()
