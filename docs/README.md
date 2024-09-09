@@ -34,7 +34,7 @@ Ted Blank has also created an excellent video demonstrating using Astrid to Prep
 6. [USB Drive Requirements](USBDriveRequirements.md)
 7. [USB Flash Drive Layout](FlashDriveLayout.md)
 8. [Plate Solver](Platesolver.md)
-0. [Mounts](Mounts.md)
+9. [Mounts](Mounts.md)
 
 ## Other
 * [Install From Astrid Image](InstallImage.md)
@@ -43,4 +43,5 @@ Ted Blank has also created an excellent video demonstrating using Astrid to Prep
 * [Configuration](Configuration.md)
 * [OTEStamper Timing Board](OTEStamper.md)
 * [Assembly Guide](AssemblyGuide.md)
+* [Prime Focus Case](AstridPrimeFocus.md)
 * [TODO](TODO.md)
