@@ -4,7 +4,7 @@
 
 The Astrid - Prime Focus case is a version of Astrid that separates the camera from the processing unit to reduce the footprint for prime focus setups.  A prime focus setup is where the camera is located at the front of the telescope instead of the rear.  i.e. HyperStar SCTs, Suitcase Mounts (Broughton), Rasa, Prime Focus Newtonians, etc.  It can also be used for smaller Dobsonians, which are typically intolerant of extra wait at the eyepiece.
 
-![Prime Focus Astrid Case](../docs/primefocus.jpg)
+![Prime Focus Astrid Case](images/primefocus.jpg)
 
 Astrid—Refractor (the all-in-one unit) is still the recommended solution for SCTs that are not Hyperstars, Newtonians that still have their eyepiece holders and Refractors.
 
