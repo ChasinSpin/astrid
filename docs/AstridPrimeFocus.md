@@ -17,7 +17,7 @@ The cable between these 2 parts is 19 inches +/—1 inch. As the camera will be 
 
 This camera case is 3D printed in black (with a turquoise highlight on the nonvisible side), has no lights, and has the Flat Flex cable and a single thin wire coming out of the vertical slot. If you have a spider vane, the cables can be taped to that, with or without the wire sleeve.
 
-The remainder of Astrid is a separate unit you can place somewhere outside of the mirror capture area (e.g. on the side of the scope).  Adhesive Velcro is the suggested way to do this.
+The remainder of Astrid is a separate unit you can place somewhere outside of the mirror capture area e.g. on the side of the scope. Adhesive Velcro is the suggested way to do this.
 
 This approach has a few advantages:
 
