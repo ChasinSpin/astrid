@@ -40,7 +40,7 @@ If you’re rough with equipment, the cable assembly is considered a consumable,
 *(For IOTA Construction or User Repair Only)*
 
 | Quantity | Part | Description | Manufacturer | Supplier | Supplier Part # |
-| -------- | ---- | ----- | --------- | ------- | ----------- | ------------ | -------- | --------------- |
+| -------- | ---- | ----------- | ------------ | -------- | --------------- |
 |1|Raspberry Pi Camera Cable 610mm|Adafruit 15-pin 610mm 1731|Adafruit|DigiKey|1528-1791-ND|
 |2|Crimp|0.1" Connector 28awg Crimp Gold|Harwin Inc.|DigiKey|M20-1160042|
 |51cm|PET Expandable Sleeving 5/8"|Expandable Sleeving 5/8" X 100' Black PTN0.63BK100|Techflex|DigiKey|1030-PTN0.63BK100-ND|
