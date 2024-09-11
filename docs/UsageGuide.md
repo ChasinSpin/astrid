@@ -82,9 +82,15 @@ The ethernet port flashes alternate Green/Yellow when connected to a known WiFi 
 
 ### Ethernet (wired connection)
 
-Astrid also has an ethernet port that can be used. Plug in your ethernet connection and [Mini Display](MiniDisplay.md) will indiciate the IP address and hostname to VNC too.
+***Note: Astrid over internet is not supported***
 
-To set back to the normal behaviour remove the ethernet cable.
+Astrid also has an ethernet port. Plug in your ethernet connection and [Mini Display](MiniDisplay.md) will indiciate the IP address and hostname to VNC too.
+
+Now connect over VNC, run a terminal and type:
+
+> sudo systemctl stop dnsmasq.service
+
+To set back to the normal behaviour, shutdown Astrid (i.e. power off), remove the ethernet cable and power on Astrid.
 
 ## First Light
 
