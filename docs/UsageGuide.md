@@ -13,9 +13,9 @@
 * [Our Setup](#our-setup)
 * [SSH And SFTP](#ssh-and-sftp)
 * [Prepointing](#prepointing)
-* [Auto Record and OWCloud](auto-record-and-owcloud)
-* [Player](player)
-* [Light Curve Analysis](light-curve-analysis)
+* [Auto Record and OWCloud](#auto-record-and-owcloud)
+* [Player](#player)
+* [Light Curve Analysis](#light-curve-analysis)
 * [Occult4 Searches](#occult4-searches)
 
 ## Power
