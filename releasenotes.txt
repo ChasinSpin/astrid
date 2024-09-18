@@ -1,3 +1,8 @@
+Version 1.0.044:
+================
+
+	* Added new warning message for Auto Record, when video frame rate is slower than 1/2 the maximum event duration
+
 Version 1.0.043:
 ================
 

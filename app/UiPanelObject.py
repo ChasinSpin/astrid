@@ -278,6 +278,9 @@ class UiPanelObject(UiPanel):
 			if self.camera.ui.videoFrameRateWarning():
 				return
 
+			if self.camera.ui.videoFrameRateTooSlowWarning(self.occultationObject['event_duration']):
+				return
+
 			if AstUtils.isProcessByNameRunning('chromium-browser'):
 				ret = QMessageBox.warning(self, ' ', 'The Chromium Web Browser is running which will result in frames dropped in Astrid.  Do you wish to Kill Chromium?', QMessageBox.Yes | QMessageBox.Cancel)
 				if ret == QMessageBox.Yes:

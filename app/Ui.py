@@ -267,6 +267,12 @@ class Ui(QtWidgets.QMainWindow):
 		return False
 
 
+	def videoFrameRateTooSlowWarning(self, eventDuration):
+		if self.camera.videoFrameDuration > int((0.5 * eventDuration) * 1000000.0):
+			QMessageBox.warning(self, ' ', 'Your frame rate is slower than 1/2 the maximum event duration, you are unlikely to capture the event!', QMessageBox.Ok)
+		return False
+
+
 	def updateWindowTitle(self):
 		otestamper	= OteStamper.getInstance()
 	
