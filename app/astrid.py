@@ -2,12 +2,14 @@
 
 import os
 import sys
+import stat
 import json
 import atexit
 import argparse
 import logging
 import subprocess
 from Ui import Ui
+from pwd import getpwuid
 from settings import Settings
 from astsite import AstUtils
 from UiDialogPanel import UiDialogPanel
@@ -170,10 +172,18 @@ if __name__ == '__main__':
 
 	def fixAstridMultipleDrives():
 		# If we have multiple drives (ASTRID and ASTRID1), then highly likely ASTRID is a folder accidentally created
-		if os.path.isdir(astrid_drive) and os.path.isdir(astrid_drive + '1'):
-			print('Removing extra /media/pi/ASTRID folder so USB Drive can be mounted')
-			os.system('sudo sh -c "/usr/bin/umount /dev/sda1;/usr/bin/rmdir /media/pi/ASTRID"')
-			os.system('/usr/bin/udisksctl mount -b /dev/sda1 --no-user-interaction')
+		if os.path.isdir(astrid_drive):
+			st = os.stat(astrid_drive)
+			fowner = getpwuid(st.st_uid).pw_name
+			if (not (st.st_mode & stat.S_IRGRP)) or (not (st.st_mode & stat.S_IXGRP)) or (not (st.st_mode & stat.S_IROTH)) or (not (st.st_mode & stat.S_IXOTH)):
+				invalidPerms = True
+			else:
+				invalidPerms = False
+
+			if os.path.isdir(astrid_drive + '1') or fowner != 'pi' or invalidPerms:
+				print('Removing extra /media/pi/ASTRID folder so USB Drive can be mounted')
+				os.system('sudo sh -c "/usr/bin/umount /dev/sda1;/usr/bin/rmdir /media/pi/ASTRID"')
+				os.system('/usr/bin/udisksctl mount -b /dev/sda1 --no-user-interaction')
 
 
 	def setStylesheet():
