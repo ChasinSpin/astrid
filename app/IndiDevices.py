@@ -8,6 +8,7 @@ import os
 from astcoord import AstCoord
 from signal import SIGHUP
 from datetime import datetime
+from PyQt5.QtWidgets import QMessageBox
 
 
 INDI_HOST			= 'localhost'
@@ -151,6 +152,22 @@ class IndiTelescope:
 
 		# Get the connect mode switch
 		print('Device_ID:', device_id)
+
+		# Obtain the device name, the driver thinks it has
+		deviceList = self.indi.getDevices()
+		for device in deviceList:
+			print('Discovered Indi Device In Driver:', device.getDeviceName())
+		firstDeviceName = deviceList[0].getDeviceName()
+
+		# Compare the device id of the drive to the device id specified in settings
+		if firstDeviceName != device_id:
+			result = QMessageBox.warning(None, ' ', 'Mismatch between the Indi Telescope Device Id specified in Settings/Mount and the actual device id in the driver.\n\nSettings: %s\nDriver:     %s\n\nWould you like to update the settings to match?' % (device_id, firstDeviceName), QMessageBox.Yes|QMessageBox.No)
+			if result == QMessageBox.Yes:
+				self.settings['indi_telescope_device_id'] = firstDeviceName
+				Settings.getInstance().writeSubsetting('mount')
+				QMessageBox.information(None, ' ', 'Indi Telescope Device Id has been updated to match.\n\nAstrid will now exit, start app again to pickup device change.', QMessageBox.Ok)
+				raise ValueError('Quitting Astrid due to device id being changed.  This is not an error!')
+
 
 		if self.settings['indi_custom_properties'] is not None and len(self.settings['indi_custom_properties']) > 0:
 			for property in self.settings['indi_custom_properties'].split(';'):

@@ -5,9 +5,11 @@ Version 1.0.044:
 
 	* Added automatic removal of bad ASTRID drive mount point caused by power removal without shutdown
 
-	* Astrid now logs the power voltage every 5 minutes for 2 purposes, provide an audit trail for faulty/inadequate power and to show Astrid is alive when it's idle
+	* Now logs the power voltage every 5 minutes for 2 purposes, provide an audit trail for faulty/inadequate power and to show Astrid is alive when it's idle
 
-	* Astrid now logs more user interaction for Auto Record and recording in Photo and OTE Video modes
+	* Now logs more user interaction for Auto Record and recording in Photo and OTE Video modes
+
+	* Mount settings for indi module and usb tty are now constrained to a choice list.  Mismatch between indi driver name and settings driver name is now detected and prompted to auto fix
 
 Version 1.0.043:
 ================
