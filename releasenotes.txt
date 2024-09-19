@@ -7,6 +7,8 @@ Version 1.0.044:
 
 	* Astrid now logs the power voltage every 5 minutes for 2 purposes, provide an audit trail for faulty/inadequate power and to show Astrid is alive when it's idle
 
+	* Astrid now logs more user interaction for Auto Record and recording in Photo and OTE Video modes
+
 Version 1.0.043:
 ================
 

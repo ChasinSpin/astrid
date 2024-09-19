@@ -1,3 +1,4 @@
+from processlogger import ProcessLogger
 import os
 import time
 import math
@@ -18,6 +19,8 @@ class UiPanelTask(UiPanel):
 
 	def __init__(self, camera):
 		super().__init__('Task')
+		self.processLogger	= ProcessLogger.getInstance()
+		self.logger		= self.processLogger.getLogger()
 		self.camera		= camera
 		options = ['Photo', 'OTE Video']
 		self.settings_mount = Settings.getInstance().mount
@@ -191,6 +194,7 @@ class UiPanelTask(UiPanel):
 			return
 
 		print('Button Record Pressed:', checked)
+		self.logger.info('Button Record Pressed in mode: %s and resulted in %s' % ('OTE Video' if self.widgetTask.currentText() == 'OTE Video' else 'Photo', 'Start' if checked else 'Stop'))
 		if checked:
 			self.camera.startRecording()
 		else:

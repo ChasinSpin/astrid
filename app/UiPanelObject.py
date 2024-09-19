@@ -289,14 +289,17 @@ class UiPanelObject(UiPanel):
 				else:
 					return
 
+			self.logger.info('AutoRecord Dialog launched, but Start Auto Record not pressed yet')
 			self.dialog = UiDialogPanel('Auto Record OTE', UiPanelAutoRecord, args = {'camera': self.camera, 'object': self.occultationObject}, parent = self.camera.ui)
 			if self.dialog.result() == 1:
 				start_time = self.dialog.dialog.panel.start_time
 				end_time = self.dialog.dialog.panel.end_time
 				event_time = datetime.strptime(self.occultationObject['event_time'], '%Y-%m-%dT%H:%M:%S')
 				if end_time <= datetime.utcnow():
-                        		QMessageBox.warning(self, ' ', 'End time is before now, old event, unable to record!', QMessageBox.Ok)
+					self.logger.warning('End time is before now, old event, aborting auto record')
+					QMessageBox.warning(self, ' ', 'End time is before now, old event, unable to record!', QMessageBox.Ok)
 				else:
+					self.logger.info('Started Auto Record')
 					self.dialog = UiDialogPanel('Auto Recording', UiPanelAutoRecording, args = {'start_time': start_time, 'end_time': end_time, 'event_time': event_time, 'camera': self.camera}, parent = self.camera.ui, modal = True)
 
 

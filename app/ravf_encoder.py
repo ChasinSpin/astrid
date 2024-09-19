@@ -28,6 +28,8 @@ class RavfEncoder(Encoder):
 		self.processLogger = ProcessLogger.getInstance()
 		self.logger = self.processLogger.getLogger()
 
+		self.logger.info('RavfEncoder init')
+
 		self.camera			= camera
 		self.filename			= filename
 		self.metadata			= metadata
@@ -45,6 +47,8 @@ class RavfEncoder(Encoder):
 
 
 	def start(self):
+		self.logger.info('RavfEncoder start')
+
 		self.recording			= True
 		self.firstFrame = True
 		self.otestamper.resetStatistics()

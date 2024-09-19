@@ -661,11 +661,17 @@ class CameraModel:
 		metadata['naReportForm'] = na_report_form
 
 		self.logger.info('switching logging to: %s' % video_logfile)
+
+		self.logger.info('queue put change file: %s' % video_logfile)
 		self.processLogger.queue.put( { 'cmd': 'change_file', 'fname': video_logfile } )
+
+		self.logger.info('setPropagate')
 		self.processLogger.setPropagate(False)	# Otherwise a default logger outputs subprocess logging information
 
+		self.logger.info('starting RavfEncoder')
 		encoder = RavfEncoder(filename = video_filename, metadata = metadata, camera = self)
 
+		self.logger.info('picam2 start recording')
 		self.picam2.start_recording(encoder, None)
 		self.operatingSubMode = OperatingVideoMode.RECORDING
 

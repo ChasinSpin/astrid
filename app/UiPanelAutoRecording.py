@@ -1,3 +1,4 @@
+from processlogger import ProcessLogger
 import os
 from settings import Settings
 from UiPanel import UiPanel
@@ -17,6 +18,9 @@ class UiPanelAutoRecording(UiPanel):
 	def __init__(self, title, panel, args):
 		super().__init__(title)
 
+		self.processLogger = ProcessLogger.getInstance()
+		self.logger = self.processLogger.getLogger()
+
 		self.camera		= args['camera']
 		self.start_time		= args['start_time']
 		self.end_time		= args['end_time']
@@ -32,6 +36,8 @@ class UiPanelAutoRecording(UiPanel):
 		self.widgetCancel	= self.addButton('Stop Recording', True)
 
 		self.state		= 0
+
+		self.logger.info('Auto Record: Waiting for start time')
 
 		self.stateTimer = QTimer()
 		self.stateTimer.timeout.connect(self.__doState)
@@ -58,6 +64,7 @@ class UiPanelAutoRecording(UiPanel):
 	# CALLBACKS
 
 	def buttonCancelPressed(self):
+		self.logger.info('Auto Record: USER CANCELLED THE AUTO RECORDING')
 		self.recordingCancel()
 		self.panel.cancelDialog()
 
@@ -86,7 +93,9 @@ class UiPanelAutoRecording(UiPanel):
 			else:
 				msg = 'Starting Recording...'
 				self.state += 1
+				self.logger.info('Auto Record: Starting recording')
 				self.recordingStart()
+				self.logger.info('Auto Record: Started recording')
 
 		elif self.state == 1:
 			# Recording
@@ -101,7 +110,9 @@ class UiPanelAutoRecording(UiPanel):
 			if dt >= self.end_time:
 				msg = 'Stopping Recording...'
 				self.state += 1
+				self.logger.info('Auto Record: Stopping recording')
 				self.recordingFinish()
+				self.logger.info('Auto Record: Stopped recording')
 
 		elif self.state == 2:
 			# Finished waiting shutdown
@@ -114,6 +125,7 @@ class UiPanelAutoRecording(UiPanel):
 					deltaSecs = (self.shutdown_time - dt).total_seconds()
 					msg = 'Auto Shutdown In %d Seconds' % (deltaSecs)
 				else:
+					self.logger.info('Auto Record: Shutting down now')
 					msg = 'Shutting down now...'
 					self.shutdown()
 
@@ -122,6 +134,7 @@ class UiPanelAutoRecording(UiPanel):
 		
 
 	def recordingCancel(self):
+		self.logger.info('Auto Record: Recording cancelled')
 		if self.recording:
 			self.recordingFinish()
 		self.stateTimer.stop()
