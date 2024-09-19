@@ -5,6 +5,8 @@ Version 1.0.044:
 
 	* Added automatic removal of bad ASTRID drive mount point caused by power removal without shutdown
 
+	* Astrid now logs the power voltage every 5 minutes for 2 purposes, provide an audit trail for faulty/inadequate power and to show Astrid is alive when it's idle
+
 Version 1.0.043:
 ================
 

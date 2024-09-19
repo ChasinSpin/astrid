@@ -26,6 +26,8 @@ windowGeometry=(10, 100, 1200, 745)
 class Ui(QtWidgets.QMainWindow):
 	# Initializes and displays the UI
 
+	LOG_VOLTAGE_COUNTER_RESET = 60
+
 	def __init__(self, camera, windowTitle):
 		super(Ui, self).__init__()
 
@@ -37,6 +39,8 @@ class Ui(QtWidgets.QMainWindow):
 		self.disabledVoltageWarning	= False
 		self.disabledVoltageShutdown	= False
 		self.waitingToSync		= None
+		self.logVoltageDividerCounter	= self.LOG_VOLTAGE_COUNTER_RESET
+
 
 		# Create the panels
 		self.panelTask		= UiPanelTask(self.camera)
@@ -311,6 +315,11 @@ class Ui(QtWidgets.QMainWindow):
 			QMessageBox.warning(self, ' ', msg, QMessageBox.Ok)
 			self.logger.critical(msg)
 			self.disabledVoltageWarning = True
+
+		self.logVoltageDividerCounter = self.logVoltageDividerCounter - 1
+		if self.logVoltageDividerCounter <= 0:
+			self.logger.info('Supply Voltage: %0.2f' % voltage)
+			self.logVoltageDividerCounter = self.LOG_VOLTAGE_COUNTER_RESET
 
 
 	def waitingToSyncMessageBoxStart(self):
