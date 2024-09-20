@@ -89,3 +89,33 @@ class AstUtils:
 	@classmethod
 	def isInternetPresent(cls) -> bool:
 		return cls.present
+
+
+	@classmethod
+	def calculatePlateSolveTargetDelta(cls, plateSolveCoords, altAzPlateSolve, targetCoords):
+		altAzTarget = targetCoords.altAzRefracted(frame='icrs')
+
+		print('AltAzTarget:', altAzTarget)
+		print('AltAzPlateSolve:', altAzPlateSolve)
+		print('RaDecTarget:', targetCoords)
+		print('RaDecPlateSolve:', plateSolveCoords)
+
+		# Calculate delta
+		#       Az: negative is rotate anti clockclockwise, positive is rotate clockwise
+		#       Alt: negative is move down, positive is move up
+		deltaAlt = altAzTarget[0] - altAzPlateSolve[0]
+		deltaAz = altAzTarget[1] - altAzPlateSolve[1]
+
+		# Calculate nearest azimuth direction if it's more than 180 degrees to the target
+		if deltaAz > 180.0:
+			deltaAz = -(360.0 - deltaAz)
+		elif deltaAz < -180.0:
+			deltaAz = -(-360.0 - deltaAz)
+
+		# Calculate Ra/Dec delta in  360deg
+		plateSolveRaDec	= plateSolveCoords.raDec360Deg(frame='icrs', jnow = True)
+		targetRaDec	= targetCoords.raDec360Deg(frame='icrs', jnow = True)
+		deltaRa		= targetRaDec[0] - plateSolveRaDec[0]
+		deltaDec	= targetRaDec[1] - plateSolveRaDec[1]
+
+		return ((deltaAlt, deltaAz), (deltaRa, deltaDec))

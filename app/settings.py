@@ -84,7 +84,8 @@ class Settings:
 			{'name': 'scale_low_factor',			'type': 'float',	'range': [0.01, 0.9],				'default': 0.1,				'decimalPlaces': 2,	'editable': True,	'displayName': 'Focal Length Low Factor',		'description': ''},
 			{'name': 'scale_high_factor',			'type': 'float',	'range': [1.01, 5.0],				'default': 1.25,			'decimalPlaces': 2,	'editable': True,	'displayName': 'Focal Length High Factor',		'description': ''},
 			{'name': 'direction_indicator_polar_align',	'type': 'choice',	'range': ['None', '1 Arrow', '2 Arrows'],	'default': 2,				'decimalPlaces': None,	'editable': True,	'displayName': 'Direction Indicator for Polar Align',	'description': ''},
-			{'name': 'direction_indicator_platesolve',	'type': 'choice',	'range': ['None', '1 Arrow', '2 Arrows'],	'default': 1,				'decimalPlaces': None,	'editable': True,	'displayName': 'Direction Indicator for Plate Solving',	'description': ''},
+			{'name': 'direction_indicator_platesolve',	'type': 'choice',	'range': ['None', '1 Arrow', '2 Arrows', 'Ra/Dec'],
+																		'default': 1,				'decimalPlaces': None,	'editable': True,	'displayName': 'Direction Indicator for Plate Solving',	'description': ''},
 		]},
 	
 		{'group': 'observer', 'settings': [

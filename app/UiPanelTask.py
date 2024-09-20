@@ -3,6 +3,7 @@ import os
 import time
 import math
 from UiPanel import UiPanel
+from astutils import AstUtils
 from CameraModel import OperatingMode
 from settings import Settings
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QMessageBox, QFileDialog
@@ -308,9 +309,11 @@ class UiPanelTask(UiPanel):
 			else:
 				if self.camera.objectCoords is not None and panel.altAzDirection is not None:
 					direction_indicator_platesolve = Settings.getInstance().platesolver['direction_indicator_platesolve']
-					altAzDelta = self.calculateAltAzDelta(altAzPlateSolve, self.camera.objectCoords)
+					delta = AstUtils.calculatePlateSolveTargetDelta(coord, altAzPlateSolve, self.camera.objectCoords)
+					altAzDelta = delta[0]
+					raDecDelta = delta[1]
 					panel.showWidget(panel.altAzDirection)
-					panel.altAzDirection.update(altAzDelta[0], altAzDelta[1], direction_indicator_platesolve)
+					panel.altAzDirection.update(raDecDelta[0], raDecDelta[1], altAzDelta[0], altAzDelta[1], direction_indicator_platesolve, False)
 
 			if expAnalysis:
 				panel.showWidget(panel.displayChart)
@@ -321,27 +324,6 @@ class UiPanelTask(UiPanel):
 			self.plateSolveDialog.adjustSize()
 			self.plateSolveDialog.show()
 			self.plateSolveDialog.centerInParent()
-
-
-	def calculateAltAzDelta(self, altAzPlateSolve, targetCoords):
-		altAzTarget = self.camera.objectCoords.altAzRefracted(frame='icrs')
-
-		print('AltAzTarget:', altAzTarget)
-		print('AltAzPlateSolve:', altAzPlateSolve)
-
-		# Calculate delta
-		# 	Az: negative is rotate anti clockclockwise, positive is rotate clockwise
-		# 	Alt: negative is move down, positive is move up
-		deltaAlt = altAzTarget[0] - altAzPlateSolve[0]
-		deltaAz = altAzTarget[1] - altAzPlateSolve[1]
-	
-		# Calculate nearest azimuth direction if it's more than 180 degrees to the target
-		if deltaAz > 180.0:
-			deltaAz = -(360.0 - deltaAz)
-		elif deltaAz < -180.0:
-			deltaAz = -(-360.0 - deltaAz)
-
-		return (deltaAlt, deltaAz)
 
 
 	def updatePlateSolveFailed(self):

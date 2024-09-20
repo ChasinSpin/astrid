@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from settings import Settings
 from astcoord import AstCoord
 from datetime import datetime, timedelta
+from astutils import AstUtils
 
 
 PREPOINT_FIELD_WIDTH = 180
@@ -131,8 +132,10 @@ class UiPanelPrepoint(UiPanel):
 	def photoProcComplete(self, position, field_size, altAzPlateSolve):
 		if self.widgetAltAzDirection is not None:
 			direction_indicator_platesolve = Settings.getInstance().platesolver['direction_indicator_platesolve']
-			altAzDelta = self.calculateAltAzDelta(altAzPlateSolve, self.prepoint)
-			self.widgetAltAzDirection.update(altAzDelta[0], altAzDelta[1], direction_indicator_platesolve)
+			delta = AstUtils.calculatePlateSolveTargetDelta(posiion, altAzPlateSolve, self.prepoint)
+			altAzDelta = delta[0]
+			raDecDelta = delta[1]
+			self.widgetAltAzDirection.update(raDecDelta[0], raDecDelta[1], altAzDelta[0], altAzDelta[1], direction_indicator_platesolve, True)
 			self.showWidget(self.widgetAltAzDirection)
 			self.widgetAltAzDirection.setEnabled(True)
 
@@ -159,25 +162,3 @@ class UiPanelPrepoint(UiPanel):
 		self.showWidget(self.widgetMaxDrift)
 		if self.widgetGoto is not None:
 			self.showWidget(self.widgetGoto)
-
-
-	def calculateAltAzDelta(self, altAzPlateSolve, targetCoords):
-		altAzTarget = targetCoords.altAzRefracted(frame='icrs')
-
-		print('AltAzTarget:', altAzTarget)
-		print('AltAzPlateSolve:', altAzPlateSolve)
-
-		# Calculate delta
-		#       Az: negative is rotate anti clockclockwise, positive is rotate clockwise
-		#       Alt: negative is move down, positive is move up
-		deltaAlt = altAzTarget[0] - altAzPlateSolve[0]
-		deltaAz = altAzTarget[1] - altAzPlateSolve[1]
-
-		# Calculate nearest azimuth direction if it's more than 180 degrees to the target
-		if deltaAz > 180.0:
-			deltaAz = -(360.0 - deltaAz)
-		elif deltaAz < -180.0:
-			deltaAz = -(-360.0 - deltaAz)
-
-		return (deltaAlt, deltaAz)
-

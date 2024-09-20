@@ -11,6 +11,10 @@ Version 1.0.044:
 
 	* Mount settings for indi module and usb tty are now constrained to a choice list.  Mismatch between indi driver name and settings driver name is now detected and prompted to auto fix
 
+	* Added Ra/Dec as an option for "Direction Indicator for PlateSolve" in settings. Against better judgement, added the ability to indicate distance from plate solve to target as an
+	  Ra and Dec delta as it's been requested a few times by users. However it comes with the caveat and a warning that it will not be completely accurate for Prepoints, because the earth
+	  rotates. 
+
 Version 1.0.043:
 ================
 
