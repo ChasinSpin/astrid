@@ -132,7 +132,7 @@ class UiPanelPrepoint(UiPanel):
 	def photoProcComplete(self, position, field_size, altAzPlateSolve):
 		if self.widgetAltAzDirection is not None:
 			direction_indicator_platesolve = Settings.getInstance().platesolver['direction_indicator_platesolve']
-			delta = AstUtils.calculatePlateSolveTargetDelta(posiion, altAzPlateSolve, self.prepoint)
+			delta = AstUtils.calculatePlateSolveTargetDelta(position, altAzPlateSolve, self.prepoint)
 			altAzDelta = delta[0]
 			raDecDelta = delta[1]
 			self.widgetAltAzDirection.update(raDecDelta[0], raDecDelta[1], altAzDelta[0], altAzDelta[1], direction_indicator_platesolve, True)

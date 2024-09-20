@@ -34,7 +34,7 @@ from UiPanelConnectFailedIndi import UiPanelConnectFailedIndi
 from UiPanelAstrometry import UiPanelAstrometry
 from UiPanelObject import UiPanelObject
 from UiDialogPanel import UiDialogPanel
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from AstrometryDownload import AstrometryDownload
 from DisplayOps import DisplayOps
 from otestamper import OteStamper
@@ -1354,6 +1354,15 @@ class CameraModel:
 			self.updateDisplayOptions()
 		else:
 			fname = self.lastFitFile
+
+			if self.filePlateSolve:
+				fname = QFileDialog.getOpenFileName(self.ui, 'Open file', Settings.getInstance().astrid_drive, 'FITS files (*.fit)')[0]
+				if len(fname) != 0:
+					print('Filename:', fname)
+					self.lastFitFile = fname
+					self.updateDisplayOptions()
+				else:
+					return
 
 		self.platesolveCallback = self.takePhotoSolveSync3
 		self.solveField(fname, override_target_coord = self.prepoint_coord)
