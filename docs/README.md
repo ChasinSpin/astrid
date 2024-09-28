@@ -30,11 +30,12 @@ Ted Blank has also created an excellent video demonstrating using Astrid to Prep
 2. [Power Supply](PowerSupply.md)
 3. [Astrid Mini Display](MiniDisplay.md)
 4. [Troubleshooting](Troubleshooting.md)
-5. [FAQ](FAQ.md)
-6. [USB Drive Requirements](USBDriveRequirements.md)
-7. [USB Flash Drive Layout](FlashDriveLayout.md)
-8. [Plate Solver](Platesolver.md)
-9. [Mounts](Mounts.md)
+5. [Wi-Fi](Wi-Fi.md)
+6. [FAQ](FAQ.md)
+7. [USB Drive Requirements](USBDriveRequirements.md)
+8. [USB Flash Drive Layout](FlashDriveLayout.md)
+9. [Plate Solver](Platesolver.md)
+10. [Mounts](Mounts.md)
 
 ## Other
 * [Install From Astrid Image](InstallImage.md)
