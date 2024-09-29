@@ -23,6 +23,8 @@ This is my opinion, and the opinions of some others in the occultation community
 
 It also may not apply to every scenario. For example, an occultation campaign may specify the lowest SNR value, or they may be measuring something different than when a star disappears and reappears.  I.E. They may have other considerations for requesting certain requirements.
 
+Signal-to-noise ratio(SNR) can often mean different things, depends on the source of the noise and the signal. Also, Pyote now has DNR (Drop-To-Noise Ratio).  SNR always refers to the context in which it's being used.
+
 Finally, this guidance is for Occultations only. Astrid is capable of regular astrophotography, and you should use regular techniques (darks, flats, bias) when doing so.
 
 ## Summary
@@ -51,6 +53,10 @@ However, you should add 6 or 12 static apertures on the target in Pymovie of var
 
 There's no need for Darks, Flats or Bias frames.
 
+### Keep your optics clean
+
+Enough said!
+
 ## FPS
 
 **EXAMPLE GOES HERE**
@@ -75,7 +81,7 @@ It's pointless to try to maximize DNR by increasing exposure, nothing is gained.
 
 It is not necessary to take dark frames to calibrate occultations, here's why:
 
-The Astrid sensor and most modern CMOS sensors have low dark current.  For Astrid, this is 3.2 electrons per pixel per second.  In comparison, the readout noise for the sensor is 2.2 electrons @ 25C.  Both of these are far below the typical [shot noise](https://skyandtelescope.org/astronomy-blogs/astrophotography-signals-noise/#:~:text=Shot%20noise%20comes%20from%20the,in%20otherwise%20smooth%2Dtoned%20areas.) you see in the sky.
+The Astrid sensor and most modern CMOS sensors have low dark current.  For Astrid, this is 3.2 electrons per pixel per second @ 25C.  In comparison, the readout noise for the sensor is 2.2 electrons.  Both of these are far below the typical [shot noise](https://skyandtelescope.org/astronomy-blogs/astrophotography-signals-noise/#:~:text=Shot%20noise%20comes%20from%20the,in%20otherwise%20smooth%2Dtoned%20areas.) you see in the sky.
 
 Dark current is proportional to the exposure time. At 10 frames per second, dark current noise is 3.2/10 = 0.32 electrons, which is minuscule in relation to the readout noise (which is already minuscule) and the shot noise. Also, darks add processing time during the analysis.
 
