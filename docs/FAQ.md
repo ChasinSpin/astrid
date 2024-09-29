@@ -14,6 +14,7 @@
 * [Plate Solving Arrows On Manual Equatorial Mounts](#plate-solving-arrows-on-manual-equatorial-mounts)
 * [Star/Planet/Moon Saturates At Highest Video Frame Rate](#starplanetmoon-saturates-at-highest-video-frame-rate)
 * [Optical Train Dimensions and BackFocus Distance](#optical-train-dimensions-and-backfocus-distance)
+* [Does Astrid Require Internet](#does-astrid-require-internet)
 
 ### Power Jack Is Intermittent
 
@@ -116,3 +117,30 @@ An alternative, if you don't require the focal reducer is a straight C/CS Mount 
 
 * A: [Metal M42 to M48 Male to Female Step-Up Coupling Ring Adapter](www.amazon.com/dp/B081382KJV)
 * B: [C Mount(25mm 0.75mm Pitch) to T T2 (42mm 0.75mm Pitch) Coupling Ring Adapter](www.amazon.com/dp/B0813129HJ)
+
+### Does Astrid Require Internet
+
+Astrid requires the internet for a few features, but it is designed for fully autonomous mobile use without internet.  It can be used where there is no cellular or wifi signal.
+
+Internet is not required for:
+
+* Plate Solving:
+    Ted ships the majority if not all of the Plate Solve catalogs on the USB drive, so an internet connection is not required, all plate solves occur with local data from the USB drive and are offline.  If you are setting up a new scope and have deleted unused plate solve files, Astrid will prompt and download for the missing files when starting up when connected to the internet if the correct focal length has been entered in the settings. Plan to roughly configure any new scopes where you have internet.
+* Objects (except SIMBAD)
+* Occultation Events
+* Prepoints
+
+Internet is required for:
+
+* Occasionally once every 3 months to download the latest IERs data for earths' rotation (this happens automatically when connected to the internet)
+* Syncing events with OWCloud
+* Looking up SIMBAD objects (but you can then save those to the Custom database that is offline)
+* Software Upgrades
+
+General advice is to connect to the internet before you leave home and:
+
+1. Do a software upgrade if necessary
+2. Sync your stations from OWCloud
+3. Download any astro targets you may want to do photography of via SIMBAD and save to Custom (doesn't apply to occultation events)
+4. Shutdown
+5. Setup at your deployment location (with or without internet)

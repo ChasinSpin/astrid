@@ -1,13 +1,5 @@
 # TODO
 
-* Script to remove the mountpoint, or automatically look for it on boot and remove:  sudo rm -rf /medi/pi/ASTRID   May need to use permissions to identify: pi@astrid-0121:~ $ ls -la /media/pi
-total 28
-drwxr-x---+ 4 root root  4096 Aug 28 15:41 .
-drwxr-xr-x  3 root root  4096 Aug 14  2023 ..
-drwx------  2 root root  4096 Aug  1 20:52 ASTRID
-drwxr-xr-x  5 pi   pi   16384 Jan  1  1970 CIRCUITPY
-pi@astrid-0121:~ $
-* Back in ports and drivers to indlib settings
 * Cancel button on OWCloud Download when internet not connected
 * Ted: Player, Star Analysis Bomb
 * Double chord spacing and kml
