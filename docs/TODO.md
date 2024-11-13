@@ -1,5 +1,6 @@
 # TODO
 
+* Add ability to detect Full USB Drives
 * Cancel button on OWCloud Download when internet not connected
 * Ted: Player, Star Analysis Bomb
 * Double chord spacing and kml
