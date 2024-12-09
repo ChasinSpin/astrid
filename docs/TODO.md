@@ -1,8 +1,7 @@
 # TODO
 
 * Bug with RA being negative on arrows due to wrap around
-* Look into making polar alignment work with manual EQ mounts (non goto) - Garrett Tow
-* Add ability to detect Full USB Drives
+* Stop storing plate solve files (or maybe prompt to clear)
 * Cancel button on OWCloud Download when internet not connected
 * Ted: Player, Star Analysis Bomb
 * Double chord spacing and kml
