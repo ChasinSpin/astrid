@@ -343,7 +343,7 @@ class UiPanelTask(UiPanel):
 		self.directionDialog.directionPanel = UiPanel('Adjust Mount')	
 		panel = self.directionDialog.directionPanel
 		panel.directionWidget = panel.addAltAzDirection()
-		panel.directionWidget.update(alt, az, Settings.getInstance().platesolver['direction_indicator_polar_align'])
+		panel.directionWidget.update(None, None, alt, az, Settings.getInstance().platesolver['direction_indicator_polar_align'], False)
 		panel.errorWidget = panel.addLineEdit('Pointing Error', editable=False)
 		panel.errorWidget.setText('%0.3f arcmin' % (math.sqrt(alt * alt + az * az) * 60.0))
 		panel.msgWidget = panel.addTextBox('Pointing error less than 2 arcmins is best for Astrophotography', 55)
