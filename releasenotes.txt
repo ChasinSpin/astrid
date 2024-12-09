@@ -3,6 +3,8 @@ Version 1.0.045:
 
 	* Fixed issue with Polar Align exception at end of polar align routine introduced in V 1.0.044
 
+	* Added magnitude range and marker on exposure chart
+
 Version 1.0.044:
 ================
 

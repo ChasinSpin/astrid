@@ -79,6 +79,7 @@ class UiPanelExposureChart(UiPanel):
 		seriesExposure = QLineSeries(self)
 		min_mag = 1000
 		max_mag = -1000
+		seriesSuggestedLimit = 33.0
 		for star in self.stars:
 			mag = star.mag_g
 
@@ -93,19 +94,40 @@ class UiPanelExposureChart(UiPanel):
 			max_mag = max(mag, max_mag)
 		min_mag = math.floor(min_mag)
 		max_mag = math.ceil(max_mag)
-		seriesExposure.setName('Star Peak')
+		seriesExposure.setName('Star Fit')
 
 		# Linfit through bightnesses
 		brightnesses_coeffs = np.linalg.lstsq(np.vstack([brightness_x, np.ones(len(brightness_x))]).T, brightness_y, rcond=None)[0]
 
 		# Generate the predicted lin fit line
+		knee = None
+		highestMagLimit = None
+		lastPredictedSensorSat = None
 		seriesPredicted = QLineSeries(self)
 		for predictMag in np.arange(min_mag, max_mag, 0.01):
 			predictedSensorSat = brightnesses_coeffs[0] * math.pow(10.0, -predictMag/2.51188643150958) + brightnesses_coeffs[1]           
 			if predictedSensorSat < 0 or predictedSensorSat > 100.0:
 				continue
 			seriesPredicted.append(predictMag, predictedSensorSat)
-		seriesPredicted.setName('Predicted Fit')
+
+			# Calculate the knee
+			if lastPredictedSensorSat is not None and knee is None:
+				if lastPredictedSensorSat - predictedSensorSat <= 0.007415:
+					knee = predictMag
+			lastPredictedSensorSat = predictedSensorSat
+
+			# Calculate the highest mag we want to record
+			if highestMagLimit is None:
+				if predictedSensorSat < seriesSuggestedLimit:
+					highestMagLimit = predictMag
+
+		seriesPredicted.setName('Best Fit')
+
+		if knee is None:
+			knee = max_mag
+
+		if highestMagLimit is None:
+			highestMagLimit = min_mag
 
 		# Set the prediction line to be dotted
 		pen = QPen()
@@ -125,7 +147,6 @@ class UiPanelExposureChart(UiPanel):
 		seriesBkgLower.append(max_mag, self.bkg_mean - stddev2)
 
 		# Setup series
-		seriesSuggestedLimit = 33.0
 		seriesSuggested = QLineSeries(self)
 		seriesSuggested.append(min_mag, seriesSuggestedLimit)
 		seriesSuggested.append(max_mag, seriesSuggestedLimit)
@@ -133,10 +154,21 @@ class UiPanelExposureChart(UiPanel):
 
 		# Setup Area between background lower and background upper
 		seriesBkg = QAreaSeries(seriesBkgLower, seriesBkgUpper)
-		seriesBkg.setName('Mean Background ± 2σ')
+		seriesBkg.setName('Mean Bkg ± 2σ')
 		penBkg = QPen(0x059605)
 		penBkg.setWidth(3)
 		seriesBkg.setPen(penBkg)
+
+		# Setup the knew display
+		if knee is not None:
+			seriesKnee = QLineSeries(self)
+			seriesKnee.append(knee, 0)
+			seriesKnee.append(knee, 100)
+			seriesKnee.setName('Min Mag')
+			penKnee = QPen()
+			penKnee.setColor(QColor(0xAAAA00))
+			penKnee.setWidth(3)
+			seriesKnee.setPen(penKnee)
 
 		# Create X and Y axis
 		axisX = QValueAxis()
@@ -172,7 +204,7 @@ class UiPanelExposureChart(UiPanel):
 			configName = telescope + '<br />'
 		hdul.close()
 
-		self.chart.setTitle('<h3 style="text-align:center">%sF/L:%dmm Gain:%d Fps:%0.2f (%0.2fs)<br /></h3>' % (configName, focalLen, gain, (1.0/expTime), expTime))
+		self.chart.setTitle('<h3 style="text-align:center">%s F/L:%dmm Gain:%d Fps:%0.2f (%0.2fs)<h4 style="text-align:center">Recommended Target Range: %0.1f to %0.1f mag</h4></h3>' % (configName, focalLen, gain, (1.0/expTime), expTime, highestMagLimit, knee))
 
 
 		# Reduce size of chart frame
@@ -180,7 +212,7 @@ class UiPanelExposureChart(UiPanel):
 		self.chart.setBackgroundRoundness(1)
 
 		# Attach the series to the chart and the axis to the series
-		for series in [seriesExposure, seriesBkg, seriesSuggested, seriesPredicted]:
+		for series in [seriesExposure, seriesBkg, seriesSuggested, seriesPredicted, seriesKnee]:
 			self.chart.addSeries(series)
 			series.attachAxis(axisX)
 			series.attachAxis(axisY)
