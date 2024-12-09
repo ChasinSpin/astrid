@@ -113,6 +113,7 @@ class Settings:
 			{'name': 'location_in_fits',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Write GPS To Fits',			'description': ''},
 			{'name': 'fuzz_gps',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Fuzz GPS',				'description': ''},
 			{'name': 'annotation_mag',			'type': 'float',	'range': [0, 20],				'default': 14.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Annotation Mag Limit',			'description': ''},
+			{'name': 'free_space',				'type': 'int',		'range': [1, 50],				'default': 10,				'decimalPlaces': None,	'editable': True,	'displayName': 'Min Free Drive Space GB',			'description': ''},
 		]},
 
 		{'group': 'hidden', 'settings': [

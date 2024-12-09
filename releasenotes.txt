@@ -5,6 +5,8 @@ Version 1.0.045:
 
 	* Added magnitude range and marker on exposure chart
 
+	* Added USB Thumb Drive near full detection with "Min Free Drive Space" setting in Settings / general. Astrid now alerts on startup when below this threshold
+
 Version 1.0.044:
 ================
 

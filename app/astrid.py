@@ -5,6 +5,7 @@ import sys
 import stat
 import json
 import atexit
+import shutil
 import argparse
 import logging
 import subprocess
@@ -360,6 +361,12 @@ if __name__ == '__main__':
 		sys.exit(0)
 
 	checkSlowUSBDrive()
+
+	# Check Free Space
+	actual_free_space = shutil.disk_usage(astrid_drive)[2] / (1024 * 1024 * 1024)
+	min_free_space = Settings.getInstance().general['free_space']
+	if actual_free_space < min_free_space:
+		QMessageBox.warning(None, ' ', 'The USB Thumb Drive is nearly full.\n\nFree space left is %0.2f GB.\n\nOn a desktop, please delete some files to free up some space and then empty the recycle bin.\n\nAlternatively you can delete files from Astrid too.' % actual_free_space, QMessageBox.Ok)
 
 	# Load the camera
 	try:
