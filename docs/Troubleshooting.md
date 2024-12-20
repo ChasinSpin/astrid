@@ -29,6 +29,11 @@ You can help reduce the support load by taking the time to check the documentati
 
 Astrid follows a Rapid Development model, and all bug fixes are by new versions, not by going backwards.  There is no regression path or change control, GitHub stores the code changes, and the path is always forging forward.
 
+### Zoom
+
+Often it is necessary to share the users screen to fix an issue.  Therefore, please have Zoom installed on the same machine you have RealVNC and can connect to Astrid from, prior to asking for support. 
+
+Support resources are limited, and screen sharing is often the most efficient way to provide that support.
 
 ## Common Issues and Solutions
 

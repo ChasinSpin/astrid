@@ -7,8 +7,6 @@
 * Double chord spacing and kml
 * Vizier light curve submission
 * https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf - INFO for libcamera future upgrade
-* 
-* Allow magnitude to be selected whilst in exposure analysis
 * Any chance you could allow a dynamic (local) change of the limiting magnitude during Exposure Analysis, rather than forcing us to stop and restart Astrid to get to the settings for Simulator? - Ted
 * Magnitudes Cluttered on Display Analysis
 * Significant red errors when recording with Software Leap Seconds
