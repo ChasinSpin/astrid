@@ -15,6 +15,8 @@
 * [Star/Planet/Moon Saturates At Highest Video Frame Rate](#starplanetmoon-saturates-at-highest-video-frame-rate)
 * [Optical Train Dimensions and BackFocus Distance](#optical-train-dimensions-and-backfocus-distance)
 * [Does Astrid Require Internet](#does-astrid-require-internet)
+* [Which Version is Astrid](#which-version-is-astrid)
+* [Failed Upgrades](#failed-upgrades)
 
 ### Power Jack Is Intermittent
 
@@ -144,3 +146,17 @@ General advice is to connect to the internet before you leave home and:
 3. Download any astro targets you may want to do photography of via SIMBAD and save to Custom (doesn't apply to occultation events)
 4. Shutdown
 5. Setup at your deployment location (with or without internet)
+
+### Which Version Is Astrid
+
+Astrid's version is displayed on startup on the splash screen.  If you wish to find the version when Astrid is running, or without running Astrid, you can start a Terminal and type:   cat ~/astrid/version.txt
+
+To find the number of the latest version: [Github Astrid Version](https://github.com/ChasinSpin/astrid/blob/main/version.txt)
+
+Astrid will check when started *when internet is connected* to see if it needs an upgrade and prompts you.
+
+### Failed Upgrades
+
+If an upgrade fails (often due to internet connectivity), then just repeat the upgrade.
+
+IMPORTANT: If an upgrade fails and you afe unable to fix by repeating, it's is strongly recommended that you don't reformat the USB Thumb Drive and reimage the SD Card, it will likely make matters worse.  Please reach out for support instead.
