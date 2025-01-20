@@ -34,7 +34,7 @@
 //      - Remove white haze on cases where there was plate contact with heat gun
 
 
-partNum                             = 3;        // 0 = All, 1 = Bottom, 2 = Top, 3 = Flex Collars, 4 = Plate
+partNum                             = 2;        // 0 = All, 1 = Bottom, 2 = Top, 3 = Flex Collars, 4 = Plate
 
 
 caseThickness                       = 1.2;

@@ -33,7 +33,7 @@
 //      Standoffs: (4) M2.5 x 14mm
 
 // THESE MAY NEED CHANGING, IF THERE ARE CLEARANCE ISSUES, OR HARDWARE DIFFERENCES
-partNum                     = 6;            // 6 = All, 3 = Bottom Case, 4 = Top Case, 5 = Cable Clamp, 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56, 10 = Logo
+partNum                     = 6;            // 0 = All, 1 = Camera Holder, 2 = Camera Posts, 3 = Bottom Case, 4 = Top Case, 5 = Cable Clamp, 6 = Plate (works), 7 = Gps and Camera washers, 8 = Fan Cover, 9 = Gps and Camera Washers x 56, 10 = Logo
 logoNum                     = 3;            // 1 = Eclipse (short text), 2 = Eclipse (full text), 3 = Asteroid Occultation
 externalGps                 = true;         // Make a whole for an external GPS if true
 mouseEarDiameter            = 20;
@@ -186,7 +186,14 @@ flexOuterClampInnerLength   = flexOuterLength + flexThickness;
 flexOuterClampOuterWidth    = flexOuterClampWidth1 + flexOuterClampOuterBorder;
 flexOuterClampOuterLength   = flexOuterLength + flexThickness + flexOuterClampOuterBorder;
 
+flexCollar2FilledPartHeight = 2.0;
+
 flangeAdditional            = 3;
+
+camCableBlankingClearance       = 0.2;
+camCableBlankingFlangeHeight    = 1.0;
+camCableBlankingFlangeExtra     = 4.0;
+ 
 
 $fn                         = 80;
 
@@ -195,9 +202,11 @@ use <junegull/junegull.ttf>
 use <PoetsenOne-Regular.ttf>
 
 
-
+if ( partNum == 0 || partNum == 1 ) cameraHolder();
+if ( partNum == 0 || partNum == 2 ) cameraPosts();
 if ( partNum == 0 || partNum == 3 ) piCaseBottom();
 if ( partNum == 0 || partNum == 4 ) piCaseTop();
+
 
 if ( partNum == 0 || partNum == 5 )
 {
@@ -207,6 +216,9 @@ if ( partNum == 0 || partNum == 5 )
 
     translate( [32, 29, 0] )
         flexCollar2();
+        
+    translate( [32, 45, 0] )        
+        flexCollar2Filled();
 }
 
 if ( partNum == 6 )
@@ -214,7 +226,7 @@ if ( partNum == 6 )
     translate( [0, 0, 0] )
         piCaseBottom();
     
-    translate( [30, 41, 0] )
+    translate( [40, 41, 0] )
         cameraGpsWashers();
         
     translate( [0, caseOuterBorder[1]+5, caseHeight - caseSplitHeight] ) 
@@ -229,8 +241,23 @@ if ( partNum == 6 )
         //rotate( [0, 0, 90] )
             flexCollar1();
 
-    translate( [-10, 53, 0] )
-        flexCollar2();
+    translate( [-28, 50.5, 0] )
+        rotate( [0, 0, 90] )
+            flexCollar2();
+
+    translate( [-13, 50.5, 0] )
+        rotate( [0, 0, 90] )
+            flexCollar2Filled();
+        
+    translate( [-85, 50, 0] )
+        rotate( [0, 180, 0] )
+            cameraHolder();
+       
+    translate( [48, 165, 0] )
+        cameraPosts(); 
+        
+    translate( [-45, 168, 0] )
+        camCableBlanking();
 }
 
 if ( partNum == 7 ) cameraGpsWashers();
@@ -246,9 +273,79 @@ if ( partNum == 10 )    logo3();
 
 
 
+module camCableBlanking()
+{       
+    translate( [0, 0, camCableBlankingFlangeHeight/2] )
+        cube( [caseCamCableHoleDimensions[0] + camCableBlankingFlangeExtra, caseCamCableHoleDimensions[1] + camCableBlankingFlangeExtra, camCableBlankingFlangeHeight], center = true );
+
+    translate( [0, 0, caseBottomTopThickness/2 + camCableBlankingFlangeHeight] )
+        cube( [caseCamCableHoleDimensions[0]-camCableBlankingClearance, caseCamCableHoleDimensions[1]-camCableBlankingClearance, caseBottomTopThickness], center = true );
+}
+
+
+
 module mouseEar()
 {
     cylinder(d = mouseEarDiameter, h = mouseEarThickness );
+}
+
+
+
+module cameraPosts()
+{
+        // Camera Bolt Holes
+        for ( pos = [
+                [cameraBoltHoleOffset,   cameraBoltHoleOffset],
+                [-cameraBoltHoleOffset,  cameraBoltHoleOffset],
+                [cameraBoltHoleOffset,  -cameraBoltHoleOffset],
+                [-cameraBoltHoleOffset, -cameraBoltHoleOffset],
+            ] )
+            translate( [pos[0], pos[1]] )
+            {
+                cameraPost();
+            }
+            
+        // Flanges
+        difference()
+        {
+            union()
+            {
+                hull()
+                {
+                    for ( pos = [
+                            [-cameraBoltHoleOffset,  cameraBoltHoleOffset],
+                            [cameraBoltHoleOffset,  -cameraBoltHoleOffset],
+                        ] )
+                        translate( [pos[0], pos[1]] )
+                        {
+                            donut(cameraPostDiameter, boltHoleDiameter, cameraPostsFlangeHeight);
+                        }
+                }
+
+                hull()
+                {
+                    for ( pos = [
+                            [cameraBoltHoleOffset,   cameraBoltHoleOffset],
+                            [-cameraBoltHoleOffset, -cameraBoltHoleOffset],
+                        ] )
+                        translate( [pos[0], pos[1]] )
+                        {
+                            donut(cameraPostDiameter, boltHoleDiameter, cameraPostsFlangeHeight);
+                        }
+                }
+            }
+            
+            for ( pos = [
+                [cameraBoltHoleOffset,   cameraBoltHoleOffset],
+                [-cameraBoltHoleOffset,  cameraBoltHoleOffset],
+                [cameraBoltHoleOffset,  -cameraBoltHoleOffset],
+                [-cameraBoltHoleOffset, -cameraBoltHoleOffset],
+            ] )
+                translate( [pos[0], pos[1], -manifoldCorrection] )
+                {
+                    cylinder(d = boltHoleDiameter, h = cameraPostHeight + manifoldCorrection * 2);
+                }
+        }
 }
 
 
@@ -441,6 +538,151 @@ module logo3Line(offsetY, thickness)
 
 
 
+module cameraPost()
+{
+    donut(cameraPostDiameter, boltHoleDiameter, cameraPostHeight);
+}
+
+
+
+module cameraHolder()
+{
+    // Main Block
+    difference()
+    {
+        union()
+        {
+           difference()
+            {
+                // Main Block
+                union()
+                {
+                    translate( [0, 0, -cameraBlockDimensions[2] / 2] )
+                        cube( cameraBlockDimensions, center = true);
+
+                    // Mouse Ears
+                    mouseEarX = cameraBlockDimensions[0] / 2;
+                    mouseEarY = cameraBlockDimensions[1] / 2;
+                    
+                    for (pos = [
+                        [ mouseEarX,  mouseEarY],
+                        [-mouseEarX,  mouseEarY],
+                        [ mouseEarX, -mouseEarY],
+                        [-mouseEarX, -mouseEarY]
+                        ])
+                        translate( [pos[0], pos[1], -mouseEarThickness] )
+                            mouseEar();
+                }
+                 
+                // Internal Void
+                translate( [0, 0, -cameraVoidDimensions[2] / 2] )
+                    cube( [cameraVoidDimensions[0], cameraVoidDimensions[1] + clearancePiY * 2, cameraVoidDimensions[2] + manifoldCorrection], center = true);
+            }
+            
+
+            
+            // Mount Extension Block
+            translate( [0, cameraMountInnerDiameter/2 + mountExtensionOuter[1]/2, -cameraBlockDimensions[2] - mountExtensionOuter[2]/2] )
+                cube( [mountExtensionOuter[0], mountExtensionOuter[1], mountExtensionOuter[2]], center = true);
+            translate( [0, -cameraMountInnerDiameter/2 - mountExtensionOuter[1]/2, -cameraBlockDimensions[2] - mountExtensionOuter[2]/2] )
+                cube( [mountExtensionOuter[0], mountExtensionOuter[1], mountExtensionOuter[2]], center = true);
+
+            // Mount Shroud
+            translate( [0, 0, -cameraBlockDimensions[2] - cameraMountDepth] )
+            {
+                difference()
+                {
+                    // Shroud
+                    donut(cameraMountOuterDiameter, cameraMountInnerDiameter, cameraMountDepth);
+            
+                    // Rotation Indents
+                    for ( r = [0, 180] )
+                        rotate( [0, 0, r] )
+                            translate( [cameraMountOuterDiameter/2, 0, cameraMountDepth/2] )
+                                cube( [cameraRotationIndentXY[0], cameraRotationIndentXY[1], cameraMountDepth + manifoldCorrection * 2], center = true );
+                }
+                // Hole Reinforcement
+                for ( r = [45, 135, 225, 315] )
+                    rotate( [0, 0, r] )
+                        translate( [cameraHoleReinforcementDistance, 0, cameraMountDepth/2] )
+                        {
+                            translate( [-cameraHoleReinforcementDia/2, 0, 0] )
+                                cube( [cameraHoleReinforcementDia, cameraHoleReinforcementDia, cameraMountDepth], center = true);
+                            cylinder(d=cameraHoleReinforcementDia, h=cameraMountDepth, center = true);
+                        }
+            }
+            
+        }    
+
+        // Rotation indent for extension block
+       translate( [0, 0, -cameraBlockDimensions[2] - cameraMountDepth] )
+       {
+            rotate( [0, 0, 90] )
+                translate( [cameraMountInnerDiameter/2 + mountExtensionOuter[1], 0, cameraMountDepth/2] )
+                    cube( [cameraRotationIndentXY[0], cameraRotationIndentXY[1], cameraMountDepth + manifoldCorrection * 2], center = true );
+            rotate( [0, 0, 270] )
+                translate( [cameraMountInnerDiameter/2 + mountExtensionOuter[1], 0, cameraMountDepth/2] )
+                    cube( [cameraRotationIndentXY[0], cameraRotationIndentXY[1], cameraMountDepth + manifoldCorrection * 2], center = true );
+       }
+
+
+        // Mount extension Voids
+        translate( [0, cameraMountInnerDiameter/2 + mountExtensionInner[1]/2 - mountExtensionToInside/2, -cameraBlockDimensions[2] - mountExtensionInner[2]/2 + cameraTopCaseThickness/2] )
+            cube( [mountExtensionInner[0], mountExtensionInner[1] + mountExtensionToInside, mountExtensionInner[2] + cameraTopCaseThickness], center = true);
+        translate( [0, -cameraMountInnerDiameter/2 - (mountExtensionInner[1]/2 - mountExtensionToInside/2), -cameraBlockDimensions[2] - mountExtensionInner[2]/2 + cameraTopCaseThickness/2] )
+            cube( [mountExtensionInner[0], mountExtensionInner[1] + mountExtensionToInside, mountExtensionInner[2] + cameraTopCaseThickness], center = true);
+
+        // Camera mounting holes
+        for ( pos = [
+            [cameraBoltHoleOffset,   cameraBoltHoleOffset],
+            [-cameraBoltHoleOffset,  cameraBoltHoleOffset],
+            [cameraBoltHoleOffset,  -cameraBoltHoleOffset],
+            [-cameraBoltHoleOffset, -cameraBoltHoleOffset],
+        ] )
+            translate( [pos[0], pos[1], -(cameraBlockDimensions[2] + cameraMountDepth) - manifoldCorrection] )
+                cylinder(d=boltHoleDiameter, h=cameraBlockDimensions[2] + cameraMountDepth + manifoldCorrection * 2);
+
+
+        // Bolt Holes
+        for ( pos = [
+            [cameraBoltHoleOffset,   cameraBoltHoleOffset, 15],
+            [-cameraBoltHoleOffset,  cameraBoltHoleOffset, -15],
+            [cameraBoltHoleOffset,  -cameraBoltHoleOffset, -15],
+            [-cameraBoltHoleOffset, -cameraBoltHoleOffset, 15],
+            ] )
+            translate( [pos[0], pos[1], -(cameraBlockDimensions[2] + cameraMountDepth) - manifoldCorrection] )
+            {
+                cylinder(d=boltHeadDiameter, h=cameraBoltHoleDepth + manifoldCorrection);
+                translate( [0, 0, cameraBoltHoleDepth] )
+                    cylinder(d1=boltHeadDiameter, d2=boltHoleDiameter, h=boltHeadHeight);
+            }
+  
+        // Suction release channels
+        //translate( [-(cameraBlockDimensions[0] - cameraVentDimensions[0])/2, 0, 0] )
+        //    suctionReleaseVent();
+        //translate( [(cameraBlockDimensions[0] - cameraVentDimensions[0])/2, 0, 0] )
+        //    suctionReleaseVent();
+            
+        // Hole for camera mount
+        translate( [0, 0, -cameraBlockDimensions[2] - cameraMountDepth - manifoldCorrection] )
+           cylinder(d=cameraMountInnerDiameter, h=cameraBlockDimensions[2] + cameraMountDepth + manifoldCorrection * 2);
+  
+        // To check hole geometry
+        //translate( [-20, -35, -40] )
+        //   cube( [20, 20, 40] );
+    }
+
+    // Support to prevent warping, remove after printing
+    /*
+    translate( [0, 0, -cameraVoidDimensions[2]/2] )
+        cube( [cameraVoidDimensions[0], cameraVoidSupportThickness, cameraVoidDimensions[2]], center = true );
+    translate( [0, 0, -cameraVoidDimensions[2]/2] )
+        cube( [cameraVoidSupportThickness, cameraVoidDimensions[1], cameraVoidDimensions[2]], center = true );
+    */
+}
+
+
+
 module suctionReleaseVent()
 {
     translate( [0, 0, -cameraVentDimensions[2]/2 + manifoldCorrection] )
@@ -585,8 +827,8 @@ module piCase(height, expandedBoltHole)
             }
             
         // Camera cable hole
-        //translate( [0, caseCamCableHoleOffsetY, caseBottomTopThickness/2] )
-        //    cube( [caseCamCableHoleDimensions[0], caseCamCableHoleDimensions[1], caseBottomTopThickness + manifoldCorrection * 2], center = true );
+        translate( [0, caseCamCableHoleOffsetY, caseBottomTopThickness/2] )
+            cube( [caseCamCableHoleDimensions[0], caseCamCableHoleDimensions[1], caseBottomTopThickness + manifoldCorrection * 2], center = true );
             
         //Mounting bolt holes pi
         translate( [-piBoardDimensions[0]/2, -piBoardDimensions[1]/2, 0] )
@@ -920,6 +1162,14 @@ module flexCollar2()
                     cube( [flexCollarMarkerWidth, flexOuterClampOuterWidth + manifoldCorrection, flexCollarMarkerWidth/2 + manifoldCorrection] );
             }
         }
+}
+
+
+
+module flexCollar2Filled()
+{
+    flexCollar2();
+    lozenge(flexOuterClampOuterLength + flangeAdditional, flexOuterClampOuterWidth + flangeAdditional, flexCollar2FilledPartHeight);
 }
 
 
