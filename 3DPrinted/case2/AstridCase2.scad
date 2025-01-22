@@ -190,7 +190,7 @@ flexCollar2FilledPartHeight = 2.0;
 
 flangeAdditional            = 3;
 
-camCableBlankingClearance       = 0.2;
+camCableBlankingClearance       = 0.0;
 camCableBlankingFlangeHeight    = 1.0;
 camCableBlankingFlangeExtra     = 4.0;
  
