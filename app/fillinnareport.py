@@ -182,10 +182,11 @@ class FillInNAReport():
 			elif key == 'Detector':
 				self.sheet[cell_mapping[key]] = 'ASTRID'
 			elif key == 'OtherDetectorRelatedInfo':
-				sensor = self.__get_metadata('required', 'INSTRUMENT-SENSOR')
-				gain   = self.__get_metadata('required', 'INSTRUMENT-GAIN')
+				sensor   = self.__get_metadata('required', 'INSTRUMENT-SENSOR')
+				gain     = self.__get_metadata('required', 'INSTRUMENT-GAIN')
+				exposure = float(self.__get_metadata('required', 'INSTRUMENT-SHUTTER')) / 1000000000.0
 				if sensor is not None and gain is not None:
-					self.sheet[cell_mapping['OtherDetectorRelatedInfo']] = 'ASTRID %s Mono Gain %s' % (sensor, gain)
+					self.sheet[cell_mapping['OtherDetectorRelatedInfo']] = 'ASTRID %s Mono Gain %s Exp %0.3fs' % (sensor, gain, exposure)
 			elif key == 'ObserverName':
 				self.__fill_value(cell, 'required', 'OBSERVER')
 			elif key == 'ObserverEmail':

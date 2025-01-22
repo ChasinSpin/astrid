@@ -1,3 +1,8 @@
+Version 1.0.046:
+================
+
+	* Added exposure to "Other Detector related info" field in the North American Report Form as per request from Steve Conard
+
 Version 1.0.045:
 ================
 
