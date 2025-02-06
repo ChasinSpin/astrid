@@ -1,3 +1,8 @@
+Version 1.0.047:
+================
+
+	* Changed plate solver to output to astrid.log and trapped rare error where it's unable to split to investigate further
+
 Version 1.0.046:
 ================
 
