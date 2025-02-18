@@ -214,6 +214,7 @@ The observer.json file stores information about the observer, this information i
 		"observer_id": "johndoe@example.com",
 		"owcloud_login": "johndoe@example.com",
 		"owcloud_password": "password",
+		"owcloud_sitefilter": "",
 		"station_number": 0,
 		"create_na_report": true
 	}
@@ -224,6 +225,7 @@ The observer.json file stores information about the observer, this information i
 | observer\_id | Set to the observer id. This could be email address, a number etc. |
 | owcloud\_login | Set to the owcloud login, usually email address |
 | owcloud\_password | Set to the owcloud password |
+| owcloud\_sitefilter | Applies a filter to all site names specified in OWCloud which starts at the beginning of the site name and is case sensitive.  I.E. \"Astrid 5\" will match the site name \"Astrid 5 - ChasinSpin\". Leave empty (no characters at all) if you wish to download all sites you've registered in OWCloud |
 | station_number | Station number of the astrid, e.g. hostname: astrid1 would be station number 1.  Note the station number is stored on the USB Flash Drive, so will move around with the USB Flash Drive.  Range 1..10000 |
 | create\_na\_report | If true, creates a filled in North American Occultation Report Form after the video has finished recording for occultations |  
 
