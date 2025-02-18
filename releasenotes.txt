@@ -1,3 +1,8 @@
+Version 1.0.048:
+================
+
+	* Fixed issue introduced in 1.0.047, where Player failed during platesolving due to logging changes
+
 Version 1.0.047:
 ================
 

@@ -33,9 +33,25 @@ class PlateSolverThread(QThread):
 		self.configFile		= configFile
 		self.altAz		= None
 		self.processLogger = ProcessLogger.getInstance()
-		self.logger = self.processLogger.getLogger()
-		self.logger.info('PlateSolver Thread Started...')
+		if self.processLogger is None:
+			self.logger = None
+		else:
+			self.logger = self.processLogger.getLogger()
+		self.logInfo('PlateSolver Thread Started...')
 
+
+	def logInfo(self, msg):
+		if self.logger is None:
+			print('info: %s' % msg)
+		else:
+			self.logger.info(msg)
+
+
+	def logError(self, msg):
+		if self.logger is None:
+			print('error: %s' % msg)
+		else:
+			self.logger.error(msg)
 
 
 	def run(self):
@@ -76,7 +92,7 @@ class PlateSolverThread(QThread):
 
 		cmd.append(self.filename)
 
-		self.logger.info('Command: %s' % cmd) 
+		self.logInfo('Command: %s' % cmd) 
 
 		self.process = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE)
 
@@ -95,7 +111,7 @@ class PlateSolverThread(QThread):
 			if output:
 				soutput = output.decode('ascii')
 				soutput_stripped = soutput.strip()
-				self.logger.info('Platesolver Output: %s' % soutput_stripped) 
+				self.logInfo('Platesolver Output: %s' % soutput_stripped) 
 				if "simplexy:" in soutput:
 					sources = soutput.replace("simplexy: found ","").replace(".","")
 				if "Field center: (RA H:M:S, Dec D:M:S) = (" in soutput:
@@ -115,10 +131,10 @@ class PlateSolverThread(QThread):
 					self.field_size = soutput_stripped.replace("Field size: ", "")
 					self.field_size = self.field_size.replace(' x ', ',')
 
-					self.logger.info('<%s>' % (self.field_size))
+					self.logInfo('<%s>' % (self.field_size))
 					if self.field_size.endswith(' arcminutes'):
 						self.field_size = self.field_size.replace(' arcminutes', '')
-						self.logger.info('<%s>' % (self.field_size))
+						self.logInfo('<%s>' % (self.field_size))
 						self.field_size = self.field_size.split(',')
 						self.field_size = (float(self.field_size[0]), float(self.field_size[1]))
 						self.field_size = (self.field_size[0] / 60.0, self.field_size[1] / 60.0)
@@ -205,8 +221,11 @@ class PlateSolver:
 		self.settings = Settings.getInstance().platesolver
 
 		self.processLogger = ProcessLogger.getInstance()
-		self.logger = self.processLogger.getLogger()
-		self.logger.info('PlateSolver Started...')
+		if self.processLogger is None:
+			self.logger = None
+		else:
+			self.logger = self.processLogger.getLogger()
+		self.logInfo('PlateSolver Started...')
 
 		# Read fits header
 		hdul = fits.open(filename)
@@ -221,11 +240,11 @@ class PlateSolver:
 			self.focalLen = Settings.getInstance().platesolver['focal_length']
 
 		fov = (57.3 / self.focalLen) * self.frame_width_mm
-		self.logger.info("Sensor FOV: %f deg" % (fov))
+		self.logInfo("Sensor FOV: %f deg" % (fov))
 		scale_low = fov * self.settings['scale_low_factor']
 		scale_high = fov * self.settings['scale_high_factor']
 
-		self.logger.info("Plate Solving: Frame_Width(mm):", self.frame_width_mm)
+		self.logInfo("Plate Solving: Frame_Width(mm): %s" % self.frame_width_mm)
 
 		# Check we have the astrometry files we need, and download if we don't
 		astrometryDownload = AstrometryDownload(astrid_drive = Settings.getInstance().astrid_drive, focal_length = self.focalLen, frame_width_mm = self.frame_width_mm)
@@ -258,7 +277,7 @@ class PlateSolver:
 
 		hdul.close()
 
-		self.logger.info("Plate Solving from: (%s,%s,%s)" % (starting_ra, starting_dec, starting_radius))
+		self.logInfo("Plate Solving from: (%s,%s,%s)" % (starting_ra, starting_dec, starting_radius))
 
 		self.progress_callback	= progress_callback
 		self.success_callback	= success_callback
@@ -273,6 +292,20 @@ class PlateSolver:
 		self.thread.start()
 
 
+	def logInfo(self, msg):
+		if self.logger is None:
+			print('info: %s' % msg)
+		else:
+			self.logger.info(msg)
+
+
+	def logError(self, msg):
+		if self.logger is None:
+			print('error: %s' % msg)
+		else:
+			self.logger.error(msg)
+
+
 	def __progress(self, txt):
 		self.progress_callback(txt)
 
@@ -283,7 +316,7 @@ class PlateSolver:
 			try:
 				(fov_width, _) = self.thread.field_size.split('x')
 			except ValueError as e:
-				self.logger.error('Failed to obtain fov_width: %s' % str(e))
+				self.logError('Failed to obtain fov_width: %s' % str(e))
 				QMessageBox.critical(None, ' ', 'Plate solve failed due to failed split, save astrid.log', QMessageBox.Ok)
 				self.failure_callback()
 				self.thread.wait()
@@ -292,7 +325,7 @@ class PlateSolver:
 
 			fov_width = float(fov_width)
 			focal_length = 57.3 / (fov_width / self.frame_width_mm)
-			self.logger.info('Plate Solver Success: Pos:%s FOV:%s Rot:%s Index:%s FL:%fmm' % (self.thread.icrs_coords.raDecHMSStr('icrs'), self.thread.field_size, self.thread.rotation_angle, self.thread.index_file, focal_length))
+			self.logInfo('Plate Solver Success: Pos:%s FOV:%s Rot:%s Index:%s FL:%fmm' % (self.thread.icrs_coords.raDecHMSStr('icrs'), self.thread.field_size, self.thread.rotation_angle, self.thread.index_file, focal_length))
 
 			if self.target_coord is not None:
 				"""
@@ -307,17 +340,17 @@ class PlateSolver:
 				(ra, dec) = self.target_coord.raDec360Deg('icrs')
 
 				cmd = ['/usr/bin/wcs-rd2xy', '-w', wcsFile, '-r',  '%0.9f' % ra, '-d', '%0.9f' % dec]
-				self.logger.info(cmd)
+				self.logInfo(cmd)
 				try:
 					output = subprocess.check_output(cmd)
-					self.logger.info('Pixel conversion output:', output)
+					self.logInfo('Pixel conversion output: %s' % output)
 					output = str(output)
 					output = output.split('-> pixel (')[1]
 					output = output.split(')')[0]
 					pixel_coord_target = output.split(', ')
 					targetPosition = (float(pixel_coord_target[0]), float(pixel_coord_target[1]))
 
-					self.logger.info('Pixel Coordindates of the Target:', pixel_coord_target)  # Note these are coorindates in the original image, NOT the image on screen
+					self.logInfo('Pixel Coordindates of the Target: %s' % pixel_coord_target)  # Note these are coorindates in the original image, NOT the image on screen
 				except:
 					targetPosition = None
 			else:
