@@ -71,6 +71,9 @@ class OWCloud():
 					owevents = the list of events from OWCloud, None if there was an error
 					error = None is there was no error, otherwise a textual representation of the error
 		"""
+
+		observer = Settings.getInstance().observer
+		sitefilter = observer['owcloud_sitefilter']
 		
 		(owevents, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, OWCloud.URL_EVENTS_ENDPOINT, OWCloud.API_KEY)
 		if error is not None or owevents is None:
@@ -93,6 +96,10 @@ class OWCloud():
 					longitude               = station['Longitude']
 					starAz			= station['StarAz']
 					starAlt			= station['StarAlt']
+
+					if sitefilter != '' and not stationName.startswith(sitefilter):
+						self.logger.info('Ignoring: %s due to site filter: %s' % (stationName, sitefilter))
+						continue
 
 					extraSecs               = int(math.ceil(eventDuration * OWCloud.MOON_MULTIPLIER))
 					if extraSecs < 30:

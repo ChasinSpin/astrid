@@ -1,6 +1,7 @@
 Version 1.0.048:
 ================
 
+	* Added site filter to OWCloud downloads in settings/observer as per Vince Sempronio
 	* Fixed issue introduced in 1.0.047, where Player failed during platesolving due to logging changes
 
 Version 1.0.047:

@@ -93,6 +93,7 @@ class Settings:
 			{'name': 'observer_id',				'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'Observer Email',			'description': ''},
 			{'name': 'owcloud_login',			'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Login',			'description': ''},
 			{'name': 'owcloud_password',			'type': 'str',		'range': None,					'default': 'password',			'decimalPlaces': None,	'editable': True,	'displayName': 'OW Cloud Password',			'description': ''},
+			{'name': 'owcloud_sitefilter',			'type': 'str',		'range': None,					'default': '',				'decimalPlaces': None,	'editable': True,	'displayName': 'OW Site Filter',			'description': ''},
 			{'name': 'station_number',			'type': 'int',		'range': [1, 10000],				'default': 0,				'decimalPlaces': None,	'editable': True,	'displayName': 'Station Number',			'description': ''},
 			{'name': 'create_na_report',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Create North American Report Form',	'description': ''},
 		]},
