@@ -160,6 +160,8 @@ The mount.json file stores configuration related to the mount:
 		"goto_capable": true,
 		"tracking_capable": true,
 		"mount_is_j2000": false,
+		"set_site": true,
+		"set_time": true,
 		"local_offset": "0.00",
 		"parkmethod": "home",
 		"debug": false
@@ -170,12 +172,17 @@ The mount.json file stores configuration related to the mount:
 | name | How the mount appears in the Mount Panel in Astrid under "Name".  Choose something short so that the name doesn't wrap in the panel. e.g. "ZWO AM5" |
 | indi_module | The IndiLib dirver executable needed for the mount. The required executable can be determined with [IndiLib Telescopes](https://www.indilib.org/devices/telescopes.html) under "Listing Details" and "Driver Executable". Most mounts have been added to Astrid, and the presence of a driver executable can be found by looking in /usr/bin.  e.g. "indi_lx200am5". |
 | indi\_telescope\_device\_id | This is the device is that shown when indi\_getprop is run.  For example for an indi_getprop output of: "ZWO AM5.CONNECTION.CONNECT=Off", then this should be set to "ZWO AM5" |
+| indi\_connection\_method | "serial" or "ip address"; configures the connection method to the mount |
 | indi\_usb\_tty | The unix USB (serial port) the driver should connect to. Common values are "/dev/ttyUSB0" and "/dev/ttyACM0".  Connected port can be checked with dmesg, although it's suggested to try "/dev/tty/USB0" first as it's the most common.  (ZWO AM5 uses "/dev/ttyACM0"). |
 | baud | The baud rate the USB (serial port) communicates at.  Common values are 9600 and 115200. |
+| ip\_addr | The ip address of the device |
+| ip\_port | The port of the device |
 | align\_axis | "eq" for Equatorially mounted telescopes and "altaz" for Alt-Azimuth mounted telescopes. |
 | goto\_capable | true if the mount is capable of goto in 2 axis, or false if not. |
 | tracking\_capable | true if the mount is capable of following a target with the earth's location|
 | mount\_is\_j2000 | Set to true if this mount expects j2000 coordinates for syncs and gotos.  Ordinally most mounts are JNOW, and this should be set to false. |
+| set\_time | Set to true to automatically set the time from the GPS.  It is not advised to disable this setting |
+| set\_site | Set to true to automatically set the site from the GPS. It is not advised to disable this setting |
 | local\_offset | This is the timezone offset between UTC and local time (negative numbers are West of Greenwich, London, UK).  It is recommended to set this value to "0.00" for most mounts and is just provided as a convenience if your mount is broken in its implementation and requires the offset to be specified too. The symptom of a broken mount would be if the RA on goto's was off by the number of hours for your local timezone. Ordinarily, Sidereal time is calculated based on your Longitude (Site information), not timezone offset. |
 | parkmethod | "park" or "home". The method used to park the scope. Most mounts use the telescope property "TELESCOPE\_PARK" in IndiLib (which can be verified with indi\_getprop) and this setting should be set to "park". An exception would be something like the "ZWO AM5" which uses "GO_HOME" and this should be set to  "home". |
 | debug | If set to true, debugging information (commands sent to the mount, and information received from the mount) is output which can be useful when setting up new mounts. Ordinarily, this should be set to false. |
