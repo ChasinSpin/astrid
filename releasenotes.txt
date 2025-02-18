@@ -2,6 +2,7 @@ Version 1.0.048:
 ================
 
 	* Added site filter to OWCloud downloads in settings/observer as per Vince Sempronio
+	* Added Set Time and Set Site checkboxes to settings/mounts for mounts that don't play nice when having the time/site set
 	* Fixed issue introduced in 1.0.047, where Player failed during platesolving due to logging changes
 
 Version 1.0.047:

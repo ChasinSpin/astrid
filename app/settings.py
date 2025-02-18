@@ -70,6 +70,8 @@ class Settings:
 			{'name': 'goto_capable',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Goto Capability',			'description': ''},
 			{'name': 'tracking_capable',			'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Tracking Capability',			'description': ''},
 			{'name': 'mount_is_j2000',			'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Mount is J2000',			'description': ''},
+			{'name': 'set_time',				'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Set Time',			'description': ''},
+			{'name': 'set_site',				'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Set Site',			'description': ''},
 			{'name': 'local_offset',			'type': 'float',	'range': [-24.0,24.0],				'default': 0.0,				'decimalPlaces': 2,	'editable': False,	'displayName': 'Local Timezone Offset',			'description': ''},
 			{'name': 'parkmethod',				'type': 'choice',	'range': ['park','home'],			'default': 'home',			'decimalPlaces': None,	'editable': True,	'displayName': 'Parking Method',			'description': ''},
 			{'name': 'debug',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Debug',				'description': ''},
