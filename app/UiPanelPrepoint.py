@@ -1,4 +1,5 @@
 from UiPanel import UiPanel
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from settings import Settings
 from astcoord import AstCoord
@@ -59,7 +60,7 @@ class UiPanelPrepoint(UiPanel):
 
 		self.widgetPhotoProc	= self.addButton('Photo, Solve and Sync')
 
-		self.widgetCancel	= self.addButton('Cancel')
+		self.widgetExit	= self.addButton('Exit Prepoint')
 		self.setColumnWidth(1, PREPOINT_FIELD_WIDTH)
 
 
@@ -67,7 +68,7 @@ class UiPanelPrepoint(UiPanel):
 		self.widgetPhotoProc.clicked.connect(self.buttonPhotoProcPressed)
 		if self.widgetGoto is not None:
 			self.widgetGoto.clicked.connect(self.buttonGotoPressed)
-		self.widgetCancel.clicked.connect(self.buttonCancelPressed)
+		self.widgetExit.clicked.connect(self.buttonExitPressed)
 
 
 	# CALLBACKS	
@@ -78,15 +79,18 @@ class UiPanelPrepoint(UiPanel):
 
 
 	def buttonPhotoProcPressed(self):
-		self.calcPrepoint()
-		self.widgetPhotoProc.setEnabled(False)
-		if self.widgetAltAzDirection is not None:
-			self.widgetAltAzDirection.setEnabled(False)
-		self.camera.takePhotoSolveSync(self, self.prepoint)
+		if self.widgetPhotoProc.text() == 'Photo, Solve and Sync':
+			self.calcPrepoint()
+			self.widgetPhotoProc.setText('Cancel')
+			if self.widgetAltAzDirection is not None:
+				self.widgetAltAzDirection.setEnabled(False)
+			self.camera.takePhotoSolveSync(self, self.prepoint)
+		else:
+			self.camera.takePhotoSolveSyncCancel()
+			self.photoProcFailed()
 
 
-	def buttonCancelPressed(self):
-		self.camera.takePhotoSolveSyncCancel()
+	def buttonExitPressed(self):
 		self.panel.cancelDialog()
 
 
@@ -152,13 +156,25 @@ class UiPanelPrepoint(UiPanel):
 
 			self.widgetFOVSize.setText(str(field_size))
 
-			# Calculate the time it takes to drift trhough the fields of view in minutes
+			# Calculate the time it takes to drift through the fields of view in minutes
 			driftFOV = ((field_size2[0] / self.drift_speed) / 60.0, (field_size2[1] / self.drift_speed) / 60.0)
 			self.widgetMaxDrift.setText('%0.2fx%0.2f min(s)' % (driftFOV[0], driftFOV[1]))
 
-		self.widgetPhotoProc.setEnabled(True)
+		self.widgetPhotoProc.setText('Photo, Solve and Sync')
 		self.showWidget(self.widgetFOVError)
 		self.showWidget(self.widgetFOVSize)
 		self.showWidget(self.widgetMaxDrift)
 		if self.widgetGoto is not None:
 			self.showWidget(self.widgetGoto)
+
+
+	def photoProcFailed(self):
+		self.widgetPhotoProc.setText('Photo, Solve and Sync')
+		self.hideWidget(self.widgetFOVError)
+		self.hideWidget(self.widgetFOVSize)
+		self.hideWidget(self.widgetMaxDrift)
+		self.hideWidget(self.widgetAltAzDirection)
+		if self.widgetGoto is not None:
+			self.hideWidget(self.widgetGoto)
+		self.panel.dialog.adjustSize()
+		self.adjustSize()

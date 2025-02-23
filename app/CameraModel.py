@@ -358,7 +358,8 @@ class CameraModel:
 		self.trackingActivatedNotify = False
 		self.paSolver		= None
 		self.photoCallback	= None
-		self.platesolveCallback	= None
+		self.platesolveCallbackSuccess	= None
+		self.platesolveCallbackFailed	= None
 		self.videoBufferCount	= VIDEO_BUFFER_COUNT
 		self.plannedAutoShutdown= False
 		self.displayOps		= DisplayOps(self)
@@ -928,6 +929,8 @@ class CameraModel:
 		self.solvedTargetPixelPosition = None
 		self.ui.panelTask.updatePlateSolveFailed()
 		self.ui.indeterminateProgressBar(False)
+		if self.platesolveCallbackFailed is not None:
+			self.platesolveCallbackFailed()
 
 
 	def solveFieldSuccess(self, position, field_size, rotation_angle, index_file, focal_length, altAz, target_position, expAnalysis = False):
@@ -935,8 +938,8 @@ class CameraModel:
 		self.solvedTargetPixelPosition = target_position
 		self.ui.panelTask.updatePlateSolveSuccess(self.lastSolvedPosition, field_size, rotation_angle, index_file, focal_length, altAz, expAnalysis)
 		self.ui.indeterminateProgressBar(False)
-		if self.platesolveCallback is not None:
-			self.platesolveCallback(position, field_size, altAz, target_position)
+		if self.platesolveCallbackSuccess is not None:
+			self.platesolveCallbackSuccess(position, field_size, altAz, target_position)
 		if target_position is not None and self.objectTarget:
 			self.updateDisplayOptions()
 
@@ -1364,17 +1367,26 @@ class CameraModel:
 				else:
 					return
 
-		self.platesolveCallback = self.takePhotoSolveSync3
+		self.platesolveCallbackSuccess = self.takePhotoSolveSync3
+		self.platesolveCallbackFailed = self.takePhotoSolveSyncFailed
 		self.solveField(fname, override_target_coord = self.prepoint_coord)
 
 
 	def takePhotoSolveSync3(self, position, field_size, altAz, target_position):
 		self.lastSolvedPosition = position
 		self.solvedTargetPixelPosition = target_position
-		self.platesolveCallback = None
+		self.platesolveCallbackSuccess = None
+		self.platesolveCallbackFailed = None
 		print('Syncing solved position:', position.raDecHMSStr('icrs'))
 		self.syncLastPlateSolve()
 		self.dialogPrepoint.photoProcComplete(position, field_size, altAz)
+		self.updateDisplayOptions()
+
+
+	def takePhotoSolveSyncFailed(self):
+		self.platesolveCallbackSuccess = None
+		self.platesolveCallbackFailed = None
+		self.dialogPrepoint.photoProcFailed()
 		self.updateDisplayOptions()
 
 

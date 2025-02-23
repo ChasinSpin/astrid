@@ -1,6 +1,7 @@
 Version 1.0.049:
 ================
 
+	* Reworked prepoint dialog, now has ability to retry failed solves without cancellation
 	* Fixed issue with cancel during Prepoint, not cancelling the Plate Solver as per Ted Blank
 
 Version 1.0.048:
