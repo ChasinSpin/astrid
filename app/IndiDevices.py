@@ -180,7 +180,10 @@ class IndiTelescope:
 			if self.device_id == 'Starbook Ten':
 				switches = [True]
 			else:
-				switches = [True, False]
+				if self.settings['indi_connection_method'] == 'serial':
+					switches = [True, False]
+				elif self.settings['indi_connection_method'] == 'ip address':
+					switches = [False, True]
 			self.sendSwitch(self.connectionModeSwitch, switches)	# Set the connection on (typically serial)
 			print( f"IndiTelescope: connection mode switch requested on" )
 
@@ -198,19 +201,23 @@ class IndiTelescope:
 					print( f"IndiTelescope: usb_tty set" )
 		
 		if self.device_id != 'Starbook Ten':
-			# Set the Baud Rate
-			device_baud_rate = self.getSwitch('DEVICE_BAUD_RATE')
-			if device_baud_rate:
-				switchList = []
-				for i in range(0, len(device_baud_rate)):
-					if str(self.settings['baud']) == device_baud_rate[i].getName():
-						switchList.append(True)
-					else:
-						switchList.append(False)
-				print(switchList)
-				self.sendSwitch(device_baud_rate, switchList)
-			else:
-				print('Error: IndiTelescope: baud rate switch not found')
+			if self.settings['indi_connection_method'] == 'serial':
+				# Set the Baud Rate
+				device_baud_rate = self.getSwitch('DEVICE_BAUD_RATE')
+				if device_baud_rate:
+					switchList = []
+					for i in range(0, len(device_baud_rate)):
+						if str(self.settings['baud']) == device_baud_rate[i].getName():
+							switchList.append(True)
+						else:
+							switchList.append(False)
+					print(switchList)
+					self.sendSwitch(device_baud_rate, switchList)
+				else:
+					print('Error: IndiTelescope: baud rate switch not found')
+			elif self.settings['indi_connection_method'] == 'ip address':
+				self.device_address = self.getText('DEVICE_ADDRESS')
+				self.sendText(self.device_address, [self.settings['ip_addr'], str(self.settings['ip_port'])])
 	
 		self.connectionSwitch		= self.getSwitch('CONNECTION')
 

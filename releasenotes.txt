@@ -1,6 +1,7 @@
 Version 1.0.049:
 ================
 
+	* Added the capability to wirelessly connect to mounts.  Wifi/ethernet capability added. Note: Network connections to mounts maybe unreliable and are unsupported. See mount settings
 	* Reworked prepoint dialog, now has ability to retry failed solves without cancellation
 	* Fixed issue with cancel during Prepoint, not cancelling the Plate Solver as per Ted Blank
 
