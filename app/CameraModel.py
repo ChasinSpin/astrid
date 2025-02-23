@@ -1378,6 +1378,14 @@ class CameraModel:
 		self.updateDisplayOptions()
 
 
+	def takePhotoSolveSyncCancel(self):
+		self.photoCallback = None
+		if self.operatingSubMode == OperatingPhotoMode.RECORDING_SINGLE:
+			self.stopRecording()
+		else:
+			self.solveFieldCancel()
+
+
 	def gotoNoTracking(self, coords, gotoButton):
 		self.prepointGotoButton = gotoButton
 		self.indi.telescope.tracking(False)

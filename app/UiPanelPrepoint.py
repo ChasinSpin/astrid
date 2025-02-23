@@ -86,8 +86,8 @@ class UiPanelPrepoint(UiPanel):
 
 
 	def buttonCancelPressed(self):
+		self.camera.takePhotoSolveSyncCancel()
 		self.panel.cancelDialog()
-
 
 
 	# OPERATIONS
