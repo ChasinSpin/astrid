@@ -35,6 +35,7 @@ References:
 | [Reletch Elite7 Pro USB 3.2 Solid State Drive Read 480MB/s 256GB](https://www.aliexpress.us/item/1005006081674212.html) | 87.78MB/s | 87.78MB/s | - | No | Likely best choice, only 1 sampled.
 | [Corsair Flash Voyager GTX 128GB USB 3.1 Flash Drive](https://www.amazon.com/Corsair-Flash-Voyager-128GB-Premium/dp/B079NVJPKV) (also 256GB version of this drive) | ~100MB/s | ~46MB/s | ~4.2GB | Yes | Yes (but only upto 4GB videos) |
 | [TOPESEL 256GB USB 3.1 Gen 2 Flash Drive Super Speed 400Mb/s](https://www.aliexpress.us/item/1005003422090205.html) | 83.9MB/s | 83.9MB/s | None | No | Some other TOPESEL drives have been inconsistent, and they don't give refunds, only one of this model has been sampled. |
+| [Patroit Supersonic Rage Prime USB 3.2 Gen 2 Flash Drive - 500GB PEF500GRPMW32U](https://www.amazon.com/Patriot-Supersonic-Prime-Flash-Drive/dp/B095HXK1D1) | 98.77MB/s | 87.49MB/s | Unknown but >10GB | - | Yes |
 
 ### Avoid:
 
