@@ -12,6 +12,7 @@ Config files are stored in /media/pi/ASTRID/configs and organized as follows:
 	* /media/pi/ASTRID/configs/configs.json
 	* /media/pi/ASTRID/configs/config1/
 		* camera.json
+		* focus.json
 		* mount.json
 		* platesolver.json
 		* site.json	[Optional] 
@@ -30,6 +31,7 @@ File formats:
 * [astrometry.cfg](#astrometry)
 * [camera.json](#camera)
 * [general.json](#general)
+* [focus.json](#focus)
 * [mount.json](#mount)
 * [objects.json](#objects)
 * [observer.json](#observer)
@@ -146,6 +148,31 @@ The general.json file stores configuration related general settings:
 | fuzz_gps | When true, a random amount of 5 degrees is added/subtracted from the GPS Latitude/Longitude and 500m from altitude.  This is used primarily for demo purposes to prevent personal information being leaked. On no account should this be enabled when real data for occultations is being acquired. |
 | annotation_mag | When annotating magnitudes of stars on photos, and when analyzing for exposure, stars dimmer than this magnitude are excluded. |
 
+## focus
+
+The focus.json file stores configuration related to the electronic focuser:
+
+	{
+    	"indi_module": "indi_simulator_focuser",
+    	"indi_focuser_device_id": "Focuser Simulator",
+   	 	"indi_custom_properties": "ASI EAF.FOCUS_REVERSE_MOTION.INDI_ENABLED=On"
+    	"coarse_step": 150,
+    	"fine_step": 10,
+    	"has_temperature": true,
+	    "debug": false,
+	}
+
+	
+| Variable | Description |
+| -------- | ----------- |
+| indi_module | The IndiLib dirver executable needed for the mount. The required executable can be determined with [IndiLib Focusers](https://indilib.org/devices/focusers.html) under "Listing Details" and "Driver Executable". Most focusers have been added to Astrid, and the presence of a driver executable can be found by looking in /usr/bin.  e.g. "indi_asi_focuser". |
+| indi\_focuser\_device\_id | This is the device is that shown when indi\_getprop is run.  For example for an indi_getprop output of: "ASI EAF.CONNECTION.CONNECT=Off", then this should be set to "ASI EAF" |
+| indi\_custom\_properties | List of custom properties (semicolon separated) that are sent as indi_setprop commands after the driver is started, e.g. ASI EAF.FOCUS\_REVERSE\_MOTION.INDI\_ENABLED=On |
+| coarse\_step | The number of steps when up/down are pressed when Coarse Speed is selected |
+| fine\_step | The number of steps when up/down are pressed when Fine Speed is selected |
+| has\_temperature | Set to true if the focuser has a temperature sensor, otherwise false |
+| debug | If set to true, debugging information (commands sent to the mount, and information received from the mount) is output which can be useful when setting up new mounts. Ordinarily, this should be set to false. |
+
 ## mount
 
 The mount.json file stores configuration related to the mount:
@@ -154,6 +181,7 @@ The mount.json file stores configuration related to the mount:
 		"name": "ZWO AM5",
 		"indi_module": "indi_lx200am5",
 		"indi_telescope_device_id": "ZWO AM5",
+		"indi_custom_properties": "",
 		"indi_usb_tty": "/dev/ttyACM0",
 		"baud": 9600,
 		"align_axis": "eq",
@@ -172,8 +200,8 @@ The mount.json file stores configuration related to the mount:
 | name | How the mount appears in the Mount Panel in Astrid under "Name".  Choose something short so that the name doesn't wrap in the panel. e.g. "ZWO AM5" |
 | indi_module | The IndiLib dirver executable needed for the mount. The required executable can be determined with [IndiLib Telescopes](https://www.indilib.org/devices/telescopes.html) under "Listing Details" and "Driver Executable". Most mounts have been added to Astrid, and the presence of a driver executable can be found by looking in /usr/bin.  e.g. "indi_lx200am5". |
 | indi\_telescope\_device\_id | This is the device is that shown when indi\_getprop is run.  For example for an indi_getprop output of: "ZWO AM5.CONNECTION.CONNECT=Off", then this should be set to "ZWO AM5" |
+| indi\_custom\_properties | List of custom properties (semicolon separated) that are sent as indi_setprop commands after the driver is started, e.g. Skywatcher Alt-Az.USEJOYSTICK.ENABLE=On |
 | indi\_connection\_method | "serial" or "ip address"; configures the connection method to the mount |
-| indi\_usb\_tty | The unix USB (serial port) the driver should connect to. Common values are "/dev/ttyUSB0" and "/dev/ttyACM0".  Connected port can be checked with dmesg, although it's suggested to try "/dev/tty/USB0" first as it's the most common.  (ZWO AM5 uses "/dev/ttyACM0"). |
 | baud | The baud rate the USB (serial port) communicates at.  Common values are 9600 and 115200. |
 | ip\_addr | The ip address of the device |
 | ip\_port | The port of the device |

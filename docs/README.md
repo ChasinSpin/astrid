@@ -36,6 +36,7 @@ Ted Blank has also created an excellent video demonstrating using Astrid to Prep
 8. [USB Flash Drive Layout](FlashDriveLayout.md)
 9. [Plate Solver](Platesolver.md)
 10. [Mounts](Mounts.md)
+11. [Focusers](Focusers.md)
 
 ## Other
 * [Install From Astrid Image](InstallImage.md)
