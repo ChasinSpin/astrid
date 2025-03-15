@@ -17,6 +17,7 @@
 * [Does Astrid Require Internet](#does-astrid-require-internet)
 * [Which Version is Astrid](#which-version-is-astrid)
 * [Failed Upgrades](#failed-upgrades)
+* [Copying the USB Drive](#copying-the-usb-drive)
 
 ### Power Jack Is Intermittent
 
@@ -160,3 +161,15 @@ Astrid will check when started *when internet is connected* to see if it needs a
 If an upgrade fails (often due to internet connectivity), then just repeat the upgrade.
 
 IMPORTANT: If an upgrade fails and you afe unable to fix by repeating, it's is strongly recommended that you don't reformat the USB Thumb Drive and reimage the SD Card, it will likely make matters worse.  Please reach out for support instead.
+
+### Copying the USB Drive
+
+To copy the USB Drive (for example to backup or as a spare):
+
+* Run the "Format USB Flash Drive" utility in the Tools folder on the Astrid Desktop to format the new drive
+* Insert the original USB Drive into your Windows or Mac desktop/laptop and copy the files onto your desktop
+* Eject the original USB Drive
+* Insert the new USB Drive into your Windows or Mac desktop/laptop and copy the files you previously copied from your desktop onto your new USB Drive, overwriting the files the format created
+* Eject the original USB Drive
+
+ALWAYS format your new USB Drive using the Astrid utility otherwise Astrid will not recognize the drive.
