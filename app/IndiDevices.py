@@ -19,13 +19,17 @@ INDI_RETRIES			= 5
 class IndiDevices:
 
 	def __init__(self, host=INDI_HOST, port=INDI_PORT):
-		self.settings = Settings.getInstance().mount
-		print('IndiDevice: Setting up mount as a', self.settings['name'])
+		self.settingsMount = Settings.getInstance().mount
+		self.settingsFocus = Settings.getInstance().focus
+		print('IndiDevice: Setting up mount as a ', self.settingsMount['name'])
+		print('IndiDevice: Setting up focuser', self.settingsFocus['indi_module'])
 
 		# Start mount control indiserver process
 		self.killIndiServerByName()
 
-		self.indiserver_pid = subprocess.Popen(['/usr/bin/indiserver', '-v', '-m',  '100', self.settings['indi_module']]).pid
+		cmd = ['/usr/bin/indiserver', '-v', '-m',  '100', self.settingsMount['indi_module'], self.settingsFocus['indi_module']]
+
+		self.indiserver_pid = subprocess.Popen(cmd).pid
 		time.sleep(2)		# Wait for startup
 
 		# Setup logging
@@ -37,7 +41,8 @@ class IndiDevices:
 		self.indi.setServer(host, port)
 
 		self.telescope		= None
-
+		self.focuser		= None
+		
 
 	def killIndiServerByName(self):
 		for line in os.popen('/usr/bin/ps -ax | grep "indiserver" | grep -v grep'):
@@ -52,26 +57,31 @@ class IndiDevices:
 
 
 	def updatePropertyCallback(self, name, typeStr, deviceName):
-		if deviceName == self.settings['indi_telescope_device_id'] and self.telescope is not None:
+		if deviceName == self.settingsMount['indi_telescope_device_id'] and self.telescope is not None:
 			self.telescope.updatePropertyCallback(name, typeStr, deviceName)
+		if deviceName == self.settingsFocus['indi_focuser_device_id'] and self.focuser is not None:
+			self.focuser.updatePropertyCallback(name, typeStr, deviceName)
 			
 
 	# Returns True if connection was successful, else false
 
-	def connect(self, usb_tty, simulate):
-		telescope_id = self.settings['indi_telescope_device_id']
+	def connect(self, simulate):
+		telescope_id = self.settingsMount['indi_telescope_device_id']
+		focuser_id   = self.settingsFocus['indi_focuser_device_id']
+
 		if not self.connected:
 			if  not self.indi.connectServer():
 				print( f"Error: indiserver not found running on {self.indi.getHost()}:{self.indi.getPort()}" )
 			else:
 				self.connected = True
 				self.telescope = IndiTelescope(telescope_id, self.indi)
+				self.focuser   = IndiFocuser(focuser_id, self.indi)
 
 			time.sleep(1)	# Wait for devices to be discovered
 	
 			#self.dumpAllProperties()
 
-		if self.telescope.connect(usb_tty, simulate):
+		if self.telescope.connect(simulate) and self.focuser.connect():
 			return True
 		else:
 			return False
@@ -91,6 +101,11 @@ class IndiDevices:
 		deviceList = self.indi.getDevices()
 		for device in deviceList:
 			print(f"   > {device.getDeviceName()}")
+			print(f"   > {device.getDriverInterface()}")
+			if device.getDriverInterface() & device.FOCUSER_INTERFACE:
+				print('Focuser')
+			if device.getDriverInterface() & device.TELESCOPE_INTERFACE:
+				print('Telescope')
 
 		# Print all properties and their associated values.
 		print("List of Device Properties")
@@ -140,7 +155,7 @@ class IndiTelescope:
 		self.coord_update_callback = None
 		self.tracking_update_callback = None
 		self.park_update_callback = None
-		self.settings = Settings.getInstance().mount
+		self.settingsMount = Settings.getInstance().mount
 		self.lockTrackingOff = False
 
 		# Get the telescope device called device_id
@@ -153,24 +168,30 @@ class IndiTelescope:
 		# Get the connect mode switch
 		print('Device_ID:', device_id)
 
-		# Obtain the device name, the driver thinks it has
+		# Looks for a telescope in the list of drivers
 		deviceList = self.indi.getDevices()
+		foundDeviceName = None
 		for device in deviceList:
-			print('Discovered Indi Device In Driver:', device.getDeviceName())
-		firstDeviceName = deviceList[0].getDeviceName()
+			if device.getDriverInterface() & device.TELESCOPE_INTERFACE:
+				print('Discovered Telescope Device In Driver:', device.getDeviceName())
+				foundDeviceName = device.getDeviceName()
+	
+		if foundDeviceName is None:
+			QMessageBox.information(None, ' ', 'A telescope device was not discovered.\n\nConnect a telescope to launch Astrid and verify settings.\n\nAstrid will now exit, start app again to pickup device change.', QMessageBox.Ok)
+			raise ValueError('Quitting Astrid due to no telescope device being found.  This is not an error!')
 
-		# Compare the device id of the drive to the device id specified in settings
-		if firstDeviceName != device_id:
-			result = QMessageBox.warning(None, ' ', 'Mismatch between the Indi Telescope Device Id specified in Settings/Mount and the actual device id in the driver.\n\nSettings: %s\nDriver:     %s\n\nWould you like to update the settings to match?' % (device_id, firstDeviceName), QMessageBox.Yes|QMessageBox.No)
+		# Compare the device id of the drive to the device id specified in settingsMount
+		if foundDeviceName != device_id:
+			result = QMessageBox.warning(None, ' ', 'Mismatch between the Indi Telescope Device Id specified in Settings/Mount and the actual device id in the driver.\n\nSettings: %s\nDriver:     %s\n\nWould you like to update the settings to match?' % (device_id, foundDeviceName), QMessageBox.Yes|QMessageBox.No)
 			if result == QMessageBox.Yes:
-				self.settings['indi_telescope_device_id'] = firstDeviceName
+				self.settingsMount['indi_telescope_device_id'] = foundDeviceName
 				Settings.getInstance().writeSubsetting('mount')
 				QMessageBox.information(None, ' ', 'Indi Telescope Device Id has been updated to match.\n\nAstrid will now exit, start app again to pickup device change.', QMessageBox.Ok)
 				raise ValueError('Quitting Astrid due to device id being changed.  This is not an error!')
 
 
-		if self.settings['indi_custom_properties'] is not None and len(self.settings['indi_custom_properties']) > 0:
-			for property in self.settings['indi_custom_properties'].split(';'):
+		if self.settingsMount['indi_custom_properties'] is not None and len(self.settingsMount['indi_custom_properties']) > 0:
+			for property in self.settingsMount['indi_custom_properties'].split(';'):
 				cmd = ['/usr/bin/indi_setprop', property]
 				print(cmd)
 				subprocess.run(args=cmd)
@@ -180,34 +201,28 @@ class IndiTelescope:
 			if self.device_id == 'Starbook Ten':
 				switches = [True]
 			else:
-				if self.settings['indi_connection_method'] == 'serial':
+				if self.settingsMount['indi_connection_method'] == 'serial':
 					switches = [True, False]
-				elif self.settings['indi_connection_method'] == 'ip address':
+				elif self.settingsMount['indi_connection_method'] == 'ip address':
 					switches = [False, True]
 			self.sendSwitch(self.connectionModeSwitch, switches)	# Set the connection on (typically serial)
 			print( f"IndiTelescope: connection mode switch requested on" )
 
 
-	def connect(self, usb_tty, simulate) -> bool:
+	def connect(self, simulate) -> bool:
 		# Get and set the device port
 		if simulate:
 			self.simulationSwitch = self.getSwitch('SIMULATION')
 			self.sendSwitch(self.simulationSwitch, [True, False])
-		else:
-			if self.device_id != 'Starbook Ten':
-				self.tdevice_port = self.getText('DEVICE_PORT')
-				if self.tdevice_port:
-					self.sendText(self.tdevice_port, [usb_tty])
-					print( f"IndiTelescope: usb_tty set" )
 		
 		if self.device_id != 'Starbook Ten':
-			if self.settings['indi_connection_method'] == 'serial':
+			if self.settingsMount['indi_connection_method'] == 'serial':
 				# Set the Baud Rate
 				device_baud_rate = self.getSwitch('DEVICE_BAUD_RATE')
 				if device_baud_rate:
 					switchList = []
 					for i in range(0, len(device_baud_rate)):
-						if str(self.settings['baud']) == device_baud_rate[i].getName():
+						if str(self.settingsMount['baud']) == device_baud_rate[i].getName():
 							switchList.append(True)
 						else:
 							switchList.append(False)
@@ -215,22 +230,22 @@ class IndiTelescope:
 					self.sendSwitch(device_baud_rate, switchList)
 				else:
 					print('Error: IndiTelescope: baud rate switch not found')
-			elif self.settings['indi_connection_method'] == 'ip address':
+			elif self.settingsMount['indi_connection_method'] == 'ip address':
 				self.device_address = self.getText('DEVICE_ADDRESS')
-				self.sendText(self.device_address, [self.settings['ip_addr'], str(self.settings['ip_port'])])
+				self.sendText(self.device_address, [self.settingsMount['ip_addr'], str(self.settingsMount['ip_port'])])
 	
 		self.connectionSwitch		= self.getSwitch('CONNECTION')
 
 		if self.device.isConnected():
 			print( f"IndiTelescope: we are already connected" )
 		else:
-			# We need to connect before we can access the other settings
+			# We need to connect before we can access the other settingsMount
 			self.sendSwitch(self.connectionSwitch, [True, False])
 			print( f"IndiTelescope: connection switch requested on" )
 
 			time.sleep(2)	# Wait for connection
 			if not self.device.isConnected():
-				print('Error: IndiTelescope: unable to connect on:', usb_tty)
+				print('Error: IndiTelescope: unable to connect')
 				return False
 
 		self.geographic_coord		= self.getNumber('GEOGRAPHIC_COORD')
@@ -288,7 +303,7 @@ class IndiTelescope:
 		if sswitch:
 			for stateIndex in range(0, len(switches)):
 				sswitch[stateIndex].setState(PyIndi.ISS_ON if switches[stateIndex] else PyIndi.ISS_OFF)
-				if self.settings['debug']:
+				if self.settingsMount['debug']:
 					print('IndiTelescope: SET %s.%s=%s' % ( sswitch.getName(), sswitch[stateIndex].getName(), sswitch[stateIndex].getStateAsString()) )
 			self.indi.sendNewProperty(sswitch)
 			return True
@@ -304,7 +319,7 @@ class IndiTelescope:
 		if stext:
 			for stateIndex in range(0, len(texts)):
 				stext[stateIndex].setText(texts[stateIndex])
-				if self.settings['debug']:
+				if self.settingsMount['debug']:
 					print('IndiTelescope: SET %s.%s=%s' % ( stext.getName(), stext[stateIndex].getName(), stext[stateIndex].getText()) )
 			self.indi.sendNewProperty(stext)
 			return True
@@ -320,7 +335,7 @@ class IndiTelescope:
 		if svalue:
 			for stateIndex in range(0, len(values)):
 				svalue[stateIndex].setValue(values[stateIndex])
-				if self.settings['debug']:
+				if self.settingsMount['debug']:
 					print('IndiTelescope: SET %s.%s=%s' % ( svalue.getName(), svalue[stateIndex].getName(), svalue[stateIndex].getValue()) )
 			self.indi.sendNewProperty(svalue)
 			return True
@@ -328,7 +343,7 @@ class IndiTelescope:
 
 
 	def setSite(self, lat, lon, alt):
-		if self.settings['set_site']:
+		if self.settingsMount['set_site']:
 			self.sendValue(self.geographic_coord, [lat, lon, alt])
 			print( f"IndiTelescope: site set" )
 
@@ -339,7 +354,7 @@ class IndiTelescope:
 	# an app where the local time of the device is used, set to 0.0
 
 	def setTime(self, time_now, local_offset):
-		if self.settings['set_time']:
+		if self.settingsMount['set_time']:
 			self.sendText(self.time_utc, [time_now.strftime("%Y-%m-%dT%H:%M:%S"), local_offset])
 
 
@@ -366,7 +381,7 @@ class IndiTelescope:
 
 
 		# We set the desired coordinates
-		if not self.settings['mount_is_j2000'] and not already_in_mount_native:
+		if not self.settingsMount['mount_is_j2000'] and not already_in_mount_native:
 			(ra, dec) = icrs_coord.raDec24Deg('icrs', jnow=True)
 		else:
 			(ra, dec) = icrs_coord.raDec24Deg('icrs')
@@ -379,7 +394,7 @@ class IndiTelescope:
 		#time.sleep(1.0)
 
 		# We set the desired coordinates
-		if self.settings['mount_is_j2000']:
+		if self.settingsMount['mount_is_j2000']:
 			(ra, dec) = icrs_coord.raDec24Deg('icrs')
 		else:
 			(ra, dec) = icrs_coord.raDec24Deg('icrs', jnow=True)
@@ -387,7 +402,7 @@ class IndiTelescope:
 
 
 	def tracking(self, enable):
-		if self.settings['tracking_capable']:
+		if self.settingsMount['tracking_capable']:
 			self.sendSwitch(self.telescope_track_state, [enable, not enable])
 
 
@@ -484,7 +499,7 @@ class IndiTelescope:
 
 
 	def updatePropertyCallback(self, name, typeStr, deviceName):
-		if self.settings['debug']:
+		if self.settingsMount['debug']:
 			if   typeStr == 'INDI_NUMBER':
 				prop = indiGetWithTimeout(self.device.getNumber, name)
 			elif typeStr == 'INDI_SWITCH':
@@ -520,7 +535,7 @@ class IndiTelescope:
 			coord = AstCoord.from24Deg(ra, dec, 'icrs')
 			self.coord_update_callback(coord)
 		if name == 'TELESCOPE_TRACK_STATE' and self.tracking_update_callback is not None:
-			if self.settings['tracking_capable']:
+			if self.settingsMount['tracking_capable']:
 				tracking_enabled = self.telescope_track_state[0].getState()
 				self.tracking_update_callback(tracking_enabled)
 				if tracking_enabled and self.lockTrackingOff:
@@ -556,7 +571,7 @@ class IndiTelescope:
 
 
 	def getTracking(self):
-		if self.settings['tracking_capable']:
+		if self.settingsMount['tracking_capable']:
 			return True if self.telescope_track_state[0].getState() else False
 		else:
 			return False
@@ -564,6 +579,196 @@ class IndiTelescope:
 
 	def getPark(self):
 		return True if (self.park_state is not None and self.park_state[0].getState()) else False
+
+
+
+class IndiFocuser:
+	
+	def __init__(self, device_id, indi):
+		self.indi = indi
+		self.device_id = device_id
+		self.settingsFocus = Settings.getInstance().focus
+
+		self.focus_position_update_callback = None
+		self.focus_temperature_update_callback = None
+
+		# Get the focsuer device called device_id
+		self.device = indiGetWithTimeout(self.indi.getDevice, self.device_id)
+		if self.device is None:
+			print( f"Error: IndiFocuser: Unable to start indi device {self.device_id}" )
+		else:
+			print( f"IndiFocuser: device obtained" )
+
+		# Get the connect mode switch
+		print('Device_ID:', device_id)
+
+		# Looks for a focuser in the list of drivers
+		deviceList = self.indi.getDevices()
+		foundDeviceName = None
+		for device in deviceList:
+			if device.getDriverInterface() & device.FOCUSER_INTERFACE:
+				print('Discovered Focuser Device In Driver:', device.getDeviceName())
+				foundDeviceName = device.getDeviceName()
+	
+		if foundDeviceName is None:
+			QMessageBox.information(None, ' ', 'A focuser device was not discovered.\n\nConnect a focuser to launch Astrid and verify settings.\n\nAstrid will now exit, start app again to pickup device change.', QMessageBox.Ok)
+			raise ValueError('Quitting Astrid due to no focuser device being found.  This is not an error!')
+
+		# Compare the device id of the drive to the device id specified in settingsMount
+		if foundDeviceName != device_id:
+			result = QMessageBox.warning(None, ' ', 'Mismatch between the Indi Focuser Device Id specified in Settings/Mount and the actual device id in the driver.\n\nSettings: %s\nDriver:     %s\n\nWould you like to update the settings to match?' % (device_id, foundDeviceName), QMessageBox.Yes|QMessageBox.No)
+			if result == QMessageBox.Yes:
+				self.settingsFocus['indi_focuser_device_id'] = foundDeviceName
+				Settings.getInstance().writeSubsetting('focus')
+				QMessageBox.information(None, ' ', 'Indi Focuser Device Id has been updated to match.\n\nAstrid will now exit, start app again to pickup device change.', QMessageBox.Ok)
+				raise ValueError('Quitting Astrid due to device id being changed.  This is not an error!')
+
+
+	def connect(self) -> bool:
+		# Get and set the device port
+		self.connectionSwitch		= self.getSwitch('CONNECTION')
+
+		if self.device.isConnected():
+			print( f"IndiFocuser: we are already connected" )
+		else:
+			# We need to connect before we can access the other settingsMount
+			self.sendSwitch(self.connectionSwitch, [True, False])
+			print( f"IndiTelescope: connection switch requested on" )
+
+			time.sleep(2)	# Wait for connection
+			if not self.device.isConnected():
+				print('Error: IndiFocuser: unable to connect')
+				return False
+
+		self.abortSwitch		= self.getSwitch('FOCUS_ABORT_MOTION')
+		self.setPositionNumber		= self.getNumber('FOCUS_SYNC')
+		self.positionNumber		= self.getNumber('ABS_FOCUS_POSITION')
+		self.temperatureNumber		= self.getNumber('FOCUS_TEMPERATURE')
+
+		if self.settingsFocus['indi_custom_properties'] is not None and len(self.settingsFocus['indi_custom_properties']) > 0:
+			for property in self.settingsFocus['indi_custom_properties'].split(';'):
+				cmd = ['/usr/bin/indi_setprop', property]
+				print(cmd)
+				subprocess.run(args=cmd)
+
+		return True
+
+
+	def getSwitch(self, propertyName):
+		ret = indiGetWithTimeout(self.device.getSwitch, propertyName)
+		if ret:
+			print('IndiFocuser: %s obtained' % propertyName)
+		else:
+			print('Error: IndiFocuser: Unable to obtain %s from indi device %s' % (propertyName, self.device_id))
+		return ret
+
+
+	def getNumber(self, propertyName):
+		ret = indiGetWithTimeout(self.device.getNumber, propertyName)
+		if ret:
+			print('IndiFocuser: %s obtained' % propertyName)
+		else:
+			print('Error: IndiFocuser: Unable to obtain %s from indi device %s' % (propertyName, self.device_id))
+		return ret
+
+
+	def sendSwitch(self, sswitch, switches: list):
+		"""
+			sswitch is the switch object, e.g. self.goHomeSwitch
+			switches is an array of bools, one for each property
+			Returns True on success, False on failure
+		"""
+		if sswitch:
+			for stateIndex in range(0, len(switches)):
+				sswitch[stateIndex].setState(PyIndi.ISS_ON if switches[stateIndex] else PyIndi.ISS_OFF)
+				if self.settingsFocus['debug']:
+					print('IndiFocuser: SET %s.%s=%s' % ( sswitch.getName(), sswitch[stateIndex].getName(), sswitch[stateIndex].getStateAsString()) )
+			self.indi.sendNewProperty(sswitch)
+			return True
+		return False
+
+
+	def sendValue(self, svalue, values: list):
+		"""
+			svalue is the value object, e.g. self.geographic_coord
+			values is an array of values, one for each property
+			Returns True on success, False on failure
+		"""
+		if svalue:
+			for stateIndex in range(0, len(values)):
+				svalue[stateIndex].setValue(values[stateIndex])
+				if self.settingsFocus['debug']:
+					print('IndiFocuser: SET %s.%s=%s' % ( svalue.getName(), svalue[stateIndex].getName(), svalue[stateIndex].getValue()) )
+			self.indi.sendNewProperty(svalue)
+			return True
+
+
+	def updatePropertyCallback(self, name, typeStr, deviceName):
+		if self.settingsFocus['debug']:
+			if   typeStr == 'INDI_NUMBER':
+				prop = indiGetWithTimeout(self.device.getNumber, name)
+			elif typeStr == 'INDI_SWITCH':
+				prop = indiGetWithTimeout(self.device.getSwitch, name)
+			elif typeStr == 'INDI_TEXT':
+				prop = indiGetWithTimeout(self.device.getText, name)
+			elif typeStr == 'INDI_LIGHT':
+				prop = indiGetWithTimeout(self.device.getLight, name)
+			else:
+				prop = None
+				print('Error: IndiTelescope: Unknown Type: %s for property %s' % (typeStr, name))
+
+			if prop is None:
+				print('Error: IndiTelescope: Unable to obtain %s from indi device %s' % (name, self.device_id))
+			else:
+				if   typeStr == 'INDI_SWITCH':
+					for subProp in prop:
+						print('IndiTelescope: UPDATE %s.%s=%s' % (prop.getName(), subProp.getName(), subProp.getStateAsString()))
+				elif typeStr == 'INDI_TEXT':
+					for subProp in prop:
+						print('IndiTelescope: UPDATE %s.%s=%s' % (prop.getName(), subProp.getName(), subProp.getText()))
+				elif typeStr == 'INDI_NUMBER':
+					for subProp in prop:
+						print('IndiTelescope: UPDATE %s.%s=%s' % (prop.getName(), subProp.getName(), subProp.getValue()))
+				elif typeStr == 'INDI_LIGHT':
+					for subProp in prop:
+						print('IndiTelescope: UPDATE %s.%s=%s' % (prop.getName(), subProp.getName(), subProp.getStateAsString()))
+				else:
+					print('Error: IndiTelescope: Urecognized typeStr')
+
+		if name == 'ABS_FOCUS_POSITION' and self.focus_position_update_callback is not None:
+			pos = self.positionNumber[0].getValue()
+			self.focus_position_update_callback(pos)
+		if name == 'FOCUS_TEMPERATURE' and self.focus_temperature_update_callback is not None:
+			temp = self.temperatureNumber[0].getValue()
+			self.focus_temperature_update_callback(temp)
+
+
+	def setFocusPositionUpdateCallback(self, callback):
+		self.focus_position_update_callback = callback
+
+		# Get the current focuser position and update the ui
+		pos = self.positionNumber[0].getValue()
+		self.focus_position_update_callback(pos)
+
+
+	def setFocusTemperatureUpdateCallback(self, callback):
+		self.focus_temperature_update_callback = callback
+
+		# Get the current focuser temperature and update the ui
+		temp = self.temperatureNumber[0].getValue()
+		self.focus_temperature_update_callback(temp)
+
+
+	def setCurrentPosition(self, pos):
+		self.sendValue(self.setPositionNumber, [pos])
+
+
+	def moveToPosition(self, pos):
+		self.sendValue(self.positionNumber, [pos])
+
+
+	def abortMove(self):
+		self.sendSwitch(self.abortSwitch, [True])
 
 
 # The IndiClient class which inherits from the module PyIndi.BaseClient class

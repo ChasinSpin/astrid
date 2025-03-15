@@ -7,6 +7,7 @@ from UiValidators import DoubleValidator, IntValidator
 from UiStatusButton import UiStatusButton
 from UiStatusLabel import UiStatusLabel
 from UiWidgetJoystick import UiWidgetJoystick
+from UiWidgetFocuser import UiWidgetFocuser
 from UiWidgetDirection import UiWidgetDirection
 from UiWidgetOpencv import UiWidgetOpencv
 from UiWidgetPlayerControls import UiWidgetPlayerControls
@@ -250,6 +251,14 @@ class UiPanel(QWidget):
 		self.layout.addWidget(joystick, self.rowIndex, 0, 1, 2, alignment)
 		self.rowIndex += 1
 		return joystick
+
+
+	def addFocuser(self, buttonUpCallback, buttonDownCallback, buttonSpeedCallback) -> UiWidgetFocuser:
+		focuser = UiWidgetFocuser(buttonUpCallback, buttonDownCallback, buttonSpeedCallback)
+		alignment = Qt.AlignCenter | Qt.AlignVCenter
+		self.layout.addWidget(focuser, self.rowIndex, 0, 1, 2, alignment)
+		self.rowIndex += 1
+		return focuser
 
 
 	def addAltAzDirection(self):

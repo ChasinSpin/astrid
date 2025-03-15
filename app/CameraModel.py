@@ -285,34 +285,6 @@ class CameraModel:
 		print('**** Garbage Collection:', phase)
 
 
-	def excludeMiniDisplayTty(self, tty):
-		# The tty the Mini Display connects to can interfere with mounts that use /dev/ttyACM0, this excludes the adafruit port so the search starts on the mount port
-		# if ACM0 is being used
-		if tty.startswith('/dev/ttyACM'):
-			# Obtain all serial ports
-			ports = serial.tools.list_ports.comports()
-			acm_ports = []
-			for port in ports:
-				if port.device.startswith('/dev/ttyACM'):
-					acm_ports.append(port.device)
-
-			# Sort as the ports are returned out of order
-			acm_ports.sort()
-
-			# Obtain adafruit ports and remove that port from the above list
-			ports = adafruit_board_toolkit.circuitpython_serial.repl_comports()
-			if ports is not None and len(ports) > 0:
-				acm_ports.remove(ports[0].device)
-
-			# Return our first non adafruit serial port
-			if len(acm_ports) == 0:
-				return None
-			else:
-				return acm_ports[0]
-		else:
-			return tty
-
-
 	def __init__(self, previewWidth, previewHeight, splashScreen):
 		self.processLogger = ProcessLogger.getInstance()
 		self.logger = self.processLogger.getLogger()
@@ -365,23 +337,26 @@ class CameraModel:
 		self.displayOps		= DisplayOps(self)
 		self.solvedTargetPixelPosition = None
 		self.disableVideoFrameRateWarning = False
+		self.lastFocuserPosition = 0.0
+		self.lastFocuserTemperature = 0.0
+		self.focuserPositionDialogCallback = None
+		self.focuserTemperatureDialogCallback = None
 
 		#Picamera2.set_logging(Picamera2.DEBUG)
 
 		splashScreen.setMessage('Please wait: Setting up mount...')
 		self.indi		= IndiDevices.IndiDevices()
-		self.indi_usb_tty	= Settings.getInstance().mount['indi_usb_tty']
-		self.indi_usb_tty	= self.excludeMiniDisplayTty(self.indi_usb_tty)
-		if self.indi_usb_tty is None:
-			self.indi_usb_tty	= Settings.getInstance().mount['indi_usb_tty']
 		self.simulate		= False
-		while not self.indi.connect(self.indi_usb_tty, self.simulate):
+		while not self.indi.connect(self.simulate):
 			dialog = UiDialogPanel('Failed to connect to mount', UiPanelConnectFailedIndi, args = self)
 		self.indi.telescope.setSite(AstSite.lat, AstSite.lon, AstSite.alt)
 		self.indi.telescope.setTime(datetime.utcnow(), Settings.getInstance().mount['local_offset'])
 		self.indi.telescope.pierSide(west=True)
 		self.indi.telescope.setCoordUpdateCallback(self.updateRaDecPos)
 		self.indi.telescope.setTrackingUpdateCallback(self.updateTracking)
+		self.indi.focuser.setFocusPositionUpdateCallback(self.updateFocuserPosition)
+		self.indi.focuser.setFocusTemperatureUpdateCallback(self.updateFocuserTemperature)
+
 		if Settings.getInstance().mount['parkmethod'] == 'park':
 			self.indi.telescope.setParkUpdateCallback(self.updatePark)
 
@@ -1135,6 +1110,20 @@ class CameraModel:
 			self.ui.panelMount.widgetHome.setChecked(True if park == 1 else False)
 
 
+	def updateFocuserPosition(self, pos):
+		self.lastFocuserPosition = pos
+		print('Focuser Position: %f' % self.lastFocuserPosition)
+		if self.focuserPositionDialogCallback is not None:
+			self.focuserPositionDialogCallback(pos)
+
+
+	def updateFocuserTemperature(self, temp):
+		self.lastFocuserTemperature = temp
+		print('Focuser Temperature: %f' % self.lastFocuserTemperature)
+		if self.focuserTemperatureDialogCallback is not None:
+			self.focuserTemperatureDialogCallback(temp)
+
+
 	def syncLastPlateSolve(self):
 		if self.lastSolvedPosition is not None:
 			if self.mountCanMove():
@@ -1278,11 +1267,6 @@ class CameraModel:
 	def exitNow(self):
 		print('Exiting now...')
 		raise RuntimeError('CameraModel Exit: This is not an error')
-
-	def nextUsbTty(self):
-		lastNumber = int(self.indi_usb_tty[-1])
-		lastNumber += 1
-		self.indi_usb_tty = self.indi_usb_tty[:-1] + str(lastNumber)
 
 
 	def setCrossHairs(self, enable):

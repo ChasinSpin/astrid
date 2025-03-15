@@ -12,27 +12,20 @@ class UiPanelConnectFailedIndi(UiPanel):
 		self.camera = camera
 
 		self.panel		= panel
-		self.widgetMessage	= self.addTextBox('Troubleshooting:\n    1. Verify USB cable is connected from ASTRID to the mount\n    2. Check mount is powered on\n    3. Try the next USB device (below)')
+		self.widgetMessage	= self.addTextBox('Troubleshooting:\n    1. Verify USB cable is connected from ASTRID to the mount and focuser(if used)\n    2. Check mount and focuser(if used) are powered on\n    3. Try to connect again (e.g. SkyWatcher mounts)\n    4. Verify both Focuser(if not set to simulator) AND mount are connected')
 		self.widgetMessage.setFixedWidth(600)
-		self.widgetTryNext	= self.addButton('Try Next USB Device')
 		self.widgetOK		= self.addButton('Try Again')
 		self.widgetSimulate	= self.addButton('Simulate Mount')
 		self.widgetCancel	= self.addButton('Cancel')
 
 
 	def registerCallbacks(self):
-		self.widgetTryNext.clicked.connect(self.buttonTryNextPressed)
 		self.widgetOK.clicked.connect(self.buttonOKPressed)
 		self.widgetSimulate.clicked.connect(self.buttonSimulatePressed)
 		self.widgetCancel.clicked.connect(self.buttonCancelPressed)
 
 
 	# CALLBACKS	
-
-	def buttonTryNextPressed(self):
-		self.camera.nextUsbTty()
-		self.panel.acceptDialog()
-
 
 	def buttonOKPressed(self):
 		self.panel.acceptDialog()
