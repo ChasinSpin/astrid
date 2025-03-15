@@ -1,3 +1,8 @@
+Version 1.0.050:
+================
+
+	* Settings are now more robust to config files corrupted during write. Zero length files are reported, and backed up prior to writing with auto recovery.
+
 Version 1.0.049:
 ================
 

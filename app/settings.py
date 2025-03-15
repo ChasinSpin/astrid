@@ -4,6 +4,7 @@ import os
 import json
 import copy
 from pprint import *
+from PyQt5.QtWidgets import QMessageBox
 
 
 
@@ -23,6 +24,7 @@ class Settings:
 	subsettings = [
 		{'name': 'camera',		'global': True,		'editable': True,	'displayName': 'Camera'},
 		{'name': 'mount',		'global': True,		'editable': True,	'displayName': 'Mount'},
+		{'name': 'focus',		'global': True,		'editable': True,	'displayName': 'Focus'},
 		{'name': 'objects',		'global': False,	'editable': False,	'displayName': 'Objects'},
 		{'name': 'platesolver',		'global': True,		'editable': True,	'displayName': 'Plate Solver'},
 		{'name': 'occultations',	'global': False,	'editable': False,	'displayName': 'Occultations'},
@@ -64,8 +66,6 @@ class Settings:
 			{'name': 'indi_telescope_device_id',		'type': 'str',		'range': None,					'default': 'Telescope Simulator',	'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Telescope Device Id',		'description': ''},
 			{'name': 'indi_custom_properties',		'type': 'str',		'range': None,					'default': '',				'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Custom Properties',		'description': ''},
 			{'name': 'indi_connection_method',		'type': 'choice',	'range': ['serial', 'ip address'],		'default': 'serial',			'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Connection Method',				'description': ''},
-			{'name': 'indi_usb_tty',			'type': 'choice',	'range': ['/dev/ttyUSB0', '/dev/ttyACM0', '/dev/null'],
-																		'default': '/dev/ttyUSB0',		'decimalPlaces': None,	'editable': True,	'displayName': 'Indi USB tty',				'description': ''},
 			{'name': 'baud',				'type': 'int',		'range': [110,256000],				'default': 9600,			'decimalPlaces': None,	'editable': True,	'displayName': 'Baud Rate',				'description': ''},
 			{'name': 'ip_addr',				'type': 'str',		'range': None,					'default': '192.168.1.100',		'decimalPlaces': None,	'editable': True,	'displayName': 'IP Address',				'description': ''},
 			{'name': 'ip_port',				'type': 'int',		'range': [1,65535],				'default': 10000,			'decimalPlaces': None,	'editable': True,	'displayName': 'IP Port',				'description': ''},
@@ -77,6 +77,17 @@ class Settings:
 			{'name': 'set_site',				'type': 'bool',		'range': None,					'default': True,			'decimalPlaces': None,	'editable': True,	'displayName': 'Set Site',			'description': ''},
 			{'name': 'local_offset',			'type': 'float',	'range': [-24.0,24.0],				'default': 0.0,				'decimalPlaces': 2,	'editable': False,	'displayName': 'Local Timezone Offset',			'description': ''},
 			{'name': 'parkmethod',				'type': 'choice',	'range': ['park','home'],			'default': 'home',			'decimalPlaces': None,	'editable': True,	'displayName': 'Parking Method',			'description': ''},
+			{'name': 'debug',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Debug',				'description': ''},
+		]},
+
+		{'group': 'focus', 'settings': [
+			{'name': 'indi_module',				'type': 'choice',	'range': ['indi_aaf2_focus', 'indi_activefocuser_focus', 'indi_armadillo_focus', 'indi_asi_focuser', 'indi_celestron_sct_focus', 'indi_deepskydad_af1_focus', 'indi_deepskydad_af2_focus', 'indi_deepskydad_af3_focus', 'indi_dmfc_focus', 'indi_dreamfocuser_focus', 'indi_efa_focus', 'indi_esattoarco_focus', 'indi_esatto_focus', 'indi_fcusb_focus', 'indi_fli_focus', 'indi_gemini_focus', 'indi_hitecastrodc_focus', 'indi_integra_focus', 'indi_lacerta_mfoc_fmc_focus', 'indi_lacerta_mfoc_focus', 'indi_lakeside_focus', 'indi_lynx_focus', 'indi_microtouch_focus', 'indi_moonlitedro_focus', 'indi_moonlite_focus', 'indi_myfocuserpro2_focus', 'indi_nfocus', 'indi_nightcrawler_focus', 'indi_nstep_focus', 'indi_oasis_focuser', 'indi_onfocus_focus', 'indi_pegasus_focuscube', 'indi_perfectstar_focus', 'indi_platypus_focus', 'indi_rainbowrsf_focus', 'indi_rbfocus_focus', 'indi_robo_focus', 'indi_sestosenso2_focus', 'indi_sestosenso_focus', 'indi_siefs_focus', 'indi_simulator_focus', 'indi_smartfocus_focus', 'indi_steeldrive2_focus', 'indi_steeldrive_focus', 'indi_tcfs3_focus', 'indi_tcfs_focus', 'indi_teenastro_focus', 'indi_usbfocusv3_focus'],
+																		'default': 'indi_simulator_focus',	'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Module',				'description': ''},
+			{'name': 'indi_focuser_device_id',		'type': 'str',		'range': None,					'default': 'Focuser Simulator',		'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Focuser Device Id',		'description': ''},
+			{'name': 'reverse',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Reverse',				'description': ''},
+			{'name': 'coarse_step',				'type': 'int',		'range': [0,65535],				'default': 50,				'decimalPlaces': None,	'editable': True,	'displayName': 'Coarse Step',				'description': ''},
+			{'name': 'fine_step',				'type': 'int',		'range': [0,65535],				'default': 10,				'decimalPlaces': None,	'editable': True,	'displayName': 'Fine Step',				'description': ''},
+			{'name': 'has_temperature',			'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Has Temperature Sensor',		'description': ''},
 			{'name': 'debug',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Indi Debug',				'description': ''},
 		]},
 	
@@ -225,12 +236,20 @@ class Settings:
 			self.writeSubsetting(setting_name)
 
 
+	def isZeroLengthFile(cls, fname):
+		return True if os.path.getsize(fname) == 0 else False
+
+
 	def read(self):
 		for subsetting in Settings.subsettings:
 			settings_fname = self.__getSettingsFname(subsetting)
 			self.logger.info('reading settings: %s' % settings_fname)
 
 			if os.path.isfile(settings_fname):
+				if self.isZeroLengthFile(settings_fname):
+					QMessageBox.critical(None, ' ', 'Config file %s is zero length, unable to load settings.\n\nAstrid will now exit, you then need to repair or delete this config file.' % settings_fname, QMessageBox.Ok)
+					raise ValueError('Quitting Astrid due to zero length config file: %s !' % settings_fname)
+
 				with open(settings_fname, 'r') as fp:
 					setattr(self, subsetting['name'], json.load(fp))
 			else:
