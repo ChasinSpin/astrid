@@ -1,7 +1,7 @@
 Version 1.0.050:
 ================
 
-	* Settings are now more robust to config files corrupted during write. Zero length files are reported, and backed up prior to writing with auto recovery.
+	* Settings are now more robust to config files corrupted during write, e.g. when a USB Drive is Full. Zero length files are reported, and backed up prior to writing with an auto recovery facility.
 
 Version 1.0.049:
 ================

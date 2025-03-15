@@ -247,8 +247,14 @@ class Settings:
 
 			if os.path.isfile(settings_fname):
 				if self.isZeroLengthFile(settings_fname):
-					QMessageBox.critical(None, ' ', 'Config file %s is zero length, unable to load settings.\n\nAstrid will now exit, you then need to repair or delete this config file.' % settings_fname, QMessageBox.Ok)
-					raise ValueError('Quitting Astrid due to zero length config file: %s !' % settings_fname)
+					backup_fname = settings_fname + '.backup'
+					if os.path.isfile(backup_fname):
+						os.remove(settings_fname)
+						os.rename(backup_fname, settings_fname)
+						QMessageBox.warning(None, ' ', 'Config file %s was corrupted, this has been repaired from a backup. Please check settings are correct.' % settings_fname, QMessageBox.Ok)
+					else:
+						QMessageBox.critical(None, ' ', 'Config file %s is zero length, unable to load settings.\n\nAstrid will now exit, you then need to repair or delete this config file to reset to defaults.' % settings_fname, QMessageBox.Ok)
+						raise ValueError('Quitting Astrid due to zero length config file: %s !' % settings_fname)
 
 				with open(settings_fname, 'r') as fp:
 					setattr(self, subsetting['name'], json.load(fp))
@@ -258,13 +264,27 @@ class Settings:
 			self.__updateSettings(subsetting['name'], subsetting)
 
 
+	def unableToWriteConfigFile(self, fname):
+		QMessageBox.critical(None, ' ', 'Unable to write config file %s.\n\nThis is likely due to the USB Drive being full.\n\nShutdown Astrid, clear some video/photos from the USB drive and empty the Trash / Recycle Bin, then startup Astrid.\n\nAstrid will then attempt to recover the prior version of the config file automatically.' % fname, QMessageBox.Ok)
+		raise ValueError('Quitting Astrid due to zero length config file: %s !' % fname)
+
+
 	def write(self):
 		for subsetting in Settings.subsettings:
 			settings_fname = self.__getSettingsFname(subsetting)
 			self.logger.info('Writing settings: %s' % settings_fname)
 
+			# Backup settings file
+			backup_fname = settings_fname + '.backup'
+			os.rename(settings_fname, backup_fname)
+			
 			with open(settings_fname, 'w') as fp:
 				json.dump(getattr(self, subsetting['name']), fp)
+
+			if self.isZeroLengthFile(settings_fname):
+				self.unableToWriteConfigFile(settings_fname)
+			else:
+				os.remove(backup_fname)
 
 
 	def writeSubsetting(self, subsetting):
@@ -278,7 +298,16 @@ class Settings:
 		self.logger.info('Writing settings: %s' % settings_fname)
 
 		jstr = json.dumps(getattr(self, subsetting), indent=4)
+
+		# Backup settings file
+		backup_fname = settings_fname + '.backup'
+		os.rename(settings_fname, backup_fname)
 		
 		with open(settings_fname, 'w') as fp:
 			fp.write(jstr)
 			fp.write('\n')
+
+		if self.isZeroLengthFile(settings_fname):
+			self.unableToWriteConfigFile(settings_fname)
+		else:
+			os.remove(backup_fname)
