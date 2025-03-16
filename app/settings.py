@@ -276,14 +276,15 @@ class Settings:
 
 			# Backup settings file
 			backup_fname = settings_fname + '.backup'
-			os.rename(settings_fname, backup_fname)
+			if os.path.isfile(settings_fname):
+				os.rename(settings_fname, backup_fname)
 			
 			with open(settings_fname, 'w') as fp:
 				json.dump(getattr(self, subsetting['name']), fp)
 
 			if self.isZeroLengthFile(settings_fname):
 				self.unableToWriteConfigFile(settings_fname)
-			else:
+			elif os.path.isfile(backup_fname):
 				os.remove(backup_fname)
 
 
@@ -301,7 +302,8 @@ class Settings:
 
 		# Backup settings file
 		backup_fname = settings_fname + '.backup'
-		os.rename(settings_fname, backup_fname)
+		if os.path.isfile(settings_fname):
+			os.rename(settings_fname, backup_fname)
 		
 		with open(settings_fname, 'w') as fp:
 			fp.write(jstr)
@@ -309,5 +311,5 @@ class Settings:
 
 		if self.isZeroLengthFile(settings_fname):
 			self.unableToWriteConfigFile(settings_fname)
-		else:
+		elif os.path.isfile(backup_fname):
 			os.remove(backup_fname)

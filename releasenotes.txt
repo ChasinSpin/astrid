@@ -1,3 +1,8 @@
+Version 1.0.051:
+================
+
+	* Fixed bug introduced in version 1.0.050 which caused focus settings not to be created
+
 Version 1.0.050:
 ================
 
