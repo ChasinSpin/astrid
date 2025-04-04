@@ -1,3 +1,8 @@
+Version 1.0.052: (Not Yet Released)
+================
+
+	* Fixed issue when a Mount has an integrated Focuser, an external focuser can't be added.  Now, the Focuser Device Name is used as a hint to determine the correct device to use.
+
 Version 1.0.051:
 ================
 

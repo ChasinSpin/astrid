@@ -604,21 +604,21 @@ class IndiFocuser:
 
 		# Looks for a focuser in the list of drivers
 		deviceList = self.indi.getDevices()
-		foundDeviceName = None
+		foundDeviceNames = []
 		for device in deviceList:
 			if device.getDriverInterface() & device.FOCUSER_INTERFACE:
 				print('Discovered Focuser Device In Driver:', device.getDeviceName())
-				foundDeviceName = device.getDeviceName()
+				foundDeviceNames.append(device.getDeviceName())
 	
-		if foundDeviceName is None:
+		if len(foundDeviceNames) == 0:
 			QMessageBox.information(None, ' ', 'A focuser device was not discovered.\n\nConnect a focuser to launch Astrid and verify settings.\n\nAstrid will now exit, start app again to pickup device change.', QMessageBox.Ok)
 			raise ValueError('Quitting Astrid due to no focuser device being found.  This is not an error!')
 
 		# Compare the device id of the drive to the device id specified in settingsMount
-		if foundDeviceName != device_id:
-			result = QMessageBox.warning(None, ' ', 'Mismatch between the Indi Focuser Device Id specified in Settings/Mount and the actual device id in the driver.\n\nSettings: %s\nDriver:     %s\n\nWould you like to update the settings to match?' % (device_id, foundDeviceName), QMessageBox.Yes|QMessageBox.No)
+		if device_id not in foundDeviceNames:
+			result = QMessageBox.warning(None, ' ', 'Mismatch between the Indi Focuser Device Id specified in Settings/Mount and the actual device id in the driver.\n\nSettings: %s\nDriver:     %s\n\nWould you like to update the settings to match?' % (device_id, foundDeviceNames[0]), QMessageBox.Yes|QMessageBox.No)
 			if result == QMessageBox.Yes:
-				self.settingsFocus['indi_focuser_device_id'] = foundDeviceName
+				self.settingsFocus['indi_focuser_device_id'] = foundDeviceNames[0]
 				Settings.getInstance().writeSubsetting('focus')
 				QMessageBox.information(None, ' ', 'Indi Focuser Device Id has been updated to match.\n\nAstrid will now exit, start app again to pickup device change.', QMessageBox.Ok)
 				raise ValueError('Quitting Astrid due to device id being changed.  This is not an error!')
@@ -633,7 +633,7 @@ class IndiFocuser:
 		else:
 			# We need to connect before we can access the other settingsMount
 			self.sendSwitch(self.connectionSwitch, [True, False])
-			print( f"IndiTelescope: connection switch requested on" )
+			print( f"IndiFocuser: connection switch requested on" )
 
 			time.sleep(2)	# Wait for connection
 			if not self.device.isConnected():
