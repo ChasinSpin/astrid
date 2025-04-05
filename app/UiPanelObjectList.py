@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMessageBox
 from settings import Settings
 from UiDialogPanel import UiDialogPanel
 from UiPanelOccultationInfo import UiPanelOccultationInfo
+from UiPanelSatelliteInfo import UiPanelSatelliteInfo
 
 
 
@@ -33,6 +34,9 @@ class UiPanelObjectList(UiPanel):
 		elif self.database == 'Occultations':
 			self.all_objects = Settings.getInstance().occultations['occultations']
 			self.db = 'occultations'
+		elif self.database == 'Satellites':
+			self.all_objects = Settings.getInstance().satellites['satellites']
+			self.db = 'satellites'
 
 		for o in self.all_objects:
 			self.items.append(o['name'])
@@ -42,16 +46,21 @@ class UiPanelObjectList(UiPanel):
 		self.widgetList		= self.addList(self.items)
 		self.widgetList.setFixedHeight(350)
 
-		self.widgetEdit		= self.addButton('Edit', True)
+		if self.database == 'Satellites':
+			self.widgetEdit		= None
+		else:
+			self.widgetEdit		= self.addButton('Edit', True)
+	
 		self.widgetDelete	= self.addButton('Delete', True)
 		self.widgetSpacer1	= self.addSpacer()
-		if self.database == 'Occultations':
+		if self.database == 'Occultations' or self.database == 'Satellites':
 			self.widgetInfo		= self.addButton('Info', True)
 		else:
 			self.widgetInfo		= None
 		self.widgetSelect	= self.addButton('Select', True)
 
-		self.widgetEdit.setEnabled(False)
+		if self.widgetEdit is not None:
+			self.widgetEdit.setEnabled(False)
 		self.widgetDelete.setEnabled(False)
 		self.widgetSelect.setEnabled(False)
 		if self.widgetInfo is not None:
@@ -76,7 +85,8 @@ class UiPanelObjectList(UiPanel):
 
 	def registerCallbacks(self):
 		self.widgetList.itemSelectionChanged.connect(self.listItemChanged)
-		self.widgetEdit.clicked.connect(self.buttonEditPressed)
+		if self.widgetEdit is not None:
+			self.widgetEdit.clicked.connect(self.buttonEditPressed)
 		self.widgetDelete.clicked.connect(self.buttonDeletePressed)
 		if self.widgetInfo is not None:
 			self.widgetInfo.clicked.connect(self.buttonInfoPressed)
@@ -90,7 +100,8 @@ class UiPanelObjectList(UiPanel):
 
 
 	def listItemChanged(self):
-		self.widgetEdit.setEnabled(True)
+		if self.widgetEdit is not None:
+			self.widgetEdit.setEnabled(True)
 		self.widgetDelete.setEnabled(True)
 		self.widgetSelect.setEnabled(True)
 		if self.widgetInfo is not None:
@@ -123,8 +134,10 @@ class UiPanelObjectList(UiPanel):
 	def buttonInfoPressed(self):
 		item = self.selectedItem()
 		if item is not None:
-			UiPanelOccultationInfo
-			self.dialog = UiDialogPanel('Occultation Info', UiPanelOccultationInfo, args = {'occultationName': item})
+			if self.database == 'Satellites':
+				self.dialog = UiDialogPanel('Satellite Info', UiPanelSatelliteInfo, args = {'satelliteName': item})
+			else:
+				self.dialog = UiDialogPanel('Occultation Info', UiPanelOccultationInfo, args = {'occultationName': item})
 
 
 	def buttonCancelPressed(self):

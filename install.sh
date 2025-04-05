@@ -103,6 +103,32 @@ installKmeans1d()
 
 
 
+# Install sgp4
+
+installSgp4()
+{
+	TMP=`/usr/bin/pip3 list | /usr/bin/grep sgp4`
+	if [ -z "$TMP" ];then
+		echo "Installing sgp4"
+		/usr/bin/pip3 install sgp4==2.24
+	fi
+}
+
+
+
+# Install spacetrack
+
+installSpacetrack()
+{
+	TMP=`/usr/bin/pip3 list | /usr/bin/grep spacetrack`
+	if [ -z "$TMP" ];then
+		echo "Installing spacetrack"
+		/usr/bin/pip3 install spacetrack==1.4.0
+	fi
+}
+
+
+
 # Install adafruit-board-toolkit
 
 installAdafruitBoardToolkit()
@@ -241,6 +267,8 @@ installPyqtree
 installQCharts
 installOpenpyxl
 installKmeans1d
+installSgp4
+installSpacetrack
 installAdafruitBoardToolkit
 installMdioTool
 installAutoHotspot

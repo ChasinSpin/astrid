@@ -6,6 +6,7 @@ from astcoord import AstCoord
 import math
 import xmltodict
 from datetime import datetime, timedelta
+from spacetrack import SpaceTrackClient
 
 
 
@@ -28,24 +29,36 @@ class UiPanelObjectAddEdit(UiPanel):
 			self.widgetOldOccelmntWarning	= self.addTextBox('IMPORTANT: OWCloud may have more recent orbital elements, please verify against OWCloud', 60)
 			self.widgetOldOccelmntWarning.setFixedWidth(350)
 
-		self.widgetName		= self.addLineEdit('Object Name')
+		if self.database == 'Satellites':
+			self.widgetSatelliteWarning	= self.addTextBox('IMPORTANT: You MUST be connected to the internet to add a satellite so that the TLEs can be downloaded.', 60)
+			self.widgetSatelliteWarning.setFixedWidth(450)
+			self.widgetName			= None
+		else:
+			self.widgetName			= self.addLineEdit('Object Name')
 
 		if self.database == 'Occultations' and self.editValues is None:
 			self.widgetOccelmnt		= self.addTextEdit('Occelmnt', 'Copy and paste occelmnt data for the event here')
 		else:
 			self.widgetOccelmnt		= None
 
-		if self.radec_format == 'hour':
-			self.widgetRA		= self.addLineEditDouble('RA', 0.0, 23.9999999999, 10, editable=True)
-			self.widgetDEC		= self.addLineEditDouble('DEC', -90.0, 90.0, 10, editable=True)
-		elif self.radec_format == 'hmsdms':
-			self.widgetRA  = self.addCoordHMS('RA (HMS)')
-			self.widgetDEC = self.addCoordDMS('DEC (DMS)')
-			self.widgetRA.setValue(0, 0, 0.000)
-			self.widgetDEC.setValue(0, 0, 0.000)
-		elif self.radec_format == 'deg':
-			self.widgetRA		= self.addLineEditDouble('RA', 0.0, 359.9999999999, 10, editable=True)
-			self.widgetDEC		= self.addLineEditDouble('DEC', -90.0, 90.0, 10, editable=True)
+		if self.database == 'Satellites':
+			self.widgetNoradCatId		= self.addLineEditInt('NORAD Catalogue Number', 0, 999999999)
+			self.widgetRA			= None
+			self.widgetDEC			= None
+		else:
+			if self.radec_format == 'hour':
+				self.widgetRA		= self.addLineEditDouble('RA', 0.0, 23.9999999999, 10, editable=True)
+				self.widgetDEC		= self.addLineEditDouble('DEC', -90.0, 90.0, 10, editable=True)
+			elif self.radec_format == 'hmsdms':
+				self.widgetRA  = self.addCoordHMS('RA (HMS)')
+				self.widgetDEC = self.addCoordDMS('DEC (DMS)')
+				self.widgetRA.setValue(0, 0, 0.000)
+				self.widgetDEC.setValue(0, 0, 0.000)
+			elif self.radec_format == 'deg':
+				self.widgetRA		= self.addLineEditDouble('RA', 0.0, 359.9999999999, 10, editable=True)
+				self.widgetDEC		= self.addLineEditDouble('DEC', -90.0, 90.0, 10, editable=True)
+			self.widgetNoradCatId 		= None
+
 
 		if self.database == 'Occultations':
 			self.widgetEventTime		= self.addDateTimeEdit('Event Center Time(UTC)')
@@ -87,7 +100,8 @@ class UiPanelObjectAddEdit(UiPanel):
 			self.widgetRecDurationx		= None
 
 		if self.editValues is not None:
-			self.widgetName.setText(self.editValues['name'])
+			if self.widgetName is not None:
+				self.widgetName.setText(self.editValues['name'])
 			
 			if self.radec_format == 'hour':
 				coord = AstCoord.from360Deg(self.editValues['ra'], self.editValues['dec'], 'icrs')
@@ -144,19 +158,23 @@ class UiPanelObjectAddEdit(UiPanel):
 	# CALLBACKS
 
 	def buttonAddPressed(self):
-		name = self.widgetName.text()
-		if self.radec_format == 'hour':
-			ra = float(self.widgetRA.text())
-			dec = float(self.widgetDEC.text())
-			coord = AstCoord.from24Deg(ra, dec, 'icrs')
-		elif self.radec_format == 'hmsdms':
-			ra = self.widgetRA.getValue()
-			dec = self.widgetDEC.getValue()
-			coord = AstCoord.fromHMS(ra, dec, 'icrs')
-		elif self.radec_format == 'deg':
-			ra = float(self.widgetRA.text())
-			dec = float(self.widgetDEC.text())
-			coord = AstCoord.from360Deg(ra, dec, 'icrs')
+		if self.widgetName is not None:
+			name = self.widgetName.text()
+		else:
+			name = None
+		if self.widgetRA is not None and self.widgetDEC is not None:
+			if self.radec_format == 'hour':
+				ra = float(self.widgetRA.text())
+				dec = float(self.widgetDEC.text())
+				coord = AstCoord.from24Deg(ra, dec, 'icrs')
+			elif self.radec_format == 'hmsdms':
+				ra = self.widgetRA.getValue()
+				dec = self.widgetDEC.getValue()
+				coord = AstCoord.fromHMS(ra, dec, 'icrs')
+			elif self.radec_format == 'deg':
+				ra = float(self.widgetRA.text())
+				dec = float(self.widgetDEC.text())
+				coord = AstCoord.from360Deg(ra, dec, 'icrs')
 		if self.widgetEventTime is not None:
 			event_time = self.widgetEventTime.dateTime().toString('yyyy-MM-ddThh:mm:ss')
 		if self.widgetEventDuration is not None:
@@ -167,6 +185,8 @@ class UiPanelObjectAddEdit(UiPanel):
 			start_time = self.widgetStartTime.dateTime().toString('yyyy-MM-ddThh:mm:ss')
 		if self.widgetEndTime is not None:
 			end_time = self.widgetEndTime.dateTime().toString('yyyy-MM-ddThh:mm:ss')
+		if self.widgetNoradCatId is not None:
+			noradCatId = int(self.widgetNoradCatId.text())
 
 		if self.database == 'Occultations':
 			if self.widgetOccelmnt is not None:
@@ -186,8 +206,12 @@ class UiPanelObjectAddEdit(UiPanel):
 				return	
 		else:
 			occelmnt = None
-			if not self.addUpdateObjectToCustomDatabase(name, coord, originalName = self.editValues['name'] if self.editValues is not None else None):
-				return
+			if self.database == 'Satellites':
+				if not self.addUpdateObjectToSatellitesDatabase(noradCatId):
+					return
+			else:
+				if not self.addUpdateObjectToCustomDatabase(name, coord, originalName = self.editValues['name'] if self.editValues is not None else None):
+					return
 
 		self.panel.acceptDialog()
 
@@ -330,6 +354,36 @@ class UiPanelObjectAddEdit(UiPanel):
 		customObjects.append({"name": name, "ra": ra, "dec": dec})
 
 		Settings.getInstance().writeSubsetting('objects')
+		return True
+
+
+	def addUpdateObjectToSatellitesDatabase(self, noradCatId):
+		satellitesObjects = Settings.getInstance().satellites['satellites']
+		for object in satellitesObjects:
+			if object['norad_cat_id'] == noradCatId:
+				self.messageBoxWriteExistsInDatabase()
+				return False
+
+		# Get TLEs
+		now = datetime.utcnow()
+		stserver = Settings.getInstance().spacetrack
+		spacetrack = SpaceTrackClient(stserver['spacetrack_login'], stserver['spacetrack_password'])
+		tles = spacetrack.gp(norad_cat_id=[noradCatId], format='3le')
+		spacetrack.close()
+
+		if tles is not None and len(tles) != 0:
+			tles = tles.splitlines()
+		else:
+			QMessageBox.warning(self, ' ', 'Failed to download TLE !')
+			return False
+
+		print(tles)
+
+		# Add the satellite
+		now = now.strftime('%Y-%m-%d %H:%M:%S')
+		satellitesObjects.append( {"name": tles[0][2:], "norad_cat_id": str(noradCatId), "downloaded": now, "tle_line_1": tles[1], "tle_line_2": tles[2]} )
+		Settings.getInstance().writeSubsetting('satellites')
+
 		return True
 
 

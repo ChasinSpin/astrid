@@ -17,6 +17,7 @@ from UiPanelObjectAddEdit import UiPanelObjectAddEdit
 from UiPanelObjectList import UiPanelObjectList
 from UiPanelPrepoint import UiPanelPrepoint
 from UiPanelAutoRecord import UiPanelAutoRecord
+from UiPanelSatelliteGetTime import UiPanelSatelliteGetTime
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from UiDialogPanel import UiDialogPanel
 from UiPanelAutoRecording import UiPanelAutoRecording
@@ -28,6 +29,7 @@ from owcloud import OWCloud
 from astutils import AstUtils
 from starcatalog import StarLookup, Star
 from StarCatalogExtract import StarCatalogExtract
+from satellite import Satellite
 
 
 
@@ -120,6 +122,7 @@ class UiPanelObject(UiPanel):
 	SEARCH_OCCULTATIONS	= 'Occultations'
 	SEARCH_OCCULTGAIA	= 'Occult Gaia'
 	SEARCH_SOLARSYSTEM	= 'Solar System'
+	SEARCH_SATELLITES	= 'Satellites'
 	PREDICTIONS_URL		= b'68747470733a2f2f6173747269642d646f776e6c6f6164732e73332e616d617a6f6e6177732e636f6d2f646f776e6c6f6164732f7374657665705f70726564696374696f6e735f323032335f323032345f76312e74787a'
 
 	def __init__(self, camera):
@@ -128,7 +131,7 @@ class UiPanelObject(UiPanel):
 		self.logger = self.processLogger.getLogger()
 		self.camera		= camera
 		self.occultationObject	= None
-		self.widgetDatabase	= self.addComboBox('Database', [self.SEARCH_SIMBAD, self.SEARCH_CUSTOM, self.SEARCH_OCCULTATIONS, self.SEARCH_OCCULTGAIA, self.SEARCH_SOLARSYSTEM])
+		self.widgetDatabase	= self.addComboBox('Database', [self.SEARCH_SIMBAD, self.SEARCH_CUSTOM, self.SEARCH_OCCULTATIONS, self.SEARCH_OCCULTGAIA, self.SEARCH_SOLARSYSTEM, self.SEARCH_SATELLITES])
 		self.widgetDatabase.setObjectName('comboBoxDatabase')
 		self.widgetSearch	= self.addLineEdit('Search')
 		self.widgetRA		= self.addLineEdit('RA', editable=False)
@@ -205,6 +208,13 @@ class UiPanelObject(UiPanel):
 			self.hideWidget(self.widgetAutoRecord)
 			self.hideWidget(self.widgetAdd)
 			self.hideWidget(self.widgetList)
+		elif text == UiPanelObject.SEARCH_SATELLITES:
+			self.hideWidget(self.widgetEventTime)
+			self.hideWidget(self.widgetChord)
+			self.hideWidget(self.widgetPrepoint)
+			self.hideWidget(self.widgetAutoRecord)
+			self.showWidget(self.widgetAdd)
+			self.showWidget(self.widgetList)
 		else:
 			raise ValueError('Database not valid')
 
@@ -396,6 +406,8 @@ class UiPanelObject(UiPanel):
 			return self.findStarCatalogObject(search)
 		elif text == UiPanelObject.SEARCH_SOLARSYSTEM:
 			return self.findSolarSystemObject(search)
+		elif text == UiPanelObject.SEARCH_SATELLITES:
+			return self.findSatelliteObject(search)
 		else:
 			raise ValueError('Database not valid')
 
@@ -443,6 +455,41 @@ class UiPanelObject(UiPanel):
 				obj = AstCoord.from360Deg(object['ra'], object['dec'], 'icrs')
 				break
 		return obj
+
+
+	def findSatelliteObject(self, search):
+		""" Returns AstCoord, or None if not found """
+		obj = None
+
+		satelliteObjects = Settings.getInstance().satellites['satellites']
+		for object in satelliteObjects:
+			if object['name'].lower() == search.lower():
+				self.dialogS = UiDialogPanel('Enter Event Time', UiPanelSatelliteGetTime, args = {}, parent = self.camera.ui)
+				if self.dialogS.result() == 1:
+					event_time = self.dialogS.dialog.panel.event_time
+				else:
+					return
+
+				event_time += '.000000'
+
+				satellite = Satellite(object['name'], [object['tle_line1'], object['tle_line2']], event_time)
+				obj = AstCoord.from360Deg(satellite.ra, satellite.dec, 'icrs')
+				break
+		return obj
+
+
+	def findCustomObject(self, search):
+		""" Returns AstCoord, or None if not found """
+		obj = None
+		if self.objectInSolarSystem(search):
+			QMessageBox.information(self, ' ', 'Custom does not provide objects inside the solar system, please use the Solar System Database.')
+			return
+
+		customObjects = Settings.getInstance().objects['custom_objects']
+		for object in customObjects:
+			if object['name'].lower() == search.lower():
+				obj = AstCoord.from360Deg(object['ra'], object['dec'], 'icrs')
+				break
 
 
 	def findOccultationObject(self, search):
@@ -562,6 +609,8 @@ class UiPanelObject(UiPanel):
 			objects = Settings.getInstance().objects['custom_objects']
 		elif text == UiPanelObject.SEARCH_OCCULTATIONS:
 			objects = Settings.getInstance().occultations['occultations']
+		elif text == UiPanelObject.SEARCH_SATELLITES:
+			objects = Settings.getInstance().satellites['satellites']
 
 		for object in objects:
 			if object['name'] == item:

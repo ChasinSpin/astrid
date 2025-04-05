@@ -32,6 +32,8 @@ class Settings:
 		{'name': 'observer',		'global': False,	'editable': True,	'displayName': 'Observer'},
 		{'name': 'telescope',		'global': True,		'editable': True,	'displayName': 'Telescope'},
 		{'name': 'general',		'global': True,		'editable': True,	'displayName': 'General'},
+		{'name': 'satellites',		'global': False,	'editable': False,	'displayName': 'Satellites'},
+		{'name': 'spacetrack',		'global': True,		'editable': True,	'displayName': 'Space-Track'},
 		{'name': 'hidden',		'global': False,	'editable': False,	'displayName': 'Hidden'},
 	]
 
@@ -131,6 +133,11 @@ class Settings:
 			{'name': 'fuzz_gps',				'type': 'bool',		'range': None,					'default': False,			'decimalPlaces': None,	'editable': True,	'displayName': 'Fuzz GPS',				'description': ''},
 			{'name': 'annotation_mag',			'type': 'float',	'range': [0, 20],				'default': 14.0,			'decimalPlaces': 1,	'editable': True,	'displayName': 'Annotation Mag Limit',			'description': ''},
 			{'name': 'free_space',				'type': 'int',		'range': [1, 50],				'default': 10,				'decimalPlaces': None,	'editable': True,	'displayName': 'Min Free Drive Space GB',			'description': ''},
+		]},
+
+		{'group': 'spacetrack', 'settings': [
+			{'name': 'spacetrack_login',			'type': 'str',		'range': None,					'default': 'johndoe@johndoe.com',	'decimalPlaces': None,	'editable': True,	'displayName': 'Space-Track.org Login',			'description': ''},
+			{'name': 'spacetrack_password',			'type': 'str',		'range': None,					'default': 'password',			'decimalPlaces': None,	'editable': True,	'displayName': 'Space-Track.org Password',		'description': ''},
 		]},
 
 		{'group': 'hidden', 'settings': [

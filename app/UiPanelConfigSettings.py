@@ -14,7 +14,7 @@ from settings import Settings
 class UiPanelConfigSettings(UiPanel):
 	# Initializes and displays a Panel
 
-	FIXED_WIDTH = 600
+	FIXED_WIDTH = 700
 	FIELD_VALUE_FIXED_WIDTH = 300
 	FIXED_WIDTH_TEXT_INFO = FIXED_WIDTH - 40
 
