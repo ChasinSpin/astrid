@@ -381,7 +381,7 @@ class UiPanelObjectAddEdit(UiPanel):
 
 		# Add the satellite
 		now = now.strftime('%Y-%m-%d %H:%M:%S')
-		satellitesObjects.append( {"name": tles[0][2:], "norad_cat_id": str(noradCatId), "downloaded": now, "tle_line_1": tles[1], "tle_line_2": tles[2]} )
+		satellitesObjects.append( {"name": tles[0][2:], "norad_cat_id": str(noradCatId), "downloaded": now, "tle_line1": tles[1], "tle_line2": tles[2]} )
 		Settings.getInstance().writeSubsetting('satellites')
 
 		return True
