@@ -478,20 +478,6 @@ class UiPanelObject(UiPanel):
 		return obj
 
 
-	def findCustomObject(self, search):
-		""" Returns AstCoord, or None if not found """
-		obj = None
-		if self.objectInSolarSystem(search):
-			QMessageBox.information(self, ' ', 'Custom does not provide objects inside the solar system, please use the Solar System Database.')
-			return
-
-		customObjects = Settings.getInstance().objects['custom_objects']
-		for object in customObjects:
-			if object['name'].lower() == search.lower():
-				obj = AstCoord.from360Deg(object['ra'], object['dec'], 'icrs')
-				break
-
-
 	def findOccultationObject(self, search):
 		""" Returns AstCoord, or None if not found """
 		obj = None
