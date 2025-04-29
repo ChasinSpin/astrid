@@ -249,7 +249,7 @@ echo "Updating desktop icons..."
 /usr/bin/ln -s /home/pi/astrid/desktop/LightsOut.desktop		"/home/pi/Desktop/Astrid Tools"
 
 echo "Installing ravf..."
-pip install --no-deps ravf
+pip install --no-deps ravf --upgrade
 
 echo "Making ospi..."
 cd $APP_FOLDER

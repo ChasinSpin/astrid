@@ -1,3 +1,8 @@
+Version 1.0.054
+================
+
+	* Fixed issue where ravf wasn't being upgraded on Astrid Upgrade causing ravf integrated files not to load in Player
+
 Version 1.0.053
 ================
 
