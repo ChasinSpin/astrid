@@ -253,6 +253,8 @@ class UiPanelObjectAddEdit(UiPanel):
 
 			# Account for moons
 			extraSecs = int(math.ceil(float(pOccelmnt['eventDuration']) * UiPanelObjectAddEdit.MOON_MULTIPLIER))
+			if extraSecs < 30:
+				extraSecs = 30
 			self.widgetExtraStart.setText('%d' % extraSecs)
 			self.widgetExtraEnd.setText('%d' % extraSecs)
 		

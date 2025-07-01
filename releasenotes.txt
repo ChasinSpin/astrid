@@ -1,3 +1,9 @@
+Version 1.0.055
+================
+
+	* Changed manual entry of occelmnt to default to Add Start / End Secs of a minimum of 30 seconds. Recommended way to add events is via OWC Syncing, 
+	  manual entry like this is discouraged. If you enter events manually, you should also check very carefully all the details before adding the event.
+
 Version 1.0.054
 ================
 
