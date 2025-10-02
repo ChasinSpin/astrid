@@ -48,7 +48,7 @@ class OWCloud():
 			response = opener.open(url, timeout=5)
 		except Exception as error:
 			self.logger.error('Unable to download OWCloud data: %s' % str(error))
-			return (None, str(error), error.code)
+			return (None, str(error), 9999)
 		else:
 			self.logger.info('OWCloud Status: %d %s' % (response.status, response.reason))
 			if response.status == 200:
@@ -77,7 +77,10 @@ class OWCloud():
 		
 		(owevents, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, OWCloud.URL_EVENTS_ENDPOINT, OWCloud.API_KEY)
 		if error is not None or owevents is None:
-			return (owevents, error)
+			errStr = str(error)
+			if status == 9999:
+				errStr += "\n\nPlease verify you are connected to the internet!\n\nEvents can only be downloaded when there is an internet connection."
+			return (owevents, errStr)
 
 		print(owevents)
 
