@@ -14,7 +14,6 @@ class OWCloud():
 	URL_EVENTS_HOST		= 'https://www.occultwatcher.net:443'
 	URL_EVENTS_ENDPOINT	= '/api2/v1/events/details-list'
 	URL_OCCELMNT_ENDPOINT	= '/api2/v1/owc/event/my/%s/occelmnts'
-	API_KEY			= b'6266393530376536666264303434623138383963653339396636396366613663'
 
 	MOON_MULTIPLIER = 10.0  # Multiplier for detecting moons, this gets multiplied by the event duration
 
@@ -25,7 +24,7 @@ class OWCloud():
 		observer = Settings.getInstance().observer
 
 
-	def __getUrl(self, host, url, apiKey):
+	def __getUrl(self, host, url):
 		observer = Settings.getInstance().observer
 
 		# to avoid verifying ssl certificates
@@ -33,6 +32,7 @@ class OWCloud():
 
 		password_mgr = urllib.request.HTTPPasswordMgrWithPriorAuth()
 		password_mgr.add_password(None, host, observer['owcloud_login'], observer['owcloud_password'], is_authenticated=True)
+		apiKey = observer['owcloud_apikey']
 
 		handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
 		opener = urllib.request.build_opener(handler, httpsHa)
@@ -41,7 +41,7 @@ class OWCloud():
 			sep = '&'
 		else:
 			sep = '?'
-		url = host + url + sep + 'apikey=%s' % binascii.unhexlify(apiKey).decode('ascii')
+		url = host + url + sep + 'apikey=%s' % apiKey
 
 		#print('URL:', url)
 		try:
@@ -75,11 +75,13 @@ class OWCloud():
 		observer = Settings.getInstance().observer
 		sitefilter = observer['owcloud_sitefilter']
 		
-		(owevents, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, OWCloud.URL_EVENTS_ENDPOINT, OWCloud.API_KEY)
+		(owevents, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, OWCloud.URL_EVENTS_ENDPOINT)
 		if error is not None or owevents is None:
 			errStr = str(error)
 			if status == 9999:
 				errStr += "\n\nPlease verify you are connected to the internet!\n\nEvents can only be downloaded when there is an internet connection."
+			elif errStr == 'HTTP Error 400: Bad Request':
+				errStr += "\n\nOWCloud Login/Password or API Key in Astrid/Settings/Observer maybe incorrect, please verify against OWCloud."
 			return (owevents, errStr)
 
 		print(owevents)
@@ -129,14 +131,17 @@ class OWCloud():
 
 					# Get the occelmnt
 					occelmntUrl = OWCloud.URL_OCCELMNT_ENDPOINT % eventId
-					(eventOccelmnt, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, occelmntUrl, OWCloud.API_KEY)
+					(eventOccelmnt, error, status) = self.__getUrl(OWCloud.URL_EVENTS_HOST, occelmntUrl)
 
 					if error is not None or eventOccelmnt is None:
 						if status == 404:
 							self.logger.error('No Occelmnt found for %s' % stationName)
 							continue
 						else:
-							return (eventOccelmnt, error)
+							errStr = str(error)
+							if errStr == 'HTTP Error 400: Bad Request':
+								errStr += "\n\nOWCloud Login/Password or API Key in Astrid/Settings/Observer maybe incorrect, please verify against OWCloud."
+							return (eventOccelmnt, errStr)
 
 					elements	= eventOccelmnt['Occultations']['Event']['Elements'].split(',')
 					star		= eventOccelmnt['Occultations']['Event']['Star'].split(',')

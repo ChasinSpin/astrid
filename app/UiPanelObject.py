@@ -241,8 +241,15 @@ class UiPanelObject(UiPanel):
 			if   ret == 0:
 				self.dialog = UiDialogPanel('Add Object (ICRS)', UiPanelObjectAddEdit, args = {'database': self.widgetDatabase.currentText(), 'camera': self.camera, 'editValues': None}, parent = self.camera.ui)
 			elif ret == 1:
-				ret2 = QMessageBox.information(self, ' ', 'To sync from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION AND DELETE PREVIOUS EVENTS FROM OWCLOUD THAT NO LONGER EXIST.', QMessageBox.Ok | QMessageBox.Cancel)
+				ret2 = QMessageBox.information(self, ' ', 'To sync from OWCloud, the following are required:\n\n    1. Internet Connection\n    2. Valid OWCloud login/password/api key in settings/observer\n    3. Site(s) added to events in OWCloud\n\nNote 1: After registering a site on OWCloud, it may take a few minutes for the data to be downloadble.\n\nTHIS WILL REPLACE OCCULTATIONS WITH THE SAME NAME/STATION AND DELETE PREVIOUS EVENTS FROM OWCLOUD THAT NO LONGER EXIST.', QMessageBox.Ok | QMessageBox.Cancel)
 				if ret2 == QMessageBox.Ok:
+					observer = Settings.getInstance().observer
+					if observer['owcloud_login'] is None or observer['owcloud_login'] == '' or observer['owcloud_password'] is None or observer['owcloud_password'] == '':
+						QMessageBox.information(self, ' ', 'No login or password for OWCloud has been set!\n\nAdd OWCloud login/password to the Observer settings in Astrid.', QMessageBox.Ok)
+						return
+					if observer['owcloud_apikey'] is None or observer['owcloud_apikey'] == '':
+						QMessageBox.information(self, ' ', 'No API Key for OWCloud has been set!\n\nOWCloud now requires your own Api Key.\n\nTo setup, after login in OWCloud, visit User Profile / User Permissions and verify your email.\n\nThen visit User Permissions again and copy the API Key to the API Key setting in the Observer settings in Astrid.', QMessageBox.Ok)
+						return
 					self.importFromOWCloud()
 			elif ret == 2:
 				predictions_folder = Settings.getInstance().predictions_folder

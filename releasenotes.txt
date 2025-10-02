@@ -1,3 +1,19 @@
+Version 1.0.056
+================
+
+	* ** IMPORTANT ** OWCloud now requires an API Key for Syncing from Events Astrid to OWC
+		1. Obtain your API Key on OWCloud:
+			a) Login to OWCloud with a web browser
+			b) Click "Welcome, YOUR NAME" and choose "User Profile"
+			c) Click "User Permissions"
+			d) Verify your email
+			e) Click Get API Key
+		2. In Astrid:
+			a) Copy the API Key from OWCloud above
+			b) Put API Key into Settings/Observer/OWC API Key in Astrid
+			c) Sync to OWCloud as usual
+	* Fixed error handling on connecting to OWCloud when internet is not available, it now produces an appropriate error
+
 Version 1.0.055
 ================
 
