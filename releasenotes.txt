@@ -9,6 +9,7 @@ FUTURE RELEASE: Version 1.0.057
 		c) Open the Astrid Tools Folder on the Desktop
 		d) Run "Install Mini Display" and follow the instructions to update
 		e) Restart you Astrid via the Astrid application
+	* Crosshairs setting removed from General, Crosshairs was removed a while back and the setting still remained, cleaned up
 
 Version 1.0.056
 ================

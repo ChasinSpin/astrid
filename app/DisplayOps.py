@@ -192,34 +192,6 @@ class DisplayOps():
 		image_buffer_zebras_inverse	= None
 
 
-	def __display_crosshairs(self, image_buffer):
-		general = Settings.getInstance().general
-		if general['center_marker'] == 'crosshairs':
-			(height, width, _)  = image_buffer.array.shape
-			w2 = int(width/2)
-			h2 = int(height/2)
-			cv2.line(image_buffer.array, (w2, 0), (w2, height-1), (0, 255, 0), 1)
-			cv2.line(image_buffer.array, (0, h2), (width-1, h2), (0, 255, 0), 1)
-		elif general['center_marker'] == 'rectangle':
-			boxSize = 15
-			(height, width, _)  = image_buffer.array.shape
-			w2 = int(width/2)
-			h2 = int(height/2)
-			fromPoint = (w2-boxSize, h2-boxSize)
-			toPoint = (w2+boxSize, h2+boxSize)
-			cv2.rectangle(image_buffer.array, fromPoint, toPoint, (0, 255, 0), 1)
-		elif general['center_marker'] == 'small cross':
-			lineGap = 10
-			lineLength = 30
-			(height, width, _)  = image_buffer.array.shape
-			w2 = int(width/2)
-			h2 = int(height/2)
-			cv2.line(image_buffer.array, (w2, h2-lineGap), (w2, h2-lineLength), (0, 255, 0), 1)
-			cv2.line(image_buffer.array, (w2, h2+lineGap), (w2, h2+lineLength), (0, 255, 0), 1)
-			cv2.line(image_buffer.array, (w2-lineGap, h2), (w2-lineLength, h2), (0, 255, 0), 1)
-			cv2.line(image_buffer.array, (w2+lineGap, h2), (w2+lineLength, h2), (0, 255, 0), 1)
-
-
 	def __display_stardetection(self, image_buffer):
 		hfdAvg = 0.0
 		fwhmAvg = 0.0
@@ -290,7 +262,7 @@ class DisplayOps():
 			cv2.line(img, (x+centerGap, y), (x+lineLength, y), (color), thickness)
 
 
-	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition, targetOutsideImage):
+	def __analyze_display_image_buffer(self, image_buffer, video_frame_rate, stretch, zebras, stardetection, annotationStars, targetPixelPosition, targetOutsideImage):
 		#print('***** ADIB MAX:', np.max(image_buffer.array))
 		#print('***** ADIB MIN:', np.min(image_buffer.array))
 		#print('***** ADIB DTYPE:', image_buffer.array.dtype)
@@ -309,8 +281,6 @@ class DisplayOps():
 			self.__display_stretch(image_buffer, stretch, video_frame_rate)
 		if zebras:
 			self.__display_zebras(image_buffer, image_buffer_zebras)
-		if crosshairs:
-			self.__display_crosshairs(image_buffer)
 		if stardetection:
 			self.__display_stardetection(image_buffer)
 		if annotationStars is not None:
@@ -319,7 +289,7 @@ class DisplayOps():
 			self.__display_object_target(image_buffer, targetPixelPosition, targetOutsideImage)
 
 
-	def overlayDisplayOnImageBuffer(self, image_buffer, video_recording, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars):
+	def overlayDisplayOnImageBuffer(self, image_buffer, video_recording, video_frame_rate, stretch, zebras, stardetection, annotationStars):
 		"""
 		Overlay Display On The image_buffer (it alters the image_buffer)
 	
@@ -327,7 +297,6 @@ class DisplayOps():
 		video_frame_rate	= the frame rate, or None if it's not video
 		stretch			= (type, settings) or None if there's no stretch required
 		zebras			= True or False
-		crosshairs		= True or False
 		stardetection		= True or False
 		annotationStars		= List of stars
 		"""
@@ -336,7 +305,7 @@ class DisplayOps():
 			stardetection	= False
 			zebras		= False		
 
-		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, crosshairs, stardetection, annotationStars, None, False)
+		self.__analyze_display_image_buffer(image_buffer, video_frame_rate, stretch, zebras, stardetection, annotationStars, None, False)
 
 
 	def __pointOnRect(self, x, y, minX, minY, maxX, maxY):
@@ -375,7 +344,7 @@ class DisplayOps():
 		return (x, y)	# Should never happen
 
 
-	def loadFitsPhotoWithOverlay(self, fits_filename, width, height, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition):
+	def loadFitsPhotoWithOverlay(self, fits_filename, width, height, stretch, zebras, stardetection, annotationStars, targetPixelPosition):
 		"""
 		Load fits, adds the overlays and returns the new buffer suitable for use as an overlay
 	
@@ -383,7 +352,6 @@ class DisplayOps():
 		video_frame_rate	= the frame rate, or None if it's not video
 		stretch			= (type, settings) or None if there's no stretch required
 		zebras			= True or False
-		crosshairs		= True or False
 		stardetection		= True or False
 		annotationStars		= List of stars
 		targetPixelPosition	= Position of target in pixels on the original fits image, None if no target
@@ -431,7 +399,7 @@ class DisplayOps():
 		image_buffer.array[:, :, 1]	= fits_data
 		image_buffer.array[:, :, 2]	= fits_data
 
-		self.__analyze_display_image_buffer(image_buffer, None, stretch, zebras, crosshairs, stardetection, annotationStars, targetPixelPosition, targetOutsideImage)
+		self.__analyze_display_image_buffer(image_buffer, None, stretch, zebras, stardetection, annotationStars, targetPixelPosition, targetOutsideImage)
 
 		image_buffer2 = ProxyImageBuffer(np.zeros((height, width, 4), dtype=np.uint8))
 		image_buffer2.array[:, :, 0]	= image_buffer.array[:, :, 0]
