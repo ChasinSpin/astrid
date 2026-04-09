@@ -1,4 +1,4 @@
-FUTURE RELEASE: Version 1.0.057
+Version 1.0.057
 ================
 
 	* Mini Display can now poweroff Astrid, note that if the Astrid app is recording, it may lead to corruption, to power off:
