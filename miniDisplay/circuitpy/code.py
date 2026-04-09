@@ -39,13 +39,13 @@ while True:
 
 	if d0Button.fell:
 		print('MINIDISPLAY:ButtonD0')
-		display.updateDisplayButtonPressed()
+		display.updateDisplayButtonPressed_D0_D1()
 	if d1Button.rose:
 		print('MINIDISPLAY:ButtonD1')
-		display.updateDisplayButtonPressed()
+		display.updateDisplayButtonPressed_D0_D1()
 	if d2Button.rose:
 		print('MINIDISPLAY:ButtonD2')
-		display.updateDisplayButtonPressed()
+		display.updateDisplayButtonPressed_D2()
 
 	if lastUpdate is not None and (lastUpdate + MONITOR_TIMEOUT) < now:
 		timed_out = True

@@ -14,7 +14,7 @@ from datetime import datetime
 
 
 
-version = '1.2.0'
+version = '1.3.0'
 
 minidisplay_present	= True
 MONITOR_REPEAT		= 5		# Seconds
@@ -130,13 +130,20 @@ def getNetworkStatus():
 	return status
 
 
+def getShutdownStatus(shutdownMode):
+	""" Gets the shutdown status and returns it as a dictionary """
+	status = {}
+	status['shutdownMode'] = shutdownMode
+	return status
+
+
 def getAstridStatus():
 	""" Gets the astrid status and returns it as a dictionary """
 	status = {}
 	return status
 
 
-def getStatus():
+def getStatus(shutdownMode):
 	""" Get the status of the system and returns it as a dictionary """
 	now = datetime.now()
 
@@ -145,6 +152,7 @@ def getStatus():
 	status['timestamp']	= now.strftime('%Y-%m-%d %H:%M:%S UTC')
 	status['network']	= getNetworkStatus()
 	status['astrid']	= getAstridStatus()
+	status['shutdown']	= getShutdownStatus(shutdownMode)
 	return status
 
 
@@ -153,9 +161,10 @@ def getStatus():
 #
 
 serialPort = None
+shutdownMode = 0
 
 while True:
-	status = getStatus()
+	status = getStatus(shutdownMode)
 
 	comports = adafruit_board_toolkit.circuitpython_serial.repl_comports()
 	if comports:
@@ -168,6 +177,13 @@ while True:
 			serialPort.close()
 		serialPort = None
 		#print(status)
+
+	if shutdownMode == 2:
+		shutdownMode = 3
+	elif shutdownMode == 3:
+		shutdownMode = 4
+	elif shutdownMode == 4:
+		runCommand( ['/usr/sbin/poweroff'] )
 
 	d0Pressed = False
 	d1Pressed = False
@@ -201,10 +217,18 @@ while True:
 	if d2Pressed:
 		print('Button D2 Pressed')
 
-	if d0Pressed or d1Pressed or d2Pressed:
-		if status['network']['mode'] == 'wifi managed':
-			# Switch to Hotspot
-			proc = subprocess.Popen( ['/usr/bin/autohotspot', '--force_hotspot'] )
-		elif status['network']['mode'] == 'wifi hotspot':
-			# Switch to Managed
-			proc = subprocess.Popen( ['/usr/bin/autohotspot'] )
+	if d0Pressed or d1Pressed:
+		if shutdownMode > 0:
+			shutdownMode = 0
+		else:
+			if status['network']['mode'] == 'wifi managed':
+				# Switch to Hotspot
+				proc = subprocess.Popen( ['/usr/bin/autohotspot', '--force_hotspot'] )
+			elif status['network']['mode'] == 'wifi hotspot':
+				# Switch to Managed
+				proc = subprocess.Popen( ['/usr/bin/autohotspot'] )
+	elif d2Pressed:
+		if shutdownMode == 0:
+			shutdownMode = 1
+		elif shutdownMode == 1:
+			shutdownMode = 2

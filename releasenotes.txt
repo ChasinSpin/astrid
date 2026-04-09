@@ -1,3 +1,15 @@
+FUTURE RELEASE: Version 1.0.057
+================
+
+	* Mini Display can now poweroff Astrid, note that if the Astrid app is recording, it may lead to corruption, to power off:
+		a) Press the bottom button on the left on the Mini Display
+	* Mini Display has changed version to 1.3.0, you will need to upgrade your Mini Display, to do this:
+		a) Disconnect your mount from Astrid and connect the Mini Display
+		b) Close the Astrid application if you're already running it
+		c) Open the Astrid Tools Folder on the Desktop
+		d) Run "Install Mini Display" and follow the instructions to update
+		e) Restart you Astrid via the Astrid application
+
 Version 1.0.056
 ================
 
