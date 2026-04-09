@@ -1138,14 +1138,16 @@ class CameraModel:
 
 
 	def setJobName(self, object):
-		self.photoFileHandling.setTarget(object)	
-		self.videoTarget = object
-		print("Set Object:", object)
+		objectStripped = object.replace('/', '_').replace('\\', '_')
+		self.photoFileHandling.setTarget(objectStripped)	
+		self.videoTarget = objectStripped
+		print("Set Object:", objectStripped)
 
 
 	def setJobNameUi(self, object):
-		self.setJobName(object)
-		self.ui.panelTask.widgetJobName.setText(object)
+		objectStripped = object.replace('/', '_').replace('\\', '_')
+		self.setJobName(objectStripped)
+		self.ui.panelTask.widgetJobName.setText(objectStripped)
 
 
 	def searchObject(self, search):

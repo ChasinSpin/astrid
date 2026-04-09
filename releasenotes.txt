@@ -10,6 +10,7 @@ FUTURE RELEASE: Version 1.0.057
 		d) Run "Install Mini Display" and follow the instructions to update
 		e) Restart you Astrid via the Astrid application
 	* Crosshairs setting removed from General, Crosshairs was removed a while back and the setting still remained, cleaned up
+	* Events with / in the name were causing failed recordings, now fixed 
 
 Version 1.0.056
 ================
